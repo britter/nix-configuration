@@ -107,13 +107,16 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    asdf-vm
     bat
     diff-so-fancy
     exa
     gh
     git
     gnupg
+    gradle
     helix 
+    jetbrains.idea-community
     pinentry
     starship
     tldr
