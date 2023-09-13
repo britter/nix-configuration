@@ -108,6 +108,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     bat
+    diff-so-fancy
     exa
     gh
     git
