@@ -107,10 +107,8 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    _1password-gui
     bat
     exa
-    fish
     gh
     git
     gnupg
@@ -134,7 +132,7 @@
   #   enableSSHSupport = true;
   # };
   programs.fish.enable = true;
-
+  programs._1password-gui.enable = true;
 
   # List services that you want to enable:
 
