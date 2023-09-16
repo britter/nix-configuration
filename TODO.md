@@ -1,6 +1,5 @@
 # TODO
 
-- Fix all errors occuring when brining up fish
 - Fix all errors occuring when brining up vim or drop vim config and use helix as git editor
 - Install an configure tmux like https://www.youtube.com/watch?v=DzNmUNvnB04
 - Decide for terminal, blackbox? kitty?

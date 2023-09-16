@@ -108,9 +108,10 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     asdf-vm
-    bat
+    bat # cat replacement
     diff-so-fancy
-    exa
+    exa # ls replacement
+    fzf # fuzzy finding
     gh
     git
     gradle
@@ -121,9 +122,9 @@
     tldr
     tmux
     vim
-    # Access to X server clipboard, required for helix clipboard integration
-    xsel
+    xsel # Access to X server clipboard, required for helix clipboard integration
     zip
+    zoxide # z for smart directory jumping
   ];
 
   fonts.fonts = with pkgs; [
