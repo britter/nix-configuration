@@ -9,5 +9,6 @@
   - bookmarks from bookmark menu
   - disable Mozilla data collection
 - Adopt home manager and migrate dotfiles to it
+- Configure nix-shell to spawn in fish shell
 - Learn about flakes
 
