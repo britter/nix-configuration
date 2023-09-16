@@ -121,7 +121,6 @@
     starship
     tldr
     tmux
-    vim
     xsel # Access to X server clipboard, required for helix clipboard integration
     zip
     zoxide # z for smart directory jumping
