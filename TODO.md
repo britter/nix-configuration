@@ -1,7 +1,6 @@
 # TODO
 
 - Fix all errors occuring when brining up fish
-- Get Helix clipboard integration working, see https://github.com/helix-editor/helix/wiki/Troubleshooting#on-linux
 - Install an configure tmux like https://www.youtube.com/watch?v=DzNmUNvnB04
 - Decide for terminal, blackbox? kitty?
 - Catpuccin theme all the way

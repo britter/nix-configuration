@@ -120,6 +120,8 @@
     starship
     tldr
     vim
+    # Access to X server clipboard, required for helix clipboard integration
+    xsel
     zip
   ];
 
