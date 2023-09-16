@@ -119,6 +119,7 @@
     jetbrains.idea-community
     pinentry
     starship
+    taplo # TOML support in helix
     tldr
     tmux
     xsel # Access to X server clipboard, required for helix clipboard integration
