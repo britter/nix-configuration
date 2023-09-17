@@ -1,6 +1,5 @@
 # TODO
 
-- Install an configure tmux like https://www.youtube.com/watch?v=DzNmUNvnB04
 - Decide for terminal, blackbox? kitty?
 - Catpuccin theme all the way
 - Figure out whether more of Firefox configuration can be declared via nix
