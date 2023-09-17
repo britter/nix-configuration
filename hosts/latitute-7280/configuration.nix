@@ -101,6 +101,7 @@
   environment.systemPackages = with pkgs; [
     asdf-vm
     bat # cat replacement
+    blackbox-terminal
     diff-so-fancy
     exa # ls replacement
     fzf # fuzzy finding

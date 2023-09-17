@@ -1,6 +1,5 @@
 # TODO
 
-- Decide for terminal, blackbox? kitty?
 - Catpuccin theme all the way
 - Figure out whether more of Firefox configuration can be declared via nix
   - bookmarks from bookmark menu
