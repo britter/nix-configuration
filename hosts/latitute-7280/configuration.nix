@@ -6,7 +6,8 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [ 
+      <home-manager/nixos>
       ./hardware-configuration.nix
     ];
 
@@ -84,11 +85,40 @@
     isNormalUser = true;
     description = "Benedikt";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      firefox
-    #  thunderbird
-    ];
-    shell = pkgs.fish;
+  };
+
+  home-manager.users.bene = { pkgs, ... }: {
+    home.stateVersion = "23.05";
+    home.packages = [ ];
+
+    programs.firefox.enable = true;
+    programs.fish = {
+      enable = true;
+
+      shellAliases = {
+        ".." = "cd ..";
+        "..." = "cd ../..";
+        "...." = "cd ../../..";
+        "....." = "cd ../../../..";
+        "cat" = "bat";
+        "ls" = "exa";
+        "ll" = "exa -la";
+      };
+
+      shellInit = ''
+        set -x LANG en_US.utf-8
+        set -x MAVEN_OPTS "-Duser.name=benedikt"
+        set PATH /usr/local/bin/usr/local/sbin $JAVA_HOME/bin $HOME/.local/bin $PATH
+        set -x EDITOR hx
+        set -x GPG_TTY (tty)
+        . ~/.asdf/plugins/java/set-java-home.fish
+        set -x JDK8 (asdf where java liberica-8u362+9)
+        set -x JDK11 (asdf where java liberica-11.0.18+10)
+        set -x JDK17 (asdf wher java liberica-17.0.6+10)
+        set -x JDK18 (asdf where java liberica-18.0.2.1+1)
+        starship init fish | source
+      '';
+    };
   };
 
   nixpkgs.config.allowUnfreePredicate = pkg:
