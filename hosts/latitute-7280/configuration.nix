@@ -85,6 +85,7 @@
     isNormalUser = true;
     description = "Benedikt";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.fish;
   };
 
   home-manager.users.bene = { pkgs, ... }: {
