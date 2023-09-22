@@ -130,6 +130,10 @@
         key = "394546A47BB40E12";
       };
 
+      extraConfig = {
+        init.defaultBranch = "main";
+      };
+
       includes = [
         {
           condition = "gitdir:~/github/gradlex-org";
