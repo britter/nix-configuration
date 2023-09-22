@@ -179,6 +179,10 @@
       diff-so-fancy.enable = true;
     };
     programs.gpg.enable = true;
+    services.gpg-agent = {
+      enable = true;
+      pinentryFlavor = "gnome3";
+    };
   };
 
   nixpkgs.config.allowUnfreePredicate = pkg:
@@ -186,7 +190,7 @@
       "1password"
     ];
 
-  # List packages installed in system profile. To searc, run:
+  # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     asdf-vm
