@@ -91,6 +91,9 @@
   home-manager.users.bene = { pkgs, ... }: {
     home.stateVersion = "23.05";
     home.packages = [ ];
+    home.sessionVariables = {
+      JDK8 = "${pkgs.jdk8}";
+    };
 
     programs.firefox.enable = true;
     programs.fish = {
@@ -109,14 +112,8 @@
       shellInit = ''
         set -x LANG en_US.utf-8
         set -x MAVEN_OPTS "-Duser.name=benedikt"
-        set PATH /usr/local/bin/usr/local/sbin $JAVA_HOME/bin $HOME/.local/bin $PATH
         set -x EDITOR hx
         set -x GPG_TTY (tty)
-        . ~/.asdf/plugins/java/set-java-home.fish
-        set -x JDK8 (asdf where java liberica-8u362+9)
-        set -x JDK11 (asdf where java liberica-11.0.18+10)
-        set -x JDK17 (asdf where java liberica-17.0.6+10)
-        set -x JDK18 (asdf where java liberica-18.0.2.1+1)
         starship init fish | source
       '';
     };
@@ -188,6 +185,11 @@
       enable = true;
       pinentryFlavor = "gnome3";
     };
+
+    programs.java = {
+      enable = true;
+      package = pkgs.jdk17;
+    };
   };
 
   nixpkgs.config.allowUnfreePredicate = pkg:
@@ -198,7 +200,6 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    asdf-vm
     bat # cat replacement
     blackbox-terminal
     exa # ls replacement
