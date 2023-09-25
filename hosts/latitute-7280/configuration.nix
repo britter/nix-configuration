@@ -90,9 +90,13 @@
 
   home-manager.users.bene = { pkgs, ... }: {
     home.stateVersion = "23.05";
-    home.packages = [ ];
+    home.packages = [ 
+      pkgs.taplo # TOML support for helix
+    ];
     home.sessionVariables = {
       JDK8 = "${pkgs.jdk8}";
+      # See below, this can be replaces with programs.helix.defaultEditor in the next home-manager release
+      EDITOR = "hx";
     };
 
     programs.firefox.enable = true;
@@ -112,7 +116,6 @@
       shellInit = ''
         set -x LANG en_US.utf-8
         set -x MAVEN_OPTS "-Duser.name=benedikt"
-        set -x EDITOR hx
         set -x GPG_TTY (tty)
         starship init fish | source
       '';
@@ -190,6 +193,31 @@
       enable = true;
       package = pkgs.jdk17;
     };
+
+    programs.helix = {
+      enable = true;
+      # defaultEditor is a setting in home-manager master. Comment out once updated to next home-manager release
+      # defaultEditor = true;
+      settings = {
+        theme = "catppuccin_macchiato";
+        editor.file-picker = {
+          hidden = false;
+        };
+        editor.whitespace.render = {
+          space = "all";
+          nbsp = "all";
+          tab = "all";
+        };
+        keys.normal = {
+          up = "no_op";
+          down = "no_op";
+          left = "no_op";
+          right = "no_op";
+          pageup = "no_op";
+          pagedown = "no_op";
+        };
+      };
+    };
   };
 
   nixpkgs.config.allowUnfreePredicate = pkg:
@@ -206,11 +234,9 @@
     fzf # fuzzy finding
     gh
     gradle
-    helix
     jetbrains.idea-community
     pinentry
     starship
-    taplo # TOML support in helix
     tldr
     tmux
     xsel # Access to X server clipboard, required for helix clipboard integration

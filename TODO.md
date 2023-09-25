@@ -1,7 +1,7 @@
 # TODO
 
 - Adopt home manager and migrate dotfiles to it
-  - tmux, and helix configuration (starship can probably be dropped)
+  - tmux
   - configure gpg to trust my own keys? Check the git log with --show-signatures and it will say the key is not trusted.
   - Figure out whether more of Firefox configuration can be declared via nix
     - bookmarks from bookmark menu
