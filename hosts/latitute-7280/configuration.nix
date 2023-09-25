@@ -91,7 +91,10 @@
   home-manager.users.bene = { pkgs, ... }: {
     home.stateVersion = "23.05";
     home.packages = [ 
+      pkgs.exa # ls replacement
+      pkgs.gradle
       pkgs.taplo # TOML support for helix
+      pkgs.tldr # better man pages
     ];
     home.sessionVariables = {
       JDK8 = "${pkgs.jdk8}";
@@ -117,9 +120,13 @@
         set -x LANG en_US.utf-8
         set -x MAVEN_OPTS "-Duser.name=benedikt"
         set -x GPG_TTY (tty)
-        starship init fish | source
       '';
     };
+    programs.starship.enable = true; # prompt framework
+    programs.bat.enable = true; # cat replacement
+    programs.fzf.enable = true; # fuzzy finding
+    programs.zoxide.enable = true; # smart cd replacement
+
     programs.git = {
       enable = true;
 
@@ -228,20 +235,12 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    bat # cat replacement
     blackbox-terminal
-    exa # ls replacement
-    fzf # fuzzy finding
     gh
-    gradle
     jetbrains.idea-community
     pinentry
-    starship
-    tldr
     tmux
     xsel # Access to X server clipboard, required for helix clipboard integration
-    zip
-    zoxide # z for smart directory jumping
   ];
 
   fonts.fonts = with pkgs; [
