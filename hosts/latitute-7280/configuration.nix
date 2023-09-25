@@ -90,11 +90,11 @@
 
   home-manager.users.bene = { pkgs, ... }: {
     home.stateVersion = "23.05";
-    home.packages = [ 
-      pkgs.exa # ls replacement
-      pkgs.gradle
-      pkgs.taplo # TOML support for helix
-      pkgs.tldr # better man pages
+    home.packages = with pkgs; [
+      exa # ls replacement
+      gradle
+      taplo # TOML support for helix
+      tldr # better man pages
     ];
     home.sessionVariables = {
       JDK8 = "${pkgs.jdk8}";
