@@ -281,7 +281,6 @@
   environment.systemPackages = with pkgs; [
     blackbox-terminal
     jetbrains.idea-community
-    pinentry
     xsel # Access to X server clipboard, required for helix clipboard integration
   ];
 
