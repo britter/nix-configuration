@@ -93,7 +93,8 @@
     home.packages = with pkgs; [
       exa # ls replacement
       gradle
-      taplo # TOML support for helix
+      nil # Nix lsp for helix
+      taplo # TOML lsp for helix
       tldr # better man pages
     ];
     home.sessionVariables = {
