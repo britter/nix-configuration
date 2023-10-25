@@ -1,17 +1,11 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    gradle
-  ];
-  home.sessionVariables = {
-    JDK8 = "${pkgs.jdk8}";
-  };
-
   imports = [
     ./git
     ./gpg
     ./helix
+    ./java
     ./terminal
   ];
 
@@ -39,10 +33,5 @@
           };
       in
       [ gh-get ];
-  };
-
-  programs.java = {
-    enable = true;
-    package = pkgs.jdk17;
   };
 }
