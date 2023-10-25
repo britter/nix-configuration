@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./firefox
     ./gh
     ./git
     ./gpg
@@ -9,6 +10,4 @@
     ./java
     ./terminal
   ];
-
-  programs.firefox.enable = true;
 }
