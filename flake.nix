@@ -10,11 +10,20 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager }@attrs : {
+  outputs = { self, nixpkgs, home-manager } : {
     nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = attrs;
-      modules = [ ./hosts/latitute-7280/configuration.nix ];
+      modules = [
+        ./hosts/latitute-7280/configuration.nix
+        home-manager.nixosModules.home-manager {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.bene = {
+            home.stateVersion = "23.05";
+            imports = [ ./modules/home.nix ];
+          };
+        }
+      ];
     };
   };
 }
