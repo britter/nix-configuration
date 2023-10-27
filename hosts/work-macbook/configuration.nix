@@ -3,6 +3,11 @@
 {
   networking.hostName = "work-macbook";
 
+  users.users.bene = {
+    name = "bene";
+    home = "/Users/bene";
+  };
+
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.systemPackages =

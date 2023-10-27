@@ -3,7 +3,7 @@
 {
   programs.gpg.enable = true;
   services.gpg-agent = {
-    enable = true;
+    enable = pkgs.hostPlatform.isLinux;
     pinentryFlavor = "gnome3";
   };
 }

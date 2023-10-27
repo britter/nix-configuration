@@ -34,6 +34,14 @@
       system = "aarch64_darwin";
       modules = [
         ./hosts/work-macbook/configuration.nix
+        home-manager.darwinModules.home-manager {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.bene = {
+            home.stateVersion = "23.05";
+            imports = [ ./modules/work-home.nix ];
+          };
+        }
       ];
     };
   };
