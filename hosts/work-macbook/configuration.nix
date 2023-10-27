@@ -6,6 +6,7 @@
   users.users.bene = {
     name = "bene";
     home = "/Users/bene";
+    shell = pkgs.fish;
   };
 
   # List packages installed in system profile. To search by name, run:
