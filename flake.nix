@@ -8,9 +8,14 @@
       url = "github:nix-community/home-manager/release-23.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager } : {
+  outputs = { self, nixpkgs, home-manager, nix-darwin } : {
     nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -23,6 +28,12 @@
             imports = [ ./modules/home.nix ];
           };
         }
+      ];
+    };
+    darwinConfigurations.work-macbook = nix-darwin.lib.darwinSystem {
+      system = "aarch64_darwin";
+      modules = [
+        ./hosts/work-macbook/configuration.nix
       ];
     };
   };
