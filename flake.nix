@@ -25,7 +25,7 @@
           home-manager.useUserPackages = true;
           home-manager.users.bene = {
             home.stateVersion = "23.05";
-            imports = [ ./modules/home.nix ];
+            imports = [ ./home.nix ];
           };
         }
       ];
@@ -39,7 +39,7 @@
           home-manager.useUserPackages = true;
           home-manager.users.bene = {
             home.stateVersion = "23.05";
-            imports = [ ./modules/work-home.nix ];
+            imports = [ ./work-home.nix ];
           };
         }
       ];
