@@ -1,16 +1,15 @@
 { pkgs, ... }:
 
 {
-  home.packages = with pkgs; [
-    gradle
-  ];
-
-  home.sessionVariables = {
-    JDK8 = "${pkgs.jdk8}";
-  };
+  imports = [ ../gradle ];
 
   programs.java = {
     enable = true;
     package = pkgs.jdk17;
+  };
+
+  programs.gradle = {
+    enable = true;
+    additionalJavaPackages = [ pkgs.jdk8 ];
   };
 }
