@@ -27,7 +27,7 @@
   }: {
     formatter = {
       x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
-      aarch64_darwin = nixpkgs.legacyPackages.aarch64_darwin.alejandra;
+      aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.alejandra;
     };
     nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
@@ -55,6 +55,7 @@
           home-manager.users.bene = {
             home.stateVersion = "23.05";
             imports = [./work-home.nix];
+            # TODO: once JDK packages become available in stable (e.g. 23.11), move this to work-home.nix
             home.sessionVariables = let
               unstable = nixpkgs-unstable.legacyPackages."aarch64-darwin";
             in {
@@ -62,6 +63,7 @@
               JDK11 = unstable.jdk11;
               JDK17 = unstable.jdk17;
               JDK20 = unstable.jdk20;
+              JDK21 = unstable.jdk21;
             };
           };
         }
