@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+    # unstable is required to get the latest packages
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-23.05";
@@ -15,7 +17,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-darwin } : {
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nix-darwin } : {
     nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -40,9 +42,19 @@
           home-manager.users.bene = {
             home.stateVersion = "23.05";
             imports = [ ./work-home.nix ];
-          };
-        }
-      ];
+            home.sessionVariables = 
+              let
+                unstable = nixpkgs-unstable.legacyPackages."aarch64-darwin";
+              in
+              {
+                JDK8 = unstable.jdk8;
+                JDK11 = unstable.jdk11;
+                JDK17 = unstable.jdk17;
+                JDK20 = unstable.jdk20;
+              };
+            };
+          }
+        ];
     };
   };
 }
