@@ -136,10 +136,17 @@ nix flake show <flake url>
 
 ### Tools
 
+#### General
+
+- [lazygit](https://github.com/jesseduffield/lazygit)
+
+#### Nix related
+
 - [nix-jabba](https://codeberg.org/raboof/nix-jabba)
 - [devenv.sh](https://devenv.sh)
-- Tools
-  - [lazygit](https://github.com/jesseduffield/lazygit)
+- [statix linter](https://git.peppe.rs/languages/statix)
+- [Alejandra formatterl](https://github.com/kamadorueda/alejandra)
+- [Pre-commit-hooks.nix](https://github.com/cachix/pre-commit-hooks.nix)
 
 ### Nix on Raspberry Pi
 
