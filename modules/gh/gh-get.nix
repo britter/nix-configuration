@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   gh-get = pkgs.stdenv.mkDerivation rec {
     name = "gh-get";
     pname = "gh-get";

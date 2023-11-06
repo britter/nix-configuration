@@ -17,17 +17,29 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, nix-darwin } : {
+  outputs = {
+    self,
+    nixpkgs,
+    nixpkgs-unstable,
+    home-manager,
+    nix-darwin,
+    ...
+  }: {
+    formatter = {
+      x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
+      aarch64_darwin = nixpkgs.legacyPackages.aarch64_darwin.alejandra;
+    };
     nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./hosts/latitute-7280/configuration.nix
-        home-manager.nixosModules.home-manager {
+        home-manager.nixosModules.home-manager
+        {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.bene = {
             home.stateVersion = "23.05";
-            imports = [ ./home.nix ];
+            imports = [./home.nix];
           };
         }
       ];
@@ -36,25 +48,24 @@
       system = "aarch64_darwin";
       modules = [
         ./hosts/work-macbook/configuration.nix
-        home-manager.darwinModules.home-manager {
+        home-manager.darwinModules.home-manager
+        {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.users.bene = {
             home.stateVersion = "23.05";
-            imports = [ ./work-home.nix ];
-            home.sessionVariables = 
-              let
-                unstable = nixpkgs-unstable.legacyPackages."aarch64-darwin";
-              in
-              {
-                JDK8 = unstable.jdk8;
-                JDK11 = unstable.jdk11;
-                JDK17 = unstable.jdk17;
-                JDK20 = unstable.jdk20;
-              };
+            imports = [./work-home.nix];
+            home.sessionVariables = let
+              unstable = nixpkgs-unstable.legacyPackages."aarch64-darwin";
+            in {
+              JDK8 = unstable.jdk8;
+              JDK11 = unstable.jdk11;
+              JDK17 = unstable.jdk17;
+              JDK20 = unstable.jdk20;
             };
-          }
-        ];
+          };
+        }
+      ];
     };
   };
 }

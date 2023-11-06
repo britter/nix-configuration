@@ -1,7 +1,5 @@
-{ pkgs, ... }:
-
-{
-  imports = [ ../gradle ];
+{pkgs, ...}: {
+  imports = [../gradle];
 
   programs.java = {
     enable = true;
@@ -10,6 +8,6 @@
 
   programs.gradle = {
     enable = true;
-    additionalJavaPackages = [ pkgs.jdk8 ];
+    additionalJavaPackages = [pkgs.jdk8];
   };
 }

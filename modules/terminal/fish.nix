@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   home.packages = with pkgs; [
     exa # ls replacement
     tldr # better man pages
@@ -30,5 +28,4 @@
   programs.bat.enable = true; # cat replacement
   programs.fzf.enable = true; # fuzzy finding
   programs.zoxide.enable = true; # smart cd replacement
-
 }

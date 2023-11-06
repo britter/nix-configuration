@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   programs.git = {
     userName = "Benedikt Ritter";
     userEmail = "benedikt@gradle.com";

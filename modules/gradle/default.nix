@@ -1,8 +1,10 @@
-{ config, pkgs, lib, ... }:
-
-with lib;
-
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; let
   cfg = config.programs.gradle;
 in {
   options.programs.gradle = {
@@ -38,7 +40,7 @@ in {
     };
     additionalJavaPackages = mkOption {
       type = types.listOf types.package;
-      default = [ ];
+      default = [];
       example = "[ pkgs.jdk8 pkgs.jdk11 ]";
       description = ''
         Additional Java packages to make available to Gradle's Java toolchain infrastructure.
@@ -48,7 +50,7 @@ in {
     };
     gradleProperties = mkOption {
       type = types.attrsOf types.str;
-      default = { };
+      default = {};
       example = {
         "org.gradle.caching" = "true";
         "org.gradle.parallel" = "true";
@@ -60,7 +62,7 @@ in {
     };
     initScripts = mkOption {
       type = types.attrsOf types.str;
-      default = { };
+      default = {};
       example = {
         "maven-local.init.gradle" = ''
           allProject {
@@ -80,29 +82,33 @@ in {
     };
   };
 
-  config =
-  let
-    properties = concatStringsSep "\n"
+  config = let
+    properties =
+      concatStringsSep "\n"
       (mapAttrsToList (n: v: "${n}=${v}") (
-        cfg.gradleProperties // optionalAttrs (cfg.javaPackage != null) {
+        cfg.gradleProperties
+        // optionalAttrs (cfg.javaPackage != null) {
           "org.gradle.java.home" = "${cfg.javaPackage}";
-        } // optionalAttrs (length cfg.additionalJavaPackages > 0) {
-          "org.gradle.java.installations.paths" = (concatStringsSep "," (map toString cfg.additionalJavaPackages));
+        }
+        // optionalAttrs (length cfg.additionalJavaPackages > 0) {
+          "org.gradle.java.installations.paths" = concatStringsSep "," (map toString cfg.additionalJavaPackages);
         }
       ));
     initScripts = pkgs.symlinkJoin {
       name = "gradle-init-scripts";
-      paths = (mapAttrsToList (name: content: pkgs.writeTextDir "init.d/${name}" content) cfg.initScripts);
+      paths = mapAttrsToList (name: content: pkgs.writeTextDir "init.d/${name}" content) cfg.initScripts;
     };
-  in mkIf cfg.enable (mkMerge [
-    {
-      home.packages =[ cfg.package ];
-      home.file.".gradle/gradle.properties".text = properties;
-      home.file.".gradle/init.d".source = "${initScripts}/init.d";
-    }
-    (mkIf (cfg.javaPackage == null) {
-      programs.java.enable = true;
-    })
-    ]
-  );
+  in
+    mkIf cfg.enable (
+      mkMerge [
+        {
+          home.packages = [cfg.package];
+          home.file.".gradle/gradle.properties".text = properties;
+          home.file.".gradle/init.d".source = "${initScripts}/init.d";
+        }
+        (mkIf (cfg.javaPackage == null) {
+          programs.java.enable = true;
+        })
+      ]
+    );
 }
