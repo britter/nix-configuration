@@ -108,6 +108,15 @@ nix flake show <flake url>
 6. Inside the repository clone, run `nix run nix-darwin --extra-experimental-features 'nix-command flake' darwin-rebuild -- switch --flake .` (See for resolution of https://github.com/LnL7/nix-darwin/issues/721 in order to run darwin-rebuild from anywhere after that).
 7. Apply the workaround documented in https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1782971499 is the issue is still unresolved.
 
+### Raspberry Pi
+
+1. Follow the [steps in nixos.wiki](https://nixos.wiki/wiki/NixOS_on_ARM#Installation) to create a bootable SD card. Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager.
+2. The [NixOS manual](https://nixos.org/manual/nixos/stable/#sec-installation-booting-networking) says it's possible to mount the image and modify it to contain my own SSH key, however I didn't manage to do that.
+3. If modifying the image is not possible, boot the Raspberry Pi conntected to a display and then manually copy the SSH key using a USB stick.
+4. Once the key is on the device, ssh into it as the nixos user.
+5. Run `sudo nixos-generate-config` to generate the initial configuration.
+6. Start from 2. in the [#nixos] section.
+
 ## Useful links
 
 ### Packages
