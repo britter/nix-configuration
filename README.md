@@ -110,7 +110,9 @@ nix flake show <flake url>
 
 ### Raspberry Pi
 
-1. Follow the [steps in nixos.wiki](https://nixos.wiki/wiki/NixOS_on_ARM#Installation) to create a bootable SD card. Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager.
+1. Follow the [steps in nixos.wiki](https://nixos.wiki/wiki/NixOS_on_ARM#Installation) to create a bootable SD card.
+  - Use `nix run nixpkgs#parted parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
+  - Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager.
 2. The [NixOS manual](https://nixos.org/manual/nixos/stable/#sec-installation-booting-networking) says it's possible to mount the image and modify it to contain my own SSH key, however I didn't manage to do that.
 3. If modifying the image is not possible, boot the Raspberry Pi conntected to a display and then manually copy the SSH key using a USB stick.
 4. Once the key is on the device, ssh into it as the nixos user.
