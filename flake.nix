@@ -58,13 +58,8 @@
             # TODO: once JDK packages become available in stable (e.g. 23.11), move this to work-home.nix
             home.sessionVariables = let
               unstable = nixpkgs-unstable.legacyPackages."aarch64-darwin";
-            in {
-              JDK8 = unstable.jdk8;
-              JDK11 = unstable.jdk11;
-              JDK17 = unstable.jdk17;
-              JDK20 = unstable.jdk20;
-              JDK21 = unstable.jdk21;
-            };
+              jdkVersions = [8 11 17 20 21];
+            in (nixpkgs.lib.mkMerge (map (v: {"JDK${v}" = unstable."jdk${v}";}) jdkVersions));
           };
         }
       ];
