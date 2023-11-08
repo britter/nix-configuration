@@ -103,9 +103,11 @@ in {
       mkMerge [
         {
           home.packages = [cfg.package];
-          home.file.".gradle/gradle.properties".text = properties;
           home.file.".gradle/init.d".source = "${initScripts}/init.d";
         }
+        (mkIf (stringLength properties > 0) {
+          home.file.".gradle/gradle.properties".text = properties;
+        })
         (mkIf (cfg.javaPackage == null) {
           programs.java.enable = true;
         })
