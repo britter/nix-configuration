@@ -110,14 +110,75 @@ nix flake show <flake url>
 
 ### Raspberry Pi
 
-1. Follow the [steps in nixos.wiki](https://nixos.wiki/wiki/NixOS_on_ARM#Installation) to create a bootable SD card.
-  - Use `nix run nixpkgs#parted parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
-  - Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager.
-2. The [NixOS manual](https://nixos.org/manual/nixos/stable/#sec-installation-booting-networking) says it's possible to mount the image and modify it to contain my own SSH key, however I didn't manage to do that.
-3. If modifying the image is not possible, boot the Raspberry Pi conntected to a display and then manually copy the SSH key using a USB stick.
-4. Once the key is on the device, ssh into it as the nixos user.
-5. Run `sudo nixos-generate-config` to generate the initial configuration.
-6. Start from 2. in the [#nixos] section.
+This is the description for a network install that does not require the Raspberry Pi to be connected to a display.
+Instead it's sufficient to connet it to the network via ethernet cable and ssh into the machine.
+The SD card image will setup the root account and a user called `nixos` without password.
+So it's possible to SSH into the machine without a password.
+They might be sufficient, if you feel like your network is secure enough.
+If you want some extra level of security, you should use SSH public key authentication.
+There are two options to setup SSH public key authentication.
+In either case the first step is to download the bootable SD card image from the Hydra build system, see [this nixos.wiki entry](https://nixos.wiki/wiki/NixOS_on_ARM#Installation).
+
+**Pre-load an SSH key into the image**
+
+In this option, the bootable SD card image is modified to pre-load the SSH key into the `authorized_keys` file of the nixos user.
+
+1. Use `nix run nixpkgs#parted parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
+2. Mount the image file into a local directory by running
+
+```shell
+mkdir img
+sudo mount -o loop,offset=<result from parted> <image file name> img
+```
+
+3. Generate an SSH key if you haven't already using the `ssh-keygen` tool.
+4. The SD card image will setup a user called `nixos` on first boot. For that reason `/home/nixos` does not exist in the image you just mounted. Create the user home, and pre-load your SSH key as an authorized key:
+
+```shell
+sudo mkdir -p img/home/nixos/.ssh
+sudo cp ~/.ssh/id_rsa.pub img/home/nixos/.ssh/authorized_keys
+sudo chown -R 1000:100 img/home/nixos
+sudo chmod -R 700 img/home/nixos
+sudo chmod 600 img/home/nixos/authorized_keys
+```
+
+5. Unmount the image via `sudo umount img`
+6. Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager and write the image to the SD card.
+
+**Copying the key after first boot**
+
+1. Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager and write the image to the SD card.
+2. Boot the Raspberry Pi using the SD card.
+3. Generate an SSH key if you haven't alread using the `ssh-keygen` tool.
+4. Copy the SSH to the target machine using `ssh-copy-id -i ~/.ssh/name-of-the-key target-ip`
+
+**After first boot**
+
+1. Once the key is on the device, ssh into it as the `nixos` user.
+2. Run `sudo nixos-generate-config` to generate the initial configuration.
+3. IMPORTANT: You need to make two modifications to `/etc/nixos/configuration.nix`. If you forget to add this to the config, when you `nixos-rebuild switch` you won't be able to login anymore!
+  - Configure the `nixos` user:
+
+```nix
+users.users.nixos = {
+  isNormalUser = true;
+  extraGroups = ["wheel"];
+}
+```
+
+  - Enable the SSH services:
+
+```nix
+services.openssh = {
+  enable = true;
+  # require public key authentication for better security
+  settings.PasswordAuthentication = false;
+  settings.KbdInteractiveAuthentication = false;
+  #settings.PermitRootLogin = "yes";
+};
+```
+
+4. Start from 2. in the [#nixos] section.
 
 ## Useful links
 
