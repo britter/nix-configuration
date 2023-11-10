@@ -113,15 +113,11 @@ nix flake show <flake url>
 This is the description for a network install that does not require the Raspberry Pi to be connected to a display.
 Instead it's sufficient to connet it to the network via ethernet cable and ssh into the machine.
 The SD card image will setup the root account and a user called `nixos` without password.
-So it's possible to SSH into the machine without a password.
-They might be sufficient, if you feel like your network is secure enough.
-If you want some extra level of security, you should use SSH public key authentication.
-There are two options to setup SSH public key authentication.
-In either case the first step is to download the bootable SD card image from the Hydra build system, see [this nixos.wiki entry](https://nixos.wiki/wiki/NixOS_on_ARM#Installation).
+However the SSH service is configred to not accept empty passwords.
+So in order to login via SSH, you need to pre-load your SSH key into the authorized_keys file of either the root user or the `nixos` user.
+The first step is to download the bootable SD card image from the Hydra build system, see [this nixos.wiki entry](https://nixos.wiki/wiki/NixOS_on_ARM#Installation).
 
 **Pre-load an SSH key into the image**
-
-In this option, the bootable SD card image is modified to pre-load the SSH key into the `authorized_keys` file of the nixos user.
 
 1. Use `nix run nixpkgs#parted parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
 2. Mount the image file into a local directory by running
@@ -144,13 +140,6 @@ sudo chmod 600 img/home/nixos/authorized_keys
 
 5. Unmount the image via `sudo umount img`
 6. Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager and write the image to the SD card.
-
-**Copying the key after first boot**
-
-1. Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager and write the image to the SD card.
-2. Boot the Raspberry Pi using the SD card.
-3. Generate an SSH key if you haven't alread using the `ssh-keygen` tool.
-4. Copy the SSH to the target machine using `ssh-copy-id -i ~/.ssh/name-of-the-key target-ip`
 
 **After first boot**
 
@@ -178,7 +167,7 @@ services.openssh = {
 };
 ```
 
-4. Start from 2. in the [#nixos] section.
+4. Start from 2. in the [NixOs](#nixos) section.
 
 ## Useful links
 
