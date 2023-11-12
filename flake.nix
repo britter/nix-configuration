@@ -27,6 +27,7 @@
   }: {
     formatter = {
       x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.alejandra;
+      aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.alejandra;
       aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.alejandra;
     };
     nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
@@ -40,6 +41,21 @@
           home-manager.users.bene = {
             home.stateVersion = "23.05";
             imports = [./home.nix];
+          };
+        }
+      ];
+    };
+    nixosConfigurations.pi-hole = nixpkgs.lib.nixosSystem {
+      system = "aarch64-linux";
+      modules = [
+        ./hosts/pi-hole/configuration.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.nixos = {
+            home.stateVersion = "23.05";
+            imports = [./pi-home.nix];
           };
         }
       ];
