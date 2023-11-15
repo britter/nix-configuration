@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     exa # ls replacement
+    tokei # count lines of code
     tldr # better man pages
   ];
 
@@ -15,6 +16,7 @@
       "cat" = "bat";
       "ls" = "exa";
       "ll" = "exa -la";
+      "loc" = "tokei";
     };
 
     shellInit = ''
