@@ -1,10 +1,10 @@
 {pkgs, ...}: {
   imports = [
-    ./modules/gh
-    ./modules/git
-    ./modules/git/pi-hole-identity.nix
-    ./modules/gpg
-    ./modules/helix
-    ./modules/terminal
+    ./home/gh
+    ./home/git
+    ./home/git/pi-hole-identity.nix
+    ./home/gpg
+    ./home/helix
+    ./home/terminal
   ];
 }

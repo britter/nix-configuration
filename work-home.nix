@@ -1,14 +1,14 @@
 {pkgs, ...}: {
   imports = [
-    # ./modules/firefox
-    ./modules/gh
-    ./modules/git
-    ./modules/git/work-identity.nix
-    ./modules/gpg
-    ./modules/gradle
-    ./modules/helix
-    ./modules/java
-    ./modules/terminal
+    # ./home/firefox
+    ./home/gh
+    ./home/git
+    ./home/git/work-identity.nix
+    ./home/gpg
+    ./home/gradle
+    ./home/helix
+    ./home/java
+    ./home/terminal
   ];
 
   programs.gradle.enable = true;
