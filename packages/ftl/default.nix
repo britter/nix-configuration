@@ -1,4 +1,4 @@
-{ lib, stdenv, fetchFromGitHub, cmake }:
+{ lib, stdenv, fetchFromGitHub, cmake, readline, nettle, gmp, libidn }:
 
 stdenv.mkDerivation rec {
   pname = "ftl";
@@ -12,4 +12,13 @@ stdenv.mkDerivation rec {
   };
 
   nativeBuildInputs = [ cmake ];
+
+  buildInputs = [ libidn nettle readline ];
+
+  cmakeFlags = [
+    "-DLIBHOGWEED=${nettle}/lib"
+    "-DLIBNETTLE=${nettle}/lib"
+    "-DLIBGMP=${gmp}/lib"
+    "-DLIBIDN=${libidn}/bin"
+  ];
 }
