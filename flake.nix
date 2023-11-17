@@ -30,6 +30,7 @@
       aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.alejandra;
       aarch64-darwin = nixpkgs.legacyPackages.aarch64-darwin.alejandra;
     };
+    packages.x86_64-linux.ftl = nixpkgs.legacyPackages.x86_64-linux.callPackage ./packages/ftl { };
     nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
