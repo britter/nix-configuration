@@ -1,5 +1,7 @@
-{ stdenvNoCC, fetchFromGitHub }:
-
+{
+  stdenvNoCC,
+  fetchFromGitHub,
+}:
 stdenvNoCC.mkDerivation rec {
   pname = "gh-get";
   version = "1.0.0";
@@ -15,4 +17,3 @@ stdenvNoCC.mkDerivation rec {
     cp gh-get $out/bin
   '';
 }
-

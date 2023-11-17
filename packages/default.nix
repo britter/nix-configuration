@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-with pkgs;
-{
-  gh-get = callPackage ./gh-get { };
+{pkgs, ...}:
+with pkgs; {
+  gh-get = callPackage ./gh-get {};
 }
