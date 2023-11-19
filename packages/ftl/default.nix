@@ -1,5 +1,15 @@
-{ lib, stdenv, fetchFromGitHub, cmake, readline, nettle, gmp, libidn }:
-
+{
+  lib,
+  stdenv,
+  fetchFromGitHub,
+  cmake,
+  gnum4,
+  unixtools,
+  readline,
+  nettle,
+  gmp,
+  libidn,
+}:
 stdenv.mkDerivation rec {
   pname = "ftl";
   version = "5.23";
@@ -11,14 +21,7 @@ stdenv.mkDerivation rec {
     hash = "sha256-kMOGf6Qsayhr7uuFp9cGqJFubpFwlhJjVxEdpC1mO/M=";
   };
 
-  nativeBuildInputs = [ cmake ];
+  nativeBuildInputs = [cmake gnum4 unixtools.xxd];
 
-  buildInputs = [ libidn nettle readline ];
-
-  cmakeFlags = [
-    "-DLIBHOGWEED=${nettle}/lib"
-    "-DLIBNETTLE=${nettle}/lib"
-    "-DLIBGMP=${gmp}/lib"
-    "-DLIBIDN=${libidn}/bin"
-  ];
+  buildInputs = [readline libidn nettle];
 }
