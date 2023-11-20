@@ -23,5 +23,5 @@ stdenv.mkDerivation rec {
 
   nativeBuildInputs = [cmake gnum4 unixtools.xxd];
 
-  buildInputs = [readline libidn nettle];
+  buildInputs = [gmp libidn nettle readline];
 }
