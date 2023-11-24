@@ -9,6 +9,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
+    ../../modules/nix
   ];
 
   # Bootloader.
@@ -43,8 +44,6 @@
     LC_TELEPHONE = "de_DE.UTF-8";
     LC_TIME = "de_DE.UTF-8";
   };
-
-  nix.settings.experimental-features = ["nix-command" "flakes"];
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
