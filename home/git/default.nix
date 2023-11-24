@@ -1,4 +1,6 @@
 {pkgs, ...}: {
+  home.packages = [pkgs.git-absorb];
+
   programs.git = {
     enable = true;
 
