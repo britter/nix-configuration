@@ -11,7 +11,11 @@
     ./home/terminal
   ];
 
-  home.packages = [pkgs.fractal-next];
+  # software not available as Home Manager module
+  home.packages = with pkgs; [
+    jetbrains.idea-community
+    fractal-next
+  ];
 
   programs.gradle = {
     enable = true;

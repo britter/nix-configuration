@@ -98,7 +98,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     blackbox-terminal
-    jetbrains.idea-community
     xsel # Access to X server clipboard, required for helix clipboard integration
   ];
 
