@@ -11,6 +11,8 @@
     ./home/terminal
   ];
 
+  home.packages = [pkgs.fractal-next];
+
   programs.gradle = {
     enable = true;
     additionalJavaPackages = [pkgs.jdk8];
