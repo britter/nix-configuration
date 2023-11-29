@@ -95,14 +95,12 @@
     ];
 
   # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
-    blackbox-terminal
     xsel # Access to X server clipboard, required for helix clipboard integration
   ];
 
   fonts.fonts = with pkgs; [
-    (nerdfonts.override {fonts = ["FiraCode" "Hack"];})
+    (nerdfonts.override {fonts = ["FiraCode"];})
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
