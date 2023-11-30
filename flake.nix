@@ -2,12 +2,12 @@
   description = "A flake for managing my machines";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     # unstable is required to get the latest packages
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-23.05";
+      url = "github:nix-community/home-manager/release-23.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -20,7 +20,6 @@
   outputs = {
     self,
     nixpkgs,
-    nixpkgs-unstable,
     home-manager,
     nix-darwin,
     ...
@@ -71,16 +70,6 @@
           home-manager.users.bene = {
             home.stateVersion = "23.05";
             imports = [./work-home.nix];
-            # TODO: once JDK packages become available in stable (e.g. 23.11), move this to work-home.nix
-            home.sessionVariables = let
-              unstable = nixpkgs-unstable.legacyPackages."aarch64-darwin";
-            in {
-              JDK8 = unstable.jdk8;
-              JDK11 = unstable.jdk11;
-              JDK17 = unstable.jdk17;
-              JDK20 = unstable.jdk20;
-              JDK21 = unstable.jdk21;
-            };
           };
         }
       ];

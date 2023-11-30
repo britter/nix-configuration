@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
-    exa # ls replacement
+    eza # ls replacement
     mob # smooth git handover
     tokei # count lines of code
     tldr # better man pages
@@ -15,8 +15,8 @@
       "...." = "cd ../../..";
       "....." = "cd ../../../..";
       "cat" = "bat";
-      "ls" = "exa";
-      "ll" = "exa -la";
+      "ls" = "eza";
+      "ll" = "eza -la";
       "loc" = "tokei";
     };
 
