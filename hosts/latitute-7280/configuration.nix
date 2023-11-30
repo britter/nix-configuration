@@ -99,7 +99,7 @@
     xsel # Access to X server clipboard, required for helix clipboard integration
   ];
 
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     (nerdfonts.override {fonts = ["FiraCode"];})
   ];
 
