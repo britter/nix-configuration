@@ -194,6 +194,8 @@ services.openssh = {
   - https://github.com/jhol/dots
   - https://github.com/genebean/dots
   - https://github.com/icecreammatt/nixfiles
+  - https://github.com/katexochen/nixos
+  - https://github.com/msanft/nixos-conf
 
 ### Tools
 
