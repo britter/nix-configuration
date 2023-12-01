@@ -11,6 +11,7 @@
 
 ## After Next
 - Revisit tmux copy-mode
+- Look into [Solaar](https://pwr-solaar.github.io/Solaar/) for managing Logi Mouse
 - Look into stylix for theming
 - [statix linter](https://git.peppe.rs/languages/statix)
 - [Pre-commit-hooks.nix](https://github.com/cachix/pre-commit-hooks.nix)
