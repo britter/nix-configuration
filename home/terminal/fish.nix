@@ -1,10 +1,11 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     eza # ls replacement
-    mob # smooth git handover
     tokei # count lines of code
-    tldr # better man pages
   ];
+
+  programs.starship.enable = true; # prompt framework
+  programs.bat.enable = true; # cat replacement
 
   programs.fish = {
     enable = true;
@@ -26,9 +27,4 @@
       set -x GPG_TTY (tty)
     '';
   };
-
-  programs.starship.enable = true; # prompt framework
-  programs.bat.enable = true; # cat replacement
-  programs.fzf.enable = true; # fuzzy finding
-  programs.zoxide.enable = true; # smart cd replacement
 }

@@ -3,5 +3,6 @@
     ./alacritty.nix
     ./fish.nix
     ./tmux.nix
+    ./tools.nix
   ];
 }
