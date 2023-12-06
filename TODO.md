@@ -1,7 +1,6 @@
 # TODO
 
 ## Next
-- Manage 1password via home-manager
 - Install [alacritty catpuccin](https://github.com/catppuccin/alacritty) theme using nix
 - GNOME:
   - Add useful extensions, e.g. auto dark mode switcher
