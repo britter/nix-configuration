@@ -6,7 +6,6 @@
     httpie
     jq
     mob # smooth git handover
-    tar
     tokei # count lines of code
     tldr # better man pages
     unzip
