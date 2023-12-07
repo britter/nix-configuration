@@ -9,11 +9,12 @@
 - Figure out whether more of Firefox configuration can be declared via nix
   - bookmarks from bookmark menu
   - disable Mozilla data collection
+  - See https://discourse.nixos.org/t/help-setting-up-firefox-with-home-manager/23333
 
 ## After Next
 - Revisit tmux copy-mode
 - Rename user on pi-hole to bene, to be able to share more config
-- Extract more common code from nixos machines into modules
+- Extract more common code from nixos machines into modules, see https://hoverbear.org/blog/declarative-gnome-configuration-in-nixos/
 - Move setting up home-manager into host configuration files
 
 ## After after Next
