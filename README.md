@@ -32,7 +32,7 @@ Note that the `<package>` and `<args>` need to be separated by `--`
 From URL:
 
 ```shell
-nix run nixpkgs#nix-prefetch-url <url>
+nix run nixpkgs#nix-prefetch fetchurl --url <url>
 ```
 
 From git/GitHub:

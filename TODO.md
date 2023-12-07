@@ -1,7 +1,6 @@
 # TODO
 
 ## Next
-- Install [alacritty catpuccin](https://github.com/catppuccin/alacritty) theme using nix
 - GNOME:
   - Add useful extensions, e.g. auto dark mode switcher
   - Remove GNOME software I don't need
