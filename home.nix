@@ -1,6 +1,6 @@
 {pkgs, ...}: {
   imports = [
-    ./home/firefox
+    ./home/desktop
     ./home/gh
     ./home/git
     ./home/git/private-identity.nix
@@ -9,12 +9,6 @@
     ./home/helix
     ./home/java
     ./home/terminal
-  ];
-
-  # software not available as Home Manager module
-  home.packages = with pkgs; [
-    jetbrains.idea-community
-    fractal-next
   ];
 
   programs.gradle = {

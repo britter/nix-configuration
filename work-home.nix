@@ -1,6 +1,5 @@
 {pkgs, ...}: {
   imports = [
-    # ./home/firefox
     ./home/gh
     ./home/git
     ./home/git/work-identity.nix
