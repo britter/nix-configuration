@@ -1,9 +1,6 @@
 # TODO
 
 ## Next
-- GNOME:
-  - Add useful extensions, e.g. auto dark mode switcher
-  - Remove GNOME software I don't need
 - Figure out whether more of Firefox configuration can be declared via nix
   - bookmarks from bookmark menu
   - disable Mozilla data collection
