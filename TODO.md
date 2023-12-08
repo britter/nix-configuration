@@ -4,15 +4,18 @@
 - GNOME:
   - Add useful extensions, e.g. auto dark mode switcher
   - Remove GNOME software I don't need
-- Configure gpg to trust my own keys? Check the git log with --show-signatures and it will say the key is not trusted.
 - Figure out whether more of Firefox configuration can be declared via nix
   - bookmarks from bookmark menu
   - disable Mozilla data collection
   - See https://discourse.nixos.org/t/help-setting-up-firefox-with-home-manager/23333
+- Setup Reaper and Ultraschall
+- Configure gpg to trust my own keys? Check the git log with --show-signatures and it will say the key is not trusted.
 
 ## After Next
 - Revisit tmux copy-mode
 - Rename user on pi-hole to bene, to be able to share more config
+  - How to set the password?
+  - Set SSH public key for login
 - Extract more common code from nixos machines into modules, see https://hoverbear.org/blog/declarative-gnome-configuration-in-nixos/
 - Move setting up home-manager into host configuration files
 
