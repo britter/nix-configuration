@@ -15,6 +15,8 @@
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nur.url = "github:nix-community/NUR";
   };
 
   outputs = {
@@ -22,6 +24,7 @@
     nixpkgs,
     home-manager,
     nix-darwin,
+    nur,
     ...
   }: {
     formatter = {
@@ -32,6 +35,7 @@
     nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
+        {nixpkgs.overlays = [nur.overlay];}
         ./hosts/latitute-7280/configuration.nix
         home-manager.nixosModules.home-manager
         {

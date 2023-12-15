@@ -113,6 +113,7 @@
   nixpkgs.config.allowUnfreePredicate = pkg:
     builtins.elem (lib.getName pkg) [
       "1password"
+      "onepassword-password-manager" # required to install the Firefox extension via home-manager in ./home/firefox/default.nix
       "steam"
       "steam-original"
       "steam-run"
