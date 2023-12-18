@@ -102,17 +102,21 @@
     shell = pkgs.fish;
   };
 
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      "1password"
-    ];
-
   fonts.packages = with pkgs; [
     (nerdfonts.override {fonts = ["FiraCode"];})
   ];
 
-  programs.fish.enable = true;
   programs._1password-gui.enable = true;
+  programs.fish.enable = true;
+  programs.steam.enable = true;
+
+  nixpkgs.config.allowUnfreePredicate = pkg:
+    builtins.elem (lib.getName pkg) [
+      "1password"
+      "steam"
+      "steam-original"
+      "steam-run"
+    ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
