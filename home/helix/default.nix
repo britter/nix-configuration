@@ -4,15 +4,9 @@
     taplo # TOML lsp
   ];
 
-  home.sessionVariables = {
-    # See below, this can be replaces with programs.helix.defaultEditor in the next home-manager release
-    EDITOR = "hx";
-  };
-
   programs.helix = {
     enable = true;
-    # defaultEditor is a setting in home-manager master. Comment out once updated to next home-manager release
-    # defaultEditor = true;
+    defaultEditor = true;
     settings = {
       theme = "catppuccin_macchiato";
       editor.file-picker = {
