@@ -1,12 +1,11 @@
 {pkgs, ...}: {
-  home.packages = with pkgs; [
-    nil # Nix lsp
-    taplo # TOML lsp
-  ];
-
   programs.helix = {
     enable = true;
     defaultEditor = true;
+    extraPackages = with pkgs; [
+      nil # Nix lsp
+      taplo # TOML lsp
+    ];
     settings = {
       theme = "catppuccin_macchiato";
       editor.file-picker = {
