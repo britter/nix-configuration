@@ -7,7 +7,11 @@ with pkgs; rec {
     baresip = studio-link-baresip;
     libre = studio-link-libre;
   };
-  studio-link-baresip = callPackage ./studio-link-baresip {libre = studio-link-libre;};
+  studio-link-baresip = callPackage ./studio-link-baresip {
+    libre = studio-link-libre;
+    librem = studio-link-librem;
+  };
   studio-link-libre = callPackage ./studio-link-libre {};
+  studio-link-librem = callPackage ./studio-link-librem {libre = studio-link-libre;};
   vst-sdk = callPackage ./vst-sdk {};
 }
