@@ -33,6 +33,11 @@
     rev = "v21.07.0-stable";
     sha256 = "sha256-BjMZQDweQMM2TZuYoAGWE9eC/Vy8UnwDkkieY9TKpyg=";
   };
+  # See https://github.com/Studio-Link/app/blob/v21.07.0-stable/dist/lib/functions.sh#L37-L43
+  studio-link-webui = fetchzip {
+    url = "https://download.studio.link/devel/v21.xx.x/v21.12.0-beta-3bb3eaf/webui.zip";
+    sha256 = "sha256-7SkMQ8WM7vgFuiKS8+BFat4M/a9VNrWQKLMynKE4sEU=";
+  };
 in
   stdenv.mkDerivation rec {
     pname = "baresip-studio-link";
@@ -47,11 +52,14 @@ in
       rm -rf $sourceRoot/modules/g722
       ln -s ${studio-link-app}/src/modules/g722 $sourceRoot/modules/g722
       ln -s ${studio-link-app}/src/modules/slogging $sourceRoot/modules/slogging
-      ln -s ${studio-link-app}/src/modules/webapp $sourceRoot/modules/webapp
       ln -s ${studio-link-app}/src/modules/effect $sourceRoot/modules/effect
       ln -s ${studio-link-app}/src/modules/effectonair $sourceRoot/modules/effectonair
       ln -s ${studio-link-app}/src/modules/apponair $sourceRoot/modules/apponair
       ln -s ${studio-link-app}/src/modules/slaudio $sourceRoot/modules/slaudio
+
+      mkdir -p $sourceRoot/modules/webapp/assets
+      cp -r ${studio-link-app}/src/modules/webapp/* $sourceRoot/modules/webapp/
+      cp ${studio-link-webui}/headers/* $sourceRoot/modules/webapp/assets/
     '';
 
     # Patches are defined here: https://github.com/Studio-Link/app/blob/v21.07.0-stable/dist/lib/functions.sh#L110-L115
@@ -168,7 +176,8 @@ in
       ++ lib.optional (stdenv.cc.libc != null) "SYSROOT=${stdenv.cc.libc}";
 
     # -DSLPLUGIN coming from https://github.com/Studio-Link/app/blob/v21.07.0-stable/dist/build.sh#L124C40-L124C50
-    NIX_CFLAGS_COMPILE = ''      -I${librem}/include/rem -I${gsm}/include/gsm
+    # Include of webapp coming from https://github.com/Studio-Link/app/blob/v21.07.0-stable/dist/lib/functions.sh#L136
+    NIX_CFLAGS_COMPILE = ''      -I${librem}/include/rem -I${gsm}/include/gsm -I${studio-link-app}/src/modules/webapp
          -DHAVE_INTTYPES_H -D__GLIBC__
          -D__need_timeval -D__need_timespec -D__need_time_t
          -DSLPLUGIN'';
