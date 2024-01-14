@@ -26,6 +26,7 @@
   libuuid,
   libvpx,
   opus,
+  flac,
 }: let
   studio-link-app = fetchFromGitHub {
     owner = "Studio-Link";
@@ -114,6 +115,7 @@ in
         libuuid
         libvpx
         opus
+        flac
       ]
       ++ (with gst_all_1; [gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good]);
 
