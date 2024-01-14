@@ -25,6 +25,7 @@
   spandsp3,
   libuuid,
   libvpx,
+  opus,
 }: let
   studio-link-app = fetchFromGitHub {
     owner = "Studio-Link";
@@ -104,6 +105,7 @@ in
         spandsp3
         libuuid
         libvpx
+        opus
       ]
       ++ (with gst_all_1; [gstreamer gst-libav gst-plugins-base gst-plugins-bad gst-plugins-good]);
 
