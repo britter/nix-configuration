@@ -3,6 +3,7 @@ with pkgs; rec {
   gh-get = callPackage ./gh-get {};
   groovy-language-server = callPackage ./groovy-language-server {};
   opus = callPackage ./opus {};
+  overlay-onair-lv2 = callPackage ./overlay-onair-lv2 {};
   overlay-vst = callPackage ./overlay-vst {
     inherit vst-sdk opus;
     baresip = studio-link-baresip;
