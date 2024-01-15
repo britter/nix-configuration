@@ -2,7 +2,6 @@
   lib,
   stdenv,
   fetchzip,
-  fetchpatch,
   fetchFromGitHub,
   zlib,
   openssl,
@@ -118,6 +117,8 @@ in
 
         # https://github.com/Studio-Link/app/blob/v21.07.0-stable/dist/build.sh#L122
         "STATIC=1"
+        # https://github.com/Studio-Link/app/blob/v21.07.0-stable/dist/build.sh#L125
+        "libbaresip.a"
       ]
       ++ lib.optional (stdenv.cc.cc != null) "SYSROOT_ALT=${stdenv.cc.cc}"
       ++ lib.optional (stdenv.cc.libc != null) "SYSROOT=${stdenv.cc.libc}";
@@ -139,5 +140,8 @@ in
     postInstall = ''
       mkdir -p $out/include
       cp include/* $out/include/
+
+      mkdir -p $out/lib
+      cp libbaresip.a $out/lib
     '';
   })
