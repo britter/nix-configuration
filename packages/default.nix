@@ -4,7 +4,7 @@ with pkgs; rec {
   groovy-language-server = callPackage ./groovy-language-server {};
   opus = callPackage ./opus {};
   overlay-vst = callPackage ./overlay-vst {
-    inherit vst-sdk;
+    inherit vst-sdk opus;
     baresip = studio-link-baresip;
     libre = studio-link-libre;
   };
