@@ -65,30 +65,12 @@ in
 
     # Patches are defined here: https://github.com/Studio-Link/app/blob/v21.07.0-stable/dist/lib/functions.sh#L110-L115
     patches = [
-      (fetchpatch {
-        url = "https://raw.githubusercontent.com/Studio-Link/app/v21.07.0-stable/dist/patches/config.patch";
-        sha256 = "sha256-LglXSFUaIXO9oVEcP+Aigsm9FRhblugvSbasPY2Tdxg=";
-      })
-      (fetchpatch {
-        url = "https://raw.githubusercontent.com/Studio-Link/app/v21.07.0-stable/dist/patches/fix_check_telev_and_pthread.patch";
-        sha256 = "sha256-TWCgtU/GzetFiXp3eoIeSjL6k98D4rzQB1T0cyUGeyk=";
-      })
-      (fetchpatch {
-        url = "https://raw.githubusercontent.com/Studio-Link/app/v21.07.0-stable/dist/patches/dtls_aes256.patch";
-        sha256 = "sha256-INoTmo+g0VKee/fn/1gpwJ+WPQZKluQrDlL+zJaMU/w=";
-      })
-      (fetchpatch {
-        url = "https://raw.githubusercontent.com/Studio-Link/app/v21.07.0-stable/dist/patches/rtcp_mux_softphone.patch";
-        sha256 = "sha256-2XYladSo9ol0vCj5+wAPOGeSBk1sOtfCRezdWU2JOC4=";
-      })
-      (fetchpatch {
-        url = "https://raw.githubusercontent.com/Studio-Link/app/v21.07.0-stable/dist/patches/fallback_dns.patch";
-        sha256 = "sha256-awZ8UZb9Atbl+jBCAYZMqJpAFXa4B4beJ1GS6WtBR1A=";
-      })
-      (fetchpatch {
-        url = "https://raw.githubusercontent.com/Studio-Link/app/v21.07.0-stable/dist/patches/baresip_audio_rtp_discard.patch";
-        sha256 = "sha256-wflUqVm+fuisqSC9fMT/rv1p6usnxJT+ORzSoYwRZtE=";
-      })
+      "${studio-link-app}/dist/patches/config.patch"
+      "${studio-link-app}/dist/patches/fix_check_telev_and_pthread.patch"
+      "${studio-link-app}/dist/patches/dtls_aes256.patch"
+      "${studio-link-app}/dist/patches/rtcp_mux_softphone.patch"
+      "${studio-link-app}/dist/patches/fallback_dns.patch"
+      "${studio-link-app}/dist/patches/baresip_audio_rtp_discard.patch"
     ];
 
     nativeBuildInputs = [pkg-config];
