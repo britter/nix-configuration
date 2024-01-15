@@ -1,14 +1,13 @@
 {
   baresip,
   libre,
-  librem,
   stdenv,
   fetchFromGitHub,
   vst-sdk,
   openssl,
   opus,
 }:
-stdenv.mkDerivation rec {
+stdenv.mkDerivation {
   pname = "studio-link-plugin";
   version = "latest";
   src = fetchFromGitHub {
@@ -19,21 +18,24 @@ stdenv.mkDerivation rec {
   };
 
   postPatch = ''
-    ls -la
     rm Makefile
     mv Makefile.linux Makefile
     substituteInPlace Makefile \
       --replace "vstsdk2.4" "${vst-sdk}/include" \
       --replace "../baresip/libbaresip.a" "${baresip}/lib/libbaresip.a" \
       --replace "../re/libre.a" "${libre}/lib/libre.a" \
-      --replace "../rem/librem.a" "${librem}/lib/librem.a"
+      --replace "../rem/librem.a" ""
   '';
 
   buildInputs = [
     baresip
     libre
-    librem
     openssl
     opus
   ];
+
+  installPhase = ''
+    mkdir -p $out/lib
+    cp studio-link.so $out/lib/
+  '';
 }
