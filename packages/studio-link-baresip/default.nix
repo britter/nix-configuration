@@ -40,11 +40,11 @@
     sha256 = "sha256-7SkMQ8WM7vgFuiKS8+BFat4M/a9VNrWQKLMynKE4sEU=";
   };
 in
-  stdenv.mkDerivation rec {
+  stdenv.mkDerivation (finalAttrs: {
     pname = "baresip-studio-link";
     version = "1.0.0";
     src = fetchzip {
-      url = "https://github.com/baresip/baresip/archive/v${version}.tar.gz";
+      url = "https://github.com/baresip/baresip/archive/v${finalAttrs.version}.tar.gz";
       sha256 = "sha256-HCnLidhuLP1QzFJ93jTk/+N86S+qZKnvtFHUAyUXPRM=";
     };
 
@@ -158,4 +158,4 @@ in
       mkdir -p $out/include
       cp include/* $out/include/
     '';
-  }
+  })
