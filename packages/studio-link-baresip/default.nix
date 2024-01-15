@@ -142,10 +142,17 @@ in
 
     # -DSLPLUGIN coming from https://github.com/Studio-Link/app/blob/v21.07.0-stable/dist/build.sh#L124C40-L124C50
     # Include of webapp coming from https://github.com/Studio-Link/app/blob/v21.07.0-stable/dist/lib/functions.sh#L136
-    NIX_CFLAGS_COMPILE = ''      -I${librem}/include/rem -I${gsm}/include/gsm -I${studio-link-app}/src/modules/webapp
-         -DHAVE_INTTYPES_H -D__GLIBC__
-         -D__need_timeval -D__need_timespec -D__need_time_t
-         -DSLPLUGIN'';
+    NIX_CFLAGS_COMPILE = ''
+      -I${librem}/include/rem
+      -I${gsm}/include/gsm
+      -I${studio-link-app}/src/modules/webapp
+      -DHAVE_INTTYPES_H
+      -D__GLIBC__
+      -D__need_timeval
+      -D__need_timespec
+      -D__need_time_t
+      -DSLPLUGIN
+    '';
 
     postInstall = ''
       mkdir -p $out/include
