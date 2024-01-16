@@ -3,6 +3,7 @@
     ../gnome
     ../firefox
     ../alacritty
+    ../vscode
   ];
 
   # software not available as Home Manager module
