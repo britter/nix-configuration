@@ -6,111 +6,119 @@
 }:
 with lib; let
   cfg = config.programs.gradle;
-in {
-  options.programs.gradle = {
-    enable = mkOption {
-      type = types.bool;
-      default = false;
-    };
-    package = mkOption {
-      type = types.package;
-      default = pkgs.gradle;
-      defaultText = literalExpression "pkgs.gradle";
-      example = "pkgs.gradle_7";
-      description = ''
-        The package to use for gradle.
-      '';
-    };
-    javaPackage = mkOption {
-      type = types.nullOr types.package;
-      default = null;
-      example = "pkgs.jdk17";
-      description = ''
-        The Java package to use for running Gradle.
+  defaultHomeDirectory = ".gradle";
+  settingsFormat = pkgs.formats.javaProperties {};
 
-        The default is not to use a dedicated Java package.
-        Instead programs.java.enable = true will be configured which
-        will result in JAVA_HOME being configured to that location.
-        Gradle will then pick up that Java package.
-
-        If a value is configured for this option it will be passed to
-        Gradle by setting the org.gradle.java.home property in
-        ~/.gradle/gradle.properties.
-      '';
-    };
-    additionalJavaPackages = mkOption {
-      type = types.listOf types.package;
-      default = [];
-      example = "[ pkgs.jdk8 pkgs.jdk11 ]";
-      description = ''
-        Additional Java packages to make available to Gradle's Java toolchain infrastructure.
-        The configured packages will be made available by setting the org.gradle.java.installations.paths
-        property in ~/.gradle/gradle.properties.
-      '';
-    };
-    gradleProperties = mkOption {
-      type = types.attrsOf types.str;
-      default = {};
-      example = {
-        "org.gradle.caching" = "true";
-        "org.gradle.parallel" = "true";
-        "org.gradle.jvmargs" = "-XX:MaxMetaspaceSize=384m";
-      };
-      description = ''
-        Key value pairs to write to ~/.gradle/gradle.properties.
-      '';
-    };
-    initScripts = mkOption {
-      type = types.attrsOf types.str;
-      default = {};
-      example = {
-        "maven-local.init.gradle" = ''
-          allProject {
-            repositories {
-              mavenLocal()
-            }
-          }
+  initScript = types.submodule ({
+    name,
+    config,
+    ...
+  }: {
+    options = {
+      text = mkOption {
+        type = types.nullOr types.lines;
+        default = null;
+        description = ''
+          Text of the init script file. if this option is null
+          then `source` must be set.
         '';
       };
-      description = ''
-        Init script file names to init script file contents.
-        The scripts will be linked in to the ~/.gradle/init.d directory.
 
-        For more information including init script naming conventions
+      source = mkOption {
+        type = types.path;
+        description = ''
+          Path of the init script file. If
+          `text` is non-null then this option will automatically point
+          to a file containing that text.
+        '';
+      };
+    };
+
+    config.source = mkIf (config.text != null) (mkDefault (pkgs.writeTextFile {
+      inherit (config) text;
+      name = hm.strings.storeFileName name;
+    }));
+  });
+in {
+  meta.maintainers = [
+    # maintainers.britter
+  ];
+
+  options.programs.gradle = {
+    enable = mkEnableOption "Gradle Build Tool";
+
+    home = mkOption {
+      type = types.str;
+      default = defaultHomeDirectory;
+      description = ''
+        The Gradle home directory, relative to [](#opt-home.homeDirectory).
+
+        If set, the {env}`GRADLE_USER_HOME` environment variable will be
+        set accordingly. Defaults to {file}`.gradle`.
+      '';
+    };
+
+    package = mkPackageOption pkgs "gradle" {example = "pkgs.gradle_7";};
+
+    settings = mkOption {
+      type = types.submodule {freeformType = settingsFormat.type;};
+      default = {};
+      example = literalExpression ''
+        {
+          "org.gradle.caching" = true;
+          "org.gradle.parallel" = true;
+          "org.gradle.jvmargs" = "-XX:MaxMetaspaceSize=384m";
+          "org.gradle.home" = pkgs.jdk17;
+        };
+      '';
+      description = ''
+        Key value pairs to write to {file}`gradle.properties` in the Gradle
+        home directory.
+      '';
+    };
+
+    initScripts = mkOption {
+      type = with types; attrsOf initScript;
+      default = {};
+      example = literalExpression ''
+        {
+          "maven-local.gradle".text = '''
+              allProject {
+                repositories {
+                  mavenLocal()
+                }
+              }
+          ''';
+          "another.init.gradle.kts".source = ./another.init.gradle.kts;
+        }
+      '';
+      description = ''
+        Definition of init scripts to link into the Gradle home directory.
+
+        For more information about init scripts, including naming conventions
         see https://docs.gradle.org/current/userguide/init_scripts.html.
       '';
     };
   };
 
   config = let
-    properties =
-      concatStringsSep "\n"
-      (mapAttrsToList (n: v: "${n}=${v}") (
-        cfg.gradleProperties
-        // optionalAttrs (cfg.javaPackage != null) {
-          "org.gradle.java.home" = "${cfg.javaPackage}";
-        }
-        // optionalAttrs (length cfg.additionalJavaPackages > 0) {
-          "org.gradle.java.installations.paths" = concatStringsSep "," (map toString cfg.additionalJavaPackages);
-        }
-      ));
-    initScripts = pkgs.symlinkJoin {
-      name = "gradle-init-scripts";
-      paths = mapAttrsToList (name: content: pkgs.writeTextDir "init.d/${name}" content) cfg.initScripts;
-    };
+    gradleHome = "${config.home.homeDirectory}/${cfg.home}";
   in
-    mkIf cfg.enable (
-      mkMerge [
-        {
-          home.packages = [cfg.package];
-          home.file.".gradle/init.d".source = "${initScripts}/init.d";
-        }
-        (mkIf (stringLength properties > 0) {
-          home.file.".gradle/gradle.properties".text = properties;
-        })
-        (mkIf (cfg.javaPackage == null) {
-          programs.java.enable = true;
-        })
-      ]
-    );
+    mkIf cfg.enable {
+      home.packages = [cfg.package];
+
+      home.file = mkMerge ([
+          {
+            "${cfg.home}/gradle.properties" = mkIf (cfg.settings != {}) {
+              source = settingsFormat.generate "gradle.properties" cfg.settings;
+            };
+          }
+        ]
+        ++ mapAttrsToList (k: v: {"${cfg.home}/init.d/${k}".source = v.source;})
+        cfg.initScripts);
+
+      home.sessionVariables = mkIf (cfg.home != defaultHomeDirectory) {
+        GRADLE_USER_HOME = gradleHome;
+      };
+    };
 }

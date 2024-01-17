@@ -13,6 +13,8 @@
 
   programs.gradle = {
     enable = true;
-    additionalJavaPackages = [pkgs.jdk8];
+    settings = {
+      "org.gradle.java.installations.paths" = "${pkgs.jdk8}";
+    };
   };
 }
