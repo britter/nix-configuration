@@ -1,10 +1,6 @@
 # TODO
 
 ## Next
-- Figure out whether more of Firefox configuration can be declared via nix
-  - bookmarks from bookmark menu
-  - disable Mozilla data collection
-  - See https://discourse.nixos.org/t/help-setting-up-firefox-with-home-manager/23333
 - Setup Reaper and Ultraschall
 - Configure gpg to trust my own keys? Check the git log with --show-signatures and it will say the key is not trusted.
 
