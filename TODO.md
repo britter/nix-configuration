@@ -2,7 +2,6 @@
 
 ## Next
 - Setup Reaper and Ultraschall
-- Configure gpg to trust my own keys? Check the git log with --show-signatures and it will say the key is not trusted.
 
 ## After Next
 - Revisit tmux copy-mode
