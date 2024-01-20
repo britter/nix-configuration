@@ -13,8 +13,12 @@ stdenv.mkDerivation (finalAttrs: {
     sha256 = "sha256-VyHmKoRXCJ0shVfUn6cX13b0fAXIQk0Z5NLZIfy8Gh4=";
   };
 
-  # https://github.com/Studio-Link/3rdparty/blob/v21.04.0/dist/build.sh#L163
-  configureFlags = ["--with-pic"];
+  configureFlags = [
+    # https://github.com/Studio-Link/3rdparty/blob/v21.04.0/dist/build.sh#L163
+    "--with-pic"
+    # required to output libopus.a used in overlay-onair-lv2
+    "--enable-static"
+  ];
 
   makeFlags =
     ["PREFIX=$(out)"]
