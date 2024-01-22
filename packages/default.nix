@@ -29,5 +29,6 @@ in
     };
     studio-link-libre = callPackage ./studio-link-libre {};
     studio-link-librem = callPackage ./studio-link-librem {libre = studio-link-libre;};
+    ultraschall-soundboard = callPackage ./ultraschall-soundboard {};
     vst-sdk = callPackage ./vst-sdk {};
   }
