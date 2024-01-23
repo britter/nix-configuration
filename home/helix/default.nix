@@ -3,6 +3,7 @@
     enable = true;
     defaultEditor = true;
     extraPackages = with pkgs; [
+      jdt-language-server # Eclipse JDT language server
       nil # Nix lsp
       taplo # TOML lsp
     ];

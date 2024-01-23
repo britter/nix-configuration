@@ -3,8 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
-    # unstable is required to get the latest packages
-    # nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    # master is required to get the latest packages
+    nixpkgs-master.url = "github:nixos/nixpkgs/master";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-23.11";
@@ -20,6 +20,7 @@
   outputs = {
     self,
     nixpkgs,
+    nixpkgs-master,
     home-manager,
     nix-darwin,
     ...
@@ -32,6 +33,13 @@
     nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
+        {
+          nixpkgs.overlays = [
+            (final: prev: {
+              jdt-language-server = nixpkgs-master.legacyPackages.x86_64-linux.jdt-language-server;
+            })
+          ];
+        }
         ./hosts/latitute-7280/configuration.nix
         home-manager.nixosModules.home-manager
         {
@@ -63,6 +71,13 @@
       system = "aarch64_darwin";
       modules = [
         ./hosts/work-macbook/configuration.nix
+        {
+          nixpkgs.overlays = [
+            (final: prev: {
+              jdt-language-server = nixpkgs-master.legacyPackages.aarch64_darwin.jdt-language-server;
+            })
+          ];
+        }
         home-manager.darwinModules.home-manager
         {
           home-manager.useGlobalPkgs = true;
