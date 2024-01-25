@@ -36,6 +36,11 @@
 
       ## Mac OS stuff
       ".DS_Store"
+
+      ## File created by jdtls used by helix
+      ".classpath"
+      ".project"
+      ".settings/"
     ];
 
     diff-so-fancy.enable = true;
