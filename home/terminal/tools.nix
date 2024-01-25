@@ -13,5 +13,6 @@
     zip
   ];
   programs.fzf.enable = true; # fuzzy finding
+  programs.ripgrep.enable = true; # recursive grep
   programs.zoxide.enable = true; # smart cd replacement
 }
