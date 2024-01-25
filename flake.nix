@@ -67,7 +67,7 @@
         }
       ];
     };
-    darwinConfigurations.work-macbook = nix-darwin.lib.darwinSystem {
+    darwinConfigurations.WQ0C6FWJ1W = nix-darwin.lib.darwinSystem {
       system = "aarch64_darwin";
       modules = [
         ./hosts/work-macbook/configuration.nix

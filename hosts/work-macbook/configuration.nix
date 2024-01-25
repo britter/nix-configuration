@@ -1,7 +1,8 @@
 {pkgs, ...}: {
   nix.settings.experimental-features = ["nix-command" "flakes"];
 
-  networking.hostName = "work-macbook";
+  # Host name has to equal serial number of the machine due to company device management
+  networking.hostName = "WQ0C6FWJ1W";
 
   users.users.bene = {
     name = "bene";
