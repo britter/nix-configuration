@@ -74,7 +74,7 @@
         {
           nixpkgs.overlays = [
             (final: prev: {
-              jdt-language-server = nixpkgs-master.legacyPackages.aarch64_darwin.jdt-language-server;
+              jdt-language-server = nixpkgs-master.legacyPackages.aarch64-darwin.jdt-language-server;
             })
           ];
         }
