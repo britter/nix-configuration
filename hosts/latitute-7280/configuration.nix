@@ -7,6 +7,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/nix
+    ../../modules/1password
   ];
 
   boot.loader.grub = {
@@ -97,13 +98,11 @@
     (nerdfonts.override {fonts = ["FiraCode"];})
   ];
 
-  programs._1password-gui.enable = true;
   programs.fish.enable = true;
   programs.steam.enable = true;
 
   nixpkgs.config.allowUnfreePredicate = pkg:
     builtins.elem (lib.getName pkg) [
-      "1password"
       "steam"
       "steam-original"
       "steam-run"
