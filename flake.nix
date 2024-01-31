@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
     # master is required to get the latest packages
-    nixpkgs-master.url = "github:nixos/nixpkgs/master";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-23.11";
@@ -20,7 +20,7 @@
   outputs = {
     self,
     nixpkgs,
-    nixpkgs-master,
+    nixpkgs-unstable,
     home-manager,
     nix-darwin,
     ...
@@ -36,7 +36,7 @@
         {
           nixpkgs.overlays = [
             (final: prev: {
-              jdt-language-server = nixpkgs-master.legacyPackages.x86_64-linux.jdt-language-server;
+              jdt-language-server = nixpkgs-unstable.legacyPackages.x86_64-linux.jdt-language-server;
             })
           ];
         }
@@ -74,7 +74,7 @@
         {
           nixpkgs.overlays = [
             (final: prev: {
-              jdt-language-server = nixpkgs-master.legacyPackages.aarch64-darwin.jdt-language-server;
+              jdt-language-server = nixpkgs-unstable.legacyPackages.aarch64-darwin.jdt-language-server;
             })
           ];
         }
