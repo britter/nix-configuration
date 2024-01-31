@@ -99,14 +99,6 @@
   ];
 
   programs.fish.enable = true;
-  programs.steam.enable = true;
-
-  nixpkgs.config.allowUnfreePredicate = pkg:
-    builtins.elem (lib.getName pkg) [
-      "steam"
-      "steam-original"
-      "steam-run"
-    ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
