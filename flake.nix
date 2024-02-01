@@ -32,6 +32,7 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in {
       formatter = pkgs.alejandra;
+      packages = import ./packages {inherit pkgs;};
     })
     // {
       nixosConfigurations.latitue-7280 = nixpkgs.lib.nixosSystem {
