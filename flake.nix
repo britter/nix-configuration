@@ -30,9 +30,15 @@
   }:
     flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
+      pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
     in {
       formatter = pkgs.alejandra;
       packages = import ./packages {inherit pkgs;};
+      overlays = [
+        (final: prev: {
+          jdt-language-server = pkgs-unstable.jdt-language-server;
+        })
+      ];
     })
     // {
       nixosConfigurations.latitue-7280 = let
@@ -42,11 +48,7 @@
           inherit system;
           modules = [
             {
-              nixpkgs.overlays = [
-                (final: prev: {
-                  jdt-language-server = nixpkgs-unstable.legacyPackages.${system}.jdt-language-server;
-                })
-              ];
+              nixpkgs.overlays = self.overlays.${system};
             }
             ./hosts/latitute-7280/configuration.nix
             home-manager.nixosModules.home-manager
@@ -66,6 +68,9 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
+            {
+              nixpkgs.overlays = self.overlays.${system};
+            }
             ./hosts/pi-hole/configuration.nix
             home-manager.nixosModules.home-manager
             {
@@ -84,14 +89,10 @@
         nix-darwin.lib.darwinSystem {
           inherit system;
           modules = [
-            ./hosts/work-macbook/configuration.nix
             {
-              nixpkgs.overlays = [
-                (final: prev: {
-                  jdt-language-server = nixpkgs-unstable.legacyPackages.${system}.jdt-language-server;
-                })
-              ];
+              nixpkgs.overlays = self.overlays.${system};
             }
+            ./hosts/work-macbook/configuration.nix
             home-manager.darwinModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
