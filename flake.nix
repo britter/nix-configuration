@@ -35,9 +35,11 @@
       formatter = pkgs.alejandra;
       packages = import ./packages {inherit pkgs;};
       overlays = [
-        (final: prev: {
-          jdt-language-server = pkgs-unstable.jdt-language-server;
-        })
+        (final: prev:
+          {
+            jdt-language-server = pkgs-unstable.jdt-language-server;
+          }
+          // self.outputs.packages.${system})
       ];
     })
     // {

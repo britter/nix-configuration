@@ -1,9 +1,7 @@
-{pkgs, ...}: let
-  mypkgs = import ../../packages {inherit pkgs;};
-in {
+{pkgs, ...}: {
   programs.gh = {
     enable = true;
 
-    extensions = [mypkgs.gh-get];
+    extensions = [pkgs.gh-get];
   };
 }
