@@ -39,6 +39,7 @@ From git/GitHub:
 
 ```shell
 nix run nixpkgs#nix-prefetch-git <url>
+nix run nixpkgs#nix-prefetch-github <owner> <repo>
 ```
 
 This will download the URL/git repository to the store and print the resulting hash.
