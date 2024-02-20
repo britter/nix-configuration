@@ -11,6 +11,7 @@ in {
     defaultEditor = true;
     extraPackages = with pkgs; [
       jdt-language-server # Eclipse JDT language server
+      kotlin-language-server
       nil # Nix lsp
       taplo # TOML lsp
     ];
