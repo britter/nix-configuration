@@ -1,7 +1,7 @@
 {pkgs, ...}: let
   nvim-treesitter = pkgs.fetchFromGitHub {
     owner = "nvim-treesitter";
-    repo = "nvm-treesitter";
+    repo = "nvim-treesitter";
     rev = "f75a5b4e144228e4b2ab3006ed167b6fe37d0b33";
     sha256 = "sha256-I5Dc80BgyCdnN3nMzCFEURsQL/gaudgJLfjH+HWpK+s=";
   };
