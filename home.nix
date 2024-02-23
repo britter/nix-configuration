@@ -14,7 +14,7 @@
   programs.gradle = {
     enable = true;
     settings = {
-      "org.gradle.java.installations.paths" = "${pkgs.jdk8}";
+      "org.gradle.java.installations.paths" = "${pkgs.jdk8},${pkgs.jdk11}";
     };
   };
 }
