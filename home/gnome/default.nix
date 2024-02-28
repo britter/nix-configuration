@@ -1,5 +1,9 @@
 {pkgs, ...}: {
   dconf.settings = {
+    # set right alt as compose key for composing special letters suchs as umlauts
+    "org/gnome/desktop/input-sources" = {
+      xkb-options = ["terminate:ctrl_alt_bksp" "lv3:ralt_switch" "compose:ralt"];
+    };
     "org/gnome/shell" = {
       favorite-apps = [
         "org.gnome.Calendar.desktop"
