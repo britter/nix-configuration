@@ -120,7 +120,7 @@ The first step is to download the bootable SD card image from the Hydra build sy
 
 **Pre-load an SSH key into the image**
 
-1. Use `nix run nixpkgs#parted parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
+1. Use `nix run nixpkgs#parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
 2. Mount the image file into a local directory by running
 
 ```shell
