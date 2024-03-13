@@ -65,7 +65,7 @@
             }
           ];
         };
-      nixosConfigurations.pi-hole = let
+      nixosConfigurations.raspberry-pi = let
         system = flake-utils.lib.system.aarch64-linux;
       in
         nixpkgs.lib.nixosSystem {
@@ -74,14 +74,14 @@
             {
               nixpkgs.overlays = self.overlays.${system};
             }
-            ./hosts/pi-hole/configuration.nix
+            ./hosts/raspberry-pi/configuration.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.nixos = {
                 home.stateVersion = "23.05";
-                imports = [./pi-home.nix];
+                imports = [./raspberry-pi-home.nix];
               };
             }
           ];
