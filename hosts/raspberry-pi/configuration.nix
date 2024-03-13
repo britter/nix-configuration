@@ -54,11 +54,19 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.nixos = {
-    isNormalUser = true;
-    extraGroups = ["wheel"]; # Enable ‘sudo’ for the user.
-    shell = pkgs.fish;
+  users.users = {
+    nixos = {
+      isNormalUser = true;
+      extraGroups = ["wheel"];
+      shell = pkgs.fish;
+      openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
+    };
+    bene = {
+      isNormalUser = true;
+      extraGroups = ["wheel"];
+      shell = pkgs.fish;
+      openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
+    };
   };
 
   # List packages installed in system profile. To search, run:
