@@ -1,13 +1,13 @@
 {pkgs, ...}: {
   imports = [
-    ./home/gh
-    ./home/git
-    ./home/git/work-identity.nix
-    ./home/gpg
-    ./home/gradle
-    ./home/helix
-    ./home/java
-    ./home/terminal
+    ./gh
+    ./git
+    ./git/work-identity.nix
+    ./gpg
+    ./gradle
+    ./helix
+    ./java
+    ./terminal
   ];
 
   home.sessionVariables = with pkgs; {

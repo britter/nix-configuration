@@ -1,14 +1,14 @@
 {pkgs, ...}: {
   imports = [
-    ./home/desktop
-    ./home/gh
-    ./home/git
-    ./home/git/private-identity.nix
-    ./home/gpg
-    ./home/gradle
-    ./home/helix
-    ./home/java
-    ./home/terminal
+    ./desktop
+    ./gh
+    ./git
+    ./git/private-identity.nix
+    ./gpg
+    ./gradle
+    ./helix
+    ./java
+    ./terminal
   ];
 
   programs.gradle = {

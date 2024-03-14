@@ -60,7 +60,7 @@
               home-manager.useUserPackages = true;
               home-manager.users.bene = {
                 home.stateVersion = "23.05";
-                imports = [./home.nix];
+                imports = [./home/latitue.nix];
               };
             }
           ];
@@ -81,7 +81,7 @@
               home-manager.useUserPackages = true;
               home-manager.users.nixos = {
                 home.stateVersion = "23.05";
-                imports = [./raspberry-pi-home.nix];
+                imports = [./home/raspberry-pi.nix];
               };
             }
           ];
@@ -102,7 +102,7 @@
               home-manager.useUserPackages = true;
               home-manager.users.bene = {
                 home.stateVersion = "23.05";
-                imports = [./work-home.nix];
+                imports = [./home/work-macbook.nix];
               };
             }
           ];
