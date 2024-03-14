@@ -33,19 +33,11 @@
   #   useXkbConfig = true; # use xkbOptions in tty.
   # };
 
-  users.users = {
-    nixos = {
-      isNormalUser = true;
-      extraGroups = ["wheel"];
-      shell = pkgs.fish;
-      openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
-    };
-    bene = {
-      isNormalUser = true;
-      extraGroups = ["wheel"];
-      shell = pkgs.fish;
-      openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
-    };
+  users.users.nixos = {
+    isNormalUser = true;
+    extraGroups = ["wheel"];
+    shell = pkgs.fish;
+    openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
   };
 
   environment.systemPackages = with pkgs; [
