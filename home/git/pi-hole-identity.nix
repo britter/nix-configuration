@@ -4,7 +4,7 @@
     userEmail = "beneritter@gmail.com";
     signing = {
       signByDefault = true;
-      key = "0xD4E542B865647985";
+      key = "92166C2B83447076";
     };
   };
 }
