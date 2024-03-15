@@ -104,12 +104,6 @@
           name = "oisd full";
           url = "https://abp.oisd.nl/";
         }
-        {
-          enabled = true;
-          id = 1617627879;
-          name = "ph00lt0's blocklist";
-          url = "https://raw.githubusercontent.com/ph00lt0/blocklists/master/blocklist.txt";
-        }
       ];
     };
   };
