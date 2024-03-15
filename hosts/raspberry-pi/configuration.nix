@@ -6,6 +6,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/nix
+    ../../modules/adguard
   ];
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
