@@ -19,7 +19,7 @@
   };
 
   networking = {
-    hostName = "latitue-7280";
+    hostName = "latitude-7280";
     networkmanager.enable = true;
   };
 

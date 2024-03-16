@@ -44,7 +44,7 @@
       ];
     })
     // {
-      nixosConfigurations.latitue-7280 = let
+      nixosConfigurations.latitude-7280 = let
         system = flake-utils.lib.system.x86_64-linux;
       in
         nixpkgs.lib.nixosSystem {
@@ -53,14 +53,14 @@
             {
               nixpkgs.overlays = self.overlays.${system};
             }
-            ./hosts/latitute-7280/configuration.nix
+            ./hosts/latitude-7280/configuration.nix
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.bene = {
                 home.stateVersion = "23.05";
-                imports = [./home/latitue.nix];
+                imports = [./home/latitude.nix];
               };
             }
           ];
