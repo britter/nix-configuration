@@ -10,6 +10,3 @@
 - Look into stylix for theming
 - [statix linter](https://git.peppe.rs/languages/statix)
 - [Pre-commit-hooks.nix](https://github.com/cachix/pre-commit-hooks.nix)
-
-## Later
-- Build my CV with [jsonresume-nix](https://discourse.nixos.org/t/jsonresume-nix-build-and-deploy-your-resume-with-nix/34089)
