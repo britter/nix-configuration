@@ -1,7 +1,6 @@
 # TODO
 
 ## After Next
-- Revisit tmux copy-mode
 - Extract more common code from nixos machines into modules, see https://hoverbear.org/blog/declarative-gnome-configuration-in-nixos/
 - Move setting up home-manager into host configuration files
 
