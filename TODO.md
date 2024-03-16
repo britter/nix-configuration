@@ -1,8 +1,5 @@
 # TODO
 
-## Next
-- Setup Reaper and Ultraschall
-
 ## After Next
 - Revisit tmux copy-mode
 - Extract more common code from nixos machines into modules, see https://hoverbear.org/blog/declarative-gnome-configuration-in-nixos/
