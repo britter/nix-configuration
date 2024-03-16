@@ -15,7 +15,4 @@
 - [Pre-commit-hooks.nix](https://github.com/cachix/pre-commit-hooks.nix)
 
 ## Later
-- Look into Hyprland as an alternative to GNOME
-- Look into disko for managing disk partitioning
-- Look into impermanence
 - Build my CV with [jsonresume-nix](https://discourse.nixos.org/t/jsonresume-nix-build-and-deploy-your-resume-with-nix/34089)
