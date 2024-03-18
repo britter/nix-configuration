@@ -1,9 +1,9 @@
 {pkgs, ...}: let
-  nvim-treesitter = pkgs.fetchFromGitHub {
-    owner = "nvim-treesitter";
-    repo = "nvim-treesitter";
-    rev = "f75a5b4e144228e4b2ab3006ed167b6fe37d0b33";
-    sha256 = "sha256-I5Dc80BgyCdnN3nMzCFEURsQL/gaudgJLfjH+HWpK+s=";
+  helix-unstable = pkgs.fetchFromGitHub {
+    owner = "helix-editor";
+    repo = "helix";
+    rev = "2e4653ea312dcb69d2453eccaa7c0f873cce6aa5";
+    sha256 = "sha256-MShFz1lc6eAEcJx4jk9TC571pDNHFJGkkUmmmaXmVtQ=";
   };
 in {
   programs.helix = {
@@ -43,5 +43,5 @@ in {
       ];
     };
   };
-  xdg.configFile."helix/runtime/queries/groovy".source = "${nvim-treesitter}/queries/groovy";
+  xdg.configFile."helix/runtime/queries/groovy".source = "${helix-unstable}/runtime/queries/groovy";
 }
