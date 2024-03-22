@@ -6,6 +6,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
+    ../../modules/commons-utilities
     ../../modules/nix
     ../../modules/gnome
     ../../modules/1password

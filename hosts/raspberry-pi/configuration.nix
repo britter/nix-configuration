@@ -5,6 +5,7 @@
 }: {
   imports = [
     ./hardware-configuration.nix
+    ../../modules/common-utilities
     ../../modules/nix
     ../../modules/adguard
   ];
@@ -40,10 +41,6 @@
     shell = pkgs.fish;
     openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
   };
-
-  environment.systemPackages = with pkgs; [
-    vim
-  ];
 
   programs.fish.enable = true;
 
