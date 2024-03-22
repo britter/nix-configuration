@@ -19,8 +19,4 @@
   };
 
   programs.gradle.enable = true;
-
-  home.packages = with pkgs; [
-    dive # docker image layer analyzser
-  ];
 }
