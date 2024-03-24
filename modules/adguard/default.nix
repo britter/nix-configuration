@@ -105,6 +105,25 @@
           url = "https://abp.oisd.nl/";
         }
       ];
+      filtering = {
+        # make 192.168.178.105 (this host) available via domain home.arpa
+        # home.arpa is a special purpose domain for local networks,
+        # see https://datatracker.ietf.org/doc/html/rfc8375
+        #
+        # For this to work is requires assigning 192.168.178.105 as a static
+        # IP in to this host in the router configuration.
+        filtering_enabled = true;
+        rewrites = [
+          {
+            domain = "home.arpa";
+            answer = "192.168.178.105";
+          }
+          {
+            domain = "*.home.arpa";
+            answer = "192.168.178.105";
+          }
+        ];
+      };
     };
   };
 }
