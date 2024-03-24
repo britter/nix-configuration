@@ -5,7 +5,7 @@
 }: {
   environment.systemPackages = with pkgs; [
     git
-    vim
+    helix
     nix-tree
   ];
 }
