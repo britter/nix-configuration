@@ -3,8 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
-    # master is required to get the latest packages
+    # unstable is required to get more up to date packages
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixos-hardware.url = "github:nixos/nixos-hardware/master";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-23.11";
@@ -23,6 +24,7 @@
     self,
     nixpkgs,
     nixpkgs-unstable,
+    nixos-hardware,
     home-manager,
     nix-darwin,
     flake-utils,
@@ -71,6 +73,7 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
+            nixos-hardware.nixosModules.raspberry-pi-4
             {
               nixpkgs.overlays = self.overlays.${system};
             }
