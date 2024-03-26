@@ -10,6 +10,7 @@
         "org.gnome.Nautilus.desktop"
         "firefox.desktop"
         "Alacritty.desktop"
+        "org.gnome.Fractal.desktop"
       ];
 
       disable-user-extensions = false;
