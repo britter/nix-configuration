@@ -52,6 +52,11 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
+            # Replace once https://github.com/NixOS/nixos-hardware/pull/900 is merged
+            # nixos-hardware.nixosModules.dell-latitude-7280
+            nixos-hardware.nixosModules.common-cpu-intel
+            nixos-hardware.nixosModules.common-pc-laptop
+            nixos-hardware.nixosModules.common-pc-ssd
             {
               nixpkgs.overlays = self.overlays.${system};
             }
