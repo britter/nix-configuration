@@ -5,7 +5,6 @@
   ];
 
   programs.starship.enable = true; # prompt framework
-  programs.bat.enable = true; # cat replacement
 
   programs.fish = {
     enable = true;
