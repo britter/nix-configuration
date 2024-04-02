@@ -16,7 +16,7 @@ in {
     themes = builtins.listToAttrs (
       map
       (style: {
-        name =  "Catppuccin ${style}";
+        name = "Catppuccin ${style}";
         value = {
           src = catppuccin;
           file = "themes/Catppuccin ${style}.tmTheme";
