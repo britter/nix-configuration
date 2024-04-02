@@ -1,9 +1,7 @@
 # Disko configuration for formatting the main disk, see https://github.com/nix-community/disko
 # Most of this originates from https://www.youtube.com/watch?v=YPKwkWtK7l0
 # and https://github.com/katexochen/nixos/blob/f931172d272faa2e15a08d757edf9a6072527d02/modules/disko/btrfs-luks.nix
-{device ? throw "Set this to your disk device, e.g. /dev/sda", ...}: let
-  btrfsMountOpts = ["compress=zstd" "noatime"];
-in {
+{device ? throw "Set this to your disk device, e.g. /dev/sda", ...}: {
   disko.devices = {
     disk.main = {
       inherit device;
@@ -43,15 +41,19 @@ in {
                   subvolumes = {
                     "@" = {
                       mountpoint = "/";
-                      mountOptions = btrfsMountOpts;
+                      mountOptions = ["noatime"];
                     };
                     "@nix" = {
                       mountpoint = "/nix";
-                      mountOptions = btrfsMountOpts;
+                      mountOptions = ["noatime"];
                     };
                     "@persist" = {
                       mountpoint = "/persist";
-                      mountOptions = btrfsMountOpts;
+                      mountOptions = ["noatime"];
+                    };
+                    "@home" = {
+                      mountpoint = "/home";
+                      mountOptions = ["noatime"];
                     };
                   };
                 };
