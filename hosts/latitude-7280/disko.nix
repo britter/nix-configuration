@@ -36,25 +36,22 @@
               content = {
                 type = "btrfs";
                 extraArgs = ["-f"];
-                askPassword = true;
-                content = {
-                  subvolumes = {
-                    "@" = {
-                      mountpoint = "/";
-                      mountOptions = ["noatime"];
-                    };
-                    "@nix" = {
-                      mountpoint = "/nix";
-                      mountOptions = ["noatime"];
-                    };
-                    "@persist" = {
-                      mountpoint = "/persist";
-                      mountOptions = ["noatime"];
-                    };
-                    "@home" = {
-                      mountpoint = "/home";
-                      mountOptions = ["noatime"];
-                    };
+                subvolumes = {
+                  "@" = {
+                    mountpoint = "/";
+                    mountOptions = ["noatime"];
+                  };
+                  "@nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = ["noatime"];
+                  };
+                  "@persist" = {
+                    mountpoint = "/persist";
+                    mountOptions = ["noatime"];
+                  };
+                  "@home" = {
+                    mountpoint = "/home";
+                    mountOptions = ["noatime"];
                   };
                 };
               };
