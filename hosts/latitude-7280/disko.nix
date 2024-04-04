@@ -9,14 +9,14 @@
       content = {
         type = "gpt";
         partitions = {
-          esp = {
+          ESP = {
             size = "512M";
             type = "EF00";
             content = {
               type = "filesystem";
               format = "vfat";
               mountpoint = "/boot";
-              mountOptions = ["default"];
+              mountOptions = ["defaults"];
             };
           };
           swap = {
