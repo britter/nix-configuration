@@ -52,6 +52,27 @@
       ];
     })
     // {
+      nixosConfigurations.pulse-14 = let
+        system = flake-utils.lib.system.x86_64-linux;
+      in
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          modules = [
+            {
+              nixpkgs.overlays = self.overlays.${system};
+            }
+            ./hosts/pulse-14/configuration.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.bene = {
+                home.stateVersion = "23.05";
+                imports = [./home/latitude.nix];
+              };
+            }
+          ];
+        };
       nixosConfigurations.latitude-7280 = let
         system = flake-utils.lib.system.x86_64-linux;
       in
