@@ -20,7 +20,7 @@
             };
           };
           swap-luks = {
-            size = "32GB";
+            size = "32G";
             content = {
               type = "luks";
               name = "swap-crypted";
