@@ -58,6 +58,8 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
+            disko.nixosModules.disko
+            (import ./hosts/pulse-14/disko.nix {device = "/dev/nvme0n1";})
             {
               nixpkgs.overlays = self.overlays.${system};
             }
