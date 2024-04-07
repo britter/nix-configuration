@@ -1,6 +1,10 @@
 {pkgs, ...}: {
   programs.tmux = {
     enable = true;
+    catppuccin = {
+      enable = true;
+      flavour = "frappe";
+    };
 
     baseIndex = 1;
     clock24 = true;
@@ -9,10 +13,6 @@
     shell = "${pkgs.fish}/bin/fish";
     plugins = with pkgs; [
       tmuxPlugins.vim-tmux-navigator
-      {
-        plugin = tmuxPlugins.catppuccin;
-        extraConfig = "set -g @catppuccin_flavor 'frappe'";
-      }
     ];
     extraConfig = ''
       # Open new pane splits in CWD

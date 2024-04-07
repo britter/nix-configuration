@@ -12,6 +12,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    catppuccin.url = "github:catppuccin/nix";
+
     disko = {
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -31,6 +33,7 @@
     nixpkgs-unstable,
     nixos-hardware,
     home-manager,
+    catppuccin,
     disko,
     nix-darwin,
     flake-utils,
@@ -70,7 +73,10 @@
               home-manager.useUserPackages = true;
               home-manager.users.bene = {
                 home.stateVersion = "23.05";
-                imports = [./home/latitude.nix];
+                imports = [
+                  catppuccin.homeManagerModules.catppuccin
+                  ./home/latitude.nix
+                ];
               };
             }
           ];
@@ -94,7 +100,10 @@
               home-manager.useUserPackages = true;
               home-manager.users.bene = {
                 home.stateVersion = "23.05";
-                imports = [./home/latitude.nix];
+                imports = [
+                  catppuccin.homeManagerModules.catppuccin
+                  ./home/latitude.nix
+                ];
               };
             }
           ];
@@ -116,7 +125,10 @@
               home-manager.useUserPackages = true;
               home-manager.users.nixos = {
                 home.stateVersion = "23.05";
-                imports = [./home/raspberry-pi.nix];
+                imports = [
+                  catppuccin.homeManagerModules.catppuccin
+                  ./home/raspberry-pi.nix
+                ];
               };
             }
           ];
@@ -137,7 +149,10 @@
               home-manager.useUserPackages = true;
               home-manager.users.bene = {
                 home.stateVersion = "23.05";
-                imports = [./home/work-macbook.nix];
+                imports = [
+                  catppuccin.homeManagerModules.catppuccin
+                  ./home/work-macbook.nix
+                ];
               };
             }
           ];
