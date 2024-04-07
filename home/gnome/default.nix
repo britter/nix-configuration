@@ -4,6 +4,9 @@
     "org/gnome/desktop/input-sources" = {
       xkb-options = ["terminate:ctrl_alt_bksp" "lv3:ralt_switch" "compose:ralt"];
     };
+    "org/gnome/desktop/peripherals/touchpad" = {
+      tap-to-click = true;
+    };
     "org/gnome/shell" = {
       favorite-apps = [
         "org.gnome.Calendar.desktop"
