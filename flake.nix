@@ -27,21 +27,10 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = {
-    self,
-    nixpkgs,
-    nixpkgs-unstable,
-    nixos-hardware,
-    home-manager,
-    catppuccin,
-    disko,
-    nix-darwin,
-    flake-utils,
-    ...
-  }:
-    flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
-      pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
+  outputs = {self, ...} @ inputs:
+    inputs.flake-utils.lib.eachDefaultSystem (system: let
+      pkgs = inputs.nixpkgs.legacyPackages.${system};
+      pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
     in {
       formatter = pkgs.alejandra;
       packages = import ./packages {inherit pkgs;};
@@ -56,25 +45,25 @@
     })
     // {
       nixosConfigurations.pulse-14 = let
-        system = flake-utils.lib.system.x86_64-linux;
+        system = inputs.flake-utils.lib.system.x86_64-linux;
       in
-        nixpkgs.lib.nixosSystem {
+        inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
-            disko.nixosModules.disko
+            inputs.disko.nixosModules.disko
             (import ./hosts/pulse-14/disko.nix {device = "/dev/nvme0n1";})
             {
               nixpkgs.overlays = self.overlays.${system};
             }
             ./hosts/pulse-14/configuration.nix
-            home-manager.nixosModules.home-manager
+            inputs.home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.bene = {
                 home.stateVersion = "23.05";
                 imports = [
-                  catppuccin.homeManagerModules.catppuccin
+                  inputs.catppuccin.homeManagerModules.catppuccin
                   ./home/latitude.nix
                 ];
               };
@@ -82,26 +71,26 @@
           ];
         };
       nixosConfigurations.latitude-7280 = let
-        system = flake-utils.lib.system.x86_64-linux;
+        system = inputs.flake-utils.lib.system.x86_64-linux;
       in
-        nixpkgs.lib.nixosSystem {
+        inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
-            nixos-hardware.nixosModules.dell-latitude-7280
-            disko.nixosModules.disko
+            inputs.nixos-hardware.nixosModules.dell-latitude-7280
+            inputs.disko.nixosModules.disko
             (import ./hosts/latitude-7280/disko.nix {device = "/dev/sda";})
             {
               nixpkgs.overlays = self.overlays.${system};
             }
             ./hosts/latitude-7280/configuration.nix
-            home-manager.nixosModules.home-manager
+            inputs.home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.bene = {
                 home.stateVersion = "23.05";
                 imports = [
-                  catppuccin.homeManagerModules.catppuccin
+                  inputs.catppuccin.homeManagerModules.catppuccin
                   ./home/latitude.nix
                 ];
               };
@@ -109,24 +98,24 @@
           ];
         };
       nixosConfigurations.raspberry-pi = let
-        system = flake-utils.lib.system.aarch64-linux;
+        system = inputs.flake-utils.lib.system.aarch64-linux;
       in
-        nixpkgs.lib.nixosSystem {
+        inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
-            nixos-hardware.nixosModules.raspberry-pi-4
+            inputs.nixos-hardware.nixosModules.raspberry-pi-4
             {
               nixpkgs.overlays = self.overlays.${system};
             }
             ./hosts/raspberry-pi/configuration.nix
-            home-manager.nixosModules.home-manager
+            inputs.home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.nixos = {
                 home.stateVersion = "23.05";
                 imports = [
-                  catppuccin.homeManagerModules.catppuccin
+                  inputs.catppuccin.homeManagerModules.catppuccin
                   ./home/raspberry-pi.nix
                 ];
               };
@@ -134,23 +123,23 @@
           ];
         };
       darwinConfigurations.WQ0C6FWJ1W = let
-        system = flake-utils.lib.system.aarch64-darwin;
+        system = inputs.flake-utils.lib.system.aarch64-darwin;
       in
-        nix-darwin.lib.darwinSystem {
+        inputs.nix-darwin.lib.darwinSystem {
           inherit system;
           modules = [
             {
               nixpkgs.overlays = self.overlays.${system};
             }
             ./hosts/work-macbook/configuration.nix
-            home-manager.darwinModules.home-manager
+            inputs.home-manager.darwinModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.bene = {
                 home.stateVersion = "23.05";
                 imports = [
-                  catppuccin.homeManagerModules.catppuccin
+                  inputs.catppuccin.homeManagerModules.catppuccin
                   ./home/work-macbook.nix
                 ];
               };
