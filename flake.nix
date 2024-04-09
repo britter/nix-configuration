@@ -31,17 +31,14 @@
     inputs.flake-utils.lib.eachDefaultSystem (system: let
       pkgs = inputs.nixpkgs.legacyPackages.${system};
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+      my-pkgs = self.outputs.packages.${system};
     in {
       formatter = pkgs.alejandra;
       packages = import ./packages {inherit pkgs;};
-      overlays = [
-        (final: prev:
-          {
-            jdt-language-server = pkgs-unstable.jdt-language-server;
-            jetbrains = pkgs-unstable.jetbrains;
-          }
-          // self.outputs.packages.${system})
-      ];
+      overlays = import ./overlays {
+        inherit pkgs-unstable;
+        inherit my-pkgs;
+      };
     })
     // {
       nixosConfigurations.pulse-14 = let
