@@ -10,6 +10,9 @@
     xkbVariant = "";
     displayManager.gdm.enable = true;
     desktopManager.gnome.enable = true;
+
+    # Enable touchpad support
+    libinput.enable = true;
   };
 
   environment.gnome.excludePackages =
