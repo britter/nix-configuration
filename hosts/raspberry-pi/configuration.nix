@@ -5,9 +5,10 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/common-utilities
-    ../../modules/nix
     ../../modules/adguard
+    ../../modules/common-utilities
+    ../../modules/i18n
+    ../../modules/nix
   ];
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
