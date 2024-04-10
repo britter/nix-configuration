@@ -1,9 +1,13 @@
 {
   config,
+  lib,
   pkgs,
+  inputs,
   ...
 }: {
   imports = [
+    inputs.disko.nixosModules.disko
+    inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules/1password
     ../../modules/common-utilities
@@ -11,6 +15,15 @@
     ../../modules/i18n
     ../../modules/nix
   ];
+
+  disko.devices = (import ./disko.nix {device = "/dev/nvme0n1";}).disko.devices;
+
+  nixpkgs = let
+    system = "x86_64-linux";
+  in {
+    hostPlatform = lib.mkDefault system;
+    overlays = inputs.self.overlays.${system};
+  };
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -39,6 +52,18 @@
     description = "Benedikt Ritter";
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.fish;
+  };
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.bene = {
+      home.stateVersion = "23.05";
+      imports = [
+        inputs.catppuccin.homeManagerModules.catppuccin
+        ../../home/latitude.nix
+      ];
+    };
   };
 
   fonts.packages = with pkgs; [

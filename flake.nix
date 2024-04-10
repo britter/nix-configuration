@@ -46,25 +46,9 @@
       in
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
+          specialArgs = {inherit inputs;};
           modules = [
-            inputs.disko.nixosModules.disko
-            (import ./hosts/pulse-14/disko.nix {device = "/dev/nvme0n1";})
-            {
-              nixpkgs.overlays = self.overlays.${system};
-            }
             ./hosts/pulse-14/configuration.nix
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.bene = {
-                home.stateVersion = "23.05";
-                imports = [
-                  inputs.catppuccin.homeManagerModules.catppuccin
-                  ./home/latitude.nix
-                ];
-              };
-            }
           ];
         };
       nixosConfigurations.latitude-7280 = let
