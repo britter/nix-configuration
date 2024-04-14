@@ -1,7 +1,11 @@
 # Disko configuration for formatting the main disk, see https://github.com/nix-community/disko
 # Most of this originates from https://www.youtube.com/watch?v=YPKwkWtK7l0
 # and https://github.com/katexochen/nixos/blob/f931172d272faa2e15a08d757edf9a6072527d02/modules/disko/btrfs-luks.nix
-{device ? throw "Set this to your disk device, e.g. /dev/sda", ...}: {
+{
+  device ? throw "Set this to your disk device, e.g. /dev/sda",
+  swapSize ? throw "Set this to your desired swap partition size in GB, e.g. 8GB",
+  ...
+}: {
   disko.devices = {
     disk.main = {
       inherit device;
@@ -19,11 +23,17 @@
               mountOptions = ["defaults"];
             };
           };
-          swap = {
-            size = "8G";
+          swap-luks = {
+            size = swapSize;
             content = {
-              type = "swap";
-              resumeDevice = true;
+              type = "luks";
+              name = "swap-crypted";
+              extraOpenArgs = ["--allow-discards"];
+              askPassword = true;
+              content = {
+                type = "swap";
+                resumeDevice = true;
+              };
             };
           };
           luks = {

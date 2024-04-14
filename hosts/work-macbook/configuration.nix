@@ -6,7 +6,7 @@
 }: {
   imports = [
     inputs.home-manager.darwinModules.home-manager
-    ../../modules/common-utilities
+    ../../modules
   ];
 
   nix.settings.experimental-features = ["nix-command" "flakes"];

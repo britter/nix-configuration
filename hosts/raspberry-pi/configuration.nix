@@ -9,8 +9,8 @@
     inputs.nixos-hardware.nixosModules.raspberry-pi-4
     inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
+    ../../modules
     ../../modules/adguard
-    ../../modules/common-utilities
     ../../modules/i18n
     ../../modules/nix
   ];

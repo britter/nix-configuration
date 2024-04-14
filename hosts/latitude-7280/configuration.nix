@@ -10,14 +10,20 @@
     inputs.disko.nixosModules.disko
     inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
+    ../../modules
     ../../modules/1password
-    ../../modules/common-utilities
     ../../modules/gnome
     ../../modules/i18n
     ../../modules/nix
   ];
 
-  disko.devices = (import ./disko.nix {device = "/dev/sda";}).disko.devices;
+  my.modules = {
+    disko = {
+      enable = true;
+      disk = "/dev/sda";
+      swapSize = "8GB";
+    };
+  };
 
   nixpkgs = let
     system = "x86_64-linux";
