@@ -8,4 +8,6 @@
     helix
     nix-tree
   ];
+
+  programs.fish.enable = true;
 }
