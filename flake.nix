@@ -57,25 +57,7 @@
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           modules = [
-            inputs.nixos-hardware.nixosModules.dell-latitude-7280
-            inputs.disko.nixosModules.disko
-            (import ./hosts/latitude-7280/disko.nix {device = "/dev/sda";})
-            {
-              nixpkgs.overlays = self.overlays.${system};
-            }
             ./hosts/latitude-7280/configuration.nix
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.bene = {
-                home.stateVersion = "23.05";
-                imports = [
-                  inputs.catppuccin.homeManagerModules.catppuccin
-                  ./home/latitude.nix
-                ];
-              };
-            }
           ];
         };
       nixosConfigurations.raspberry-pi = let

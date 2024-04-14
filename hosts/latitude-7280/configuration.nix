@@ -2,9 +2,13 @@
   lib,
   config,
   pkgs,
+  inputs,
   ...
 }: {
   imports = [
+    inputs.nixos-hardware.nixosModules.dell-latitude-7280
+    inputs.disko.nixosModules.disko
+    inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules/1password
     ../../modules/common-utilities
@@ -12,6 +16,15 @@
     ../../modules/i18n
     ../../modules/nix
   ];
+
+  disko.devices = (import ./disko.nix {device = "/dev/sda";}).disko.devices;
+
+  nixpkgs = let
+    system = "x86_64-linux";
+  in {
+    hostPlatform = lib.mkDefault system;
+    overlays = inputs.self.overlays.${system};
+  };
 
   boot.loader = {
     systemd-boot.enable = true;
@@ -40,6 +53,18 @@
     description = "Benedikt";
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.fish;
+  };
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.bene = {
+      home.stateVersion = "23.05";
+      imports = [
+        inputs.catppuccin.homeManagerModules.catppuccin
+        ../../home/latitude.nix
+      ];
+    };
   };
 
   fonts.packages = with pkgs; [
