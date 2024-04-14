@@ -83,24 +83,9 @@
       in
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
+          specialArgs = {inherit inputs;};
           modules = [
-            inputs.nixos-hardware.nixosModules.raspberry-pi-4
-            {
-              nixpkgs.overlays = self.overlays.${system};
-            }
             ./hosts/raspberry-pi/configuration.nix
-            inputs.home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.nixos = {
-                home.stateVersion = "23.05";
-                imports = [
-                  inputs.catppuccin.homeManagerModules.catppuccin
-                  ./home/raspberry-pi.nix
-                ];
-              };
-            }
           ];
         };
       darwinConfigurations.WQ0C6FWJ1W = let

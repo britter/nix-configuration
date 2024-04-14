@@ -1,9 +1,13 @@
 {
   config,
+  lib,
   pkgs,
+  inputs,
   ...
 }: {
   imports = [
+    inputs.nixos-hardware.nixosModules.raspberry-pi-4
+    inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules/adguard
     ../../modules/common-utilities
@@ -16,6 +20,13 @@
     generic-extlinux-compatible.enable = true;
   };
 
+  nixpkgs = let
+    system = "aarch64-linux";
+  in {
+    hostPlatform = lib.mkDefault system;
+    overlays = inputs.self.overlays.${system};
+  };
+
   networking.hostName = "raspberry-pi";
 
   users.users.nixos = {
@@ -23,6 +34,18 @@
     extraGroups = ["wheel"];
     shell = pkgs.fish;
     openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
+  };
+
+  home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.nixos = {
+      home.stateVersion = "23.05";
+      imports = [
+        inputs.catppuccin.homeManagerModules.catppuccin
+        ../../home/raspberry-pi.nix
+      ];
+    };
   };
 
   programs.fish.enable = true;
