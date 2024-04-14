@@ -94,22 +94,7 @@
         inputs.nix-darwin.lib.darwinSystem {
           inherit system;
           modules = [
-            {
-              nixpkgs.overlays = self.overlays.${system};
-            }
             ./hosts/work-macbook/configuration.nix
-            inputs.home-manager.darwinModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.bene = {
-                home.stateVersion = "23.05";
-                imports = [
-                  inputs.catppuccin.homeManagerModules.catppuccin
-                  ./home/work-macbook.nix
-                ];
-              };
-            }
           ];
         };
     };
