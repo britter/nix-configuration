@@ -13,7 +13,6 @@
     ../../modules
     ../../modules/1password
     ../../modules/gnome
-    ../../modules/i18n
     ../../modules/nix
   ];
 
@@ -23,6 +22,7 @@
       disk = "/dev/sda";
       swapSize = "8GB";
     };
+    i18n.enable = true;
   };
 
   nixpkgs = let

@@ -12,9 +12,10 @@
     ./hardware-configuration.nix
     ../../modules
     ../../modules/adguard
-    ../../modules/i18n
     ../../modules/nix
   ];
+
+  my.modules.i18n.enable = true;
 
   boot.loader = {
     grub.enable = false;

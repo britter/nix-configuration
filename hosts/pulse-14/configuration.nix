@@ -12,7 +12,6 @@
     ../../modules
     ../../modules/1password
     ../../modules/gnome
-    ../../modules/i18n
     ../../modules/nix
   ];
 
@@ -22,6 +21,7 @@
       disk = "/dev/nvme0n1";
       swapSize = "32GB";
     };
+    i18n.enable = true;
   };
 
   nixpkgs = let
