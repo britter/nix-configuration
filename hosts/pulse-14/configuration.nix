@@ -10,12 +10,12 @@
     inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules
-    ../../modules/1password
     ../../modules/gnome
     ../../modules/nix
   ];
 
   my.modules = {
+    _1password.enable = true;
     disko = {
       enable = true;
       disk = "/dev/nvme0n1";
