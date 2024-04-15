@@ -17,7 +17,6 @@
   my = {
     role = "desktop";
     modules = {
-      _1password.enable = true;
       disko = {
         enable = true;
         disk = "/dev/sda";
