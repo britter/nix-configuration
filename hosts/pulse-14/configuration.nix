@@ -10,18 +10,20 @@
     inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules
-    ../../modules/gnome
     ../../modules/nix
   ];
 
-  my.modules = {
-    _1password.enable = true;
-    disko = {
-      enable = true;
-      disk = "/dev/nvme0n1";
-      swapSize = "32GB";
+  my = {
+    role = "desktop";
+    modules = {
+      _1password.enable = true;
+      disko = {
+        enable = true;
+        disk = "/dev/nvme0n1";
+        swapSize = "32GB";
+      };
+      i18n.enable = true;
     };
-    i18n.enable = true;
   };
 
   nixpkgs = let

@@ -15,7 +15,10 @@
     ../../modules/nix
   ];
 
-  my.modules.i18n.enable = true;
+  my = {
+    role = "server";
+    modules.i18n.enable = true;
+  };
 
   boot.loader = {
     grub.enable = false;
