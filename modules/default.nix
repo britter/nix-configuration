@@ -10,6 +10,7 @@ in {
     ./1password
     ./common-utilities
     ./disko
+    ./fonts
     ./gnome
     ./i18n
     ./nix
@@ -24,9 +25,13 @@ in {
 
   config = {
     my.modules = {
-      gnome.enable = cfg.role == "desktop";
+      # enabled only on desktops
       _1password.enable = cfg.role == "desktop";
+      gnome.enable = cfg.role == "desktop";
       sound.enable = cfg.role == "desktop";
+
+      # enabled on all machines by default
+      fonts.enable = true;
       i18n.enable = true;
       nix.enable = true;
     };
