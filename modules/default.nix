@@ -13,6 +13,7 @@ in {
     ./gnome
     ./i18n
     ./nix
+    ./sound
   ];
   options.my = {
     role = lib.mkOption {
@@ -25,6 +26,7 @@ in {
     my.modules = {
       gnome.enable = cfg.role == "desktop";
       _1password.enable = cfg.role == "desktop";
+      sound.enable = cfg.role == "desktop";
       i18n.enable = true;
       nix.enable = true;
     };
