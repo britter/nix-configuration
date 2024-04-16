@@ -7,7 +7,6 @@
 }: {
   imports = [
     inputs.nixos-hardware.nixosModules.dell-latitude-7280
-    inputs.disko.nixosModules.disko
     inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules

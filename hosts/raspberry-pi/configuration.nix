@@ -7,7 +7,6 @@
 }: {
   imports = [
     inputs.nixos-hardware.nixosModules.raspberry-pi-4
-    inputs.disko.nixosModules.disko
     inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules

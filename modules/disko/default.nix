@@ -2,10 +2,15 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
   cfg = config.my.modules.disko;
 in {
+  imports = [
+    inputs.disko.nixosModules.disko
+  ];
+
   options.my.modules.disko = {
     enable = lib.mkEnableOption "disko";
     disk = lib.mkOption {

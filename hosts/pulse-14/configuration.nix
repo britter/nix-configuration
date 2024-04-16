@@ -11,7 +11,6 @@
     inputs.nixos-hardware.nixosModules.common-cpu-amd-raphael-igpu
     inputs.nixos-hardware.nixosModules.common-pc-laptop
     inputs.nixos-hardware.nixosModules.common-pc-laptop-ssd
-    inputs.disko.nixosModules.disko
     inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules
