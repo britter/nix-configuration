@@ -20,7 +20,6 @@
         disk = "/dev/nvme0n1";
         swapSize = "32GB";
       };
-      i18n.enable = true;
     };
   };
 

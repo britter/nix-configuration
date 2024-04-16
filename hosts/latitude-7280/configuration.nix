@@ -21,7 +21,6 @@
         disk = "/dev/sda";
         swapSize = "8GB";
       };
-      i18n.enable = true;
     };
   };
 

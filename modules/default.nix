@@ -25,6 +25,7 @@ in {
     my.modules = {
       gnome.enable = cfg.role == "desktop";
       _1password.enable = cfg.role == "desktop";
+      i18n.enable = true;
       nix.enable = true;
     };
   };

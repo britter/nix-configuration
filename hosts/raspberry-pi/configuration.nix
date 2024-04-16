@@ -15,7 +15,6 @@
 
   my = {
     role = "server";
-    modules.i18n.enable = true;
     modules.adguard.enable = true;
   };
 
