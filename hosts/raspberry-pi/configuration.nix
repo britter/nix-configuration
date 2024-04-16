@@ -11,12 +11,12 @@
     inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules
-    ../../modules/adguard
   ];
 
   my = {
     role = "server";
     modules.i18n.enable = true;
+    modules.adguard.enable = true;
   };
 
   boot.loader = {
