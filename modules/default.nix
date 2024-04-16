@@ -9,6 +9,7 @@
 in {
   imports = [
     ./1password
+    ./adguard
     ./common-utilities
     ./disko
     ./fonts
