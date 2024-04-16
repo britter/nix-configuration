@@ -75,6 +75,7 @@
       in
         inputs.nix-darwin.lib.darwinSystem {
           inherit system;
+          specialArgs = {inherit inputs;};
           modules = [
             ./hosts/work-macbook/configuration.nix
           ];
