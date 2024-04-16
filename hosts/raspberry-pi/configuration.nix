@@ -12,7 +12,6 @@
     ./hardware-configuration.nix
     ../../modules
     ../../modules/adguard
-    ../../modules/nix
   ];
 
   my = {

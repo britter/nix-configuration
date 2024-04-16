@@ -10,7 +10,6 @@
     inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
     ../../modules
-    ../../modules/nix
   ];
 
   my = {

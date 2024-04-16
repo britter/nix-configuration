@@ -12,6 +12,7 @@ in {
     ./disko
     ./gnome
     ./i18n
+    ./nix
   ];
   options.my = {
     role = lib.mkOption {
@@ -24,6 +25,7 @@ in {
     my.modules = {
       gnome.enable = cfg.role == "desktop";
       _1password.enable = cfg.role == "desktop";
+      nix.enable = true;
     };
   };
 }
