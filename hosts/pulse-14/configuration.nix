@@ -46,13 +46,6 @@
 
   services.printing.enable = true;
 
-  users.users.bene = {
-    isNormalUser = true;
-    description = "Benedikt Ritter";
-    extraGroups = ["networkmanager" "wheel"];
-    shell = pkgs.fish;
-  };
-
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;

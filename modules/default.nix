@@ -15,8 +15,10 @@ in {
     ./fonts
     ./gnome
     ./i18n
+    ./my-user
     ./nix
     ./sound
+    ./ssh-access
   ];
   options.my = {
     role = lib.mkOption {
@@ -31,6 +33,9 @@ in {
       _1password.enable = cfg.role == "desktop";
       gnome.enable = cfg.role == "desktop";
       sound.enable = cfg.role == "desktop";
+
+      # enabled only on servers
+      ssh-access.enable = cfg.role == "server";
 
       # enabled on all machines by default
       fonts.enable = true;

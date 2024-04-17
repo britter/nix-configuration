@@ -14,6 +14,8 @@
 
   my = {
     role = "server";
+    # default name baked into the ARM ISO image
+    user.name = "nixos";
     modules.adguard.enable = true;
   };
 
@@ -31,13 +33,6 @@
 
   networking.hostName = "raspberry-pi";
 
-  users.users.nixos = {
-    isNormalUser = true;
-    extraGroups = ["wheel"];
-    shell = pkgs.fish;
-    openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
-  };
-
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
@@ -48,12 +43,6 @@
         ../../home/raspberry-pi.nix
       ];
     };
-  };
-
-  services.openssh = {
-    enable = true;
-    settings.PasswordAuthentication = false;
-    settings.KbdInteractiveAuthentication = false;
   };
 
   # This value determines the NixOS release from which the default
