@@ -18,6 +18,7 @@
 
   my = {
     role = "desktop";
+    hostName = "pulse-14";
     modules = {
       disko = {
         enable = true;
@@ -37,11 +38,6 @@
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
-  };
-
-  networking = {
-    hostName = "pulse-14";
-    networkmanager.enable = true;
   };
 
   services.printing.enable = true;

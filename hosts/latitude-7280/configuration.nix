@@ -14,6 +14,7 @@
 
   my = {
     role = "desktop";
+    hostName = "latitude-7280";
     modules = {
       disko = {
         enable = true;
@@ -33,11 +34,6 @@
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
-  };
-
-  networking = {
-    hostName = "latitude-7280";
-    networkmanager.enable = true;
   };
 
   services.printing.enable = true;

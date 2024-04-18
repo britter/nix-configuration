@@ -14,6 +14,7 @@
 
   my = {
     role = "server";
+    hostName = "raspberry-pi";
     # default name baked into the ARM ISO image
     user.name = "nixos";
     modules.adguard.enable = true;
@@ -30,8 +31,6 @@
     hostPlatform = lib.mkDefault system;
     overlays = inputs.self.overlays.${system};
   };
-
-  networking.hostName = "raspberry-pi";
 
   home-manager = {
     useGlobalPkgs = true;

@@ -16,6 +16,7 @@ in {
     ./gnome
     ./i18n
     ./my-user
+    ./networking
     ./nix
     ./sound
     ./ssh-access
@@ -40,6 +41,7 @@ in {
       # enabled on all machines by default
       fonts.enable = true;
       i18n.enable = true;
+      networking.enable = true;
       nix.enable = true;
     };
   };
