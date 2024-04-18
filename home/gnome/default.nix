@@ -27,6 +27,7 @@
       enabled-extensions = [
         "custom-hot-corners-extended@G-dH.github.com"
         "nightthemeswitcher@romainvigier.fr"
+        "blur-my-shell@aunetx"
       ];
     };
     # required by night theme switcher to determine time for sunrise and sunset

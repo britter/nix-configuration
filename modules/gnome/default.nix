@@ -44,6 +44,7 @@ in {
       ]);
 
     environment.systemPackages = with pkgs; [
+      gnomeExtensions.blur-my-shell
       gnomeExtensions.custom-hot-corners-extended
       gnomeExtensions.night-theme-switcher
       xsel # Access to X server clipboard, required for helix clipboard integration
