@@ -1,5 +1,12 @@
 {pkgs, ...}: {
   dconf.settings = {
+    "org/gnome/desktop/background" = let
+      light-bg = ../desktop/wallpapers/moebius-wallpaper-light.png;
+      dark-bg = ../desktop/wallpapers/moebius-wallpaper-dark.jpg;
+    in {
+      picture-uri = "file://${light-bg}";
+      picture-uri-dark = "file://${dark-bg}";
+    };
     # set right alt as compose key for composing special letters suchs as umlauts
     "org/gnome/desktop/input-sources" = {
       xkb-options = ["terminate:ctrl_alt_bksp" "lv3:ralt_switch" "compose:ralt"];
