@@ -5,8 +5,8 @@
   ...
 }: {
   imports = [
-    inputs.home-manager.darwinModules.home-manager
-    ../../modules/common-utilities
+    ../../modules/my-user/darwin.nix
+    ../../modules/common/utilities
   ];
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
@@ -21,19 +21,9 @@
   # Host name has to equal serial number of the machine due to company device management
   networking.hostName = "WQ0C6FWJ1W";
 
-  users.users.bene = {
-    name = "bene";
-    home = "/Users/bene";
-    shell = pkgs.fish;
-  };
-
   home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
     users.bene = {
-      home.stateVersion = "23.05";
       imports = [
-        inputs.catppuccin.homeManagerModules.catppuccin
         ../../home/work-macbook.nix
       ];
     };

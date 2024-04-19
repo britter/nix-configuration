@@ -7,7 +7,6 @@
     ./gradle
     ./helix
     ./java
-    ./terminal
   ];
 
   home.sessionVariables = with pkgs; {

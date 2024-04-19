@@ -10,7 +10,7 @@ in {
   imports = [
     ./1password
     ./adguard
-    ./common-utilities
+    ./common/utilities
     ./disko
     ./fonts
     ./gnome
