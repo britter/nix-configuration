@@ -1,23 +1,36 @@
-{pkgs, ...}: {
-  programs.alacritty = {
-    enable = true;
-    catppuccin = {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  cfg = config.my.home.desktop.alacritty;
+in {
+  options.my.home.desktop.alacritty = {
+    enable = lib.mkEnableOption "alacritty";
+  };
+
+  config = lib.mkIf cfg.enable {
+    programs.alacritty = {
       enable = true;
-      flavour = "mocha";
-    };
-    settings = {
-      font.normal.family = "FiraCode Nerd Font";
-      shell = {
-        program = "${pkgs.tmux}/bin/tmux";
-        args = ["new-session" "-A" "-D" "-s" "default"];
+      catppuccin = {
+        enable = true;
+        flavour = "mocha";
       };
-      window = {
-        padding = {
-          x = 20;
-          y = 20;
+      settings = {
+        font.normal.family = "FiraCode Nerd Font";
+        shell = {
+          program = "${pkgs.tmux}/bin/tmux";
+          args = ["new-session" "-A" "-D" "-s" "default"];
         };
-        opacity = 0.85;
-        decorations = "None";
+        window = {
+          padding = {
+            x = 20;
+            y = 20;
+          };
+          opacity = 0.85;
+          decorations = "None";
+        };
       };
     };
   };
