@@ -48,7 +48,6 @@ in {
       fonts.enable = true;
       i18n.enable = true;
       networking.enable = true;
-      nix.enable = true;
     };
   };
 }

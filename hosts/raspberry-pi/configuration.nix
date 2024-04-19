@@ -28,13 +28,6 @@
     generic-extlinux-compatible.enable = true;
   };
 
-  nixpkgs = let
-    system = "aarch64-linux";
-  in {
-    hostPlatform = lib.mkDefault system;
-    overlays = inputs.self.overlays.${system};
-  };
-
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;

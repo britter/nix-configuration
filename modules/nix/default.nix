@@ -2,15 +2,12 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
-  cfg = config.my.modules.nix;
+  system = config.my.host.system;
 in {
-  options.my.modules.nix = {
-    enable = lib.mkEnableOption "nix";
-  };
-
-  config = lib.mkIf cfg.enable {
+  config = {
     nix = {
       gc = {
         automatic = true;
@@ -21,6 +18,11 @@ in {
         experimental-features = ["nix-command" "flakes"];
         auto-optimise-store = true;
       };
+    };
+
+    nixpkgs = {
+      hostPlatform = lib.mkDefault system;
+      overlays = inputs.self.overlays.${system};
     };
   };
 }

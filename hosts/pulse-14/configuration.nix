@@ -31,13 +31,6 @@
     };
   };
 
-  nixpkgs = let
-    system = "x86_64-linux";
-  in {
-    hostPlatform = lib.mkDefault system;
-    overlays = inputs.self.overlays.${system};
-  };
-
   boot.loader = {
     systemd-boot.enable = true;
     efi.canTouchEfiVariables = true;
