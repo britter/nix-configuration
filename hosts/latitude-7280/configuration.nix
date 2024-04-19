@@ -13,8 +13,11 @@
   ];
 
   my = {
-    role = "desktop";
-    hostName = "latitude-7280";
+    host = {
+      name = "latitude-7280";
+      system = "x86_64-linux";
+      role = "desktop";
+    };
     modules = {
       disko = {
         enable = true;

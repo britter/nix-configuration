@@ -5,7 +5,7 @@
   inputs,
   ...
 }: let
-  cfg = config.my;
+  cfg = config.my.host;
 in {
   imports = [
     ./1password
@@ -21,7 +21,13 @@ in {
     ./sound
     ./ssh-access
   ];
-  options.my = {
+  options.my.host = {
+    name = lib.mkOption {
+      type = lib.types.str;
+    };
+    system = lib.mkOption {
+      type = lib.types.enum inputs.flake-utils.lib.allSystems;
+    };
     role = lib.mkOption {
       type = lib.types.enum ["desktop" "server"];
       description = "The role this machine has";

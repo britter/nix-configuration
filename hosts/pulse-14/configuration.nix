@@ -17,8 +17,11 @@
   ];
 
   my = {
-    role = "desktop";
-    hostName = "pulse-14";
+    host = {
+      name = "pulse-14";
+      system = "x86_64-linux";
+      role = "desktop";
+    };
     modules = {
       disko = {
         enable = true;

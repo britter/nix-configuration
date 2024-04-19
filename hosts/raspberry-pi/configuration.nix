@@ -13,8 +13,11 @@
   ];
 
   my = {
-    role = "server";
-    hostName = "raspberry-pi";
+    host = {
+      name = "raspberry-pi";
+      system = "aarch64-linux";
+      role = "server";
+    };
     # default name baked into the ARM ISO image
     user.name = "nixos";
     modules.adguard.enable = true;
