@@ -5,6 +5,5 @@
     ./git/raspberry-pi-identity.nix
     ./gpg
     ./helix
-    ./terminal
   ];
 }

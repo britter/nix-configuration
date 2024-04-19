@@ -8,7 +8,6 @@
     ./gradle
     ./helix
     ./java
-    ./terminal
   ];
 
   programs.gradle = {

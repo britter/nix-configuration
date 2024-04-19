@@ -29,12 +29,8 @@
   };
 
   home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
     users.nixos = {
-      home.stateVersion = "23.05";
       imports = [
-        inputs.catppuccin.homeManagerModules.catppuccin
         ../../home/raspberry-pi.nix
       ];
     };

@@ -1,9 +1,22 @@
-{pkgs, ...}: {
-  programs.bat = {
-    enable = true;
-    catppuccin = {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
+  cfg = config.my.home.terminal.bat;
+in {
+  options.my.home.terminal.bat = {
+    enable = lib.mkEnableOption "bat";
+  };
+
+  config = lib.mkIf cfg.enable {
+    programs.bat = {
       enable = true;
-      flavour = "macchiato";
+      catppuccin = {
+        enable = true;
+        flavour = "macchiato";
+      };
     };
   };
 }

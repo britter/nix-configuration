@@ -35,12 +35,8 @@
   services.printing.enable = true;
 
   home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
     users.bene = {
-      home.stateVersion = "23.05";
       imports = [
-        inputs.catppuccin.homeManagerModules.catppuccin
         ../../home/latitude.nix
       ];
     };
