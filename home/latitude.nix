@@ -1,6 +1,5 @@
 {pkgs, ...}: {
   imports = [
-    ./gh
     ./git
     ./git/private-identity.nix
     ./gpg
