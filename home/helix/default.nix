@@ -8,13 +8,14 @@
     ];
     settings = {
       theme = "catppuccin_macchiato";
-      editor.file-picker = {
-        hidden = false;
-      };
-      editor.whitespace.render = {
-        space = "all";
-        nbsp = "all";
-        tab = "all";
+      editor = {
+        bufferline = "multiple";
+        file-picker.hidden = false;
+        whitespace.render = {
+          space = "all";
+          nbsp = "all";
+          tab = "all";
+        };
       };
       keys.normal = {
         up = "no_op";
