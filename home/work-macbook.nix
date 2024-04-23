@@ -4,7 +4,6 @@
     ./git
     ./git/work-identity.nix
     ./gpg
-    ./helix
   ];
 
   home.sessionVariables = with pkgs; {

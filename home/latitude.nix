@@ -4,7 +4,6 @@
     ./git
     ./git/private-identity.nix
     ./gpg
-    ./helix
   ];
 
   programs.gradle = {

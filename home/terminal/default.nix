@@ -10,6 +10,7 @@ in {
     ./bat.nix
     ./btop.nix
     ./fish.nix
+    ./helix.nix
     ./tmux.nix
     ./tools.nix
   ];
@@ -21,6 +22,7 @@ in {
       bat.enable = true;
       btop.enable = true;
       fish.enable = true;
+      helix.enable = true;
       tmux.enable = true;
       tools.enable = true;
     };
