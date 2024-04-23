@@ -4,9 +4,7 @@
     ./git
     ./git/work-identity.nix
     ./gpg
-    ./gradle
     ./helix
-    ./java
   ];
 
   home.sessionVariables = with pkgs; {
@@ -16,8 +14,6 @@
     JDK20 = jdk20;
     JDK21 = jdk21;
   };
-
-  programs.gradle.enable = true;
 
   programs.fish.shellAliases = {
     dive = "docker run -ti --rm  -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive";

@@ -11,16 +11,6 @@ in {
     inputs.home-manager.nixosModules.home-manager
     ../common/home-manager
   ];
-  options.my.user = {
-    name = lib.mkOption {
-      type = lib.types.str;
-      default = "bene";
-    };
-    fullName = lib.mkOption {
-      type = lib.types.str;
-      default = "Benedikt Ritter";
-    };
-  };
   config = {
     users.users.${cfg.name} = {
       isNormalUser = true;

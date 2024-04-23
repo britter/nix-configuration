@@ -6,8 +6,17 @@
 }: {
   imports = [
     ../../modules/my-user/darwin.nix
+    ../../modules/common/options
     ../../modules/common/utilities
   ];
+
+  my = {
+    host = {
+      name = "WQ0C6FWJ1W";
+      system = "aarch64-darwin";
+      role = "desktop";
+    };
+  };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
 

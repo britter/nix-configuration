@@ -10,6 +10,7 @@ in {
   imports = [
     ./1password
     ./adguard
+    ./common/options
     ./common/utilities
     ./disko
     ./fonts
@@ -21,18 +22,6 @@ in {
     ./sound
     ./ssh-access
   ];
-  options.my.host = {
-    name = lib.mkOption {
-      type = lib.types.str;
-    };
-    system = lib.mkOption {
-      type = lib.types.enum inputs.flake-utils.lib.allSystems;
-    };
-    role = lib.mkOption {
-      type = lib.types.enum ["desktop" "server"];
-      description = "The role this machine has";
-    };
-  };
 
   config = {
     my.modules = {
