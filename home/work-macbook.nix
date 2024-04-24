@@ -1,6 +1,5 @@
 {pkgs, ...}: {
   imports = [
-    ./git
     ./git/work-identity.nix
   ];
 
