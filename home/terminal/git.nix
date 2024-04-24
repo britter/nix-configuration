@@ -2,9 +2,11 @@
   config,
   lib,
   pkgs,
+  osConfig,
   ...
 }: let
   cfg = config.my.home.terminal.git;
+  osUser = osConfig.my.user;
 in {
   options.my.home.terminal.git = {
     enable = lib.mkEnableOption "git";
@@ -15,6 +17,14 @@ in {
 
     programs.git = {
       enable = true;
+
+      userName = osUser.fullName;
+      userEmail = osUser.email;
+
+      signing = {
+        signByDefault = true;
+        key = osUser.signingKey;
+      };
 
       extraConfig = {
         init.defaultBranch = "main";

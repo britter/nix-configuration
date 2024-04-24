@@ -16,6 +16,10 @@
       system = "aarch64-darwin";
       role = "desktop";
     };
+    user = {
+      email = "benedikt@gradle.com";
+      signingKey = "5AEF67FC9BD7F4CA";
+    };
   };
 
   nix.settings.experimental-features = ["nix-command" "flakes"];

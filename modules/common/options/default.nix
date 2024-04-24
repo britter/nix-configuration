@@ -27,6 +27,13 @@
         type = lib.types.str;
         default = "Benedikt Ritter";
       };
+      email = lib.mkOption {
+        type = lib.types.str;
+        default = "beneritter@gmail.com";
+      };
+      signingKey = lib.mkOption {
+        type = lib.types.str;
+      };
     };
   };
 }

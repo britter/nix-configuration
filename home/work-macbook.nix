@@ -1,8 +1,4 @@
 {pkgs, ...}: {
-  imports = [
-    ./git/work-identity.nix
-  ];
-
   home.sessionVariables = with pkgs; {
     JDK8 = jdk8;
     JDK11 = jdk11;

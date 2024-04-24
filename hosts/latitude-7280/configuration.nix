@@ -18,6 +18,7 @@
       system = "x86_64-linux";
       role = "desktop";
     };
+    user.signingKey = "394546A47BB40E12";
     modules = {
       disko = {
         enable = true;

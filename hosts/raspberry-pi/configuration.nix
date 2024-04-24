@@ -18,22 +18,17 @@
       system = "aarch64-linux";
       role = "server";
     };
-    # default name baked into the ARM ISO image
-    user.name = "nixos";
+    user =  {
+      # default name baked into the ARM ISO image
+      name = "nixos";
+      signingKey = "92166C2B83447076";
+    };
     modules.adguard.enable = true;
   };
 
   boot.loader = {
     grub.enable = false;
     generic-extlinux-compatible.enable = true;
-  };
-
-  home-manager = {
-    users.nixos = {
-      imports = [
-        ../../home/raspberry-pi.nix
-      ];
-    };
   };
 
   # This value determines the NixOS release from which the default
