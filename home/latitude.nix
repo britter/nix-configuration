@@ -2,7 +2,6 @@
   imports = [
     ./git
     ./git/private-identity.nix
-    ./gpg
   ];
 
   programs.gradle = {

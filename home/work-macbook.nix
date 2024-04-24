@@ -2,7 +2,6 @@
   imports = [
     ./git
     ./git/work-identity.nix
-    ./gpg
   ];
 
   home.sessionVariables = with pkgs; {

@@ -11,6 +11,7 @@ in {
     ./btop.nix
     ./fish.nix
     ./gh.nix
+    ./gpg
     ./helix.nix
     ./tmux.nix
     ./tools.nix
@@ -24,6 +25,7 @@ in {
       btop.enable = true;
       fish.enable = true;
       gh.enable = true;
+      gpg.enable = true;
       helix.enable = true;
       tmux.enable = true;
       tools.enable = true;
