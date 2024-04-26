@@ -18,7 +18,7 @@
       system = "aarch64-linux";
       role = "server";
     };
-    user =  {
+    user = {
       # default name baked into the ARM ISO image
       name = "nixos";
       signingKey = "92166C2B83447076";
