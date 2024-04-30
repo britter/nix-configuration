@@ -17,6 +17,7 @@
       name = "latitude-7280";
       system = "x86_64-linux";
       role = "desktop";
+      profiles = ["private"];
     };
     user.signingKey = "394546A47BB40E12";
     modules = {
@@ -34,14 +35,6 @@
   };
 
   services.printing.enable = true;
-
-  home-manager = {
-    users.bene = {
-      imports = [
-        ../../home/latitude.nix
-      ];
-    };
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

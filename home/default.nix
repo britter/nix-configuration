@@ -10,6 +10,7 @@ in {
   imports = [
     ./desktop
     ./java
+    ./profiles
     ./terminal
   ];
   config = {

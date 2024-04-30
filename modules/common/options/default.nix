@@ -17,6 +17,11 @@
         type = lib.types.enum ["desktop" "server"];
         description = "The role this machine has";
       };
+      profiles = lib.mkOption {
+        type = lib.types.listOf (lib.types.enum ["private" "work"]);
+        description = "The profiles to enable on this host";
+        default = [];
+      };
     };
     user = {
       name = lib.mkOption {

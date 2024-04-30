@@ -15,6 +15,7 @@
       name = "WQ0C6FWJ1W";
       system = "aarch64-darwin";
       role = "desktop";
+      profiles = ["work"];
     };
     user = {
       email = "benedikt@gradle.com";
@@ -37,14 +38,6 @@
 
   # Host name has to equal serial number of the machine due to company device management
   networking.hostName = "WQ0C6FWJ1W";
-
-  home-manager = {
-    users.bene = {
-      imports = [
-        ../../home/work-macbook.nix
-      ];
-    };
-  };
 
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
