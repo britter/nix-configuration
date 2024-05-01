@@ -14,7 +14,10 @@ in {
     programs.gh = {
       enable = true;
 
-      extensions = [pkgs.gh-get];
+      extensions = with pkgs; [
+        gh-dash
+        gh-get
+      ];
 
       settings = {
         git_protocol = "ssh";
