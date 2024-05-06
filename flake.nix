@@ -12,7 +12,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    catppuccin.url = "github:catppuccin/nix";
+    # Temporarily pin catppuccin, since they don't support tracking releases
+    # currently, and newer commits break home-manager 23.11
+    # see https://github.com/catppuccin/nix/issues/154
+    #catppuccin.url = "github:catppuccin/nix";
+    catppuccin.url = "github:catppuccin/nix/a48e70a31616cb63e4794fd3465bff1835cc4246";
 
     disko = {
       url = "github:nix-community/disko";
