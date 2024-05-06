@@ -22,5 +22,7 @@ in {
     };
 
     programs.gradle.enable = true;
+
+    my.home.helix-java-support.enable = true;
   };
 }
