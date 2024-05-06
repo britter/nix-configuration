@@ -18,7 +18,6 @@ in {
     ./i18n
     ./my-user
     ./networking
-    ./profiles
     ./nix
     ./sound
     ./ssh-access
@@ -38,7 +37,6 @@ in {
       fonts.enable = true;
       i18n.enable = true;
       networking.enable = true;
-      profiles.enable = true;
     };
   };
 }
