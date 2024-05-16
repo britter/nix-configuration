@@ -20,6 +20,10 @@ in {
     };
 
     home.packages = with pkgs; [
+      k3d
+      kubernetes-helm
+      kustomize
+      shellcheck
       terraform
     ];
 
