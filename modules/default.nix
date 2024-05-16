@@ -14,6 +14,7 @@ in {
     ./common/utilities
     ./disko
     ./fonts
+    ./gaming
     ./gnome
     ./i18n
     ./my-user
@@ -29,6 +30,9 @@ in {
       _1password.enable = cfg.role == "desktop";
       gnome.enable = cfg.role == "desktop";
       sound.enable = cfg.role == "desktop";
+
+      # enabled only on private desktops
+      gaming.enable = cfg.role == "desktop" && (builtins.elem "private" cfg.profiles);
 
       # enabled only on servers
       ssh-access.enable = cfg.role == "server";
