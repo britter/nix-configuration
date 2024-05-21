@@ -29,11 +29,6 @@
     };
   };
 
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-  };
-
   services.printing.enable = true;
 
   # This value determines the NixOS release from which the default
