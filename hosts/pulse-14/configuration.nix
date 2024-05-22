@@ -28,11 +28,6 @@
     };
   };
 
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-  };
-
   services.printing.enable = true;
 
   services.xserver.videoDrivers = ["amdgpu"];
