@@ -21,6 +21,7 @@ in {
     # software not available as Home Manager module
     home.packages = with pkgs; [
       jetbrains.idea-community
+      joplin-desktop
       fractal-next
     ];
 
