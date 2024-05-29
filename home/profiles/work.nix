@@ -20,14 +20,13 @@ in {
     };
 
     home.packages = with pkgs; [
+      awscli2
       k3d
       kubernetes-helm
       kustomize
       shellcheck
       terraform
     ];
-
-    programs.awscli.enable = true;
 
     programs.helix.extraPackages = with pkgs; [
       terraform-ls
