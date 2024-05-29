@@ -27,6 +27,8 @@ in {
       terraform
     ];
 
+    programs.awscli.enable = true;
+
     programs.helix.extraPackages = with pkgs; [
       terraform-ls
     ];
