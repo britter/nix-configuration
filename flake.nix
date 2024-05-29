@@ -64,6 +64,16 @@
             ./hosts/latitude-7280/configuration.nix
           ];
         };
+      nixosConfigurations.minimalServerIso = let
+        system = inputs.flake-utils.lib.system.x86_64-linux;
+      in
+        inputs.nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {inherit inputs;};
+          modules = [
+            ./isos/minimal-server-iso/configuration.nix
+          ];
+        };
       nixosConfigurations.raspberry-pi = let
         system = inputs.flake-utils.lib.system.aarch64-linux;
       in
