@@ -18,5 +18,9 @@ in {
       extraGroups = ["networkmanager" "wheel"];
       shell = pkgs.fish;
     };
+    # unfree packages used in home-manager configuration
+    my.modules.allowedUnfreePkgs = [
+      "terraform"
+    ];
   };
 }

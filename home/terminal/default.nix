@@ -14,6 +14,7 @@ in {
     ./git.nix
     ./gpg
     ./helix.nix
+    ./terraform.nix
     ./tmux.nix
     ./tools.nix
   ];
@@ -29,6 +30,7 @@ in {
       git.enable = true;
       gpg.enable = true;
       helix.enable = true;
+      terraform.enable = true;
       tmux.enable = true;
       tools.enable = true;
     };
