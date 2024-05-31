@@ -135,6 +135,16 @@ nix build .#nixosConfigurations.minimalServerIso.config.system.build.isoImage
 nix run nix run github:nix-community/nixos-anywhere -- --flake '.#<host-config>' root@192.168.178.199
 ```
 
+1. Redeploy the machine remotely via
+
+```shell
+nixos-rebuild switch --fast --flake .#<host-config> \
+    --target-host nixos@<host-ip> \
+    --build-host nixos@<host-ip>
+```
+
+See https://www.haskellforall.com/2023/01/announcing-nixos-rebuild-new-deployment.html
+
 **Pre-load an SSH key into the image**
 
 1. Use `nix run nixpkgs#parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
