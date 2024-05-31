@@ -37,7 +37,7 @@
   # TODO extract this into a module. Make IP address part of my.host
   networking = {
     usePredictableInterfaceNames = false;
-    interfaces.eth0.ip4.addresses = [{
+    interfaces.eth0.ipv4.addresses = [{
       address = "192.168.178.200";
       prefixLength = 24;
     }];

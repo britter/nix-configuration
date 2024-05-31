@@ -21,7 +21,7 @@
 
   networking = {
     usePredictableInterfaceNames = false;
-    interfaces.eth0.ip4.addresses = [{
+    interfaces.eth0.ipv4.addresses = [{
       address = "192.168.178.199";
       prefixLength = 24;
     }];
