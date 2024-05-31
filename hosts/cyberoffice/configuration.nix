@@ -34,6 +34,16 @@
   boot.initrd.availableKernelModules = ["ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod"];
   services.qemuGuest.enable = true;
 
+  # TODO extract this into a module. Make IP address part of my.host
+  networking = {
+    usePredictableInterfaceNames = false;
+    interfaces.eth0.ip4.addresses = [{
+      address = "192.168.178.200";
+      prefixLength = 24;
+    }];
+    defaultGateway = "192.168.178.1";
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
