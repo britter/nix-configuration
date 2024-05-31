@@ -6,6 +6,7 @@
   ...
 }: let
   cfg = config.my.modules.disko;
+  role = config.my.host.role;
 in {
   imports = [
     inputs.disko.nixosModules.disko
@@ -18,23 +19,42 @@ in {
       description = "Disk to install to";
     };
     swapSize = lib.mkOption {
-      type = lib.types.str;
+      type = lib.types.nullOr lib.types.str;
       description = "Size of the swap partition";
+      default = null;
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    disko.devices =
-      (import ./btrfs-luks.nix {
-        device = cfg.disk;
-        swapSize = cfg.swapSize;
+  config = let
+    efi = cfg.enable && role == "desktop";
+    mbr = cfg.enable && role == "server";
+  in
+    lib.mkMerge [
+      (lib.mkIf efi {
+        disko.devices =
+          (import ./btrfs-luks.nix {
+            device = cfg.disk;
+            swapSize = cfg.swapSize;
+          })
+          .disko
+          .devices;
+
+        boot.loader = {
+          systemd-boot.enable = true;
+          efi.canTouchEfiVariables = true;
+        };
       })
-      .disko
-      .devices;
+      (lib.mkIf mbr {
+        disko.devices =
+          (import ./ext-mbr.nix {
+            device = cfg.disk;
+          })
+          .disko
+          .devices;
 
-    boot.loader = {
-      systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
-    };
-  };
+        boot.loader.grub = {
+          enable = true;
+        };
+      })
+    ];
 }

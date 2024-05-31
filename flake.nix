@@ -45,6 +45,9 @@
       };
     })
     // {
+      # -----------------------------------------------------------------------
+      # Desktops
+      # -----------------------------------------------------------------------
       nixosConfigurations.pulse-14 = let
         system = inputs.flake-utils.lib.system.x86_64-linux;
       in
@@ -64,16 +67,9 @@
             ./hosts/latitude-7280/configuration.nix
           ];
         };
-      nixosConfigurations.minimalServerIso = let
-        system = inputs.flake-utils.lib.system.x86_64-linux;
-      in
-        inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./isos/minimal-server-iso/configuration.nix
-          ];
-        };
+      # -----------------------------------------------------------------------
+      # Servers
+      # -----------------------------------------------------------------------
       nixosConfigurations.raspberry-pi = let
         system = inputs.flake-utils.lib.system.aarch64-linux;
       in
@@ -84,6 +80,32 @@
             ./hosts/raspberry-pi/configuration.nix
           ];
         };
+      nixosConfigurations.cyberoffice = let
+        system = inputs.flake-utils.lib.system.x86_64-linux;
+      in
+        inputs.nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {inherit inputs;};
+          modules = [
+            ./hosts/cyberoffice/configuration.nix
+          ];
+        };
+      # -----------------------------------------------------------------------
+      # ISOs
+      # -----------------------------------------------------------------------
+      nixosConfigurations.minimalServerIso = let
+        system = inputs.flake-utils.lib.system.x86_64-linux;
+      in
+        inputs.nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {inherit inputs;};
+          modules = [
+            ./isos/minimal-server-iso/configuration.nix
+          ];
+        };
+      # -----------------------------------------------------------------------
+      # Darwin
+      # -----------------------------------------------------------------------
       darwinConfigurations.WQ0C6FWJ1W = let
         system = inputs.flake-utils.lib.system.aarch64-darwin;
       in
