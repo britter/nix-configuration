@@ -118,6 +118,23 @@ However the SSH service is configred to not accept empty passwords.
 So in order to login via SSH, you need to pre-load your SSH key into the authorized_keys file of either the root user or the `nixos` user.
 The first step is to download the bootable SD card image from the Hydra build system, see [this nixos.wiki entry](https://nixos.wiki/wiki/NixOS_on_ARM#Installation).
 
+### VM
+
+Optional: Build a new VM image if changes are required
+
+```shell
+nix build .#nixosConfigurations.minimalServerIso.config.system.build.isoImage
+```
+
+1. Define a new VM using the [home-lab terraform configuration](https://github.com/britter/home-lab). Make sure to reference the right ISO.
+1. Wait for the VM to boot into the installer.
+1. Create a new host by copying one of the existing hosts.
+1. Install the VM using [nix-anywhere](https://github.com/nix-community/nix-anywhere) by running
+
+```shell
+nix run nix run github:nix-community/nixos-anywhere -- --flake '.#<host-config>' root@192.168.178.199
+```
+
 **Pre-load an SSH key into the image**
 
 1. Use `nix run nixpkgs#parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
