@@ -37,11 +37,14 @@
   # TODO extract this into a module. Make IP address part of my.host
   networking = {
     usePredictableInterfaceNames = false;
-    interfaces.eth0.ipv4.addresses = [{
-      address = "192.168.178.200";
-      prefixLength = 24;
-    }];
+    interfaces.eth0.ipv4.addresses = [
+      {
+        address = "192.168.178.200";
+        prefixLength = 24;
+      }
+    ];
     defaultGateway = "192.168.178.1";
+    nameservers = ["192.168.178.105"];
   };
 
   # This value determines the NixOS release from which the default
