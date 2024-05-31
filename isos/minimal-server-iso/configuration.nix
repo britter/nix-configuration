@@ -18,4 +18,13 @@
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce ["multi-user.target"];
   users.users.root.openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
+
+  networking = {
+    usePredictableInterfaceNames = false;
+    interfaces.eth0.ip4.addresses = [{
+      address = "192.168.178.199";
+      prefixLength = 24;
+    }];
+    defaultGateway = "192.168.178.1";
+  };
 }
