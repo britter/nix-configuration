@@ -1,39 +1,29 @@
 # MBR based partitioning using ext filesystem for use in Proxmox VMS.
 # By default Proxmox uses SeaBIOS to boot VMs and that required legacy
 # boot using MBR.
+# This is taken from https://github.com/nix-community/disko/blob/9d5c673a6611b7bf448dbfb0843c75b9cce9cf1f/example/gpt-bios-compat.nix
 {device ? throw "Set this to your disk device, e.g. /dev/sda", ...}: {
   disko.devices = {
     disk.main = {
       inherit device;
       type = "disk";
       content = {
-        type = "table";
-        format = "gpt";
-        partitions = [
-          {
-            name = "ESP";
-            start = "1M";
-            end = "500M";
-            bootable = true;
-            content = {
-              type = "filesystem";
-              format = "vfat";
-              mountpoint = "/boot";
-            };
-          }
-          {
-            name = "root";
-            start = "500M";
-            end = "100%";
-            part-type = "primary";
-            bootable = true;
+        type = "gpt";
+        partitions = {
+          boot = {
+            size = "1M";
+            type = "EF02"; # for grub MBR
+            priority = 1; # Needs to be first partition
+          };
+          root = {
+            size = "100%";
             content = {
               type = "filesystem";
               format = "ext4";
               mountpoint = "/";
             };
-          }
-        ];
+          };
+        };
       };
     };
   };
