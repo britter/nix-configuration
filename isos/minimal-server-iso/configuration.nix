@@ -16,6 +16,6 @@
     git
   ];
 
-  systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
+  systemd.services.sshd.wantedBy = pkgs.lib.mkForce ["multi-user.target"];
   users.users.root.openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
 }
