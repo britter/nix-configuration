@@ -11,7 +11,7 @@ in {
     enable = lib.mkEnableOption "ssh-access";
   };
   config = lib.mkIf cfg.enable {
-    users.users.${myUser}.openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
+    users.users.root.openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
 
     services.openssh = {
       enable = true;
