@@ -5,7 +5,6 @@
   ...
 }: let
   cfg = config.my.modules.ssh-access;
-  myUser = config.my.user.name;
 in {
   options.my.modules.ssh-access = {
     enable = lib.mkEnableOption "ssh-access";
