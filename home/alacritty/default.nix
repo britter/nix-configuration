@@ -15,7 +15,7 @@ in {
       enable = true;
       catppuccin = {
         enable = true;
-        flavour = "mocha";
+        flavor = "mocha";
       };
       settings = {
         font.normal.family = "FiraCode Nerd Font";

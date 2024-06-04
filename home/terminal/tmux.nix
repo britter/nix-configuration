@@ -15,7 +15,7 @@ in {
       enable = true;
       catppuccin = {
         enable = true;
-        flavour = "frappe";
+        flavor = "frappe";
       };
 
       baseIndex = 1;

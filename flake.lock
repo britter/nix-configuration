@@ -2,17 +2,16 @@
   "nodes": {
     "catppuccin": {
       "locked": {
-        "lastModified": 1713895615,
-        "narHash": "sha256-SVkxhcL0/IN5fNI2dqr702wXOnzktsm0LCEVGRAJQcY=",
+        "lastModified": 1717500568,
+        "narHash": "sha256-wN4DTB9HEAsCkV2WcVeRwMYzFhnxIWFGRs26XWP/vl0=",
         "owner": "catppuccin",
         "repo": "nix",
-        "rev": "a48e70a31616cb63e4794fd3465bff1835cc4246",
+        "rev": "dc9553ef0b3439f31a9ab5772356bf936895df74",
         "type": "github"
       },
       "original": {
         "owner": "catppuccin",
         "repo": "nix",
-        "rev": "a48e70a31616cb63e4794fd3465bff1835cc4246",
         "type": "github"
       }
     },
