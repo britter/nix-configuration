@@ -45,8 +45,21 @@
     ];
     defaultGateway = "192.168.178.1";
     nameservers = ["192.168.178.105"];
+    firewall = {
+      allowedTCPPorts = [80 443];
+    };
   };
 
+  environment.etc."nextcloud-admin-pass".text = "test-installation-PWD";
+  services.nextcloud = {
+    enable = true;
+    package = pkgs.nextcloud29;
+    hostName = "localhost";
+    config = {
+      adminpassFile = "/etc/nextcloud-admin-pass";
+      extraTrustedDomains = ["192.168.178.200"];
+    };
+  };
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
