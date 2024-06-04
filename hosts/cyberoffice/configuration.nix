@@ -57,8 +57,8 @@
     hostName = "localhost";
     config = {
       adminpassFile = "/etc/nextcloud-admin-pass";
-      extraTrustedDomains = ["192.168.178.200"];
     };
+    settings.trusted_domains = ["192.168.178.200"];
   };
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

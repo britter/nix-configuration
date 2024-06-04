@@ -38,7 +38,7 @@ in {
     };
     services.gpg-agent = {
       enable = pkgs.hostPlatform.isLinux;
-      pinentryFlavor = "gnome3";
+      pinentryPackage = pkgs.pinentry-gnome3;
     };
   };
 }

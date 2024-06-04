@@ -13,14 +13,16 @@ in {
   config = lib.mkIf cfg.enable {
     services.xserver = {
       enable = true;
-      layout = "us";
-      xkbVariant = "";
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
       displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
-
-      # Enable touchpad support
-      libinput.enable = true;
     };
+
+    # Enable touchpad support
+    services.libinput.enable = true;
 
     environment.gnome.excludePackages =
       (with pkgs; [
@@ -30,7 +32,6 @@ in {
       ++ (with pkgs.gnome; [
         cheese # webcam tool
         gnome-music
-        gedit # text editor
         epiphany # web browser
         geary # email reader
         gnome-characters
