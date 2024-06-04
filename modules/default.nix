@@ -30,6 +30,7 @@ in {
       _1password.enable = cfg.role == "desktop";
       gnome.enable = cfg.role == "desktop";
       sound.enable = cfg.role == "desktop";
+      my-user.enable = cfg.role == "desktop";
 
       # enabled only on private desktops
       gaming.enable = cfg.role == "desktop" && (builtins.elem "private" cfg.profiles);
