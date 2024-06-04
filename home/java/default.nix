@@ -8,7 +8,6 @@
 in {
   imports = [
     ./helix-java-support.nix
-    ../gradle
   ];
 
   options.my.home.java = {
