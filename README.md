@@ -99,26 +99,7 @@ nix flake show <flake url>
 6. Repace `/etc/nixos` with a symbolic link to cloned repository.
 7. Run `sudo nixos-rebuild switch --flake` to enable the flake based configuration for the new machine.
 
-### macOS
-
-1. Install nix using the [Determinate Systems nix installer](https://github.com/DeterminateSystems/nix-installer).
-2. Clone this repository using a nix shell that has git `nix shell nixpkgs#git`
-3. Create a new folder under `hosts` that's names after the host.
-4. Initialize a new configuration from the [examples in the nix-darwin repository](https://github.com/LnL7/nix-darwin/tree/19f75c2b45fbfc307ecfeb9dadc41a4c1e4fb980/modules/examples).
-5. Add the new machine to `flake.nix`. Make sure the machine's host name and darwinConfiguration name match.
-6. Inside the repository clone, run `nix run nix-darwin --extra-experimental-features 'nix-command flake' darwin-rebuild -- switch --flake .` (See for resolution of https://github.com/LnL7/nix-darwin/issues/721 in order to run darwin-rebuild from anywhere after that).
-7. Apply the workaround documented in https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1782971499 is the issue is still unresolved.
-
-### Raspberry Pi
-
-This is the description for a network install that does not require the Raspberry Pi to be connected to a display.
-Instead it's sufficient to connet it to the network via ethernet cable and ssh into the machine.
-The SD card image will setup the root account and a user called `nixos` without password.
-However the SSH service is configred to not accept empty passwords.
-So in order to login via SSH, you need to pre-load your SSH key into the authorized_keys file of either the root user or the `nixos` user.
-The first step is to download the bootable SD card image from the Hydra build system, see [this nixos.wiki entry](https://nixos.wiki/wiki/NixOS_on_ARM#Installation).
-
-### VM
+### VMs
 
 Optional: Build a new VM image if changes are required
 
@@ -145,7 +126,26 @@ nixos-rebuild switch --fast --flake .#<host-config> \
 
 See https://www.haskellforall.com/2023/01/announcing-nixos-rebuild-new-deployment.html
 
-**Pre-load an SSH key into the image**
+### macOS
+
+1. Install nix using the [Determinate Systems nix installer](https://github.com/DeterminateSystems/nix-installer).
+2. Clone this repository using a nix shell that has git `nix shell nixpkgs#git`
+3. Create a new folder under `hosts` that's names after the host.
+4. Initialize a new configuration from the [examples in the nix-darwin repository](https://github.com/LnL7/nix-darwin/tree/19f75c2b45fbfc307ecfeb9dadc41a4c1e4fb980/modules/examples).
+5. Add the new machine to `flake.nix`. Make sure the machine's host name and darwinConfiguration name match.
+6. Inside the repository clone, run `nix run nix-darwin --extra-experimental-features 'nix-command flake' darwin-rebuild -- switch --flake .` (See for resolution of https://github.com/LnL7/nix-darwin/issues/721 in order to run darwin-rebuild from anywhere after that).
+7. Apply the workaround documented in https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1782971499 is the issue is still unresolved.
+
+### Raspberry Pi
+
+This is the description for a network install that does not require the Raspberry Pi to be connected to a display.
+Instead it's sufficient to connet it to the network via ethernet cable and ssh into the machine.
+The SD card image will setup the root account and a user called `nixos` without password.
+However the SSH service is configred to not accept empty passwords.
+So in order to login via SSH, you need to pre-load your SSH key into the authorized_keys file of either the root user or the `nixos` user.
+The first step is to download the bootable SD card image from the Hydra build system, see [this nixos.wiki entry](https://nixos.wiki/wiki/NixOS_on_ARM#Installation).
+
+#### Pre-load an SSH key into the image
 
 1. Use `nix run nixpkgs#parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
 2. Mount the image file into a local directory by running
@@ -169,7 +169,7 @@ sudo chmod 600 img/home/nixos/authorized_keys
 5. Unmount the image via `sudo umount img`
 6. Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager and write the image to the SD card.
 
-**After first boot**
+#### After first boot
 
 1. Once the key is on the device, ssh into it as the `nixos` user.
 2. Run `sudo nixos-generate-config` to generate the initial configuration.
