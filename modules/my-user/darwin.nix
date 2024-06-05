@@ -18,5 +18,6 @@ in {
       home = "/Users/${cfg.name}";
       shell = pkgs.fish;
     };
+    my.modules.home-manager.enable = true;
   };
 }
