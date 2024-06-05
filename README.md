@@ -103,7 +103,7 @@ nix flake show <flake url>
 
 1. Install nix using the [Determinate Systems nix installer](https://github.com/DeterminateSystems/nix-installer).
 2. Clone this repository using a nix shell that has git `nix shell nixpkgs#git`
-3. Create a new folder uder `hosts` that's names after the host.
+3. Create a new folder under `hosts` that's names after the host.
 4. Initialize a new configuration from the [examples in the nix-darwin repository](https://github.com/LnL7/nix-darwin/tree/19f75c2b45fbfc307ecfeb9dadc41a4c1e4fb980/modules/examples).
 5. Add the new machine to `flake.nix`. Make sure the machine's host name and darwinConfiguration name match.
 6. Inside the repository clone, run `nix run nix-darwin --extra-experimental-features 'nix-command flake' darwin-rebuild -- switch --flake .` (See for resolution of https://github.com/LnL7/nix-darwin/issues/721 in order to run darwin-rebuild from anywhere after that).
@@ -139,8 +139,8 @@ nix run nix run github:nix-community/nixos-anywhere -- --flake '.#<host-config>'
 
 ```shell
 nixos-rebuild switch --fast --flake .#<host-config> \
-    --target-host nixos@<host-ip> \
-    --build-host nixos@<host-ip>
+    --target-host root@<host-ip> \
+    --build-host root@<host-ip>
 ```
 
 See https://www.haskellforall.com/2023/01/announcing-nixos-rebuild-new-deployment.html
