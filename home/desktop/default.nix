@@ -23,6 +23,7 @@ in {
     home.packages = with pkgs; [
       jetbrains.idea-community
       fractal-next
+      logseq
     ];
 
     my.home.desktop = {
