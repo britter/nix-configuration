@@ -59,6 +59,7 @@
       in
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
+          specialArgs = {inherit inputs;};
           modules = [
             ./hosts/latitude-7280/configuration.nix
           ];

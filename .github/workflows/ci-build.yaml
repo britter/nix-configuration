@@ -1,0 +1,35 @@
+name: "CI Build"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-x86:
+    name: Build x86 systems
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        configuration: ["pulse-14", "latitude-7280", "cyberoffice"]
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@main
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel
+  build-iso:
+    name: Build ISOs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix build .#nixosConfigurations.minimalServerIso.config.system.build.isoImage
+  build-darwin:
+    name: Build darwin systems
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - run: nix build .#darwinConfigurations.WQ0C6FWJ1W.config.system.build.toplevel
