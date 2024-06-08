@@ -25,6 +25,11 @@
     };
 
     flake-utils.url = "github:numtide/flake-utils";
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {self, ...} @ inputs:
@@ -32,8 +37,12 @@
       pkgs = inputs.nixpkgs.legacyPackages.${system};
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
       my-pkgs = self.outputs.packages.${system};
+      treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
     in {
-      formatter = pkgs.alejandra;
+      formatter = treefmtEval.config.build.wrapper;
+      checks = {
+        formatting = treefmtEval.config.build.check self;
+      };
       packages = import ./packages {inherit pkgs;};
       overlays = import ./overlays {
         inherit pkgs-unstable;
