@@ -5,7 +5,7 @@
   ...
 }: let
   cfg = config.my.modules.disko;
-  role = config.my.host.role;
+  inherit (config.my.host) role;
 in {
   imports = [
     inputs.disko.nixosModules.disko
@@ -33,7 +33,7 @@ in {
         disko.devices =
           (import ./btrfs-luks.nix {
             device = cfg.disk;
-            swapSize = cfg.swapSize;
+            inherit (cfg) swapSize;
           })
           .disko
           .devices;

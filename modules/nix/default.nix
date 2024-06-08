@@ -4,8 +4,8 @@
   inputs,
   ...
 }: let
-  system = config.my.host.system;
-  allowedUnfreePkgs = config.my.modules.allowedUnfreePkgs;
+  inherit (config.my.host) system;
+  inherit (config.my.modules) allowedUnfreePkgs;
 in {
   config = {
     nix = {
