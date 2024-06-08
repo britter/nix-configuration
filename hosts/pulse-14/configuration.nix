@@ -28,6 +28,10 @@
     };
   };
 
+  # Use latest Kernel to work around a problem with the device not
+  # powering off since Kernel v6.1.91
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   services.printing.enable = true;
 
   services.xserver.videoDrivers = ["amdgpu"];
