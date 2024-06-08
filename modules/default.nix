@@ -1,8 +1,5 @@
 {
   config,
-  lib,
-  pkgs,
-  inputs,
   ...
 }: let
   cfg = config.my.host;
