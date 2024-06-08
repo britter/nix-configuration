@@ -1,11 +1,9 @@
 {
   config,
-  lib,
-  pkgs,
   osConfig,
   ...
 }: let
-  profiles = osConfig.my.host.profiles;
+  inherit (osConfig.my.host) profiles;
 in {
   imports = [
     ./private.nix

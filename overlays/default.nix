@@ -1,13 +1,8 @@
 {
   pkgs-unstable,
   my-pkgs,
-}: [
-  (
-    import
-    ./packages-from-unstable
-    {inherit pkgs-unstable;}
-  )
-  (import
-    ./my-pkgs
-    {inherit my-pkgs;})
-]
+}: _final: _prev:
+{
+  inherit (pkgs-unstable) jetbrains;
+}
+// my-pkgs

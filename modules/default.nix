@@ -1,10 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  inputs,
-  ...
-}: let
+{config, ...}: let
   cfg = config.my.host;
 in {
   imports = [

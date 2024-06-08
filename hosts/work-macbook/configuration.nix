@@ -1,6 +1,5 @@
 {
   lib,
-  pkgs,
   inputs,
   ...
 }: {
@@ -29,7 +28,7 @@
     system = "aarch64-darwin";
   in {
     hostPlatform = lib.mkDefault system;
-    overlays = inputs.self.overlays.${system};
+    overlays = [inputs.self.overlays.${system}];
     config.allowUnfreePredicate = pkg:
       builtins.elem (lib.getName pkg) [
         "terraform"

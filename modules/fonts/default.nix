@@ -15,7 +15,7 @@ in {
   };
   config = lib.mkIf cfg.enable {
     fonts.packages = with pkgs; [
-      (nerdfonts.override {fonts = cfg.fonts;})
+      (nerdfonts.override {inherit (cfg) fonts;})
     ];
   };
 }

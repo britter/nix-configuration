@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   inputs,
   ...
@@ -14,7 +13,7 @@ in {
 
   config = {
     users.users.${cfg.name} = {
-      name = cfg.name;
+      inherit (cfg) name;
       home = "/Users/${cfg.name}";
       shell = pkgs.fish;
     };

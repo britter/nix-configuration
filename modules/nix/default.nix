@@ -1,12 +1,11 @@
 {
   config,
   lib,
-  pkgs,
   inputs,
   ...
 }: let
-  system = config.my.host.system;
-  allowedUnfreePkgs = config.my.modules.allowedUnfreePkgs;
+  inherit (config.my.host) system;
+  inherit (config.my.modules) allowedUnfreePkgs;
 in {
   config = {
     nix = {
@@ -23,7 +22,7 @@ in {
 
     nixpkgs = {
       hostPlatform = lib.mkDefault system;
-      overlays = inputs.self.overlays.${system};
+      overlays = [inputs.self.overlays.${system}];
       config.allowUnfreePredicate = pkg:
         builtins.elem (lib.getName pkg) allowedUnfreePkgs;
     };
