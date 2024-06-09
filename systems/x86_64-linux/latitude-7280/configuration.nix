@@ -1,9 +1,8 @@
 {inputs, ...}: {
   imports = [
     inputs.nixos-hardware.nixosModules.dell-latitude-7280
-    inputs.home-manager.nixosModules.home-manager
     ./hardware-configuration.nix
-    ../../modules
+    ../../../modules
   ];
 
   my = {

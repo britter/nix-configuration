@@ -4,8 +4,7 @@
   ...
 }: {
   imports = [
-    ../../modules
-    ../../modules/disko
+    ../../../modules
   ];
 
   my = {

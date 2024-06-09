@@ -60,7 +60,7 @@
           inherit system;
           specialArgs = {inherit inputs;};
           modules = [
-            ./hosts/pulse-14/configuration.nix
+            ./systems/x86_64-linux/pulse-14/configuration.nix
           ];
         };
       nixosConfigurations.latitude-7280 = let
@@ -70,7 +70,7 @@
           inherit system;
           specialArgs = {inherit inputs;};
           modules = [
-            ./hosts/latitude-7280/configuration.nix
+            ./systems/x86_64-linux/latitude-7280/configuration.nix
           ];
         };
       # -----------------------------------------------------------------------
@@ -83,7 +83,7 @@
           inherit system;
           specialArgs = {inherit inputs;};
           modules = [
-            ./hosts/raspberry-pi/configuration.nix
+            ./systems/aarch64-linux/raspberry-pi/configuration.nix
           ];
         };
       nixosConfigurations.cyberoffice = let
@@ -93,7 +93,7 @@
           inherit system;
           specialArgs = {inherit inputs;};
           modules = [
-            ./hosts/cyberoffice/configuration.nix
+            ./systems/x86_64-linux/cyberoffice/configuration.nix
           ];
         };
       # -----------------------------------------------------------------------
@@ -106,7 +106,7 @@
           inherit system;
           specialArgs = {inherit inputs;};
           modules = [
-            ./isos/minimal-server-iso/configuration.nix
+            ./systems/x86_64-linux/minimal-server-iso/configuration.nix
           ];
         };
       # -----------------------------------------------------------------------
@@ -119,7 +119,7 @@
           inherit system;
           specialArgs = {inherit inputs;};
           modules = [
-            ./hosts/work-macbook/configuration.nix
+            ./systems/aarch64-darwin/work-macbook/configuration.nix
           ];
         };
     };

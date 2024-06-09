@@ -4,9 +4,9 @@
   ...
 }: {
   imports = [
-    ../../modules/my-user/darwin.nix
-    ../../modules/common/options
-    ../../modules/common/utilities
+    ../../../modules/my-user/darwin.nix
+    ../../../modules/common/options
+    ../../../modules/common/utilities
   ];
 
   my = {
