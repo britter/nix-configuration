@@ -26,6 +26,8 @@ in {
     # unfree packages used in home-manager configuration
     my.modules.allowedUnfreePkgs = [
       "terraform"
+      # Firefox browser extension
+      "onepassword-password-manager"
     ];
   };
 }

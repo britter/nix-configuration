@@ -12,6 +12,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nur.url = "github:nix-community/NUR";
+
     catppuccin.url = "github:catppuccin/nix";
 
     disko = {
@@ -47,6 +49,7 @@
       overlays = import ./overlays {
         inherit pkgs-unstable;
         inherit my-pkgs;
+        inherit (inputs) nur;
       };
     })
     // {
