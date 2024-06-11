@@ -10,7 +10,6 @@
 in {
   imports = [
     inputs.home-manager.nixosModules.home-manager
-    ../common/home-manager
   ];
   options.my.modules.my-user = {
     enable = lib.mkEnableOption "my-user";

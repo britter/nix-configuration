@@ -2,10 +2,9 @@
   cfg = config.my.host;
 in {
   imports = [
+    ../common
     ./1password
     ./adguard
-    ./common/options
-    ./common/utilities
     ./disko
     ./fonts
     ./gaming

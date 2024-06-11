@@ -4,7 +4,7 @@
   ...
 }: {
   imports = [
-    ../../../modules
+    ../../../modules/nixos
   ];
 
   my = {

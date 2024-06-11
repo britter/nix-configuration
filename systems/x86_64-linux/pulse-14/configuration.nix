@@ -6,7 +6,7 @@
   imports = [
     inputs.nixos-hardware.nixosModules.tuxedo-pulse-14-gen3
     ./hardware-configuration.nix
-    ../../../modules
+    ../../../modules/nixos
   ];
 
   my = {

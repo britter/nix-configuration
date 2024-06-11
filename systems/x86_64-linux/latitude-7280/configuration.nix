@@ -2,7 +2,7 @@
   imports = [
     inputs.nixos-hardware.nixosModules.dell-latitude-7280
     ./hardware-configuration.nix
-    ../../../modules
+    ../../../modules/nixos
   ];
 
   my = {
