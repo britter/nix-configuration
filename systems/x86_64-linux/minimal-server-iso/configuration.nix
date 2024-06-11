@@ -16,7 +16,7 @@
   ];
 
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce ["multi-user.target"];
-  users.users.root.openssh.authorizedKeys.keyFiles = [./bene_rsa.pub];
+  users.users.root.openssh.authorizedKeys.keyFiles = [./id_ed25519.pub];
 
   networking = {
     usePredictableInterfaceNames = false;
