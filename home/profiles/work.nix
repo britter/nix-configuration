@@ -25,11 +25,6 @@ in {
       kubernetes-helm
       kustomize
       shellcheck
-      terraform
-    ];
-
-    programs.helix.extraPackages = with pkgs; [
-      terraform-ls
     ];
 
     programs.fish.shellAliases = {
