@@ -11,9 +11,9 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [
-      pkgs.terraform
-    ];
+    home.packages =
+      lib.optionals config.my.home.profiles.private.enable [pkgs.terraform]
+      ++ lib.optionals config.my.home.profiles.work.enable [pkgs.terraform-versions."1.4.7"];
 
     programs.helix.extraPackages = with pkgs; [
       terraform-ls

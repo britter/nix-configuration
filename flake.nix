@@ -32,6 +32,8 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nixpkgs-terraform.url = "github:stackbuilders/nixpkgs-terraform";
   };
 
   outputs = {self, ...} @ inputs:
@@ -50,6 +52,7 @@
         inherit pkgs-unstable;
         inherit my-pkgs;
         inherit (inputs) nur;
+        inherit (inputs) nixpkgs-terraform;
       };
     })
     // {
