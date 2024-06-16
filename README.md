@@ -88,6 +88,10 @@ nix flake show <flake url>
 ```
 ### Secrets management with sops
 
+- https://github.com/Mic92/sops-nix
+- https://github.com/getsops/sops
+- https://www.youtube.com/watch?v=G5f6GC7SnhU
+
 **Generating a key from SSH key**
 
 ```shell
