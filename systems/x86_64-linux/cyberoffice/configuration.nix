@@ -65,6 +65,15 @@
       adminpassFile = config.sops.secrets.nextcloud-admin-pass.path;
     };
     settings.trusted_domains = ["192.168.178.200"];
+    extraApps = {
+      inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts cookbook deck memories;
+      news = pkgs.fetchNextcloudApp {
+        sha256 = "sha256-cfJkKRNSz15L4E3w1tnEb+t4MrVwVzb8lb6vCOA4cK4=";
+        url = "https://github.com/nextcloud/news/releases/download/24.0.0/news.tar.gz";
+        license = "agpl3Plus";
+      };
+    };
+    extraAppsEnable = true;
   };
 
   # TODO extract this into a server module
