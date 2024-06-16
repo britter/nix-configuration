@@ -1,10 +1,12 @@
 {
   config,
   pkgs,
+  inputs,
   ...
 }: {
   imports = [
     ../../../modules/nixos
+    inputs.sops-nix.nixosModules.sops
   ];
 
   my = {
@@ -47,16 +49,23 @@
     };
   };
 
-  environment.etc."nextcloud-admin-pass".text = "test-installation-PWD";
+  sops.defaultSopsFile = ./secrets.yaml;
+  # This will automatically import SSH keys as age keys
+  sops.age.sshKeyPaths = ["/etc/ssh/cyberoffice_sops_id_ed25519"];
+  sops.secrets.nextcloud-admin-pass = {
+    owner = "nextcloud";
+  };
+
   services.nextcloud = {
     enable = true;
     package = pkgs.nextcloud29;
     hostName = "localhost";
     config = {
-      adminpassFile = "/etc/nextcloud-admin-pass";
+      adminpassFile = config.sops.secrets.nextcloud-admin-pass.path;
     };
     settings.trusted_domains = ["192.168.178.200"];
   };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

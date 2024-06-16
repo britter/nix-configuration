@@ -86,6 +86,35 @@ nix flake update --commit-lock-file
 ```shell
 nix flake show <flake url>
 ```
+### Secrets management with sops
+
+**Generating a key from SSH key**
+
+```shell
+# generate new key at ~/.config/sops/age/keys.txt from private ssh key at ~/.ssh/private
+$ nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/private > ~/.config/sops/age/keys.txt
+```
+
+**Getting the public key for an existing age key**
+
+```shell
+# get a public key of ~/.config/sops/age/keys.txt
+nix shell nixpkgs#age --command age-keygen -y ~/.config/sops/age/keys.txt
+```
+
+**Editing a sops file**
+
+```shell
+nix run nixpkgs#sops -- path/to/secrets.yaml
+```
+
+**Rotating a key in  a sops file**
+
+Modify `.sops.yaml` and update the key.
+
+```shell
+nix run nixpkgs#sops -- updatekeys path/to/secrets.yaml
+```
 
 ## Initializing a new machine
 
@@ -113,10 +142,19 @@ nix build .#nixosConfigurations.minimalServerIso.config.system.build.isoImage
 1. Install the VM using [nix-anywhere](https://github.com/nix-community/nix-anywhere) by running
 
 ```shell
-nix run nix run github:nix-community/nixos-anywhere -- --flake '.#<host-config>' root@192.168.178.199
+nix run github:nix-community/nixos-anywhere -- --flake '.#<host-config>' root@192.168.178.199
 ```
 
-1. Redeploy the machine remotely via
+In case, the machine uses sops secrets, the key needs to be sent to the host during setup.
+Either use an existing setup script in `scripts/` or create a new one based on the others.
+Then run the script from a shell that has `nixos-anywhere`:
+
+```shell
+nix shell github:nix-community/nixos-anywhere
+./scripts/setup-<host>.sh
+```
+
+Redeploy the machine remotely via
 
 ```shell
 nixos-rebuild switch --fast --flake .#<host-config> \
