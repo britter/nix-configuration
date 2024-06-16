@@ -15,6 +15,26 @@
         "type": "github"
       }
     },
+    "comin": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1717967227,
+        "narHash": "sha256-QOd9ASEEgchU8PKqYP5HyGvhorq3fcTL0en0HkJgbmQ=",
+        "owner": "nlewo",
+        "repo": "comin",
+        "rev": "385a998581a3fcc72111e2185627a4fe7ab54ee2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nlewo",
+        "repo": "comin",
+        "type": "github"
+      }
+    },
     "config": {
       "locked": {
         "dir": "templates/config",
@@ -299,6 +319,7 @@
     "root": {
       "inputs": {
         "catppuccin": "catppuccin",
+        "comin": "comin",
         "disko": "disko",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",

@@ -22,6 +22,10 @@
     };
 
     sops-nix.url = "github:Mic92/sops-nix";
+    comin = {
+      url = "github:nlewo/comin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     nix-darwin = {
       url = "github:LnL7/nix-darwin";

@@ -7,6 +7,7 @@
   imports = [
     ../../../modules/nixos
     inputs.sops-nix.nixosModules.sops
+    inputs.comin.nixosModules.comin
   ];
 
   my = {
@@ -64,6 +65,17 @@
       adminpassFile = config.sops.secrets.nextcloud-admin-pass.path;
     };
     settings.trusted_domains = ["192.168.178.200"];
+  };
+
+  # TODO extract this into a server module
+  services.comin = {
+    enable = true;
+    remotes = [
+      {
+        name = "origin";
+        url = "https://github.com/britter/nix-configuration.git";
+      }
+    ];
   };
 
   # This value determines the NixOS release from which the default
