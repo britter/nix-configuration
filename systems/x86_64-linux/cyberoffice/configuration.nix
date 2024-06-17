@@ -53,7 +53,7 @@
 
   sops.defaultSopsFile = ./secrets.yaml;
   # This will automatically import SSH keys as age keys
-  sops.age.sshKeyPaths = ["/etc/ssh/cyberoffice_sops_id_ed25519"];
+  sops.age.sshKeyPaths = ["/etc/ssh/ssh_host_ed25519_key"];
   sops.secrets.nextcloud-admin-pass = {
     owner = "nextcloud";
   };

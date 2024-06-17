@@ -1,6 +1,17 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#! nix-shell -i bash --pure
+#! nix-shell -p nixos-anywhere -I nixos-anywhere=https://github.com/nix-community/nixos-anywhere
+set -e
 
 # Source (with modifications): https://github.com/nix-community/nixos-anywhere/blob/46dc28f4f89b747084c7dd6d273b1278142220ce/docs/howtos/secrets.md
+
+# Capture host to configure
+if [ -z "$1" ]; then
+  echo "Please provide the host to setup as an argument!"
+  exit 1
+fi
+
+host="$1"
 
 # Create a temporary directory
 temp=$(mktemp -d)
@@ -15,10 +26,10 @@ trap cleanup EXIT
 install -d -m755 "$temp/etc/ssh"
 
 # copy private ket to the temporary directory
-cp ~/.ssh/cyberoffice_sops_id_ed25519 "$temp/etc/ssh/"
+cp "$HOME/.ssh/ssh_${host}_ed25519_key" "$temp/etc/ssh/ssh_host_ed25519_key"
 
 # Set the correct permissions so sshd will accept the key
-chmod 600 "$temp/etc/ssh/cyberoffice_sops_id_ed25519"
+chmod 600 "$temp/etc/ssh/ssh_host_ed25519_key"
 
 # Install NixOS to the host system with our secrets
-nixos-anywhere --extra-files "$temp" --flake '.#cyberoffice' root@192.168.178.199
+nixos-anywhere --extra-files "$temp" --flake ".#$host" root@192.168.178.199
