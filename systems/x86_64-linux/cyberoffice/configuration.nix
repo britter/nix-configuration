@@ -16,6 +16,7 @@
       system = "x86_64-linux";
       role = "server";
     };
+    # TODO make the user module optional. Servers don't need a dedicated user
     user = {
       # default name baked into the ISO image
       name = "nixos";
