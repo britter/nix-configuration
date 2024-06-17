@@ -67,6 +67,11 @@
     settings.trusted_domains = ["192.168.178.200"];
     extraApps = {
       inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts cookbook deck memories;
+      news = pkgs.fetchNextcloudApp {
+        url = "https://github.com/nextcloud/news/releases/download/25.0.0-alpha7/news.tar.gz";
+        sha256 = "sha256-XNGjf7SWgJYFdVNOh3ED0jxSG0GJwWImVQq4cJT1Lo4=";
+        license = "agpl3Plus";
+      };
     };
     extraAppsEnable = true;
   };
