@@ -12,6 +12,9 @@ if [ -z "$1" ]; then
 fi
 
 host="$1"
+ip="${2:-192.168.178.199}"
+
+echo "Setting up $host via $ip..."
 
 # Create a temporary directory
 temp=$(mktemp -d)
@@ -32,4 +35,6 @@ cp "$HOME/.ssh/ssh_${host}_ed25519_key" "$temp/etc/ssh/ssh_host_ed25519_key"
 chmod 600 "$temp/etc/ssh/ssh_host_ed25519_key"
 
 # Install NixOS to the host system with our secrets
-nixos-anywhere --extra-files "$temp" --flake ".#$host" root@192.168.178.199
+nixos-anywhere --extra-files "$temp" --flake ".#$host" "root@$ip"
+
+echo "Done setting up $host via $ip!"
