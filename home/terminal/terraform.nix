@@ -8,12 +8,11 @@
 in {
   options.my.home.terminal.terraform = {
     enable = lib.mkEnableOption "terraform";
+    package = lib.mkPackageOption pkgs "terraform" {};
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages =
-      lib.optionals config.my.home.profiles.private.enable [pkgs.terraform]
-      ++ lib.optionals config.my.home.profiles.work.enable [pkgs.terraform-versions."1.4.7"];
+    home.packages = [cfg.package];
 
     programs.helix.extraPackages = with pkgs; [
       terraform-ls
