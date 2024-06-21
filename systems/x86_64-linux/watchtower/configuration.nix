@@ -60,11 +60,23 @@
     ];
   };
 
+  services.nginx = {
+    enable = true;
+    virtualHosts."grafana.ritter.family" = {
+      serverAliases = ["grafana.*"];
+      locations."/" = {
+        proxyWebsockets = true;
+        recommendedProxySettings = true;
+        proxyPass = "http://localhost:3000";
+      };
+    };
+  };
+
   services.grafana = {
     enable = true;
     settings = {
       server = {
-        domain = "192.168.178.210";
+        domain = "grafana.ritter.family";
       };
     };
     provision = {

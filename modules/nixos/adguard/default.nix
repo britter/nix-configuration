@@ -133,6 +133,10 @@ in {
               domain = "*.home.arpa";
               answer = "192.168.178.105";
             }
+            {
+              domain = "grafana.ritter.family";
+              answer = "192.168.178.210";
+            }
           ];
         };
       };
