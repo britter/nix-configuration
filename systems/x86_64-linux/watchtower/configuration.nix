@@ -56,6 +56,47 @@
     ];
   };
 
+  services.grafana = {
+    enable = true;
+    settings = {
+    };
+    provision = {
+      enable = true;
+      datasources.settings = {
+        apiVersion = 1;
+        datasources = [
+          {
+            name = "Prometheus";
+            type = "prometheus";
+            uid = "Prometheus1";
+            # TODO reference prometheus service configuration
+            url = "http://localhost:9090";
+          }
+        ];
+      };
+    };
+  };
+
+  # See https://wiki.nixos.org/wiki/Prometheus
+  services.prometheus = {
+    enable = true;
+    # keep data for 90 days
+    extraFlags = ["--storage.tsdb.retention.time=90d"];
+    exporters.node = {
+      enable = true;
+    };
+    scrapeConfigs = [
+      {
+        job_name = "node";
+        static_configs = [
+          {
+            targets = ["localhost:9100"];
+          }
+        ];
+      }
+    ];
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
