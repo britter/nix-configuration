@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  config,
+  inputs,
+  ...
+}: {
   imports = [
     ../../../modules/nixos
     inputs.comin.nixosModules.comin
@@ -41,7 +45,7 @@
     defaultGateway = "192.168.178.1";
     nameservers = ["192.168.178.105"];
     firewall = {
-      allowedTCPPorts = [80 443];
+      allowedTCPPorts = [80 443 config.services.grafana.settings.server.http_port];
     };
   };
 
@@ -59,6 +63,9 @@
   services.grafana = {
     enable = true;
     settings = {
+      server = {
+        domain = "192.168.178.210";
+      };
     };
     provision = {
       enable = true;
