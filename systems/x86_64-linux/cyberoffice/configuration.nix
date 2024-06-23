@@ -61,11 +61,10 @@
   services.nextcloud = {
     enable = true;
     package = pkgs.nextcloud29;
-    hostName = "localhost";
+    hostName = "nextcloud.ritter.family";
     config = {
       adminpassFile = config.sops.secrets.nextcloud-admin-pass.path;
     };
-    settings.trusted_domains = ["192.168.178.200"];
     extraApps = {
       inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts cookbook deck memories richdocuments;
       news = pkgs.fetchNextcloudApp {

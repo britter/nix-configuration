@@ -137,6 +137,10 @@ in {
               domain = "grafana.ritter.family";
               answer = "192.168.178.210";
             }
+            {
+              domain = "nextcloud.ritter.family";
+              answer = "192.168.178.200";
+            }
           ];
         };
       };
