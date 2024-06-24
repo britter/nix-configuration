@@ -5,11 +5,17 @@
 }: let
   cfg = config.my.modules.grafana;
 in {
+  imports = [
+    ./prometheus.nix
+  ];
+
   options.my.modules.grafana = {
     enable = lib.mkEnableOption "grafana";
   };
 
   config = lib.mkIf cfg.enable {
+    my.modules.grafana.prometheus.enable = true;
+
     networking = {
       firewall = {
         allowedTCPPorts = [80 443 config.services.grafana.settings.server.http_port];
@@ -50,27 +56,6 @@ in {
           ];
         };
       };
-    };
-
-    # See https://wiki.nixos.org/wiki/Prometheus
-    services.prometheus = {
-      enable = true;
-      # keep data for 90 days
-      extraFlags = ["--storage.tsdb.retention.time=90d"];
-      scrapeConfigs = [
-        {
-          job_name = "node";
-          static_configs = [
-            {
-              targets = [
-                "localhost:9100"
-                "${config.my.homelab.cyberoffice.ip}:9100"
-                "${config.my.homelab.raspberry-pi.ip}:9100"
-              ];
-            }
-          ];
-        }
-      ];
     };
   };
 }
