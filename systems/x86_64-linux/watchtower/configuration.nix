@@ -14,6 +14,7 @@
         enable = true;
         disk = "/dev/sda";
       };
+      monitoring.openFirewall = false;
     };
   };
 
@@ -68,15 +69,16 @@
     enable = true;
     # keep data for 90 days
     extraFlags = ["--storage.tsdb.retention.time=90d"];
-    exporters.node = {
-      enable = true;
-    };
     scrapeConfigs = [
       {
         job_name = "node";
         static_configs = [
           {
-            targets = ["localhost:9100"];
+            targets = [
+              "localhost:9100"
+              "${config.my.homelab.cyberoffice.ip}:9100"
+              "${config.my.homelab.raspberry-pi.ip}:9100"
+            ];
           }
         ];
       }

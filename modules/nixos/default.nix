@@ -12,6 +12,7 @@ in {
     ./gnome
     ./homelab
     ./i18n
+    ./monitoring
     ./my-user
     ./networking
     ./nix
@@ -32,6 +33,7 @@ in {
 
       # enabled only on servers
       comin.enable = cfg.role == "server";
+      monitoring.enable = cfg.role == "server";
       ssh-access.enable = cfg.role == "server";
 
       # enabled on all machines by default
