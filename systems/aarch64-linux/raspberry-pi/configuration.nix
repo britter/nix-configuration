@@ -3,7 +3,6 @@
     ../../../modules/nixos
     ./hardware-configuration.nix
     inputs.nixos-hardware.nixosModules.raspberry-pi-4
-    inputs.comin.nixosModules.comin
   ];
 
   my = {
@@ -23,16 +22,6 @@
   boot.loader = {
     grub.enable = false;
     generic-extlinux-compatible.enable = true;
-  };
-
-  services.comin = {
-    enable = true;
-    remotes = [
-      {
-        name = "origin";
-        url = "https://github.com/britter/nix-configuration.git";
-      }
-    ];
   };
 
   # This value determines the NixOS release from which the default

@@ -1,11 +1,6 @@
-{
-  config,
-  inputs,
-  ...
-}: {
+{config, ...}: {
   imports = [
     ../../../modules/nixos
-    inputs.comin.nixosModules.comin
   ];
 
   my = {
@@ -47,17 +42,6 @@
     firewall = {
       allowedTCPPorts = [80 443 config.services.grafana.settings.server.http_port];
     };
-  };
-
-  # TODO extract this into a server module
-  services.comin = {
-    enable = true;
-    remotes = [
-      {
-        name = "origin";
-        url = "https://github.com/britter/nix-configuration.git";
-      }
-    ];
   };
 
   services.nginx = {

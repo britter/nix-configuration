@@ -5,6 +5,7 @@ in {
     ../common
     ./1password
     ./adguard
+    ./comin
     ./disko
     ./fonts
     ./gaming
@@ -29,6 +30,7 @@ in {
       gaming.enable = cfg.role == "desktop" && (builtins.elem "private" cfg.profiles);
 
       # enabled only on servers
+      comin.enable = cfg.role == "server";
       ssh-access.enable = cfg.role == "server";
 
       # enabled on all machines by default
