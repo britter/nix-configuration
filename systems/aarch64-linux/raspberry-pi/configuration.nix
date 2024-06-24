@@ -12,11 +12,6 @@
       ip = "192.168.178.105";
       role = "server";
     };
-    user = {
-      # default name baked into the ARM ISO image
-      name = "nixos";
-      signingKey = "92166C2B83447076";
-    };
     modules.adguard.enable = true;
   };
 
