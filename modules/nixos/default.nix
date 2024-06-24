@@ -10,6 +10,7 @@ in {
     ./fonts
     ./gaming
     ./gnome
+    ./grafana
     ./homelab
     ./i18n
     ./monitoring
