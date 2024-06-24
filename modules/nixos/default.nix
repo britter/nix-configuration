@@ -10,6 +10,7 @@ in {
     ./fonts
     ./gaming
     ./gnome
+    ./homelab
     ./i18n
     ./my-user
     ./networking

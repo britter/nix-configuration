@@ -11,10 +11,6 @@
       system = mkOption {
         type = types.enum inputs.flake-utils.lib.allSystems;
       };
-      ip = mkOption {
-        type = types.nullOr types.str;
-        default = null;
-      };
       role = mkOption {
         type = types.enum ["desktop" "server"];
         description = "The role this machine has";

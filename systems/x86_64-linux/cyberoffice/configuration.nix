@@ -13,7 +13,6 @@
     host = {
       name = "cyberoffice";
       system = "x86_64-linux";
-      ip = "192.168.178.200";
       role = "server";
     };
     modules = {

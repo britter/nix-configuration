@@ -7,7 +7,6 @@
     host = {
       name = "watchtower";
       system = "x86_64-linux";
-      ip = "192.168.178.210";
       role = "server";
     };
     modules = {

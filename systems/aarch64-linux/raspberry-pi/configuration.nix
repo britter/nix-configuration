@@ -9,7 +9,6 @@
     host = {
       name = "raspberry-pi";
       system = "aarch64-linux";
-      ip = "192.168.178.105";
       role = "server";
     };
     modules.adguard.enable = true;
