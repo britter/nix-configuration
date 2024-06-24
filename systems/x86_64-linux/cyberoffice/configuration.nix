@@ -13,6 +13,7 @@
     host = {
       name = "cyberoffice";
       system = "x86_64-linux";
+      ip = "192.168.178.200";
       role = "server";
     };
     # TODO make the user module optional. Servers don't need a dedicated user
@@ -34,17 +35,7 @@
   boot.initrd.availableKernelModules = ["ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod"];
   services.qemuGuest.enable = true;
 
-  # TODO extract this into a module. Make IP address part of my.host
   networking = {
-    usePredictableInterfaceNames = false;
-    interfaces.eth0.ipv4.addresses = [
-      {
-        address = "192.168.178.200";
-        prefixLength = 24;
-      }
-    ];
-    defaultGateway = "192.168.178.1";
-    nameservers = ["192.168.178.105"];
     firewall = {
       allowedTCPPorts = [80 443];
     };
