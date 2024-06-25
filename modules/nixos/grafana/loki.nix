@@ -61,12 +61,9 @@ in {
         };
 
         limits_config = {
+          allow_structured_metadata = false;
           reject_old_samples = true;
           reject_old_samples_max_age = "168h";
-        };
-
-        chunk_store_config = {
-          max_look_back_period = "0s";
         };
 
         table_manager = {
