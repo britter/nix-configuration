@@ -23,6 +23,10 @@ in {
     services.promtail = {
       enable = true;
       configuration = {
+        server = {
+          http_listen_port = 80;
+          grpc_listen_port = 0;
+        };
         clients = [
           {
             url = "http://${homelabCfg.watchtower.ip}:3100/loki/api/v1/push";
