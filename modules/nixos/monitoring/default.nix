@@ -24,7 +24,7 @@ in {
       enable = true;
       configuration = {
         server = {
-          http_listen_port = 80;
+          http_listen_port = 8080;
           grpc_listen_port = 0;
         };
         clients = [
