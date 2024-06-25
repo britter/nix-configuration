@@ -6,6 +6,7 @@
   cfg = config.my.modules.grafana;
 in {
   imports = [
+    ./loki.nix
     ./prometheus.nix
   ];
 
@@ -14,7 +15,10 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    my.modules.grafana.prometheus.enable = true;
+    my.modules.grafana = {
+      loki.enable = true;
+      prometheus.enable = true;
+    };
 
     networking = {
       firewall = {
@@ -46,6 +50,13 @@ in {
         datasources.settings = {
           apiVersion = 1;
           datasources = [
+            {
+              name = "Loki";
+              type = "loki";
+              uid = "Loki1";
+              # TODO reference Loki service configuration
+              url = "http://localhost:3100";
+            }
             {
               name = "Prometheus";
               type = "prometheus";

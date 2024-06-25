@@ -4,6 +4,7 @@
   ...
 }: let
   cfg = config.my.modules.monitoring;
+  homelabCfg = config.my.homelab;
 in {
   options.my.modules.monitoring = {
     enable = lib.mkEnableOption "monitoring";
@@ -17,6 +18,35 @@ in {
     services.prometheus.exporters.node = {
       enable = true;
       inherit (cfg) openFirewall;
+    };
+
+    services.promtail = {
+      enable = true;
+      configuration = {
+        clients = [
+          {
+            url = "http://${homelabCfg.watchtower.ip}:3100/loki/api/v1/push";
+          }
+        ];
+        scrape_configs = [
+          {
+            job_name = "journal";
+            journal = {
+              max_age = "12h";
+              labels = {
+                job = "systemd-journal";
+                host = config.my.host.name;
+              };
+            };
+            relabel_configs = [
+              {
+                source_labels = ["__journal__systemd_unit"];
+                target_label = "unit";
+              }
+            ];
+          }
+        ];
+      };
     };
   };
 }
