@@ -24,6 +24,10 @@ in {
         };
         auth_enabled = false;
 
+        analytics = {
+          reporting_enabled = false;
+        };
+
         ingester = {
           lifecycler = {
             address = "127.0.0.1";
