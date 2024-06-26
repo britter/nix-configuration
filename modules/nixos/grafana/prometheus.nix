@@ -27,6 +27,18 @@ in {
             }
           ];
         }
+        {
+          job_name = "comin";
+          static_configs = [
+            {
+              targets = [
+                "localhost:4243"
+                "${config.my.homelab.cyberoffice.ip}:4243"
+                "${config.my.homelab.raspberry-pi.ip}:4243"
+              ];
+            }
+          ];
+        }
       ];
     };
   };

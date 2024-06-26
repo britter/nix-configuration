@@ -20,6 +20,10 @@ in {
       inherit (cfg) openFirewall;
     };
 
+    services.comin.exporter = {
+      inherit (cfg) openFirewall;
+    };
+
     services.promtail = {
       enable = true;
       configuration = {
