@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: {
+{inputs, ...}: {
   imports = [
     inputs.nixos-hardware.nixosModules.tuxedo-pulse-14-gen3
     ./hardware-configuration.nix
@@ -25,10 +21,6 @@
       };
     };
   };
-
-  # Use latest Kernel to work around a problem with the device not
-  # powering off since Kernel v6.1.91
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   services.printing.enable = true;
 
