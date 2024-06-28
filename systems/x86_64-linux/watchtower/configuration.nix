@@ -10,7 +10,6 @@
       role = "server";
     };
     modules = {
-      acme.enable = true;
       disko = {
         enable = true;
         disk = "/dev/sda";
