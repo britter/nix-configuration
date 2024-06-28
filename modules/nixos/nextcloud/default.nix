@@ -11,7 +11,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets.nextcloud-admin-pass = {
+    sops.secrets."nextcloud/admin-pass" = {
       owner = "nextcloud";
     };
 
@@ -20,7 +20,7 @@ in {
       package = pkgs.nextcloud29;
       hostName = "nextcloud.ritter.family";
       config = {
-        adminpassFile = config.sops.secrets.nextcloud-admin-pass.path;
+        adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
       };
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts cookbook deck memories richdocuments;
@@ -40,9 +40,9 @@ in {
 
     users.users.nginx.extraGroups = ["acme"];
 
-    sops.secrets.acme-cloudflare-dns-api-token = {};
+    sops.secrets."acme/cloudflare-dns-api-token" = {};
     sops.templates."acme-cloudflare-dns-api-token.env".content = ''
-      CLOUDFLARE_DNS_API_TOKEN=${config.sops.placeholder.acme-cloudflare-dns-api-token}
+      CLOUDFLARE_DNS_API_TOKEN=${config.sops.placeholder."acme/cloudflare-dns-api-token"}
     '';
 
     security.acme = {
