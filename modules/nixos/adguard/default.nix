@@ -149,7 +149,16 @@ in {
         proxyPass = "http://localhost:3000";
       };
     };
-
     security.acme.certs."adguard.ritter.family" = {};
+
+    services.nginx.virtualHosts."fritz-box.ritter.family" = {
+      useACMEHost = "fritz-box.ritter.family";
+      forceSSL = true;
+      locations."/" = {
+        recommendedProxySettings = true;
+        proxyPass = "https://192.168.178.1";
+      };
+    };
+    security.acme.certs."fritz-box.ritter.family" = {};
   };
 }
