@@ -16,7 +16,9 @@ in {
     ./monitoring
     ./my-user
     ./networking
+    ./nextcloud
     ./nix
+    ./sops
     ./sound
     ./ssh-access
   ];
