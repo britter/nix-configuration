@@ -38,6 +38,7 @@ in {
       # enabled only on servers
       comin.enable = cfg.role == "server";
       monitoring.enable = cfg.role == "server";
+      sops.enable = cfg.role == "server";
       ssh-access.enable = cfg.role == "server";
 
       # enabled on all machines by default

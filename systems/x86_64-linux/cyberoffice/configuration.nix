@@ -16,10 +16,6 @@
         disk = "/dev/sda";
       };
       nextcloud.enable = true;
-      sops = {
-        enable = true;
-        sopsFile = ./secrets.yaml;
-      };
     };
   };
 

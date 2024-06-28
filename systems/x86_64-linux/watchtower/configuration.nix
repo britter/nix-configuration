@@ -17,10 +17,6 @@
       };
       grafana.enable = true;
       monitoring.openFirewall = false;
-      sops = {
-        enable = true;
-        sopsFile = ./secrets.yaml;
-      };
     };
   };
 
