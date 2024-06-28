@@ -33,6 +33,29 @@ in {
       extraAppsEnable = true;
     };
 
+    services.nginx.virtualHosts."nextcloud.ritter.family" = {
+      useACMEHost = "nextcloud.ritter.family";
+      forceSSL = true;
+    };
+
+    users.users.nginx.extraGroups = ["acme"];
+
+    sops.secrets.acme-cloudflare-dns-api-token = {};
+    sops.templates."acme-cloudflare-dns-api-token.env".content = ''
+      CLOUDFLARE_DNS_API_TOKEN=${config.sops.placeholder.acme-cloudflare-dns-api-token}
+    '';
+
+    security.acme = {
+      acceptTerms = true;
+      defaults.email = "beneritter@gmail.com";
+
+      certs."nextcloud.ritter.family" = {
+        dnsProvider = "cloudflare";
+        dnsPropagationCheck = true;
+        credentialsFile = config.sops.templates."acme-cloudflare-dns-api-token.env".path;
+      };
+    };
+
     networking = {
       firewall = {
         allowedTCPPorts = [80 443];
