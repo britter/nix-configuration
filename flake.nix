@@ -88,14 +88,14 @@
       # -----------------------------------------------------------------------
       # Servers
       # -----------------------------------------------------------------------
-      nixosConfigurations.raspberry-pi = let
+      nixosConfigurations.directions = let
         system = inputs.flake-utils.lib.system.aarch64-linux;
       in
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {inherit inputs;};
           modules = [
-            ./systems/aarch64-linux/raspberry-pi/configuration.nix
+            ./systems/aarch64-linux/directions/configuration.nix
           ];
         };
       nixosConfigurations.cyberoffice = let

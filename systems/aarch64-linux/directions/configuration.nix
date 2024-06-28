@@ -7,7 +7,7 @@
 
   my = {
     host = {
-      name = "raspberry-pi";
+      name = "directions";
       system = "aarch64-linux";
       role = "server";
     };
