@@ -20,24 +20,6 @@ in {
       prometheus.enable = true;
     };
 
-    networking = {
-      firewall = {
-        allowedTCPPorts = [80 443];
-      };
-    };
-
-    services.nginx = {
-      enable = true;
-      virtualHosts."grafana.ritter.family" = {
-        serverAliases = ["grafana.*"];
-        locations."/" = {
-          proxyWebsockets = true;
-          recommendedProxySettings = true;
-          proxyPass = "http://localhost:3000";
-        };
-      };
-    };
-
     services.grafana = {
       enable = true;
       settings = {
@@ -68,5 +50,22 @@ in {
         };
       };
     };
+
+    services.nginx = {
+      enable = true;
+      virtualHosts."grafana.ritter.family" = {
+        locations."/" = {
+          proxyWebsockets = true;
+          recommendedProxySettings = true;
+          proxyPass = "http://localhost:3000";
+        };
+        useACMEHost = "grafana.ritter.family";
+        forceSSL = true;
+      };
+    };
+
+    security.acme.certs."grafana.ritter.family" = {};
+
+    networking.firewall.allowedTCPPorts = [80 443];
   };
 }

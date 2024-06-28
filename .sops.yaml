@@ -1,10 +1,16 @@
 keys:
   - &pulse-14 age18mrc4ttzg8xldevwfvtxqd0942hlv2az75l060flc4c0tqnmkaus0ueqpl
   - &cyberoffice age1azlfwa6wlup8vc9vjqhn2nv8hnpphrg5f0chyhn8xq63tv54zyjsr8yng2
+  - &watchtower age1wsytzmsk73z4253uc8e9050cjdgg9dvchy9m2dmj9tgml4rrsshqy9uku2
 creation_rules:
   - path_regex: systems/x86_64-linux/cyberoffice/secrets\.yaml$
     key_groups:
       - age:
         - *pulse-14
         - *cyberoffice
+  - path_regex: systems/x86_64-linux/watchtower/secrets\.yaml$
+    key_groups:
+      - age:
+        - *pulse-14
+        - *watchtower
 

@@ -10,12 +10,17 @@
       role = "server";
     };
     modules = {
+      acme.enable = true;
       disko = {
         enable = true;
         disk = "/dev/sda";
       };
       grafana.enable = true;
       monitoring.openFirewall = false;
+      sops = {
+        enable = true;
+        sopsFile = ./secrets.yaml;
+      };
     };
   };
 
