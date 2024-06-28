@@ -13,6 +13,7 @@ in {
     ./gnome
     ./grafana
     ./homelab
+    ./https-proxy
     ./i18n
     ./monitoring
     ./my-user

@@ -12,8 +12,16 @@
       role = "server";
     };
     modules = {
-      acme.enable = true;
       adguard.enable = true;
+      https-proxy = {
+        enable = true;
+        configurations = [
+          {
+            fqdn = "fritz-box.ritter.family";
+            target = "https://192.168.178.1";
+          }
+        ];
+      };
     };
   };
 

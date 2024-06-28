@@ -51,21 +51,15 @@ in {
       };
     };
 
-    services.nginx = {
+    my.modules.https-proxy = {
       enable = true;
-      virtualHosts."grafana.ritter.family" = {
-        locations."/" = {
+      configurations = [
+        {
+          fqdn = "grafana.ritter.family";
+          target = "https://localhost:3000";
           proxyWebsockets = true;
-          recommendedProxySettings = true;
-          proxyPass = "http://localhost:3000";
-        };
-        useACMEHost = "grafana.ritter.family";
-        forceSSL = true;
-      };
+        }
+      ];
     };
-
-    security.acme.certs."grafana.ritter.family" = {};
-
-    networking.firewall.allowedTCPPorts = [80 443];
   };
 }

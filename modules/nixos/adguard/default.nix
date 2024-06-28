@@ -12,7 +12,7 @@ in {
   config = lib.mkIf cfg.enable {
     networking.firewall = {
       allowedUDPPorts = [config.services.adguardhome.settings.dns.port];
-      allowedTCPPorts = [config.services.adguardhome.settings.dns.port 80 443];
+      allowedTCPPorts = [config.services.adguardhome.settings.dns.port];
     };
     services.adguardhome = {
       enable = true;
@@ -144,25 +144,14 @@ in {
       };
     };
 
-    services.nginx.enable = true;
-    services.nginx.virtualHosts."adguard.ritter.family" = {
-      useACMEHost = "adguard.ritter.family";
-      forceSSL = true;
-      locations."/" = {
-        recommendedProxySettings = true;
-        proxyPass = "http://localhost:3000";
-      };
+    my.modules.https-proxy = {
+      enable = true;
+      configurations = [
+        {
+          fqdn = "adguard.ritter.family";
+          target = "http://localhost:3000";
+        }
+      ];
     };
-    security.acme.certs."adguard.ritter.family" = {};
-
-    services.nginx.virtualHosts."fritz-box.ritter.family" = {
-      useACMEHost = "fritz-box.ritter.family";
-      forceSSL = true;
-      locations."/" = {
-        recommendedProxySettings = true;
-        proxyPass = "https://192.168.178.1";
-      };
-    };
-    security.acme.certs."fritz-box.ritter.family" = {};
   };
 }
