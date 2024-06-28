@@ -4,6 +4,7 @@ in {
   imports = [
     ../common
     ./1password
+    ./acme
     ./adguard
     ./comin
     ./disko

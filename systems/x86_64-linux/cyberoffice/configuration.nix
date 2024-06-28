@@ -10,15 +10,16 @@
       role = "server";
     };
     modules = {
+      acme.enable = true;
       disko = {
         enable = true;
         disk = "/dev/sda";
       };
+      nextcloud.enable = true;
       sops = {
         enable = true;
         sopsFile = ./secrets.yaml;
       };
-      nextcloud.enable = true;
     };
   };
 

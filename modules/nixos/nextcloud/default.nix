@@ -38,22 +38,7 @@ in {
       forceSSL = true;
     };
 
-    users.users.nginx.extraGroups = ["acme"];
-
-    sops.secrets."acme/cloudflare-dns-api-token" = {};
-
-    security.acme = {
-      acceptTerms = true;
-      defaults.email = "beneritter@gmail.com";
-
-      certs."nextcloud.ritter.family" = {
-        dnsProvider = "cloudflare";
-        dnsPropagationCheck = true;
-        credentialFiles = {
-          "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets."acme/cloudflare-dns-api-token".path;
-        };
-      };
-    };
+    security.acme.certs."nextcloud.ritter.family" = {};
 
     networking = {
       firewall = {
