@@ -39,7 +39,7 @@ in {
           locations."/" = {
             inherit (conf) proxyWebsockets;
             recommendedProxySettings = true;
-            proxyPass = conf.fqdn;
+            proxyPass = conf.target;
           };
         };
       };
