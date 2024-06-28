@@ -22,7 +22,7 @@ in {
 
     networking = {
       firewall = {
-        allowedTCPPorts = [80 443 config.services.grafana.settings.server.http_port];
+        allowedTCPPorts = [80 443];
       };
     };
 
