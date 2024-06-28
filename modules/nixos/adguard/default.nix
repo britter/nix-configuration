@@ -12,7 +12,7 @@ in {
   config = lib.mkIf cfg.enable {
     networking.firewall = {
       allowedUDPPorts = [config.services.adguardhome.settings.dns.port];
-      allowedTCPPorts = [config.services.adguardhome.settings.dns.port];
+      allowedTCPPorts = [config.services.adguardhome.settings.dns.port 80 443];
     };
     services.adguardhome = {
       enable = true;
