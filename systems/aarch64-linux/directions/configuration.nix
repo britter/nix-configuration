@@ -11,7 +11,10 @@
       system = "aarch64-linux";
       role = "server";
     };
-    modules.adguard.enable = true;
+    modules = {
+      acme.enable = true;
+      adguard.enable = true;
+    };
   };
 
   boot.loader = {

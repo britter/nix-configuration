@@ -16,8 +16,6 @@ in {
     };
     services.adguardhome = {
       enable = true;
-      # opens a port in the firewall for the web interface
-      openFirewall = true;
       # See https://github.com/AdguardTeam/AdGuardHome/wiki/Configuration#configuration-file
       # for possible configuration values
       settings = {
@@ -126,11 +124,7 @@ in {
           filtering_enabled = true;
           rewrites = [
             {
-              domain = "home.arpa";
-              answer = "192.168.178.105";
-            }
-            {
-              domain = "*.home.arpa";
+              domain = "adguard.ritter.family";
               answer = "192.168.178.105";
             }
             {
@@ -145,5 +139,17 @@ in {
         };
       };
     };
+
+    services.nginx.enable = true;
+    services.nginx.virtualHosts."adguard.ritter.family" = {
+      useACMEHost = "adguard.ritter.family";
+      forceSSL = true;
+      locations."/" = {
+        recommendedProxySettings = true;
+        proxyPass = "http://localhost:3000";
+      };
+    };
+
+    security.acme.certs."adguard.ritter.family" = {};
   };
 }
