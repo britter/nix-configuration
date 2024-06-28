@@ -41,9 +41,6 @@ in {
     users.users.nginx.extraGroups = ["acme"];
 
     sops.secrets."acme/cloudflare-dns-api-token" = {};
-    sops.templates."acme/cloudflare-dns-api-token.env".content = ''
-      CLOUDFLARE_DNS_API_TOKEN=${config.sops.placeholder."acme/cloudflare-dns-api-token"}
-    '';
 
     security.acme = {
       acceptTerms = true;
@@ -52,7 +49,9 @@ in {
       certs."nextcloud.ritter.family" = {
         dnsProvider = "cloudflare";
         dnsPropagationCheck = true;
-        credentialsFile = config.sops.templates."acme/cloudflare-dns-api-token.env".path;
+        credentialFiles = {
+          "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets."acme/cloudflare-dns-api-token".path;
+        };
       };
     };
 
