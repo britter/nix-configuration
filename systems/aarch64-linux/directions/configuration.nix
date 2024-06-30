@@ -13,6 +13,7 @@
     };
     modules = {
       adguard.enable = true;
+      homepage.enable = true;
       https-proxy = {
         enable = true;
         configurations = [

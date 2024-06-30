@@ -132,6 +132,10 @@ in {
               answer = "192.168.178.105";
             }
             {
+              domain = "home.ritter.family";
+              answer = "192.168.178.105";
+            }
+            {
               domain = "proxmox.ritter.family";
               answer = "192.168.178.105";
             }
