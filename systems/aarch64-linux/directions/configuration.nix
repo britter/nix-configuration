@@ -20,6 +20,10 @@
             fqdn = "fritz-box.ritter.family";
             target = "https://192.168.178.1";
           }
+          {
+            fqdn = "proxmox.ritter.family";
+            target = "https://192.168.178.100:8006";
+          }
         ];
       };
     };
