@@ -124,11 +124,15 @@ in {
           filtering_enabled = true;
           rewrites = [
             {
+              domain = "adguard.ritter.family";
+              answer = "192.168.178.105";
+            }
+            {
               domain = "fritz-box.ritter.family";
               answer = "192.168.178.105";
             }
             {
-              domain = "adguard.ritter.family";
+              domain = "proxmox.ritter.family";
               answer = "192.168.178.105";
             }
             {
