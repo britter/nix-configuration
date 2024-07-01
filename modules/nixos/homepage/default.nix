@@ -29,6 +29,17 @@ in {
       ];
       services = [
         {
+          "Office" = [
+            {
+              "NextCloud" = {
+                description = "Safe home for all out data";
+                href = "http://nextcloud.ritter.family/";
+                icon = "nextcloud-blue.svg";
+              };
+            }
+          ];
+        }
+        {
           "Infrastructure" = [
             {
               "Proxmox" = {
@@ -56,16 +67,6 @@ in {
                 description = "Grafana Dashboards";
                 href = "https://grafana.ritter.family/";
                 icon = "grafana.svg";
-              };
-            }
-          ];
-        }
-        {
-          "Office" = [
-            {
-              "NextCloud" = {
-                description = "NextCloud";
-                href = "http://nextcloud.ritter.family/";
               };
             }
           ];
