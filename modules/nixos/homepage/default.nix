@@ -12,6 +12,15 @@ in {
   config = lib.mkIf cfg.enable {
     services.homepage-dashboard = {
       enable = true;
+      settings = {
+        background = {
+          image = "https://images.unsplash.com/photo-1502790671504-542ad42d5189?auto=format&fit=crop&w=2560&q=80";
+          blur = "sm";
+          saturate = 50;
+          brightness = 50;
+          opacity = 50;
+        };
+      };
       widgets = [
         {
           resources = {
