@@ -47,11 +47,15 @@ in {
                 href = "https://proxmox.ritter.family/";
                 icon = "proxmox.svg";
               };
+            }
+            {
               "Adguard" = {
-                description = "Adguard Home DNS";
+                description = "Network-wide ads & trackers blocking DNS server";
                 href = "https://adguard.ritter.family/";
                 icon = "adguard-home.svg";
               };
+            }
+            {
               "FritzBox" = {
                 description = "FritzBox Administration";
                 href = "https://fritz-box.ritter.family/";
