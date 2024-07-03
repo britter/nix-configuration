@@ -52,6 +52,53 @@ in {
                 target_label = "unit";
               }
             ];
+            pipeline_stages = [
+              {
+                match = {
+                  selector = "{unit=\"nextcloud-cron.service\"}";
+                  stages = [
+                    {
+                      json = {
+                        expressions = {
+                          level = "level";
+                          timestamp = "time";
+                          message = "message";
+                          request_id = "reqId";
+                          remote_address = "remoteAddr";
+                          user = "user";
+                          app = "app";
+                          method = "method";
+                          url = "url";
+                          user_agent = "userAgent";
+                          version = "version";
+                          data = "data";
+                        };
+                      };
+                    }
+                    {
+                      labels = {
+                        level = "";
+                        timestamp = "";
+                        request_id = "";
+                        remote_address = "";
+                        user = "";
+                        app = "";
+                        method = "";
+                        url = "";
+                        user_agent = "";
+                        version = "";
+                        data = "";
+                      };
+                    }
+                    {
+                      output = {
+                        source = "message";
+                      };
+                    }
+                  ];
+                };
+              }
+            ];
           }
         ];
       };
