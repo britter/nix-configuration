@@ -8,7 +8,6 @@
 in {
   imports = [
     ../gnome
-    ../joplin
     ../firefox
     ../alacritty
     ../vscode
@@ -28,7 +27,6 @@ in {
 
     my.home.desktop = {
       gnome.enable = true;
-      joplin.enable = true;
       firefox.enable = true;
       alacritty.enable = true;
       vscode.enable = true;
