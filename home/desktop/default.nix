@@ -7,9 +7,9 @@
   cfg = config.my.home.desktop;
 in {
   imports = [
-    ../gnome
-    ../firefox
     ../alacritty
+    ../firefox
+    ../gnome
     ../vscode
   ];
 
@@ -26,9 +26,9 @@ in {
     ];
 
     my.home.desktop = {
-      gnome.enable = true;
-      firefox.enable = true;
       alacritty.enable = true;
+      firefox.enable = true;
+      gnome.enable = true;
       vscode.enable = true;
     };
   };
