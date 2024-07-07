@@ -10,6 +10,7 @@ in {
     ../alacritty
     ../firefox
     ../gnome
+    ../intellij
     ../vscode
   ];
 
@@ -20,7 +21,6 @@ in {
   config = lib.mkIf cfg.enable {
     # software not available as Home Manager module
     home.packages = with pkgs; [
-      jetbrains.idea-community
       fractal-next
       logseq
     ];
@@ -29,6 +29,10 @@ in {
       alacritty.enable = true;
       firefox.enable = true;
       gnome.enable = true;
+      intellij = {
+        enable = true;
+        plugins = ["asciidoc"];
+      };
       vscode.enable = true;
     };
   };
