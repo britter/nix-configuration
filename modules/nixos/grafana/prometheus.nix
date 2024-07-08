@@ -22,7 +22,7 @@ in {
               targets = [
                 "localhost:9100"
                 "${config.my.homelab.cyberoffice.ip}:9100"
-                "${config.my.homelab.raspberry-pi.ip}:9100"
+                "${config.my.homelab.directions.ip}:9100"
                 "${config.my.homelab.warehouse.ip}:9100"
               ];
             }
@@ -35,7 +35,7 @@ in {
               targets = [
                 "localhost:4243"
                 "${config.my.homelab.cyberoffice.ip}:4243"
-                "${config.my.homelab.raspberry-pi.ip}:4243"
+                "${config.my.homelab.directions.ip}:4243"
                 "${config.my.homelab.warehouse.ip}:4243"
               ];
             }
