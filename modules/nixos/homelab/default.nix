@@ -18,6 +18,12 @@
         default = "192.168.178.105";
       };
     };
+    warehouse = {
+      ip = lib.mkOption {
+        type = lib.types.str;
+        default = "192.168.178.220";
+      };
+    };
     watchtower = {
       ip = lib.mkOption {
         type = lib.types.str;
