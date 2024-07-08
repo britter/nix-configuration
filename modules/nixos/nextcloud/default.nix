@@ -29,6 +29,11 @@ in {
           sha256 = "sha256-AhTZGQCLeNgsRBF5w3+Lf9JtNN4D1QncB5t+odU+XUc=";
           license = "agpl3Plus";
         };
+        richdocumentscode = pkgs.fetchNextcloudApp {
+          url = "https://github.com/CollaboraOnline/richdocumentscode/releases/download/24.4.402/richdocumentscode.tar.gz";
+          sha256 = "sha256-H3Wk99DJ+ePZo583y0p7CoIyB8TgZArioNmPWkLvO6s=";
+          license = "asl20";
+        };
       };
       extraAppsEnable = true;
     };
