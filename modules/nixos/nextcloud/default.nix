@@ -23,7 +23,7 @@ in {
         adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
       };
       extraApps = {
-        inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts cookbook deck memories richdocuments;
+        inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts richdocuments;
         news = pkgs.fetchNextcloudApp {
           url = "https://github.com/nextcloud/news/releases/download/25.0.0-alpha8/news.tar.gz";
           sha256 = "sha256-AhTZGQCLeNgsRBF5w3+Lf9JtNN4D1QncB5t+odU+XUc=";
