@@ -41,7 +41,7 @@ in {
           "Office" = [
             {
               "NextCloud" = {
-                description = "Safe home for all out data";
+                description = "Safe home for all our data";
                 href = "http://nextcloud.ritter.family/";
                 icon = "nextcloud-blue.svg";
               };
