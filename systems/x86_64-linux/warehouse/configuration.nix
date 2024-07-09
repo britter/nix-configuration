@@ -15,7 +15,7 @@
         bootDisk = "/dev/sda";
         storageDisk = {
           disk = "/dev/sdb";
-          subvolumes = ["/var/lib/minio" "/var/lib/postgres"];
+          subvolumes = ["/var/lib/minio" "/var/lib/postgresql"];
         };
       };
     };
