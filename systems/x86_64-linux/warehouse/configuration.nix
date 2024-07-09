@@ -18,6 +18,7 @@
           subvolumes = ["/var/lib/minio" "/var/lib/postgresql"];
         };
       };
+      postgresql.enable = true;
     };
   };
 
