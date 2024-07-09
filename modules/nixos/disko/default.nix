@@ -13,7 +13,7 @@ in {
 
   options.my.modules.disko = {
     enable = lib.mkEnableOption "disko";
-    disk = lib.mkOption {
+    bootDisk = lib.mkOption {
       type = lib.types.str;
       description = "Disk to install to";
     };
@@ -21,6 +21,18 @@ in {
       type = lib.types.nullOr lib.types.str;
       description = "Size of the swap partition";
       default = null;
+    };
+    storageDisk = {
+      disk = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        description = "Disk to use for storage";
+        default = null;
+      };
+      subvolumes = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        description = "Mount points of the storage disk subvolumes";
+        default = [];
+      };
     };
   };
 
@@ -32,7 +44,7 @@ in {
       (lib.mkIf efi {
         disko.devices =
           (import ./btrfs-luks.nix {
-            device = cfg.disk;
+            device = cfg.bootDisk;
             inherit (cfg) swapSize;
           })
           .disko
@@ -46,7 +58,12 @@ in {
       (lib.mkIf mbr {
         disko.devices =
           (import ./ext-mbr.nix {
-            device = cfg.disk;
+            device = cfg.bootDisk;
+            storageDisk = {
+              inherit (cfg.storageDisk) disk;
+              inherit (cfg.storageDisk) subvolumes;
+            };
+            inherit lib;
           })
           .disko
           .devices;

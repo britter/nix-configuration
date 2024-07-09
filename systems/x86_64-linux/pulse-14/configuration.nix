@@ -20,7 +20,7 @@
     modules = {
       disko = {
         enable = true;
-        disk = "/dev/nvme0n1";
+        bootDisk = "/dev/nvme0n1";
         swapSize = "32GB";
       };
     };

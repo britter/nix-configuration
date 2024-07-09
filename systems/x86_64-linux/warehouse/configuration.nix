@@ -12,7 +12,11 @@
     modules = {
       disko = {
         enable = true;
-        disk = "/dev/sda";
+        bootDisk = "/dev/sda";
+        storageDisk = {
+          disk = "/dev/sdb";
+          subvolumes = ["/var/lib/minio" "/var/lib/postgres"];
+        };
       };
     };
   };

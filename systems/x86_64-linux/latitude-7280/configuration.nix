@@ -16,7 +16,7 @@
     modules = {
       disko = {
         enable = true;
-        disk = "/dev/sda";
+        bootDisk = "/dev/sda";
         swapSize = "8GB";
       };
     };

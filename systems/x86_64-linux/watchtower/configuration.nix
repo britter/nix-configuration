@@ -12,7 +12,7 @@
     modules = {
       disko = {
         enable = true;
-        disk = "/dev/sda";
+        bootDisk = "/dev/sda";
       };
       grafana.enable = true;
       monitoring.openFirewall = false;

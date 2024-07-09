@@ -13,7 +13,7 @@
       acme.enable = true;
       disko = {
         enable = true;
-        disk = "/dev/sda";
+        bootDisk = "/dev/sda";
       };
       nextcloud.enable = true;
     };
