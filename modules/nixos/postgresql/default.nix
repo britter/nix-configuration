@@ -23,8 +23,8 @@ in {
       ];
       enableTCPIP = true;
       authentication = ''
-        # type  database   user       IP                                   auth
-        host    nextcloud  nextcloud  ${config.my.homelab.cyberoffice.ip}  md5
+        # type  database   user       IP                                      auth
+        host    nextcloud  nextcloud  ${config.my.homelab.cyberoffice.ip}/32  md5
       '';
     };
 
