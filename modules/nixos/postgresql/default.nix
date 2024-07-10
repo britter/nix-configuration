@@ -29,7 +29,9 @@ in {
     };
 
     # Set the nextcloud postgresql password
-    sops.secrets."postgresql/nextcloud-user-password" = {};
+    sops.secrets."postgresql/nextcloud-user-password" = {
+      restartUnits = ["postgresql.service"];
+    };
     systemd.services.postgresql.postStart = let
       passwordFilePath = config.sops.secrets."postgresql/nextcloud-user-password".path;
     in ''
