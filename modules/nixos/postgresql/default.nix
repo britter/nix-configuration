@@ -33,6 +33,7 @@ in {
     sops.secrets."postgresql/nextcloud-user-password" = {
       restartUnits = ["postgresql.service"];
       sopsFile = "${toString inputs.self}/systems/_shared-secrets/warehouse/cyberoffice-secrets.yaml";
+      owner = "postgres";
     };
     systemd.services.postgresql.postStart = let
       passwordFilePath = config.sops.secrets."postgresql/nextcloud-user-password".path;
