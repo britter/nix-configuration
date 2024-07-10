@@ -32,6 +32,7 @@ in {
         dbtype = "pgsql";
         dbpassFile = config.sops.secrets."postgresql/nextcloud-user-password".path;
         dbhost = "${config.my.homelab.warehouse.ip}:5432";
+        dbtableprefix = "oc_";
       };
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts richdocuments;
