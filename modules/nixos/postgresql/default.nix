@@ -47,4 +47,6 @@ in {
       EOF
     '';
   };
+
+  networking.firewall.allowedTCPPorts = [config.services.postgresql.settings.port];
 }
