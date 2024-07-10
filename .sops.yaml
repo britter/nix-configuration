@@ -15,14 +15,15 @@ creation_rules:
       - age:
         - *pulse-14
         - *watchtower
-  - path_regex: systems/x86_64-linux/warehouse/secrets\.yaml$
-    key_groups:
-      - age:
-        - *pulse-14
-        - *warehouse
-        - *cyberoffice
   - path_regex: systems/aarch64-linux/directions/secrets\.yaml$
     key_groups:
       - age:
         - *pulse-14
         - *directions
+  # shared secrets
+  - path_regex: systems/_shared-secrets/warehouse/cyberoffice-secrets\.yaml$
+    key_groups:
+      - age:
+        - *pulse-14
+        - *warehouse
+        - *cyberoffice

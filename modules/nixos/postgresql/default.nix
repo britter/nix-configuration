@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
   cfg = config.my.modules.postgresql;
@@ -31,6 +32,7 @@ in {
     # Set the nextcloud postgresql password
     sops.secrets."postgresql/nextcloud-user-password" = {
       restartUnits = ["postgresql.service"];
+      sopsFile = "${toString inputs.self}/systems/_shared-secrets/warehouse/cyberoffice-secrets.yaml";
     };
     systemd.services.postgresql.postStart = let
       passwordFilePath = config.sops.secrets."postgresql/nextcloud-user-password".path;
