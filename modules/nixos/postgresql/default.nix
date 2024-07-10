@@ -42,7 +42,7 @@ in {
         DECLARE password TEXT;
         BEGIN
           password := trim(both from replace(pg_read_file('${passwordFilePath}'), E'\n', '''));
-          EXECUTE format('ALTER ROLE authentik WITH PASSWORD '''%s''';', password);
+          EXECUTE format('ALTER ROLE nextcloud WITH PASSWORD '''%s''';', password);
         END $$;
       EOF
     '';
