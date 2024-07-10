@@ -19,6 +19,7 @@ in {
       enable = true;
       package = pkgs.nextcloud29;
       hostName = "nextcloud.ritter.family";
+      https = true;
       config = {
         adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
       };
