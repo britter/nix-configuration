@@ -19,6 +19,7 @@ in {
     sops.secrets."postgresql/nextcloud-user-password" = {
       restartUnits = ["nginx.service"];
       sopsFile = "${toString inputs.self}/systems/_shared-secrets/warehouse/cyberoffice-secrets.yaml";
+      owner = "nextcloud";
     };
 
     services.nextcloud = {
