@@ -46,7 +46,7 @@ in {
         END $$;
       EOF
     '';
-  };
 
-  networking.firewall.allowedTCPPorts = [config.services.postgresql.settings.port];
+    networking.firewall.allowedTCPPorts = [config.services.postgresql.settings.port];
+  };
 }
