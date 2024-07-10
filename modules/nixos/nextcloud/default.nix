@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
   cfg = config.my.modules.nextcloud;
@@ -15,6 +16,11 @@ in {
       owner = "nextcloud";
     };
 
+    sops.secrets."postgresql/nextcloud-user-password" = {
+      restartUnits = ["nginx.service"];
+      sopsFile = "${toString inputs.self}/systems/_shared-secrets/warehouse/cyberoffice-secrets.yaml";
+    };
+
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud29;
@@ -22,6 +28,9 @@ in {
       https = true;
       config = {
         adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
+        dbtype = "pgsql";
+        dbpassFile = config.sops.secrets."postgresql/nextcloud-user-password".path;
+        dbhost = "${config.my.homelab.warehouse.ip}:5432";
       };
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts richdocuments;
