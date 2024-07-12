@@ -31,7 +31,7 @@ in {
       gnome.enable = true;
       intellij = {
         enable = true;
-        plugins = ["asciidoc"];
+        plugins = ["asciidoc" "protocol-buffers"];
       };
       vscode.enable = true;
     };
