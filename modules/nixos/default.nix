@@ -31,6 +31,7 @@ in {
     my.modules = {
       # enabled only on desktops
       _1password.enable = cfg.role == "desktop";
+      fonts.enable = cfg.role == "desktop";
       gnome.enable = cfg.role == "desktop";
       sound.enable = cfg.role == "desktop";
       my-user.enable = cfg.role == "desktop";
@@ -45,7 +46,6 @@ in {
       ssh-access.enable = cfg.role == "server";
 
       # enabled on all machines by default
-      fonts.enable = true;
       i18n.enable = true;
       networking.enable = true;
     };

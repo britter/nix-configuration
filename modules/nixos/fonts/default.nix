@@ -15,6 +15,7 @@ in {
   };
   config = lib.mkIf cfg.enable {
     fonts.packages = with pkgs; [
+      font-awesome
       (nerdfonts.override {inherit (cfg) fonts;})
     ];
   };
