@@ -16,6 +16,7 @@ in {
     ./homepage
     ./https-proxy
     ./i18n
+    ./minio
     ./monitoring
     ./my-user
     ./networking
