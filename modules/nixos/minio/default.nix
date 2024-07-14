@@ -11,7 +11,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     sops.secrets."minio/root-user" = {};
-    sops.secrets."minio/root/password" = {};
+    sops.secrets."minio/root-password" = {};
     sops.templates."minio-root-credentials.env" = {
       content = ''
         MINIO_ROOT_USER=${config.sops.placeholder."minio/root-user"}
