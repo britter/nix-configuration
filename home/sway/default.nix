@@ -5,6 +5,10 @@
   ...
 }: let
   cfg = config.my.home.desktop.sway;
+  cursor = {
+    theme = "Adwaita";
+    size = 14;
+  };
 in {
   options.my.home.desktop.sway = {
     enable = lib.mkEnableOption "sway";
@@ -15,6 +19,7 @@ in {
       enable = true;
       package = pkgs.rofi-wayland;
     };
+
     wayland.windowManager.sway = {
       enable = true;
       config = {
@@ -24,6 +29,17 @@ in {
 
         modifier = "Mod4";
       };
+    };
+
+    home.pointerCursor = {
+      name = cursor.theme;
+      package = pkgs.gnome.adwaita-icon-theme;
+      inherit (cursor) size;
+    };
+
+    gtk.cursorTheme = {
+      name = cursor.theme;
+      inherit (cursor) size;
     };
   };
 }
