@@ -10,7 +10,6 @@ in {
     ./disko
     ./fonts
     ./gaming
-    ./gnome
     ./grafana
     ./homelab
     ./homepage
@@ -26,6 +25,7 @@ in {
     ./sops
     ./sound
     ./ssh-access
+    ./sway
   ];
 
   config = {
@@ -33,9 +33,9 @@ in {
       # enabled only on desktops
       _1password.enable = cfg.role == "desktop";
       fonts.enable = cfg.role == "desktop";
-      gnome.enable = cfg.role == "desktop";
-      sound.enable = cfg.role == "desktop";
       my-user.enable = cfg.role == "desktop";
+      sound.enable = cfg.role == "desktop";
+      sway.enable = cfg.role == "desktop";
 
       # enabled only on private desktops
       gaming.enable = cfg.role == "desktop" && (builtins.elem "private" cfg.profiles);

@@ -9,8 +9,8 @@ in {
   imports = [
     ../alacritty
     ../firefox
-    ../gnome
     ../intellij
+    ../sway
     ../vscode
   ];
 
@@ -28,11 +28,11 @@ in {
     my.home.desktop = {
       alacritty.enable = true;
       firefox.enable = true;
-      gnome.enable = true;
       intellij = {
         enable = true;
         plugins = ["asciidoc" "protocol-buffers"];
       };
+      sway.enable = true;
       vscode.enable = true;
     };
   };
