@@ -28,6 +28,16 @@ in {
         bars = [{command = "${pkgs.waybar}/bin/waybar";}];
 
         modifier = "Mod4";
+
+        keybindings = let
+          mod = config.wayland.windowManager.sway.config.modifier;
+          inherit (config.wayland.windowManager.sway.config) terminal;
+          inherit (config.wayland.windowManager.sway.config) menu;
+        in {
+          "${mod}+Return" = "exec ${terminal}";
+          "${mod}+Shift+q" = "kill";
+          "${mod}+d" = "exec ${menu}";
+        };
       };
     };
 
