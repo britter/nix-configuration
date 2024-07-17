@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }: let
   cfg = config.my.home.desktop.alacritty;
@@ -19,10 +18,6 @@ in {
       };
       settings = {
         font.normal.family = "FiraCode Nerd Font";
-        shell = {
-          program = "${pkgs.tmux}/bin/tmux";
-          args = ["new-session" "-A" "-D" "-s" "default"];
-        };
         window = {
           padding = {
             x = 20;

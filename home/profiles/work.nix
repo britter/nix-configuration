@@ -28,6 +28,7 @@ in {
     ];
 
     my.home.terminal.terraform.package = pkgs.terraform-versions."1.4.7";
+    my.home.terminal.tmux.enable = true;
 
     programs.fish.shellAliases = {
       dive = "docker run -ti --rm  -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive";

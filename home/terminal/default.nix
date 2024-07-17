@@ -30,7 +30,6 @@ in {
       gpg.enable = true;
       helix.enable = true;
       terraform.enable = true;
-      tmux.enable = true;
       tools.enable = true;
     };
   };
