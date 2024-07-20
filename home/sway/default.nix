@@ -40,6 +40,10 @@ in {
           };
         };
 
+        output = {
+          "*".bg = "${../desktop/wallpapers/moebius-wallpaper-light.png} fill";
+        };
+
         keybindings = let
           swayCfg = config.wayland.windowManager.sway.config;
           mod = swayCfg.modifier;
