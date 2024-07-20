@@ -33,6 +33,13 @@ in {
         up = "k";
         right = "l";
 
+        input = {
+          "type:touchpad" = {
+            tap = "enabled";
+            natural_scroll = "enabled";
+          };
+        };
+
         keybindings = let
           swayCfg = config.wayland.windowManager.sway.config;
           mod = swayCfg.modifier;
