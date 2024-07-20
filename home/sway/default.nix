@@ -38,6 +38,9 @@ in {
             tap = "enabled";
             natural_scroll = "enabled";
           };
+          "type:keyboard" = {
+            xkb_options = "compose:caps";
+          };
         };
 
         output = {
