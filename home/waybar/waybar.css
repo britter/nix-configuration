@@ -1,0 +1,137 @@
+* {
+	border: none;
+	border-radius: 0px;
+	font-size: 14px;
+	font-family: "DejaVu Sans", "Font Awesome 6 Free", "Font Awesome 6 Brands";
+	color: #0e0c16;
+	min-height: 10px;
+}
+
+window#waybar {
+	background: transparent;
+}
+
+window#waybar.hidden {
+	opacity: 0.2;
+}
+
+#window {
+	background: transparent;
+}
+
+/* fix for font color issue, see https: //github.com/Alexays/Waybar/issues/1741#issuecomment-1288336263 */
+label:disabled,
+button:disabled {
+	color: inherit;
+	background-image: none;
+}
+
+#mode,
+#window,
+#workspaces button {
+	color: rgba(245, 245, 245, 0.4);
+}
+
+#workspaces button * {
+	color: inherit;
+}
+
+#clock,
+#battery,
+#bluetooth,
+#cpu,
+#memory,
+#disk,
+#temperature,
+#backlight,
+#network,
+#pulseaudio,
+#language,
+#idle_inhibitor,
+#mpd {
+	margin-bottom: 6px;
+	margin-left: 8px;
+	padding: 0px 10px;
+	border-radius: 0px 0px 10px 10px;
+	background-color: rgba(245, 245, 245, 0.4);
+}
+
+#network {
+	min-width: 180px;
+}
+
+#bluetooth {
+	/* Use Nerd Font for bluetooth icons */
+	font-family: "DejaVu Sans", "FiraCode Nerd Font", "Font Awesome 6 Free", "Font Awesome 6 Brands";
+}
+
+/* If workspaces is the leftmost module, omit left margin */
+.modules-left>widget:first-child>#workspaces {
+	margin-left: 0px;
+}
+
+/* If workspaces is the rightmost module, omit right margin */
+.modules-right>widget:last-child>#workspaces {
+	margin-right: 0px;
+}
+
+#battery.charging {
+	background-color: rgba(108, 252, 106, 0.53);
+}
+
+#battery.critical:not(.charging),
+#temperature.critical,
+#cpu.critical,
+#memory.critical {
+	animation-name: critical;
+	animation-duration: 0.5s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+@keyframes critical {
+	to {
+		background-color: rgba(255, 73, 73, 0.53);
+	}
+}
+
+#battery.warning:not(.charging),
+#temperature.warning,
+#cpu.warning,
+#memory.warning {
+	animation-name: warning;
+	animation-duration: 0.5s;
+	animation-timing-function: linear;
+	animation-iteration-count: infinite;
+	animation-direction: alternate;
+}
+
+@keyframes warning {
+	to {
+		background-color: rgba(255, 206, 73, 0.53);
+	}
+}
+
+#tray>.needs-attention {
+	-gtk-icon-effect: highlight;
+}
+
+#tray>.passive {
+	-gtk-icon-effect: dim;
+}
+
+
+#language {
+	min-width: 16px;
+}
+
+tooltip {
+	background-color: rgba(21, 23, 27, 0.85);
+	border-radius: 10px;
+}
+
+tooltip label {
+	color: rgb(235, 235, 235);
+}
+
