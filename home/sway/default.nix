@@ -87,6 +87,28 @@ in {
             Escape = "mode default";
           };
         };
+        window.commands = [
+          {
+            criteria.app_id = ".*-floating";
+            command = "floating enable";
+          }
+          {
+            criteria.class = ".*";
+            command = "inhibit_idle fullscreen";
+          }
+          {
+            criteria.shell = "xwayland";
+            command = "title_format \"%title :: %shell\"";
+          }
+          {
+            criteria.app_id = "pavucontrol";
+            command = "floating enable";
+          }
+          {
+            criteria.app_id = "pavucontrol";
+            command = "resize set 800 600";
+          }
+        ];
       };
     };
 
