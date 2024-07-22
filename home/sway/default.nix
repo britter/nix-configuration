@@ -59,7 +59,34 @@ in {
             "${mod}+Shift+8" = "move container to workspace number 8; workspace number 8";
             "${mod}+Shift+9" = "move container to workspace number 9; workspace number 9";
             "${mod}+Shift+0" = "move container to workspace number 10; workspace number 10";
+
+            # Custom modes
+            "${mod}+Escape" = ''mode "system:  [r]eboot  [p]oweroff  [e]xit"'';
           };
+        modes = {
+          # redeclare resize mode in order not to override it
+          resize = let
+            inherit (config.wayland.windowManager) sway;
+          in {
+            "${sway.config.left}" = "resize shrink width 10 px";
+            "${sway.config.down}" = "resize grow height 10 px";
+            "${sway.config.up}" = "resize shrink height 10 px";
+            "${sway.config.right}" = "resize grow width 10 px";
+            "Left" = "resize shrink width 10 px";
+            "Down" = "resize grow height 10 px";
+            "Up" = "resize shrink height 10 px";
+            "Right" = "resize grow width 10 px";
+            "Escape" = "mode default";
+            "Return" = "mode default";
+          };
+          "system:  [r]eboot  [p]oweroff  [e]xit" = {
+            r = "exec systemctl reboot";
+            p = "exec systemctl poweroff";
+            e = "exit";
+            Return = "mode default";
+            Escape = "mode default";
+          };
+        };
       };
     };
 
