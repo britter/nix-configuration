@@ -26,10 +26,9 @@ button:disabled {
 	background-image: none;
 }
 
-#mode,
 #window,
 #workspaces button {
-	color: rgba(245, 245, 245, 0.4);
+	color: #0e0c16;
 }
 
 #workspaces button * {
@@ -41,6 +40,7 @@ button:disabled {
 #bluetooth,
 #cpu,
 #memory,
+#mode,
 #disk,
 #temperature,
 #backlight,
