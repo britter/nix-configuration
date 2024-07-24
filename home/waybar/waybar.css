@@ -56,10 +56,6 @@ button:disabled {
 	background-color: rgba(245, 245, 245, 0.4);
 }
 
-#network {
-	min-width: 180px;
-}
-
 #bluetooth {
 	/* Use Nerd Font for bluetooth icons */
 	font-family: "DejaVu Sans", "FiraCode Nerd Font", "Font Awesome 6 Free", "Font Awesome 6 Brands";

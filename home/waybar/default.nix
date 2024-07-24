@@ -22,21 +22,20 @@ in {
 
           modules-left = [
             "sway/workspaces"
+            "sway/mode"
           ];
           modules-center = [
-            "sway/mode"
+            "clock"
           ];
           modules-right = [
             "tray"
-            "pulseaudio"
             "bluetooth"
-            "network#wifi"
-            "network#speed"
+            "network"
             "battery"
             "cpu"
             "memory"
             "sway/language"
-            "clock"
+            "pulseaudio"
           ];
 
           "clock" = {
@@ -64,18 +63,14 @@ in {
             };
           };
 
-          "network#speed" = {
-            interval = 2;
-            tooltip-format = "{ifname} via {gwaddr} ";
-            format = " {bandwidthDownBytes}  {bandwidthUpBytes}";
-            on-click = "swaymsg exec \"${lib.getExe pkgs.alacritty} --class Alacritty-floating -e nmtui-connect\"";
-          };
-
-          "network#wifi" = {
+          "network" = {
             interval = 10;
-            format-wifi = "{essid} ({signalStrength}%) ";
-            format = "";
-            tooltip = false;
+            format = "";
+            tooltip-format = ''
+               {ifname} via {gwaddr}
+               {essid} ({signalStrength}%)
+               {bandwidthDownBytes}  {bandwidthUpBytes}
+            '';
             on-click = "swaymsg exec \"${lib.getExe pkgs.alacritty} --class Alacritty-floating -e nmtui-connect\"";
           };
 
