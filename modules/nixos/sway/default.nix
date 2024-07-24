@@ -20,6 +20,9 @@ in {
       text = "auth include login";
     };
 
+    # bluetooth needs to be enabled for bluetuith to work
+    hardware.bluetooth.enable = true;
+
     services.greetd = {
       enable = true;
       vt = 2;
