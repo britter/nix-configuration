@@ -22,7 +22,6 @@ in {
 
           modules-left = [
             "sway/workspaces"
-            "sway/window"
           ];
           modules-center = [
             "sway/mode"
@@ -119,12 +118,6 @@ in {
             };
             format = "{capacity}% {icon}";
             format-icons = ["" "" "" "" ""];
-          };
-
-          "sway/window" = {
-            format = "{}";
-            max-length = 60;
-            tooltip = false;
           };
 
           "sway/mode" = {
