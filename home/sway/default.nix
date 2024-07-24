@@ -22,6 +22,7 @@ in {
 
     wayland.windowManager.sway = {
       enable = true;
+      wrapperFeatures.gtk = true;
       config = {
         terminal = "${pkgs.alacritty}/bin/alacritty";
         menu = "${lib.getExe config.programs.rofi.finalPackage} -show drun -show-icons -pid";
