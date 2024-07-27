@@ -19,10 +19,6 @@ in {
       settings = {
         font.normal.family = "FiraCode Nerd Font";
         window = {
-          padding = {
-            x = 20;
-            y = 20;
-          };
           opacity = 0.85;
           decorations = "None";
         };
