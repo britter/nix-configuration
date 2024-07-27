@@ -1,14 +1,16 @@
+@import "catppuccin.css";
+
 * {
 	border: none;
 	border-radius: 0px;
 	font-size: 14px;
 	font-family: "DejaVu Sans", "Font Awesome 6 Free", "Font Awesome 6 Brands";
-	color: #0e0c16;
+	color: @text;
 	min-height: 10px;
 }
 
 window#waybar {
-	background: transparent;
+	background: @base;
 }
 
 window#waybar.hidden {
@@ -26,9 +28,8 @@ button:disabled {
 	background-image: none;
 }
 
-#window,
-#workspaces button {
-	color: #0e0c16;
+#workspaces button.focused {
+	border-bottom: 2px solid @teal;
 }
 
 #workspaces button * {
@@ -51,9 +52,8 @@ button:disabled {
 #mpd {
 	margin-bottom: 6px;
 	margin-left: 8px;
-	padding: 0px 10px;
+	padding: 0px 10px 0px 10px;
 	border-radius: 0px 0px 10px 10px;
-	background-color: rgba(245, 245, 245, 0.4);
 }
 
 #bluetooth {
@@ -72,7 +72,7 @@ button:disabled {
 }
 
 #battery.charging {
-	background-color: rgba(108, 252, 106, 0.53);
+	background-color: @green;
 }
 
 #battery.critical:not(.charging),
@@ -88,7 +88,7 @@ button:disabled {
 
 @keyframes critical {
 	to {
-		background-color: rgba(255, 73, 73, 0.53);
+		background-color: @red;
 	}
 }
 
@@ -105,7 +105,7 @@ button:disabled {
 
 @keyframes warning {
 	to {
-		background-color: rgba(255, 206, 73, 0.53);
+		background-color: @yellow;
 	}
 }
 
@@ -117,17 +117,16 @@ button:disabled {
 	-gtk-icon-effect: dim;
 }
 
-
 #language {
 	min-width: 16px;
 }
 
 tooltip {
-	background-color: rgba(21, 23, 27, 0.85);
+	background-color: @crust;
 	border-radius: 10px;
 }
 
 tooltip label {
-	color: rgb(235, 235, 235);
+	color: @text;
 }
 
