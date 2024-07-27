@@ -27,6 +27,7 @@ in {
         terminal = "${pkgs.alacritty}/bin/alacritty";
         menu = "${lib.getExe config.programs.rofi.finalPackage} -show drun -show-icons -pid";
         bars = [{command = "${pkgs.waybar}/bin/waybar";}];
+        defaultWorkspace = "workspace number 1";
 
         input = {
           "type:touchpad" = {
