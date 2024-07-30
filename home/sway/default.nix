@@ -78,8 +78,8 @@ in {
             indicator = "$overlay0";
           };
         };
-        gaps.outer = 5;
-        gaps.inner = 5;
+        gaps.outer = 3;
+        gaps.inner = 3;
 
         input = {
           "type:touchpad" = {
@@ -142,6 +142,7 @@ in {
           };
         };
         window.titlebar = false;
+        window.border = 3;
         window.commands = [
           {
             criteria.app_id = ".*-floating";
