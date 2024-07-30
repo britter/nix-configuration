@@ -80,6 +80,7 @@ in {
         };
         gaps.outer = 3;
         gaps.inner = 3;
+        focus.followMouse = false;
 
         input = {
           "type:touchpad" = {
