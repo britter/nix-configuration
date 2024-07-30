@@ -23,6 +23,10 @@ in {
     wayland.windowManager.sway = {
       enable = true;
       wrapperFeatures.gtk = true;
+      catppuccin = {
+        enable = true;
+        flavor = "macchiato";
+      };
       config = {
         terminal = "${pkgs.alacritty}/bin/alacritty";
         menu = "${lib.getExe config.programs.rofi.finalPackage} -show drun -show-icons -pid";
@@ -31,6 +35,44 @@ in {
         fonts = {
           names = ["DejaVu Sans" "Font Awesome 6 Free"];
           size = 10.0;
+        };
+        colors = {
+          background = "$base";
+          focused = {
+            background = "$base";
+            border = "$lavender";
+            childBorder = "$lavender";
+            text = "$text";
+            indicator = "$rosewater";
+          };
+          focusedInactive = {
+            background = "$base";
+            border = "$overlay0";
+            childBorder = "$overlay0";
+            text = "$text";
+            indicator = "$rosewater";
+          };
+          unfocused = {
+            background = "$base";
+            border = "$overlay0";
+            childBorder = "$overlay0";
+            text = "$text";
+            indicator = "$rosewater";
+          };
+          urgent = {
+            background = "$base";
+            border = "$peach";
+            childBorder = "$peach";
+            text = "$peach";
+            indicator = "$overlay0";
+          };
+          placeholder = {
+            background = "$base";
+            border = "$overlay0";
+            childBorder = "$overlay0";
+            text = "$peach";
+            indicator = "$overlay0";
+          };
         };
 
         input = {
