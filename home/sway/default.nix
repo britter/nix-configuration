@@ -74,6 +74,8 @@ in {
             indicator = "$overlay0";
           };
         };
+        gaps.outer = 5;
+        gaps.inner = 5;
 
         input = {
           "type:touchpad" = {
@@ -135,6 +137,7 @@ in {
             Escape = "mode default";
           };
         };
+        window.titlebar = false;
         window.commands = [
           {
             criteria.app_id = ".*-floating";
