@@ -18,6 +18,10 @@ in {
     programs.rofi = {
       enable = true;
       package = pkgs.rofi-wayland;
+      catppuccin = {
+        enable = true;
+        flavor = "macchiato";
+      };
     };
 
     wayland.windowManager.sway = {
