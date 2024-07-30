@@ -28,6 +28,10 @@ in {
         menu = "${lib.getExe config.programs.rofi.finalPackage} -show drun -show-icons -pid";
         bars = [{command = "${pkgs.waybar}/bin/waybar";}];
         defaultWorkspace = "workspace number 1";
+        fonts = {
+          names = ["DejaVu Sans" "Font Awesome 6 Free"];
+          size = 10.0;
+        };
 
         input = {
           "type:touchpad" = {
