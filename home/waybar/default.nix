@@ -56,6 +56,7 @@ in {
               warning = 70;
               critical = 90;
             };
+            on-click = "swaymsg exec \"${lib.getExe pkgs.alacritty} --class Alacritty-floating -e btop\"";
           };
 
           "memory" = {
@@ -66,6 +67,7 @@ in {
               warning = 70;
               critical = 90;
             };
+            on-click = "swaymsg exec \"${lib.getExe pkgs.alacritty} --class Alacritty-floating -e btop\"";
           };
 
           "network" = {
