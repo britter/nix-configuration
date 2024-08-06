@@ -15,6 +15,9 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
+    home.packages = [
+      pkgs.gnome.nautilus
+    ];
     programs.rofi = {
       enable = true;
       package = pkgs.rofi-wayland;
