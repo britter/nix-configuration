@@ -35,7 +35,6 @@ in {
             "battery"
             "cpu"
             "memory"
-            "sway/language"
             "pulseaudio"
           ];
 
