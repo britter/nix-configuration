@@ -111,7 +111,10 @@ in {
             "${mod}+Shift+0" = "move container to workspace number 10; workspace number 10";
 
             # Custom modes
-            "${mod}+Escape" = ''mode "system:  [r]eboot  [p]oweroff  [e]xit"'';
+            "${mod}+Escape" = ''mode "system:  [l]ock  [r]eboot  [p]oweroff  [e]xit"'';
+
+            # Custom actions
+            "${mod}+Shift+l" = "exec ${pkgs.swaylock}/bin/swaylock";
           };
         modes = {
           # redeclare resize mode in order not to override it
@@ -129,7 +132,8 @@ in {
             "Escape" = "mode default";
             "Return" = "mode default";
           };
-          "system:  [r]eboot  [p]oweroff  [e]xit" = {
+          "system:  [l]ock  [r]eboot  [p]oweroff  [e]xit" = {
+            l = "exec ${pkgs.swaylock}/bin/swaylock";
             r = "exec systemctl reboot";
             p = "exec systemctl poweroff";
             e = "exit";

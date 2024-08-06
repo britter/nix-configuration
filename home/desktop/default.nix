@@ -11,6 +11,7 @@ in {
     ../firefox
     ../intellij
     ../sway
+    ../swaylock
     ../vscode
     ../waybar
   ];
@@ -35,7 +36,9 @@ in {
       };
       sway.enable = true;
       # TODO make this part of the sway module
+      swaylock.enable = true;
       waybar.enable = true;
+
       vscode.enable = true;
     };
   };
