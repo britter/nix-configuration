@@ -12,10 +12,6 @@ in {
   config = lib.mkIf cfg.enable {
     programs.alacritty = {
       enable = true;
-      catppuccin = {
-        enable = true;
-        flavor = "mocha";
-      };
       settings = {
         font.normal.family = "FiraCode Nerd Font";
         window = {

@@ -12,10 +12,6 @@ in {
   config = lib.mkIf cfg.enable {
     programs.bat = {
       enable = true;
-      catppuccin = {
-        enable = true;
-        flavor = "macchiato";
-      };
     };
   };
 }

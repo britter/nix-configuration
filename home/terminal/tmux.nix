@@ -13,10 +13,6 @@ in {
   config = lib.mkIf cfg.enable {
     programs.tmux = {
       enable = true;
-      catppuccin = {
-        enable = true;
-        flavor = "frappe";
-      };
 
       baseIndex = 1;
       clock24 = true;

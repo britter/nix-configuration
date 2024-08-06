@@ -21,19 +21,11 @@ in {
     programs.rofi = {
       enable = true;
       package = pkgs.rofi-wayland;
-      catppuccin = {
-        enable = true;
-        flavor = "macchiato";
-      };
     };
 
     wayland.windowManager.sway = {
       enable = true;
       wrapperFeatures.gtk = true;
-      catppuccin = {
-        enable = true;
-        flavor = "macchiato";
-      };
       config = {
         terminal = "${pkgs.alacritty}/bin/alacritty";
         menu = "${lib.getExe config.programs.rofi.finalPackage} -show drun -show-icons -pid";

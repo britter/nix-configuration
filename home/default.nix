@@ -24,5 +24,9 @@ in {
       # enabled on all machines
       terminal.enable = true;
     };
+    catppuccin = {
+      enable = true;
+      flavor = "macchiato";
+    };
   };
 }

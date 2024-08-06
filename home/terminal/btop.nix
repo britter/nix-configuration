@@ -12,10 +12,6 @@ in {
   config = lib.mkIf cfg.enable {
     programs.btop = {
       enable = true;
-      catppuccin = {
-        enable = true;
-        flavor = "macchiato";
-      };
     };
 
     # required for catppuccin theming of btop

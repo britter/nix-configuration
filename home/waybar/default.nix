@@ -13,11 +13,7 @@ in {
     programs.waybar = {
       enable = true;
       systemd.target = "sway-session.target";
-      catppuccin = {
-        enable = true;
-        flavor = "macchiato";
-        mode = "createLink";
-      };
+      catppuccin.mode = "createLink";
       style = ./waybar.css;
       settings = {
         mainBar = {

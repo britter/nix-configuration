@@ -19,7 +19,6 @@ in {
         taplo # TOML lsp
       ];
       settings = {
-        theme = "catppuccin_macchiato";
         editor = {
           bufferline = "multiple";
           file-picker.hidden = false;
