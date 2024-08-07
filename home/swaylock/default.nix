@@ -12,7 +12,7 @@ in {
     programs.swaylock = {
       enable = true;
       settings = {
-        image = "${../desktop/wallpapers/moebius-wallpaper-light.png}";
+        image = "${../desktop/wallpapers/moebius-wallpaper-dark.jpg}";
         daemonize = true;
         ignore-empty-password = true;
       };
