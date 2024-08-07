@@ -27,6 +27,7 @@ in {
     catppuccin = {
       enable = true;
       flavor = "macchiato";
+      pointerCursor.enable = true;
     };
   };
 }

@@ -3,12 +3,7 @@
   lib,
   pkgs,
   ...
-}: let
-  cursor = {
-    theme = "Adwaita";
-    size = 14;
-  };
-in {
+}: {
   wayland.windowManager.sway = {
     wrapperFeatures.gtk = true;
     config = {
@@ -151,16 +146,5 @@ in {
         }
       ];
     };
-  };
-
-  home.pointerCursor = {
-    name = cursor.theme;
-    package = pkgs.gnome.adwaita-icon-theme;
-    inherit (cursor) size;
-  };
-
-  gtk.cursorTheme = {
-    name = cursor.theme;
-    inherit (cursor) size;
   };
 }
