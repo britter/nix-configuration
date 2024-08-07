@@ -7,11 +7,11 @@
   cfg = config.my.home.desktop;
 in {
   imports = [
-    ../alacritty
-    ../firefox
-    ../intellij
+    ./alacritty
+    ./firefox
+    ./intellij
     ./sway
-    ../vscode
+    ./vscode
   ];
 
   options.my.home.desktop = {
