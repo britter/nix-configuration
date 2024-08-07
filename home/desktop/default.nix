@@ -10,6 +10,7 @@ in {
     ../alacritty
     ../firefox
     ../intellij
+    ../mako
     ../sway
     ../swaylock
     ../vscode
@@ -36,6 +37,7 @@ in {
       };
       sway.enable = true;
       # TODO make this part of the sway module
+      mako.enable = true;
       swaylock.enable = true;
       waybar.enable = true;
 
