@@ -10,12 +10,8 @@ in {
     ../alacritty
     ../firefox
     ../intellij
-    ../mako
-    ../sway
-    ../swayidle
-    ../swaylock
+    ./sway
     ../vscode
-    ../waybar
   ];
 
   options.my.home.desktop = {
@@ -37,12 +33,6 @@ in {
         plugins = ["asciidoc" "protocol-buffers"];
       };
       sway.enable = true;
-      # TODO make this part of the sway module
-      mako.enable = true;
-      swayidle.enable = true;
-      swaylock.enable = true;
-      waybar.enable = true;
-
       vscode.enable = true;
     };
   };

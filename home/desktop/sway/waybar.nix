@@ -4,9 +4,9 @@
   lib,
   ...
 }: let
-  cfg = config.my.home.desktop.waybar;
+  cfg = config.my.home.desktop.sway.waybar;
 in {
-  options.my.home.desktop.waybar = {
+  options.my.home.desktop.sway.waybar = {
     enable = lib.mkEnableOption "waybar";
   };
   config = lib.mkIf cfg.enable {

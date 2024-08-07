@@ -4,9 +4,9 @@
   pkgs,
   ...
 }: let
-  cfg = config.my.home.desktop.swayidle;
+  cfg = config.my.home.desktop.sway.swayidle;
 in {
-  options.my.home.desktop.swayidle = {
+  options.my.home.desktop.sway.swayidle = {
     enable = lib.mkEnableOption "swayidle";
   };
   config = lib.mkIf cfg.enable {

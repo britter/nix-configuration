@@ -3,9 +3,9 @@
   lib,
   ...
 }: let
-  cfg = config.my.home.desktop.mako;
+  cfg = config.my.home.desktop.sway.mako;
 in {
-  options.my.home.desktop.mako = {
+  options.my.home.desktop.sway.mako = {
     enable = lib.mkEnableOption "mako";
   };
   config = lib.mkIf cfg.enable {
