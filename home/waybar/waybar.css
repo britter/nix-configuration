@@ -43,6 +43,7 @@ button:disabled {
 #memory,
 #mode,
 #disk,
+#tray,
 #temperature,
 #backlight,
 #network,
@@ -50,8 +51,9 @@ button:disabled {
 #language,
 #idle_inhibitor,
 #mpd {
-	margin-bottom: 6px;
-	margin-left: 8px;
+	margin-top: 3px;
+	margin-bottom: 3px;
+	margin-left: 5px;
 	padding: 0px 10px 0px 10px;
 	border-radius: 0px 0px 10px 10px;
 }
