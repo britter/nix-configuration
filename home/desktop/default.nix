@@ -12,6 +12,7 @@ in {
     ../intellij
     ../mako
     ../sway
+    ../swayidle
     ../swaylock
     ../vscode
     ../waybar
@@ -38,6 +39,7 @@ in {
       sway.enable = true;
       # TODO make this part of the sway module
       mako.enable = true;
+      swayidle.enable = true;
       swaylock.enable = true;
       waybar.enable = true;
 
