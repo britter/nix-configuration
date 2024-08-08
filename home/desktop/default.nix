@@ -25,6 +25,11 @@ in {
       logseq
     ];
 
+    catppuccin.pointerCursor = {
+      enable = true;
+      accent = "dark";
+    };
+
     my.home.desktop = {
       alacritty.enable = true;
       firefox.enable = true;
