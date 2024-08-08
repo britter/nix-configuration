@@ -75,6 +75,7 @@ button:disabled {
 
 #battery.charging {
 	background-color: @green;
+	color: @base;
 }
 
 #battery.critical:not(.charging),
@@ -91,6 +92,7 @@ button:disabled {
 @keyframes critical {
 	to {
 		background-color: @red;
+		color: @base;
 	}
 }
 
@@ -108,6 +110,7 @@ button:disabled {
 @keyframes warning {
 	to {
 		background-color: @yellow;
+		color: @base;
 	}
 }
 
