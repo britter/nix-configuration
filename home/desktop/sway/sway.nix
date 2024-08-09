@@ -68,7 +68,7 @@
       };
 
       output = {
-        "*".bg = "${../wallpapers/moebius-wallpaper-light.png} fill";
+        "*".bg = "${config.my.home.desktop.wallpapers.evening-sky} fill";
       };
 
       modifier = "Mod4";

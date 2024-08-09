@@ -12,7 +12,7 @@ in {
     programs.swaylock = {
       enable = true;
       settings = {
-        image = "${../wallpapers/moebius-wallpaper-dark.jpg}";
+        image = "${config.my.home.desktop.wallpapers.evening-sky}";
         daemonize = true;
         ignore-empty-password = true;
       };

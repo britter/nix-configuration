@@ -12,6 +12,7 @@ in {
     ./intellij
     ./sway
     ./vscode
+    ./wallpapers
   ];
 
   options.my.home.desktop = {
