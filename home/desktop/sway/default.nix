@@ -19,8 +19,9 @@ in {
   config = lib.mkIf cfg.enable {
     # TODO extract programs specifically required to build a
     # desktop environment into dedicated submodule
-    home.packages = [
-      pkgs.gnome.nautilus
+    home.packages = with pkgs; [
+      gnome.nautilus # file browser
+      loupe # image provider
     ];
     programs.rofi = {
       enable = true;
