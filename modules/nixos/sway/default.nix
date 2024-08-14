@@ -23,6 +23,13 @@ in {
     # bluetooth needs to be enabled for bluetuith to work
     hardware.bluetooth.enable = true;
 
+    #xdg portal wlr is required for screensharing
+    xdg.portal = {
+      enable = true;
+      wlr.enable = true;
+      config.common.default = "*";
+    };
+
     services.greetd = {
       enable = true;
       vt = 2;
