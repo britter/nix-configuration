@@ -22,6 +22,7 @@ in {
     home.packages = with pkgs; [
       gnome.nautilus # file browser
       loupe # image provider
+      wl-clipboard # terminal access to the clipboard
     ];
     programs.rofi = {
       enable = true;
