@@ -23,7 +23,6 @@ in {
                 "localhost:9100"
                 "${config.my.homelab.cyberoffice.ip}:9100"
                 "${config.my.homelab.directions.ip}:9100"
-                "${config.my.homelab.warehouse.ip}:9100"
               ];
             }
           ];
@@ -36,7 +35,6 @@ in {
                 "localhost:4243"
                 "${config.my.homelab.cyberoffice.ip}:4243"
                 "${config.my.homelab.directions.ip}:4243"
-                "${config.my.homelab.warehouse.ip}:4243"
               ];
             }
           ];

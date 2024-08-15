@@ -31,8 +31,8 @@
         };
       };
     };
-    disk.storage = lib.mkIf (storageDisk.disk != null) {
-      device = storageDisk.disk;
+    disk.storage = lib.mkIf (storageDisk != null) {
+      device = storageDisk;
       type = "disk";
       content = {
         type = "gpt";
@@ -41,13 +41,12 @@
             size = "100%";
             content = {
               type = "btrfs";
-              subvolumes = lib.mkMerge (lib.map (v: {
-                  ${v} = {
-                    mountpoint = "${v}";
-                    mountOptions = ["noatime"];
-                  };
-                })
-                storageDisk.subvolumes);
+              subvolumes = {
+                "/var/lib" = {
+                  mountpoint = "/var/lib";
+                  mountOptions = ["noatime"];
+                };
+              };
             };
           };
         };

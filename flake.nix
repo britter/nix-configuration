@@ -108,16 +108,6 @@
             ./systems/x86_64-linux/cyberoffice/configuration.nix
           ];
         };
-      nixosConfigurations.warehouse = let
-        system = inputs.flake-utils.lib.system.x86_64-linux;
-      in
-        inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./systems/x86_64-linux/warehouse/configuration.nix
-          ];
-        };
       nixosConfigurations.watchtower = let
         system = inputs.flake-utils.lib.system.x86_64-linux;
       in

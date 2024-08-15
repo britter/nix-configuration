@@ -22,17 +22,10 @@ in {
       description = "Size of the swap partition";
       default = null;
     };
-    storageDisk = {
-      disk = lib.mkOption {
-        type = lib.types.nullOr lib.types.str;
-        description = "Disk to use for storage";
-        default = null;
-      };
-      subvolumes = lib.mkOption {
-        type = lib.types.listOf lib.types.str;
-        description = "Mount points of the storage disk subvolumes";
-        default = [];
-      };
+    storageDisk = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      description = "Disk to use for storage";
+      default = null;
     };
   };
 
@@ -59,10 +52,7 @@ in {
         disko.devices =
           (import ./ext-mbr.nix {
             device = cfg.bootDisk;
-            storageDisk = {
-              inherit (cfg.storageDisk) disk;
-              inherit (cfg.storageDisk) subvolumes;
-            };
+            inherit (cfg) storageDisk;
             inherit lib;
           })
           .disko

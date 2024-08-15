@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  inputs,
   ...
 }: let
   cfg = config.my.modules.nextcloud;
@@ -16,12 +15,6 @@ in {
       owner = "nextcloud";
     };
 
-    sops.secrets."postgresql/nextcloud-user-password" = {
-      restartUnits = ["nginx.service"];
-      sopsFile = "${toString inputs.self}/systems/_shared-secrets/warehouse/cyberoffice-secrets.yaml";
-      owner = "nextcloud";
-    };
-
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud29;
@@ -30,12 +23,10 @@ in {
       config = {
         adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
         dbtype = "pgsql";
-        dbpassFile = config.sops.secrets."postgresql/nextcloud-user-password".path;
-        dbhost = "${config.my.homelab.warehouse.ip}:5432";
-        dbtableprefix = "oc_";
       };
+      database.createLocally = true;
       extraApps = {
-        inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts richdocuments;
+        inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts deck memories notes;
         news = pkgs.fetchNextcloudApp {
           url = "https://github.com/nextcloud/news/releases/download/25.0.0-alpha8/news.tar.gz";
           sha256 = "sha256-AhTZGQCLeNgsRBF5w3+Lf9JtNN4D1QncB5t+odU+XUc=";

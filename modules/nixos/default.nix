@@ -21,7 +21,6 @@ in {
     ./networking
     ./nextcloud
     ./nix
-    ./postgresql
     ./sops
     ./sound
     ./ssh-access

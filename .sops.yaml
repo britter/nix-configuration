@@ -2,7 +2,6 @@ keys:
   - &pulse-14 age18mrc4ttzg8xldevwfvtxqd0942hlv2az75l060flc4c0tqnmkaus0ueqpl
   - &cyberoffice age1azlfwa6wlup8vc9vjqhn2nv8hnpphrg5f0chyhn8xq63tv54zyjsr8yng2
   - &watchtower age1wsytzmsk73z4253uc8e9050cjdgg9dvchy9m2dmj9tgml4rrsshqy9uku2
-  - &warehouse age1lfvl00pqpqwjq4hy7qk7rvpgsz6xde8w9zr6dhrjlhp9pm8seadqhg0xpt
   - &directions age1tqwmx8ge4fxkj2l8sfam94eg52km2w3dqjgazjez46m4ywln7qls0unsdw
 creation_rules:
   - path_regex: systems/x86_64-linux/cyberoffice/secrets\.yaml$
@@ -20,15 +19,3 @@ creation_rules:
       - age:
         - *pulse-14
         - *directions
-  - path_regex: systems/x86_64-linux/warehouse/secrets\.yaml$
-    key_groups:
-      - age:
-        - *pulse-14
-        - *warehouse
-  # shared secrets
-  - path_regex: systems/_shared-secrets/warehouse/cyberoffice-secrets\.yaml$
-    key_groups:
-      - age:
-        - *pulse-14
-        - *warehouse
-        - *cyberoffice

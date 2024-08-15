@@ -14,6 +14,7 @@
       disko = {
         enable = true;
         bootDisk = "/dev/sda";
+        storageDisk = "/dev/sdb";
       };
       nextcloud.enable = true;
     };
