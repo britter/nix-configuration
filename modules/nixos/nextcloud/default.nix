@@ -18,7 +18,7 @@ in {
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud29;
-      hostName = "nextcloud.ritter.family";
+      hostName = "nextcloud.srv-prod-2.ritter.family";
       https = true;
       config = {
         adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
@@ -36,12 +36,12 @@ in {
       extraAppsEnable = true;
     };
 
-    services.nginx.virtualHosts."nextcloud.ritter.family" = {
-      useACMEHost = "nextcloud.ritter.family";
+    services.nginx.virtualHosts."nextcloud.srv-prod-2.ritter.family" = {
+      useACMEHost = "nextcloud.srv-prod-2.ritter.family";
       forceSSL = true;
     };
 
-    security.acme.certs."nextcloud.ritter.family" = {};
+    security.acme.certs."nextcloud.srv-prod-2.ritter.family" = {};
 
     networking = {
       firewall = {

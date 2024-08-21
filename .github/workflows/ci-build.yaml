@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        configuration: ["pulse-14", "latitude-7280", "cyberoffice", "watchtower"]
+        configuration: ["pulse-14", "latitude-7280", "srv-prod-2", "watchtower"]
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main

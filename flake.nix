@@ -98,14 +98,14 @@
             ./systems/aarch64-linux/directions/configuration.nix
           ];
         };
-      nixosConfigurations.cyberoffice = let
+      nixosConfigurations.srv-prod-2 = let
         system = inputs.flake-utils.lib.system.x86_64-linux;
       in
         inputs.nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {inherit inputs;};
           modules = [
-            ./systems/x86_64-linux/cyberoffice/configuration.nix
+            ./systems/x86_64-linux/srv-prod-2/configuration.nix
           ];
         };
       nixosConfigurations.watchtower = let

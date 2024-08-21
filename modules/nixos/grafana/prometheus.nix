@@ -21,7 +21,7 @@ in {
             {
               targets = [
                 "localhost:9100"
-                "${config.my.homelab.cyberoffice.ip}:9100"
+                "${config.my.homelab.srv-prod-2.ip}:9100"
                 "${config.my.homelab.directions.ip}:9100"
               ];
             }
@@ -33,7 +33,7 @@ in {
             {
               targets = [
                 "localhost:4243"
-                "${config.my.homelab.cyberoffice.ip}:4243"
+                "${config.my.homelab.srv-prod-2.ip}:4243"
                 "${config.my.homelab.directions.ip}:4243"
               ];
             }

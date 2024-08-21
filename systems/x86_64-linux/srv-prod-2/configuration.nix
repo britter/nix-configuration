@@ -5,7 +5,7 @@
 
   my = {
     host = {
-      name = "cyberoffice";
+      name = "srv-prod-2";
       system = "x86_64-linux";
       role = "server";
     };

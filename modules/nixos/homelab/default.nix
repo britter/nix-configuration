@@ -1,11 +1,5 @@
 {lib, ...}: {
   options.my.homelab = {
-    cyberoffice = {
-      ip = lib.mkOption {
-        type = lib.types.str;
-        default = "192.168.178.200";
-      };
-    };
     proxmox = {
       ip = lib.mkOption {
         type = lib.types.str;
@@ -16,6 +10,12 @@
       ip = lib.mkOption {
         type = lib.types.str;
         default = "192.168.178.105";
+      };
+    };
+    srv-prod-2 = {
+      ip = lib.mkOption {
+        type = lib.types.str;
+        default = "192.168.178.212";
       };
     };
     watchtower = {
