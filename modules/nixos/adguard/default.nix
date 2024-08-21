@@ -140,7 +140,7 @@ in {
               answer = "192.168.178.105";
             }
             {
-              domain = "grafana.ritter.family";
+              domain = "grafana.srv-prod-1.ritter.family";
               answer = "192.168.178.210";
             }
             {

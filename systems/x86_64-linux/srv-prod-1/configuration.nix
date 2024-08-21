@@ -5,7 +5,7 @@
 
   my = {
     host = {
-      name = "watchtower";
+      name = "srv-prod-1";
       system = "x86_64-linux";
       role = "server";
     };

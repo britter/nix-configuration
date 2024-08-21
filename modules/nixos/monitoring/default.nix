@@ -33,7 +33,7 @@ in {
         };
         clients = [
           {
-            url = "http://${homelabCfg.watchtower.ip}:3100/loki/api/v1/push";
+            url = "http://${homelabCfg.srv-prod-1.ip}:3100/loki/api/v1/push";
           }
         ];
         scrape_configs = [

@@ -1,19 +1,19 @@
 keys:
   - &pulse-14 age18mrc4ttzg8xldevwfvtxqd0942hlv2az75l060flc4c0tqnmkaus0ueqpl
+  - &srv-prod-1 age1wsytzmsk73z4253uc8e9050cjdgg9dvchy9m2dmj9tgml4rrsshqy9uku2
   - &srv-prod-2 age1azlfwa6wlup8vc9vjqhn2nv8hnpphrg5f0chyhn8xq63tv54zyjsr8yng2
-  - &watchtower age1wsytzmsk73z4253uc8e9050cjdgg9dvchy9m2dmj9tgml4rrsshqy9uku2
   - &directions age1tqwmx8ge4fxkj2l8sfam94eg52km2w3dqjgazjez46m4ywln7qls0unsdw
 creation_rules:
+  - path_regex: systems/x86_64-linux/srv-prod-1/secrets\.yaml$
+    key_groups:
+      - age:
+        - *pulse-14
+        - *srv-prod-1
   - path_regex: systems/x86_64-linux/srv-prod-2/secrets\.yaml$
     key_groups:
       - age:
         - *pulse-14
         - *srv-prod-2
-  - path_regex: systems/x86_64-linux/watchtower/secrets\.yaml$
-    key_groups:
-      - age:
-        - *pulse-14
-        - *watchtower
   - path_regex: systems/aarch64-linux/directions/secrets\.yaml$
     key_groups:
       - age:
