@@ -115,37 +115,31 @@ in {
           }
         ];
         filtering = {
-          # make 192.168.178.105 (this host) available via domain home.arpa
-          # home.arpa is a special purpose domain for local networks,
-          # see https://datatracker.ietf.org/doc/html/rfc8375
-          #
-          # For this to work is requires assigning 192.168.178.105 as a static
-          # IP in to this host in the router configuration.
           filtering_enabled = true;
           rewrites = [
             {
               domain = "adguard.ritter.family";
-              answer = "192.168.178.105";
+              answer = config.my.homelab.directions.ip;
             }
             {
               domain = "fritz-box.ritter.family";
-              answer = "192.168.178.105";
+              answer = config.my.homelab.directions.ip;
             }
             {
               domain = "home.ritter.family";
-              answer = "192.168.178.105";
+              answer = config.my.homelab.directions.ip;
             }
             {
               domain = "proxmox.ritter.family";
-              answer = "192.168.178.105";
+              answer = config.my.homelab.directions.ip;
             }
             {
               domain = "grafana.srv-prod-1.ritter.family";
-              answer = "192.168.178.211";
+              answer = config.my.homelab.srv-prod-1.ip;
             }
             {
-              domain = "nextcloud.ritter.family";
-              answer = "192.168.178.200";
+              domain = "nextcloud.srv-prod-2.ritter.family";
+              answer = config.my.homelab.srv-prod-2.ip;
             }
           ];
         };
