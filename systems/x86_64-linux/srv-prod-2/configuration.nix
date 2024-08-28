@@ -8,7 +8,6 @@
       role = "server";
     };
     modules = {
-      acme.enable = true;
       disko = {
         enable = true;
         bootDisk = "/dev/sda";
