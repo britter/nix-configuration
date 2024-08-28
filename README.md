@@ -137,7 +137,7 @@ nix run nixpkgs#sops -- updatekeys path/to/secrets.yaml
 Optional: Build a new VM image if changes are required
 
 ```shell
-nix build .#nixosConfigurations.minimalServerIso.config.system.build.isoImage
+nix build .#nixosConfigurations.minimal-server-iso.config.system.build.isoImage
 ```
 
 1. Define a new VM using the [home-lab terraform configuration](https://github.com/britter/home-lab). Make sure to reference the right ISO.

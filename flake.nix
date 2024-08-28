@@ -42,7 +42,9 @@
     nixpkgs-terraform.url = "github:stackbuilders/nixpkgs-terraform";
   };
 
-  outputs = {self, ...} @ inputs:
+  outputs = {self, ...} @ inputs: let
+    lib = import ./lib.nix;
+  in
     inputs.flake-utils.lib.eachDefaultSystem (system: let
       pkgs = inputs.nixpkgs.legacyPackages.${system};
       pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
@@ -61,76 +63,8 @@
         inherit (inputs) nixpkgs-terraform;
       };
     })
+    // lib.defineSystems inputs
     // {
-      # -----------------------------------------------------------------------
-      # Desktops
-      # -----------------------------------------------------------------------
-      nixosConfigurations.pulse-14 = let
-        system = inputs.flake-utils.lib.system.x86_64-linux;
-      in
-        inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./systems/x86_64-linux/pulse-14/configuration.nix
-          ];
-        };
-      nixosConfigurations.latitude-7280 = let
-        system = inputs.flake-utils.lib.system.x86_64-linux;
-      in
-        inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./systems/x86_64-linux/latitude-7280/configuration.nix
-          ];
-        };
-      # -----------------------------------------------------------------------
-      # Servers
-      # -----------------------------------------------------------------------
-      nixosConfigurations.directions = let
-        system = inputs.flake-utils.lib.system.aarch64-linux;
-      in
-        inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./systems/aarch64-linux/directions/configuration.nix
-          ];
-        };
-      nixosConfigurations.srv-prod-1 = let
-        system = inputs.flake-utils.lib.system.x86_64-linux;
-      in
-        inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./systems/x86_64-linux/srv-prod-1/configuration.nix
-          ];
-        };
-      nixosConfigurations.srv-prod-2 = let
-        system = inputs.flake-utils.lib.system.x86_64-linux;
-      in
-        inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./systems/x86_64-linux/srv-prod-2/configuration.nix
-          ];
-        };
-      # -----------------------------------------------------------------------
-      # ISOs
-      # -----------------------------------------------------------------------
-      nixosConfigurations.minimalServerIso = let
-        system = inputs.flake-utils.lib.system.x86_64-linux;
-      in
-        inputs.nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./systems/x86_64-linux/minimal-server-iso/configuration.nix
-          ];
-        };
       # -----------------------------------------------------------------------
       # Darwin
       # -----------------------------------------------------------------------
