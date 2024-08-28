@@ -8,6 +8,7 @@
       role = "server";
     };
     modules = {
+      proxmox-vm.enable = true;
       disko = {
         enable = true;
         bootDisk = "/dev/sda";
@@ -16,10 +17,6 @@
       nextcloud.enable = true;
     };
   };
-
-  # TODO extract into a VM module
-  boot.initrd.availableKernelModules = ["ata_piix" "uhci_hcd" "virtio_pci" "virtio_scsi" "sd_mod" "sr_mod"];
-  services.qemuGuest.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions

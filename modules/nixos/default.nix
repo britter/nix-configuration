@@ -21,6 +21,7 @@ in {
     ./networking
     ./nextcloud
     ./nix
+    ./proxmox-vm
     ./sops
     ./sound
     ./ssh-access
