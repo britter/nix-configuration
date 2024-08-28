@@ -9,8 +9,6 @@
 
   my = {
     host = {
-      name = "WQ0C6FWJ1W";
-      system = "aarch64-darwin";
       role = "desktop";
       profiles = ["work"];
     };

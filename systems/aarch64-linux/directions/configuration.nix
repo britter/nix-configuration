@@ -7,8 +7,6 @@
 
   my = {
     host = {
-      name = "directions";
-      system = "aarch64-linux";
       role = "server";
     };
     modules = {

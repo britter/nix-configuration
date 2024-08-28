@@ -11,8 +11,6 @@
 
   my = {
     host = {
-      name = "pulse-14";
-      system = "x86_64-linux";
       role = "desktop";
       profiles = ["private"];
     };

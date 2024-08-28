@@ -7,8 +7,6 @@
 
   my = {
     host = {
-      name = "latitude-7280";
-      system = "x86_64-linux";
       role = "desktop";
       profiles = ["private"];
     };

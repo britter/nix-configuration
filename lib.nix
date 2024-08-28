@@ -6,8 +6,8 @@ let
         inherit system;
         specialArgs = {
           inherit inputs;
-          inherit hostName;
           inherit system;
+          inherit hostName;
         };
         modules = [
           ./systems/${system}/${hostName}/configuration.nix
