@@ -24,7 +24,7 @@ in {
       enable = true;
       settings = {
         server = {
-          domain = "grafana.srv-prod-1.ritter.family";
+          domain = "grafana.${config.my.host.name}.ritter.family";
         };
       };
       provision = {
@@ -55,7 +55,7 @@ in {
       enable = true;
       configurations = [
         {
-          fqdn = "grafana.srv-prod-1.ritter.family";
+          fqdn = "grafana.${config.my.host.name}.ritter.family";
           target = "http://localhost:3000";
           proxyWebsockets = true;
         }
