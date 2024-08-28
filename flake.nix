@@ -63,20 +63,5 @@
         inherit (inputs) nixpkgs-terraform;
       };
     })
-    // lib.defineSystems inputs
-    // {
-      # -----------------------------------------------------------------------
-      # Darwin
-      # -----------------------------------------------------------------------
-      darwinConfigurations.WQ0C6FWJ1W = let
-        system = inputs.flake-utils.lib.system.aarch64-darwin;
-      in
-        inputs.nix-darwin.lib.darwinSystem {
-          inherit system;
-          specialArgs = {inherit inputs;};
-          modules = [
-            ./systems/aarch64-darwin/work-macbook/configuration.nix
-          ];
-        };
-    };
+    // lib.defineSystems inputs;
 }
