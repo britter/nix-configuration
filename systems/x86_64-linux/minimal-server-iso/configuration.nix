@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   inputs,
@@ -6,6 +7,7 @@
 }: {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+    ../../../modules/nixos/homelab
   ];
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
@@ -27,6 +29,6 @@
       }
     ];
     defaultGateway = "192.168.178.1";
-    nameservers = ["192.168.178.105"];
+    nameservers = [config.my.homelab.directions.ip];
   };
 }

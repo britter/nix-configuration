@@ -29,7 +29,7 @@ in {
           }
         ];
         defaultGateway = "192.168.178.1";
-        nameservers = ["192.168.178.105"];
+        nameservers = [config.my.homelab.directions.ip];
       });
   };
 }
