@@ -25,7 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@main
-      - run: nix build .#nixosConfigurations.minimalServerIso.config.system.build.isoImage
+      - run: nix build .#nixosConfigurations.minimal-server-iso.config.system.build.isoImage
   build-darwin:
     name: Build darwin systems
     runs-on: macos-latest
