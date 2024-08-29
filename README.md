@@ -92,21 +92,17 @@ nix flake show <flake url>
 - https://github.com/getsops/sops
 - https://www.youtube.com/watch?v=G5f6GC7SnhU
 
-**Generating a key from SSH key**
+** Adding a new host
+
+- Generate SSH key for the host using `ssh-key-gen`
+- Convert the public key to age
 
 ```shell
-# generate new key at ~/.config/sops/age/keys.txt from private ssh key at ~/.ssh/private
-$ nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/private > ~/.config/sops/age/keys.txt
+nix run nixpkgs#ssh-to-age -- -i ~/.ssh/key.pub
 ```
 
-**Getting the public key for an existing age key**
-
-```shell
-# get a public key of ~/.config/sops/age/keys.txt
-nix shell nixpkgs#age --command age-keygen -y ~/.config/sops/age/keys.txt
-```
-
-**Editing a sops file**
+- Add an entry to `.sops.yaml` for that host
+- Create the secrets file
 
 ```shell
 nix run nixpkgs#sops -- path/to/secrets.yaml
