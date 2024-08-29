@@ -24,5 +24,11 @@
         default = "192.168.178.212";
       };
     };
+    srv-test-1 = {
+      ip = lib.mkOption {
+        type = lib.types.str;
+        default = "192.168.178.221";
+      };
+    };
   };
 }

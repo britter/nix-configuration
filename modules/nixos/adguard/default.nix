@@ -141,6 +141,10 @@ in {
               domain = "nextcloud.srv-prod-2.ritter.family";
               answer = config.my.homelab.srv-prod-2.ip;
             }
+            {
+              domain = "grafana.srv-test-1.ritter.family";
+              answer = config.my.homelab.srv-test-1.ip;
+            }
           ];
         };
       };
