@@ -1,7 +1,7 @@
 #!/usr/bin/env nix-shell
 #! nix-shell -i bash --pure
 #! nix-shell -p nixos-anywhere -I nixos-anywhere=https://github.com/nix-community/nixos-anywhere
-set -e
+set -euo pipefail
 
 # Source (with modifications): https://github.com/nix-community/nixos-anywhere/blob/46dc28f4f89b747084c7dd6d273b1278142220ce/docs/howtos/secrets.md
 
@@ -29,7 +29,9 @@ trap cleanup EXIT
 install -d -m755 "$temp/etc/ssh"
 
 # copy private ket to the temporary directory
-cp "$HOME/.ssh/ssh_${host}_ed25519_key" "$temp/etc/ssh/ssh_host_ed25519_key"
+hostKey="$HOME/.ssh/ssh_${host}_ed25519_key"
+echo "Sending $hostKey to $host:/etc/ssh/ssh_host_ed25519_key"
+cp "$hostKey" "$temp/etc/ssh/ssh_host_ed25519_key"
 
 # Set the correct permissions so sshd will accept the key
 chmod 600 "$temp/etc/ssh/ssh_host_ed25519_key"
