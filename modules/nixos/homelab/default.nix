@@ -1,5 +1,11 @@
 {lib, ...}: {
   options.my.homelab = {
+    fritz-box = {
+      ip = lib.mkOption {
+        type = lib.types.str;
+        default = "192.168.178.1";
+      };
+    };
     proxmox = {
       ip = lib.mkOption {
         type = lib.types.str;

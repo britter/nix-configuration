@@ -1,4 +1,8 @@
-{inputs, ...}: {
+{
+  config,
+  inputs,
+  ...
+}: {
   imports = [
     ../../../modules/nixos
     ./hardware-configuration.nix
@@ -17,11 +21,11 @@
         configurations = [
           {
             fqdn = "fritz-box.ritter.family";
-            target = "https://192.168.178.1";
+            target = "https://${config.my.homelab.fritz-box.ip}";
           }
           {
             fqdn = "proxmox.ritter.family";
-            target = "https://192.168.178.100:8006";
+            target = "https://${config.my.homelab.proxmox.ip}:8006";
           }
         ];
       };

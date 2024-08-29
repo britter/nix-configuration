@@ -28,7 +28,7 @@
         prefixLength = 24;
       }
     ];
-    defaultGateway = "192.168.178.1";
+    defaultGateway = config.my.homelab.fritz-box.ip;
     nameservers = [config.my.homelab.directions.ip];
   };
 }
