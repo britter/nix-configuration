@@ -30,20 +30,27 @@ in {
       config.common.default = "*";
     };
 
-    services.greetd = {
-      enable = true;
-      vt = 2;
-      settings = {
-        default_session = {
-          command = ''
-            ${pkgs.greetd.tuigreet}/bin/tuigreet \
-              --remember \
-              --time \
-              --asterisks \
-              --cmd ${pkgs.sway}/bin/sway
-          '';
+    services = {
+      greetd = {
+        enable = true;
+        vt = 2;
+        settings = {
+          default_session = {
+            command = ''
+              ${pkgs.greetd.tuigreet}/bin/tuigreet \
+                --remember \
+                --time \
+                --asterisks \
+                --cmd ${pkgs.sway}/bin/sway
+            '';
+          };
         };
       };
+
+      # Required for automatically mounting USB devices
+      devmon.enable = true;
+      gvfs.enable = true;
+      udisks2.enable = true;
     };
   };
 }
