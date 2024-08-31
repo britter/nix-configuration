@@ -1,12 +1,4 @@
-{
-  config,
-  pkgs,
-  osConfig,
-  ...
-}: let
-  enableDesktop = pkgs.stdenv.isLinux && osConfig.my.host.role == "desktop";
-  isServer = osConfig.my.host.role == "server";
-in {
+{pkgs, ...}: {
   imports = [
     ./desktop
     ./java
@@ -15,13 +7,9 @@ in {
   ];
   config = {
     my.home = {
-      # enabled on linux desktops only
-      desktop.enable = enableDesktop;
+      desktop.enable = pkgs.stdenv.isLinux;
 
-      # enabled everywhere but servers
-      java.enable = !isServer;
-
-      # enabled on all machines
+      java.enable = true;
       terminal.enable = true;
     };
     catppuccin = {
