@@ -25,6 +25,11 @@ in {
       overlays = [inputs.self.overlays.${system}];
       config.allowUnfreePredicate = pkg:
         builtins.elem (lib.getName pkg) allowedUnfreePkgs;
+
+      # required to make logseq build again
+      config.permittedInsecurePackages = [
+        "electron-27.3.11"
+      ];
     };
   };
 }
