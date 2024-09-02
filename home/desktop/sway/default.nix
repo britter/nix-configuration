@@ -20,8 +20,11 @@ in {
     # TODO extract programs specifically required to build a
     # desktop environment into dedicated submodule
     home.packages = with pkgs; [
+      evince # pdf viewer
+      flameshot # screenshot tool
       gnome.nautilus # file browser
       loupe # image provider
+      qalculate-gtk # calculator
       wl-clipboard # terminal access to the clipboard
     ];
     programs.rofi = {
