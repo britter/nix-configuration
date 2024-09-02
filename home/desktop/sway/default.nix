@@ -7,6 +7,7 @@
   cfg = config.my.home.desktop.sway;
 in {
   imports = [
+    ./flameshot.nix
     ./mako.nix
     ./sway.nix
     ./swayidle.nix
@@ -21,7 +22,6 @@ in {
     # desktop environment into dedicated submodule
     home.packages = with pkgs; [
       evince # pdf viewer
-      flameshot # screenshot tool
       gnome.nautilus # file browser
       loupe # image provider
       qalculate-gtk # calculator
@@ -35,6 +35,7 @@ in {
       enable = true;
     };
     my.home.desktop.sway = {
+      flameshot.enable = true;
       mako.enable = true;
       swayidle.enable = true;
       swaylock.enable = true;
