@@ -22,6 +22,7 @@ in {
     # desktop environment into dedicated submodule
     home.packages = with pkgs; [
       evince # pdf viewer
+      gnome.gnome-calendar
       gnome.nautilus # file browser
       loupe # image provider
       qalculate-gtk # calculator
