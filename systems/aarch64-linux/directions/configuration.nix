@@ -24,6 +24,10 @@
             target = "https://${config.my.homelab.fritz-box.ip}";
           }
           {
+            fqdn = "nextcloud.ritter.family";
+            target = "https://.nextcloud.srv-prod-2.ritter.family";
+          }
+          {
             fqdn = "proxmox.ritter.family";
             target = "https://${config.my.homelab.proxmox.ip}:8006";
           }

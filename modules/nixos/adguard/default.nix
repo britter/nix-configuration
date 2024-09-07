@@ -130,6 +130,10 @@ in {
               answer = config.my.homelab.directions.ip;
             }
             {
+              domain = "nextcloud.ritter.family";
+              answer = config.my.homelab.directions.ip;
+            }
+            {
               domain = "proxmox.ritter.family";
               answer = config.my.homelab.directions.ip;
             }
