@@ -42,7 +42,7 @@ in {
             {
               "NextCloud" = {
                 description = "Safe home for all our data";
-                href = "https://nextcloud.srv-prod-2.ritter.family/";
+                href = "https://nextcloud.ritter.family/";
                 icon = "nextcloud-blue.svg";
               };
             }
