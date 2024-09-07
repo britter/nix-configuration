@@ -25,7 +25,7 @@
           }
           {
             fqdn = "nextcloud.ritter.family";
-            target = "https://.nextcloud.srv-prod-2.ritter.family";
+            target = "https://nextcloud.srv-prod-2.ritter.family";
           }
           {
             fqdn = "proxmox.ritter.family";
