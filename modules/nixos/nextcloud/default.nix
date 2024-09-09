@@ -24,7 +24,14 @@ in {
         adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
         dbtype = "pgsql";
       };
-      settings.trusted_domains = ["nextcloud.ritter.family"];
+      settings = {
+        trusted_domains = ["nextcloud.ritter.family"];
+        default_language = "de";
+        default_locale = "de_DE";
+        reduce_to_languages = ["en" "de"];
+        default_phone_region = "DE";
+        default_timezone = "Europe/Berlin";
+      };
       database.createLocally = true;
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts deck memories notes;
