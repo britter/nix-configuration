@@ -1,6 +1,7 @@
 {
   config,
   pkgs,
+  ...
 }: {
   services.nextcloud = {
     extraApps = {
