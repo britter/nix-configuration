@@ -4,6 +4,7 @@
     git
     helix
     nix-tree
+    tmux
   ];
 
   programs.fish.enable = true;
