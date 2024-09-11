@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        configuration: ["pulse-14", "latitude-7280", "srv-prod-1", "srv-prod-2", "srv-test-1", "srv-test-2"]
+        configuration: ["pulse-14", "srv-prod-1", "srv-prod-2", "srv-test-1", "srv-test-2"]
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
