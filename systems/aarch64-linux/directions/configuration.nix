@@ -20,10 +20,6 @@
         enable = true;
         configurations = [
           {
-            fqdn = "collabora.ritter.family";
-            target = "https://collabora.srv-prod-2.ritter.family";
-          }
-          {
             fqdn = "fritz-box.ritter.family";
             target = "https://${config.my.homelab.fritz-box.ip}";
           }
