@@ -22,6 +22,7 @@
           {
             fqdn = "collabora.ritter.family";
             target = "https://collabora.srv-prod-2.ritter.family";
+            proxyWebsockets = true;
           }
           {
             fqdn = "fritz-box.ritter.family";
