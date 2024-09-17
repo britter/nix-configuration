@@ -7,6 +7,16 @@ All of this configuration should be part of the backups, so it's only required t
 
 ### NextCloud
 
+#### General
+
 1. Configured users
-2. Configured the bookmarks app for internet access so it can fetch previews.
+
+#### Bookmarks app
+
+1. Configured the bookmarks app for internet access so it can fetch previews.
+
+#### Richdocuments app
+
+1. Configure URL of Collabora Online Server to point to the server
+2. Configure Allow list to only allow 172.17.0.2 (IP of the collabora docker container)
 
