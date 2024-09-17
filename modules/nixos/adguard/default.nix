@@ -122,6 +122,10 @@ in {
               answer = config.my.homelab.directions.ip;
             }
             {
+              domain = "collabora.ritter.family";
+              answer = config.my.homelab.directions.ip;
+            }
+            {
               domain = "fritz-box.ritter.family";
               answer = config.my.homelab.directions.ip;
             }
