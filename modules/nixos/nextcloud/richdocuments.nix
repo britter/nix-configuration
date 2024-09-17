@@ -19,7 +19,6 @@
           ports = ["9980:9980"];
           environment = {
             extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
-            domain = ''nextcloud\\.${config.my.host.name}\\.ritter\\.family|nextcloud\\.ritter\\.family'';
           };
           extraOptions = ["--cap-add=MKNOD"];
         };
