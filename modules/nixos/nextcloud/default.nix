@@ -8,7 +8,6 @@
 in {
   imports = [
     ./memories.nix
-    ./richdocuments.nix
   ];
 
   options.my.modules.nextcloud = {
