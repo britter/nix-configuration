@@ -35,6 +35,7 @@
       configurations = [
         {
           fqdn = "collabora.${config.my.host.name}.ritter.family";
+          aliases = ["collabora.ritter.family"];
           target = "http://localhost:9980";
           proxyWebsockets = true;
         }

@@ -9,6 +9,10 @@
       fqdn = lib.mkOption {
         type = lib.types.str;
       };
+      aliases = lib.mkOption {
+        type = lib.types.listOf lib.types.str;
+        default = [];
+      };
       target = lib.mkOption {
         type = lib.types.str;
       };
@@ -34,6 +38,7 @@ in {
     services.nginx.virtualHosts = let
       makeHost = conf: {
         ${conf.fqdn} = {
+          serverAliases = conf.aliases;
           useACMEHost = conf.fqdn;
           forceSSL = true;
           locations."/" = {

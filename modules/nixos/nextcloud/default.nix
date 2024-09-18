@@ -50,6 +50,7 @@ in {
     };
 
     services.nginx.virtualHosts."nextcloud.${config.my.host.name}.ritter.family" = {
+      serverAliases = ["nextcloud.ritter.family"];
       useACMEHost = "nextcloud.${config.my.host.name}.ritter.family";
       forceSSL = true;
     };

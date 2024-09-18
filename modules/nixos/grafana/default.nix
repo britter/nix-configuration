@@ -56,6 +56,7 @@ in {
       configurations = [
         {
           fqdn = "grafana.${config.my.host.name}.ritter.family";
+          aliases = ["grafana.ritter.family"];
           target = "http://localhost:3000";
           proxyWebsockets = true;
         }
