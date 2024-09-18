@@ -14,12 +14,10 @@ _: {
       {
         addr = "0.0.0.0";
         port = 443;
-        ssl = true;
       }
       {
         addr = "[::0]";
         port = 443;
-        ssl = true;
       }
     ];
     locations."/" = {
