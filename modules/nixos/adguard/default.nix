@@ -130,6 +130,10 @@ in {
               answer = config.my.homelab.directions.ip;
             }
             {
+              domain = "grafana.ritter.family";
+              answer = config.my.homelab.directions.ip;
+            }
+            {
               domain = "home.ritter.family";
               answer = config.my.homelab.directions.ip;
             }
@@ -142,12 +146,20 @@ in {
               answer = config.my.homelab.directions.ip;
             }
             {
+              domain = "collabora.srv-prod-2.ritter.family";
+              answer = config.my.homelab.srv-prod-2.ip;
+            }
+            {
               domain = "grafana.srv-prod-1.ritter.family";
               answer = config.my.homelab.srv-prod-1.ip;
             }
             {
               domain = "nextcloud.srv-prod-2.ritter.family";
               answer = config.my.homelab.srv-prod-2.ip;
+            }
+            {
+              domain = "collabora.srv-test-2.ritter.family";
+              answer = config.my.homelab.srv-test-2.ip;
             }
             {
               domain = "grafana.srv-test-1.ritter.family";
