@@ -19,6 +19,7 @@ in {
     ./my-user
     ./networking
     ./nextcloud
+    ./nginx
     ./nix
     ./proxmox-vm
     ./sops
