@@ -78,7 +78,7 @@ in {
             {
               "Grafana" = {
                 description = "Grafana Dashboards";
-                href = "https://grafana.srv-prod-1.ritter.family/";
+                href = "https://grafana.ritter.family/";
                 icon = "grafana.svg";
               };
             }

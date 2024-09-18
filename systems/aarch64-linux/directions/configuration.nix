@@ -29,6 +29,10 @@
             target = "https://${config.my.homelab.fritz-box.ip}";
           }
           {
+            fqdn = "grafana.ritter.family";
+            target = "https://collabora.srv-prod-1.ritter.family";
+          }
+          {
             fqdn = "nextcloud.ritter.family";
             target = "https://nextcloud.srv-prod-2.ritter.family";
           }
