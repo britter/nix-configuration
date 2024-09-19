@@ -33,7 +33,7 @@
         then "https://collabora.ritter.family"
         else "https://collabora.${config.my.host.name}.ritter.family";
       postStart = pkgs.writeShellScriptBin "nextcloud-declarative-config" ''
-        CONTAINER_IP=`docker container inspect -f '{{ .NetworkSettings.IPAddress }}' collabora-code`
+        CONTAINER_IP=`${pkgs.docker} container inspect -f '{{ .NetworkSettings.IPAddress }}' collabora-code`
         ${occ} config:app:set --value "${codeUrl}" richdocuments wopi_url
         ${occ} config:app:set --value "${codeUrl}" richdocuments public_wopi_url
         ${occ} config:app:set --value "$CONTAINER_IP" richdocuments wopi_allowlist
