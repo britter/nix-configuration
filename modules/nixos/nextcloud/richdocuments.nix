@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: {
   config = lib.mkIf config.services.nextcloud.enable {
@@ -25,9 +26,22 @@
       };
     };
 
-    systemd.services.nginx = {
+    systemd.services.nginx = let
+      occ = "${config.services.nextcloud.occ}/bin/nextcloud-occ";
+      codeUrl =
+        if config.my.host.name == "srv-prod-2"
+        then "https://collabora.ritter.family"
+        else "https://collabora.${config.my.host.name}.ritter.family";
+      postStart = pkgs.writeShellScriptBin "nextcloud-declarative-config" ''
+        CONTAINER_IP=`docker container inspect -f '{{ .NetworkSettings.IPAddress }}' collabora-code`
+        ${occ} config:app:set --value "${codeUrl}" richdocuments wopi_url
+        ${occ} config:app:set --value "${codeUrl}" richdocuments public_wopi_url
+        ${occ} config:app:set --value "$CONTAINER_IP" richdocuments wopi_allowlist
+      '';
+    in {
       after = ["docker-collabora-code.service"];
       requires = ["docker-collabora-code.service"];
+      serviceConfig.ExecPostStart = "+${postStart}/bin/nextcloud-declarative-config";
     };
 
     my.modules.https-proxy = {
