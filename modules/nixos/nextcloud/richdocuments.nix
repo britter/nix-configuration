@@ -36,7 +36,7 @@
         set -euo pipefail
         CONTAINER_IP=`${pkgs.docker}/bin/docker container inspect -f '{{ .NetworkSettings.IPAddress }}' collabora-code`
         ${occ} config:app:set --value "${codeUrl}" richdocuments wopi_url
-        ${occ} config:app:set --value "$CONTAINER_IP" richdocuments wopi_allowlist
+        ${occ} config:app:set --value "$CONTAINER_IP,${config.my.homelab.directions.ip}" richdocuments wopi_allowlist
       '';
     in {
       after = ["docker-collabora-code.service"];
