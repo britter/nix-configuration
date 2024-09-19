@@ -41,7 +41,7 @@
     in {
       after = ["docker-collabora-code.service"];
       requires = ["docker-collabora-code.service"];
-      serviceConfig.ExecPostStart = "+${postStart}/bin/nextcloud-declarative-config";
+      serviceConfig.ExecStartPost = "+${postStart}/bin/nextcloud-declarative-config";
     };
 
     my.modules.https-proxy = {
