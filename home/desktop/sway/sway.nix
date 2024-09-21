@@ -3,12 +3,17 @@
   lib,
   pkgs,
   ...
-}: {
+}: let
+  rofi = lib.getExe config.programs.rofi.finalPackage;
+in {
+  home.sessionVariables = {
+    WL_PRESENT_DMENU = "${rofi} -dmenu -p present";
+  };
   wayland.windowManager.sway = {
     wrapperFeatures.gtk = true;
     config = {
       terminal = "${pkgs.alacritty}/bin/alacritty";
-      menu = "${lib.getExe config.programs.rofi.finalPackage} -show drun -show-icons -pid";
+      menu = "${rofi} -show drun -show-icons -pid";
       bars = [{command = "${pkgs.waybar}/bin/waybar";}];
       defaultWorkspace = "workspace number 1";
       fonts = {
@@ -92,6 +97,7 @@
 
           # Custom modes
           "${mod}+Escape" = ''mode "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit"'';
+          "${mod}+p" = ''mode "present"'';
         };
       modes = {
         # redeclare resize mode in order not to override it
@@ -118,6 +124,22 @@
           e = "exit";
           Return = "mode default";
           Escape = "mode default";
+        };
+        present = let
+          wl-present = "${pkgs.wl-mirror}/bin/wl-present";
+        in {
+          # command starts mirroring
+          m = "exec ${wl-present} mirror";
+          # these commands modify an already running mirroring window
+          o = "exec ${wl-present} set-output";
+          r = "exec ${wl-present} set-region";
+          "Shift+r" = "exec ${wl-present} unset-region";
+          s = "exec ${wl-present} set-scaling";
+          f = "exec ${wl-present} toggle-freeze";
+          c = "exec ${wl-present} custom";
+          # return to default mode
+          "Escape" = "mode default";
+          "Return" = "mode default";
         };
       };
       window.titlebar = false;
