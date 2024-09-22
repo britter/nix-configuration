@@ -129,14 +129,14 @@ in {
           wl-present = "${pkgs.wl-mirror}/bin/wl-present";
         in {
           # command starts mirroring
-          m = "exec ${wl-present} mirror";
+          m = ''mode "default"; exec ${wl-present} mirror'';
           # these commands modify an already running mirroring window
-          o = "exec ${wl-present} set-output";
-          r = "exec ${wl-present} set-region";
-          "Shift+r" = "exec ${wl-present} unset-region";
-          s = "exec ${wl-present} set-scaling";
-          f = "exec ${wl-present} toggle-freeze";
-          c = "exec ${wl-present} custom";
+          o = ''mode "default"; exec ${wl-present} set-output'';
+          r = ''mode "default"; exec ${wl-present} set-region'';
+          "Shift+r" = ''mode "default"; exec ${wl-present} unset-region'';
+          s = ''mode "default"; exec ${wl-present} set-scaling'';
+          f = ''mode "default"; exec ${wl-present} toggle-freeze'';
+          c = ''mode "default"; exec ${wl-present} custom'';
           # return to default mode
           "Escape" = "mode default";
           "Return" = "mode default";
