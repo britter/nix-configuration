@@ -39,7 +39,7 @@ in {
       };
       database.createLocally = true;
       extraApps = {
-        inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts deck notes;
+        inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts cookbook deck notes;
         news = pkgs.fetchNextcloudApp {
           url = "https://github.com/nextcloud/news/releases/download/25.0.0-alpha8/news.tar.gz";
           sha256 = "sha256-AhTZGQCLeNgsRBF5w3+Lf9JtNN4D1QncB5t+odU+XUc=";
