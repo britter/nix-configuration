@@ -116,12 +116,12 @@ in {
           "Return" = "mode default";
         };
         "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit" = {
-          l = "exec ${pkgs.swaylock}/bin/swaylock";
-          s = "exec systemctl suspend";
-          h = "exec systemctl hibernate";
-          r = "exec systemctl reboot";
-          p = "exec systemctl poweroff";
-          e = "exit";
+          l = ''mode "default"; exec ${pkgs.swaylock}/bin/swaylock'';
+          s = ''mode "default"; exec systemctl suspend'';
+          h = ''mode "default"; exec systemctl hibernate'';
+          r = ''mode "default"; exec systemctl reboot'';
+          p = ''mode "default"; exec systemctl poweroff'';
+          e = ''mode "default"; exit'';
           Return = "mode default";
           Escape = "mode default";
         };
