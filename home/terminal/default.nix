@@ -16,6 +16,7 @@ in {
     ./terraform.nix
     ./tmux.nix
     ./tools.nix
+    ./yazi.nix
   ];
   options.my.home.terminal = {
     enable = lib.mkEnableOption "terminal";
@@ -31,6 +32,7 @@ in {
       helix.enable = true;
       terraform.enable = true;
       tools.enable = true;
+      yazi.enable = true;
     };
   };
 }
