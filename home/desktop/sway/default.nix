@@ -21,10 +21,10 @@ in {
     # TODO extract programs specifically required to build a
     # desktop environment into dedicated submodule
     home.packages = with pkgs; [
+      cosmic-files
       evince # pdf viewer
       gnome.file-roller # archive manager
       gnome.gnome-calendar
-      gnome.nautilus # file browser
       loupe # image provider
       qalculate-gtk # calculator
       wl-clipboard # terminal access to the clipboard
