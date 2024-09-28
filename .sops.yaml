@@ -4,6 +4,7 @@ keys:
   - &srv-prod-2 age1azlfwa6wlup8vc9vjqhn2nv8hnpphrg5f0chyhn8xq63tv54zyjsr8yng2
   - &srv-test-1 age1gnt60tjm9k8v25a3cs8yhtrq5xnrgylvmxwyhkglq2c5lq0q2fcs4slgkx
   - &srv-test-2 age1jafz4xf567lgtcqv7lwxl7np0gf332yedghdlxgcxd0lfqmtxd2qpg0p4x
+  - &srv-eval-1 age15vkuesucjf60x8dcfyre4aus4djyxamsk20ce2u7nrprml2j533qcsc7pd
   - &directions age1tqwmx8ge4fxkj2l8sfam94eg52km2w3dqjgazjez46m4ywln7qls0unsdw
 creation_rules:
   - path_regex: systems/x86_64-linux/srv-prod-1/secrets\.yaml$
@@ -26,6 +27,11 @@ creation_rules:
       - age:
         - *pulse-14
         - *srv-test-2
+  - path_regex: systems/x86_64-linux/srv-eval-1/secrets\.yaml$
+    key_groups:
+      - age:
+        - *pulse-14
+        - *srv-eval-1
   - path_regex: systems/aarch64-linux/directions/secrets\.yaml$
     key_groups:
       - age:
