@@ -56,6 +56,11 @@ in {
           sha256 = "sha256-vBVhrtuZlyG/9jTGXxgRalrjQgMJDQB0H9sqi5YUKbk=";
           license = "agpl3Plus";
         };
+        integration_google = pkgs.fetchNextcloudApp {
+          url = "https://github.com/nextcloud-releases/integration_google/releases/download/v3.1.0/integration_google-v3.1.0.tar.gz";
+          sha256 = "sha256-tqsi95+CIoHRFvv8I0HoVl5hjhROrr9epWvNeDynMXQ=";
+          license = "agpl3Plus";
+        };
       };
       extraAppsEnable = true;
     };
