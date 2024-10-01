@@ -10,7 +10,7 @@ in {
     enable = lib.mkEnableOption "tools";
   };
   config = let
-    fax-pdf = pkgs.writeShellApplication {
+    pdf-fax = pkgs.writeShellApplication {
       name = "pdf-fax";
       runtimeInputs = [pkgs.ghostscript_headless];
       text = ''
@@ -29,7 +29,7 @@ in {
       home.packages = with pkgs; [
         curl
         eza # ls replacement
-        fax-pdf
+        pdf-fax
         file
         httpie
         jq
