@@ -30,7 +30,7 @@
           }
           {
             fqdn = "grafana.ritter.family";
-            target = "https://collabora.srv-prod-1.ritter.family";
+            target = "https://grafana.srv-prod-1.ritter.family";
           }
           {
             fqdn = "nextcloud.ritter.family";
