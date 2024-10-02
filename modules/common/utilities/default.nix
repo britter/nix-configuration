@@ -3,6 +3,7 @@
     dig
     git
     helix
+    lsof
     nix-tree
     tmux
   ];
