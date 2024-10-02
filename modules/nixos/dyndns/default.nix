@@ -18,7 +18,7 @@ in {
     sops.templates."fritzbox-cloudflare-dyndns.env" = {
       owner = "fritzbox-cloudflare-dyndns";
       content = ''
-        DYNDNS_SERVER_BIND=8080
+        DYNDNS_SERVER_BIND=:8080
         DYNDNS_SERVER_USERNAME=${config.sops.placeholder."dyndns/server-username"}
         DYNDNS_SERVER_PASSWORD=${config.sops.placeholder."dyndns/server-password"}
         CLOUDFLARE_API_TOKEN=${config.sops.placeholder.dyndns-cloudflare-api-token}
