@@ -8,6 +8,8 @@ in {
     ./adguard
     ./comin
     ./disko
+    ./dyndns
+    ./fritzbox-cloudflare-dyndns
     ./fonts
     ./gaming
     ./grafana
