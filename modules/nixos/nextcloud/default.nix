@@ -31,6 +31,7 @@ in {
       };
       settings = {
         trusted_domains = ["nextcloud.ritter.family"];
+        trusted_proxies = [config.my.homelab.directions.ip];
         default_language = "de";
         default_locale = "de_DE";
         reduce_to_languages = ["en" "de"];
