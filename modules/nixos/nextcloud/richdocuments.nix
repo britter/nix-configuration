@@ -33,12 +33,13 @@
       };
 
       systemd.services.nginx = let
+        homelabCfg = config.my.homelab.${config.my.host.name};
         occ = "${config.services.nextcloud.occ}/bin/nextcloud-occ";
         postStart = pkgs.writeShellScriptBin "nextcloud-declarative-config" ''
           set -euo pipefail
           CONTAINER_IP=`${pkgs.docker}/bin/docker container inspect -f '{{ .NetworkSettings.IPAddress }}' collabora-code`
           ${occ} config:app:set --value "https://${publicDomainName}" richdocuments wopi_url
-          ${occ} config:app:set --value "$CONTAINER_IP,${config.my.homelab.directions.ip}" richdocuments wopi_allowlist
+          ${occ} config:app:set --value "$CONTAINER_IP,${config.my.homelab.directions.ip},${homelabCfg.ip}" richdocuments wopi_allowlist
         '';
       in {
         after = ["docker-collabora-code.service"];
