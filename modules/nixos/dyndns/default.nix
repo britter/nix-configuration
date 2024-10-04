@@ -27,7 +27,15 @@ in {
     };
     services.fritzbox-cloudflare-dyndns = {
       enable = true;
-      environmentFile = config.sops.templates."fritzbox-cloudflare-dyndns.env".path;
+    };
+    systemd.services.fritzbox-cloudflare-dyndns = {
+      environment = {
+        DYNDNS_SERVER_BIND = ":8000";
+        DYNDNS_SERVER_USERNAME = "fritzbox";
+        DYNDNS_SERVER_PASSWORD_FILE = config.sops.secrets."dyndns/server-password".path;
+        CLOUDFLARE_API_TOKEN_FILE = config.sops.secrets.dyndns-cloudflare-api-token.path;
+        CLOUDFLARE_ZONES_IPV4 = "nextcloud.ritter.family,collabora.ritter.family,nextcloud-test.ritter.family,collabora-test.ritter.family";
+      };
     };
     my.modules.https-proxy = {
       enable = true;
