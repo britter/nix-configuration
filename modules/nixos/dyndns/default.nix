@@ -22,7 +22,7 @@ in {
         DYNDNS_SERVER_USERNAME=${config.sops.placeholder."dyndns/server-username"}
         DYNDNS_SERVER_PASSWORD=${config.sops.placeholder."dyndns/server-password"}
         CLOUDFLARE_API_TOKEN=${config.sops.placeholder.dyndns-cloudflare-api-token}
-        CLOUDFLARE_ZONES_IPV4=nextcloud.ritter.family
+        CLOUDFLARE_ZONES_IPV4=nextcloud.ritter.family,collabora.ritter.family,nextcloud-test.ritter.family,collabora-test.ritter.family
       '';
     };
     services.fritzbox-cloudflare-dyndns = {
