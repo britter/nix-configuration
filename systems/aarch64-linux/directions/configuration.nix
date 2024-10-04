@@ -26,7 +26,7 @@
           }
           {
             fqdn = "collabora-test.ritter.family";
-            target = "https://collabora.srv-prod-2.ritter.family";
+            target = "https://collabora.srv-test-2.ritter.family";
             proxyWebsockets = true;
           }
           {
