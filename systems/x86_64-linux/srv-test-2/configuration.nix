@@ -14,7 +14,10 @@
         bootDisk = "/dev/sda";
         storageDisk = "/dev/sdb";
       };
-      nextcloud.enable = true;
+      nextcloud = {
+        enable = true;
+        stage = "test";
+      };
     };
   };
 

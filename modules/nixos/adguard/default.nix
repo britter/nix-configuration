@@ -126,6 +126,10 @@ in {
               answer = config.my.homelab.directions.ip;
             }
             {
+              domain = "collabora-test.ritter.family";
+              answer = config.my.homelab.directions.ip;
+            }
+            {
               domain = "fritz-box.ritter.family";
               answer = config.my.homelab.directions.ip;
             }
@@ -139,6 +143,10 @@ in {
             }
             {
               domain = "nextcloud.ritter.family";
+              answer = config.my.homelab.directions.ip;
+            }
+            {
+              domain = "nextcloud-test.ritter.family";
               answer = config.my.homelab.directions.ip;
             }
             {

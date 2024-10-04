@@ -13,6 +13,16 @@ in {
 
   options.my.modules.nextcloud = {
     enable = lib.mkEnableOption "nextcloud";
+    stage = lib.mkOption {
+      type = lib.types.enum ["test" "production"];
+    };
+    publicDomainName = lib.mkOption {
+      type = lib.types.str;
+      default =
+        if config.my.modules.nextcloud.stage == "production"
+        then "nextcloud.ritter.family"
+        else "nextcloud-test.ritter.family";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -30,7 +40,7 @@ in {
         dbtype = "pgsql";
       };
       settings = {
-        trusted_domains = ["nextcloud.ritter.family"];
+        trusted_domains = [cfg.publicDomainName];
         trusted_proxies = [config.my.homelab.directions.ip];
         default_language = "de";
         default_locale = "de_DE";
@@ -51,7 +61,7 @@ in {
     };
 
     services.nginx.virtualHosts."nextcloud.${config.my.host.name}.ritter.family" = {
-      serverAliases = ["nextcloud.ritter.family"];
+      serverAliases = [cfg.publicDomainName];
       useACMEHost = "nextcloud.${config.my.host.name}.ritter.family";
       forceSSL = true;
     };

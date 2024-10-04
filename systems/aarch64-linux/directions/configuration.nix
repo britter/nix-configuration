@@ -25,6 +25,11 @@
             proxyWebsockets = true;
           }
           {
+            fqdn = "collabora-test.ritter.family";
+            target = "https://collabora.srv-prod-2.ritter.family";
+            proxyWebsockets = true;
+          }
+          {
             fqdn = "fritz-box.ritter.family";
             target = "https://${config.my.homelab.fritz-box.ip}";
           }
@@ -35,6 +40,10 @@
           {
             fqdn = "nextcloud.ritter.family";
             target = "https://nextcloud.srv-prod-2.ritter.family";
+          }
+          {
+            fqdn = "nextcloud-test.ritter.family";
+            target = "https://nextcloud.srv-test-2.ritter.family";
           }
           {
             fqdn = "proxmox.ritter.family";
