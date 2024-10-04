@@ -37,7 +37,7 @@
         postStart = pkgs.writeShellScriptBin "nextcloud-declarative-config" ''
           set -euo pipefail
           CONTAINER_IP=`${pkgs.docker}/bin/docker container inspect -f '{{ .NetworkSettings.IPAddress }}' collabora-code`
-          ${occ} config:app:set --value "${publicDomainName}" richdocuments wopi_url
+          ${occ} config:app:set --value "https://${publicDomainName}" richdocuments wopi_url
           ${occ} config:app:set --value "$CONTAINER_IP,${config.my.homelab.directions.ip}" richdocuments wopi_allowlist
         '';
       in {
