@@ -10,10 +10,14 @@ in {
   };
   config = lib.mkIf cfg.enable {
     sops.secrets."vaultwarden/admin-token" = {};
+    sops.secrets."vaultwarden/smtp-username" = {};
+    sops.secrets."vaultwarden/smtp-password" = {};
     sops.templates."vaultwarden.env" = {
       owner = "vaultwarden";
       content = ''
         ADMIN_TOKEN=${config.sops.placeholder."vaultwarden/admin-token"}
+        SMTP_USERNAME=${config.sops.placeholder."vaultwarden/smtp-username"}
+        SMTP_PASSWORD=${config.sops.placeholder."vaultwarden/smtp-password"}
       '';
     };
     services.vaultwarden = {
@@ -26,6 +30,10 @@ in {
         ROCKET_ADDRESS = "127.0.0.1";
         ROCKET_PORT = 8222;
         DATABASE_URL = "postgresql:///vaultwarden?host=/run/postgresql";
+        SMTP_HOST = "smtp-relay.brevo.com";
+        SMTP_PORT = 587;
+        SMTP_SECURITY = "starttls";
+        SMTP_FROM = "passwords@ritter.family";
       };
     };
     services.postgresql = {
