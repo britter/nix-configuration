@@ -25,7 +25,22 @@ in {
         SIGNUPS_ALLOWED = false;
         ROCKET_ADDRESS = "127.0.0.1";
         ROCKET_PORT = 8222;
+        DATABASE_URL = "postgresql:///vaultwarden?host=/run/postgresql";
       };
+    };
+    services.postgresql = {
+      enable = true;
+      ensureDatabases = ["vaultwarden"];
+      ensureUsers = [
+        {
+          name = "vaultwarden";
+          ensureDBOwnership = true;
+        }
+      ];
+    };
+    systemd.services.vaultwarden = {
+      after = ["postgresql.service"];
+      requires = ["postgresql.service"];
     };
     my.modules.https-proxy = {
       enable = true;
