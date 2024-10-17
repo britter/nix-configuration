@@ -27,6 +27,7 @@ in {
     ./sound
     ./ssh-access
     ./sway
+    ./vaultwarden
   ];
 
   config = {

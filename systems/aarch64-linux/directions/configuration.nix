@@ -49,6 +49,10 @@
             fqdn = "proxmox.ritter.family";
             target = "https://${config.my.homelab.proxmox.ip}:8006";
           }
+          {
+            fqdn = "passwords.ritter.family";
+            target = "https://passwords.srv-eval-1.ritter.family";
+          }
         ];
       };
     };

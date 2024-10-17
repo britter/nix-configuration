@@ -150,6 +150,10 @@ in {
               answer = config.my.homelab.directions.ip;
             }
             {
+              domain = "passwords.ritter.family";
+              answer = config.my.homelab.directions.ip;
+            }
+            {
               domain = "proxmox.ritter.family";
               answer = config.my.homelab.directions.ip;
             }
@@ -176,6 +180,10 @@ in {
             {
               domain = "nextcloud.srv-test-2.ritter.family";
               answer = config.my.homelab.srv-test-2.ip;
+            }
+            {
+              domain = "passwords.srv-eval-1.ritter.family";
+              answer = config.my.homelab.srv-eval-1.ip;
             }
           ];
         };
