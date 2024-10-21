@@ -34,6 +34,7 @@ in {
       };
       profiles.bene = {
         extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          bitwarden
           clearurls
           consent-o-matic
           decentraleyes
