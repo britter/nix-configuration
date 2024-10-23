@@ -21,8 +21,10 @@ in {
     # TODO extract programs specifically required to build a
     # desktop environment into dedicated submodule
     home.packages = with pkgs; [
-      cosmic-files
+      dconf
       evince # pdf viewer
+      gnome.nautilus
+      gnome.adwaita-icon-theme
       gnome.file-roller # archive manager
       gnome.gnome-calendar
       loupe # image provider
