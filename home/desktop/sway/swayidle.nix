@@ -19,7 +19,7 @@ in {
         }
         {
           timeout = 300;
-          command = "${pkgs.swaylock}/bin/swaylock";
+          command = "${config.programs.swaylock.package}/bin/swaylock";
         }
         {
           timeout = 600;

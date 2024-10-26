@@ -121,7 +121,7 @@ in {
             "Return" = "mode default";
           };
           "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit" = {
-            l = ''mode "default"; exec ${pkgs.swaylock}/bin/swaylock'';
+            l = ''mode "default"; exec ${config.programs.swaylock.package}/bin/swaylock'';
             s = ''mode "default"; exec systemctl suspend'';
             h = ''mode "default"; exec systemctl hibernate'';
             r = ''mode "default"; exec systemctl reboot'';
