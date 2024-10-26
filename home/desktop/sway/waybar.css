@@ -60,6 +60,7 @@ button:disabled {
 #mpd {
 	margin-left: 3px;
 	padding: 0px 5px 0px 5px;
+	border-radius: 3px;
 }
 
 #bluetooth {
