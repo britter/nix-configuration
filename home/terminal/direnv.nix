@@ -20,5 +20,8 @@ in {
         };
       };
     };
+    programs.git.ignores = [
+      ".direnv"
+    ];
   };
 }
