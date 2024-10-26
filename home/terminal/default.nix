@@ -8,6 +8,7 @@ in {
   imports = [
     ./bat.nix
     ./btop.nix
+    ./direnv.nix
     ./fish.nix
     ./gh.nix
     ./git.nix
@@ -24,6 +25,7 @@ in {
     my.home.terminal = {
       bat.enable = true;
       btop.enable = true;
+      direnv.enable = true;
       fish.enable = true;
       gh.enable = true;
       git.enable = true;
