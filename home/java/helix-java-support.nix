@@ -55,5 +55,12 @@ in {
       };
     };
     xdg.configFile."helix/runtime/queries/groovy".source = "${helix-unstable}/runtime/queries/groovy";
+
+    programs.git.ignores = [
+      ## File created by jdtls used by helix
+      ".classpath"
+      ".project"
+      ".settings/"
+    ];
   };
 }
