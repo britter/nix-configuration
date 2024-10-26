@@ -13,7 +13,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [pkgs.git-absorb];
+    home.packages = with pkgs; [git-absorb gitu];
 
     programs.git = {
       enable = true;
