@@ -60,8 +60,8 @@ in {
             indicator = "$overlay0";
           };
         };
-        gaps.outer = 3;
-        gaps.inner = 3;
+        gaps.outer = 1;
+        gaps.inner = 1;
         focus.followMouse = false;
 
         input = {
@@ -96,6 +96,9 @@ in {
             "${mod}+Shift+8" = "move container to workspace number 8; workspace number 8";
             "${mod}+Shift+9" = "move container to workspace number 9; workspace number 9";
             "${mod}+Shift+0" = "move container to workspace number 10; workspace number 10";
+
+            # default is mod+Shift+q
+            "${mod}+q" = "kill";
 
             # Custom modes
             "${mod}+Escape" = ''mode "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit"'';
@@ -145,7 +148,7 @@ in {
           };
         };
         window.titlebar = false;
-        window.border = 3;
+        window.border = 2;
         window.commands = [
           {
             criteria.app_id = ".*-floating";

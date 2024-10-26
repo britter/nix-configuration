@@ -1,12 +1,15 @@
 @import "catppuccin.css";
 
+/* debug this using `env GTK_DEBUG=interactive waybar` */
+
 * {
 	border: none;
 	border-radius: 0px;
-	font-size: 14px;
+	font-size: 9px;
+	padding: 0px;
+	min-height: 10px;
 	font-family: "DejaVu Sans", "Font Awesome 6 Free", "Font Awesome 6 Brands";
 	color: @text;
-	min-height: 10px;
 }
 
 window#waybar {
@@ -32,6 +35,10 @@ button:disabled {
 	border-bottom: 2px solid @teal;
 }
 
+#workspaces button:not(.focused) {
+	border-bottom: 2px solid @base;
+}
+
 #workspaces button * {
 	color: inherit;
 }
@@ -51,11 +58,8 @@ button:disabled {
 #language,
 #idle_inhibitor,
 #mpd {
-	margin-top: 3px;
-	margin-bottom: 3px;
-	margin-left: 5px;
-	padding: 0px 10px 0px 10px;
-	border-radius: 0px 0px 10px 10px;
+	margin-left: 3px;
+	padding: 0px 5px 0px 5px;
 }
 
 #bluetooth {
@@ -123,12 +127,12 @@ button:disabled {
 }
 
 #language {
-	min-width: 16px;
+	min-width: 8px;
 }
 
 tooltip {
 	background-color: @crust;
-	border-radius: 10px;
+	border-radius: 5px;
 }
 
 tooltip label {

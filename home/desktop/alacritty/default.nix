@@ -13,7 +13,10 @@ in {
     programs.alacritty = {
       enable = true;
       settings = {
-        font.normal.family = "FiraCode Nerd Font";
+        font = {
+          size = 9;
+          normal.family = "FiraCode Nerd Font";
+        };
         window = {
           opacity = 0.85;
           decorations = "None";
