@@ -32,6 +32,17 @@ in {
       accent = "dark";
     };
 
+    xdg = {
+      mime.enable = true;
+      mimeApps = {
+        enable = true;
+        defaultApplications = {
+          "application/pdf" = ["org.gnome.Evince.desktop"];
+          "inode/directory" = ["org.gnome.Nautilus.desktop"];
+        };
+      };
+    };
+
     my.home.desktop = {
       alacritty.enable = true;
       firefox.enable = true;
