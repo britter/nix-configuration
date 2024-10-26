@@ -13,7 +13,6 @@ in {
     ./git.nix
     ./gpg
     ./helix.nix
-    ./terraform.nix
     ./tmux.nix
     ./tools.nix
     ./yazi.nix
@@ -30,7 +29,6 @@ in {
       git.enable = true;
       gpg.enable = true;
       helix.enable = true;
-      terraform.enable = true;
       tools.enable = true;
       yazi.enable = true;
     };

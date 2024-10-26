@@ -27,7 +27,6 @@ in {
       shellcheck
     ];
 
-    my.home.terminal.terraform.package = pkgs.terraform-versions."1.4.7";
     my.home.terminal.tmux.enable = true;
 
     programs.fish.shellAliases = {

@@ -25,10 +25,6 @@
   in {
     hostPlatform = lib.mkDefault system;
     overlays = [inputs.self.overlays.${system}];
-    config.allowUnfreePredicate = pkg:
-      builtins.elem (lib.getName pkg) [
-        "terraform"
-      ];
   };
 
   # Host name has to equal serial number of the machine due to company device management
