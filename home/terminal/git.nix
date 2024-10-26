@@ -51,11 +51,6 @@ in {
       };
 
       ignores = [
-        ## IntelliJ stuff
-        ".idea"
-        "*.iml"
-        "out/"
-
         ## Mac OS stuff
         ".DS_Store"
       ];

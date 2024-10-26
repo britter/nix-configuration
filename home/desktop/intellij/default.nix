@@ -18,5 +18,11 @@ in {
     home.packages = with pkgs; [
       (jetbrains.plugins.addPlugins jetbrains.idea-community cfg.plugins)
     ];
+    programs.git.ignores = [
+      ## IntelliJ stuff
+      ".idea"
+      "*.iml"
+      "out/"
+    ];
   };
 }
