@@ -50,11 +50,6 @@ in {
         rbc = "rebase --continue";
       };
 
-      ignores = [
-        ## Mac OS stuff
-        ".DS_Store"
-      ];
-
       diff-so-fancy.enable = true;
     };
   };

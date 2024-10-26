@@ -32,5 +32,9 @@ in {
     programs.fish.shellAliases = {
       dive = "docker run -ti --rm  -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive";
     };
+
+    programs.git.ignores = [
+      ".DS_Store"
+    ];
   };
 }
