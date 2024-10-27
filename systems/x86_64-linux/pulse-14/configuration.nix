@@ -9,6 +9,7 @@
   ];
 
   facter.reportPath = ./facter.json;
+  networking.useDHCP = true;
 
   my = {
     host = {
@@ -26,7 +27,6 @@
   };
 
   services.printing.enable = true;
-
   services.xserver.videoDrivers = ["amdgpu"];
 
   # Workaround for getting automatic downloads of protoc via ptotobuf-gradle-plugin working
