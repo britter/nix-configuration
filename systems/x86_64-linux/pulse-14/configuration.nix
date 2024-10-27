@@ -1,5 +1,6 @@
 {
   inputs,
+  lib,
   pkgs,
   ...
 }: {
@@ -9,7 +10,7 @@
   ];
 
   facter.reportPath = ./facter.json;
-  networking.useDHCP = true;
+  networking.useDHCP = lib.mkDefault true;
 
   my = {
     host = {
