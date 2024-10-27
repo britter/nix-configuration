@@ -4,10 +4,11 @@
   ...
 }: {
   imports = [
-    inputs.nixos-hardware.nixosModules.tuxedo-pulse-14-gen3
-    ./hardware-configuration.nix
+    inputs.nixos-facter-modules.nixosModules.facter
     ../../../modules/nixos
   ];
+
+  facter.reportPath = ./facter.json;
 
   my = {
     host = {

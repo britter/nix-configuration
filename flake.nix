@@ -6,6 +6,7 @@
     # unstable is required to get more up to date packages
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
     home-manager = {
       url = "github:nix-community/home-manager/release-24.05";
