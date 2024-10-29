@@ -55,6 +55,7 @@ in {
 
     programs.lazygit = {
       enable = true;
+      # Config reference: https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
       settings = {
         promptToReturnFromSubprocess = false;
       };
