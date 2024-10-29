@@ -53,6 +53,11 @@ in {
       diff-so-fancy.enable = true;
     };
 
-    programs.lazygit.enable = true;
+    programs.lazygit = {
+      enable = true;
+      settings = {
+        promptToReturnFromSubprocess = false;
+      };
+    };
   };
 }
