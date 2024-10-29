@@ -13,7 +13,7 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [git-absorb gitu];
+    home.packages = [pkgs.git-absorb];
 
     programs.git = {
       enable = true;
@@ -52,5 +52,7 @@ in {
 
       diff-so-fancy.enable = true;
     };
+
+    programs.lazygit.enable = true;
   };
 }
