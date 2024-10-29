@@ -103,14 +103,14 @@ in {
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
               definedAliases = ["@np"];
             };
-            "Nix Options" = {
+            "NixOS Options" = {
               urls = [
                 {
-                  template = "https://search.nixos.org/options";
+                  template = "https://search.nuschtos.de";
                   params = [
                     {
-                      name = "type";
-                      value = "packages";
+                      name = "scope";
+                      value = "NixOS";
                     }
                     {
                       name = "query";
@@ -121,6 +121,25 @@ in {
               ];
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
               definedAliases = ["@no"];
+            };
+            "Home Manager Options" = {
+              urls = [
+                {
+                  template = "https://search.nuschtos.de";
+                  params = [
+                    {
+                      name = "scope";
+                      value = "Home+Manager";
+                    }
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+              icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = ["@ho"];
             };
             "NixOS Wiki" = {
               urls = [{template = "https://wiki.nixos.org/w/index.php?search={searchTerms}";}];
