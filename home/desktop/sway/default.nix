@@ -8,6 +8,7 @@
 in {
   imports = [
     ./flameshot.nix
+    ./kanshi.nix
     ./mako.nix
     ./sway.nix
     ./swayidle.nix
@@ -40,6 +41,7 @@ in {
     };
     my.home.desktop.sway = {
       flameshot.enable = true;
+      kanshi.enable = true;
       mako.enable = true;
       swayidle.enable = true;
       swaylock.enable = true;
