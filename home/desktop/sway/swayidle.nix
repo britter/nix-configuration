@@ -29,7 +29,7 @@ in {
       events = [
         {
           event = "before-sleep";
-          command = "${pkgs.swaylock}/bin/swaylock";
+          command = "${config.programs.swaylock.package}/bin/swaylock";
         }
       ];
     };
