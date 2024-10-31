@@ -31,6 +31,7 @@ in {
       git.enable = true;
       gpg.enable = true;
       helix.enable = true;
+      tmux.enable = true;
       tools.enable = true;
       yazi.enable = true;
     };
