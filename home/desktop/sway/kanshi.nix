@@ -28,7 +28,8 @@ in {
             {
               criteria = pulse-14;
               status = "enable";
-              position = "960,2160";
+              # positioned at the bottom honoring the scale of 1.5: y = 2160 / 1.5 = 1440
+              position = "960,1440";
             }
           ];
           profile.exec = [
