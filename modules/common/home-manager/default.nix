@@ -18,6 +18,7 @@ in {
         home.stateVersion = "23.05";
         imports = [
           inputs.catppuccin.homeManagerModules.catppuccin
+          inputs.nixvim.homeManagerModules.nixvim
           ../../../home
         ];
       };

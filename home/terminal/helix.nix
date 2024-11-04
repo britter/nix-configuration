@@ -13,7 +13,6 @@ in {
   config = lib.mkIf cfg.enable {
     programs.helix = {
       enable = true;
-      defaultEditor = true;
       extraPackages = with pkgs; [
         nil # Nix lsp
         taplo # TOML lsp

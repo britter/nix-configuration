@@ -14,6 +14,7 @@ in {
     ./git.nix
     ./gpg
     ./helix.nix
+    ./nvim.nix
     ./tmux.nix
     ./tools.nix
     ./yazi.nix
@@ -31,6 +32,7 @@ in {
       git.enable = true;
       gpg.enable = true;
       helix.enable = true;
+      nvim.enable = true;
       tmux.enable = true;
       tools.enable = true;
       yazi.enable = true;
