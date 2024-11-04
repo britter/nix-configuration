@@ -35,6 +35,7 @@ in {
         cmp.enable = true;
         lazygit.enable = true;
         lightline.enable = true;
+        telescope.enable = true;
       };
       keymaps = [
         {
@@ -60,6 +61,29 @@ in {
           options = {
             silent = true;
           };
+        }
+        {
+          action = "<cmd>LazyGitFilterCurrentFile<CR>";
+          key = "<leader>glf";
+          mode = ["n"];
+          options = {
+            silent = true;
+          };
+        }
+        {
+          action = "<cmd>Telescope find_files<CR>";
+          key = "<leader>ff";
+          mode = ["n"];
+        }
+        {
+          action = "<cmd>Telescope live_grep<CR>";
+          key = "<leader>fg";
+          mode = ["n"];
+        }
+        {
+          action = "<cmd>Telescope buffers<CR>";
+          key = "<leader>fb";
+          mode = ["n"];
         }
       ];
     };
