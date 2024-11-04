@@ -46,7 +46,7 @@ in {
           };
         }
         {
-          action = ":LazyGitFilter<CR>";
+          action = "<cmd>LazyGitFilter<CR>";
           key = "<leader>gl";
           mode = ["n"];
           options = {
@@ -54,7 +54,7 @@ in {
           };
         }
         {
-          action = ":LazyGitFilterCurrentFile<CR>";
+          action = "<cmd>LazyGitFilterCurrentFile<CR>";
           key = "<leader>glf";
           mode = ["n"];
           options = {
