@@ -19,12 +19,8 @@ in {
     programs.nixvim = {
       enable = true;
       defaultEditor = true;
-      colorschemes.catppuccin = {
-        enable = true;
-        settings = {
-          flavour = "macchiato";
-        };
-      };
+      colorschemes.gruvbox.enable = true;
+      extraPlugins = [pkgs.vimPlugins."lightline-gruvbox-vim"];
       opts = {
         number = true;
         relativenumber = true;
