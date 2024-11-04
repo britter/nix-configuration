@@ -28,6 +28,14 @@ in {
       opts = {
         number = true;
         relativenumber = true;
+
+        cursorline = true;
+        scrolloff = 5;
+
+        swapfile = false;
+
+        list = true;
+        listchars = "tab:→·,lead:·,space:·,trail:~,extends:→,precedes:←,nbsp:␣";
       };
       globals.mapleader = " ";
       plugins = {
