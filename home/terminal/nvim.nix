@@ -41,6 +41,10 @@ in {
       plugins = {
         bufferline.enable = true;
         cmp.enable = true;
+        gitsigns = {
+          enable = true;
+          settings.current_line_blame = true;
+        };
         lazygit.enable = true;
         lightline.enable = true;
         telescope.enable = true;
