@@ -23,6 +23,7 @@ in {
         enable = true;
         settings.flavour = "macchiato";
       };
+      clipboard.providers.wl-copy.enable = true;
       # Add this to plugins below once switching to 24.11
       extraPlugins = [pkgs.vimPlugins."nvim-web-devicons"];
       opts = {
