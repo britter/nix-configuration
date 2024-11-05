@@ -23,6 +23,8 @@ in {
         enable = true;
         settings.flavour = "macchiato";
       };
+      # Add this to plugins below once switching to 24.11
+      extraPlugins = [pkgs.vimPlugins."nvim-web-devicons"];
       opts = {
         number = true;
         relativenumber = true;
@@ -73,6 +75,7 @@ in {
             nixd.enable = true;
           };
         };
+        nvim-tree.enable = true;
         telescope.enable = true;
         treesitter.enable = true;
       };
@@ -100,6 +103,11 @@ in {
           options = {
             silent = true;
           };
+        }
+        {
+          action = "<cmd>NvimTreeFindFileToggle<CR>";
+          key = "<leader>tt";
+          mode = ["n"];
         }
         {
           action = "<cmd>Telescope find_files<CR>";
