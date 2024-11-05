@@ -66,6 +66,7 @@ in {
         lazygit.enable = true;
         lightline.enable = true;
         telescope.enable = true;
+        treesitter.enable = true;
       };
       keymaps = [
         {
