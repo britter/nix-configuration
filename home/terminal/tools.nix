@@ -40,10 +40,6 @@ in {
         wget
         zip
       ];
-      programs.fzf = {
-        enable = true;
-        defaultCommand = "${pkgs.ripgrep}/bin/rg --files";
-      };
       programs.ripgrep.enable = true; # recursive grep
       programs.zoxide.enable = true; # smart cd replacement
     };

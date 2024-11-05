@@ -10,6 +10,7 @@ in {
     ./btop.nix
     ./direnv.nix
     ./fish.nix
+    ./fzf.nix
     ./gh.nix
     ./git.nix
     ./gpg
@@ -28,6 +29,7 @@ in {
       btop.enable = true;
       direnv.enable = true;
       fish.enable = true;
+      fzf.enable = true;
       gh.enable = true;
       git.enable = true;
       gpg.enable = true;

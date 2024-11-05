@@ -13,7 +13,7 @@ in {
   config = lib.mkIf cfg.enable {
     programs.fish = {
       shellAliases = {
-        "v" = "nvim (${pkgs.fzf}/bin/fzf)";
+        "v" = "nvim (${pkgs.fzf}/bin/fzf --preview=\"${pkgs.bat}/bin/bat --style=numbers --color=always {}\")";
       };
     };
     programs.nixvim = {
