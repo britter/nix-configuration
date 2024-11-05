@@ -65,6 +65,12 @@ in {
         };
         lazygit.enable = true;
         lightline.enable = true;
+        lsp = {
+          enable = true;
+          servers = {
+            nixd.enable = true;
+          };
+        };
         telescope.enable = true;
         treesitter.enable = true;
       };
