@@ -106,7 +106,7 @@ in {
             "NixOS Options" = {
               urls = [
                 {
-                  template = "https://search.nuschtos.de";
+                  template = "https://search.nüschtos.de";
                   params = [
                     {
                       name = "scope";
@@ -125,7 +125,7 @@ in {
             "Home Manager Options" = {
               urls = [
                 {
-                  template = "https://search.nuschtos.de";
+                  template = "https://search.nüschtos.de";
                   params = [
                     {
                       name = "scope";
@@ -139,7 +139,26 @@ in {
                 }
               ];
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-              definedAliases = ["@ho"];
+              definedAliases = ["@hm"];
+            };
+            "NixVim" = {
+              urls = [
+                {
+                  template = "https://search.nüschtos.de";
+                  params = [
+                    {
+                      name = "scope";
+                      value = "NixVim";
+                    }
+                    {
+                      name = "query";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+              icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = ["@nv"];
             };
             "NixOS Wiki" = {
               urls = [{template = "https://wiki.nixos.org/w/index.php?search={searchTerms}";}];
