@@ -93,14 +93,6 @@ in {
           };
         }
         {
-          action = "<cmd>LazyGitFilterCurrentFile<CR>";
-          key = "<leader>glf";
-          mode = ["n"];
-          options = {
-            silent = true;
-          };
-        }
-        {
           action = "<cmd>Telescope find_files<CR>";
           key = "<leader>ff";
           mode = ["n"];
