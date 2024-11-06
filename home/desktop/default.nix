@@ -25,6 +25,7 @@ in {
       bitwarden-desktop
       libreoffice
       logseq
+      vlc
     ];
 
     catppuccin.pointerCursor = {
