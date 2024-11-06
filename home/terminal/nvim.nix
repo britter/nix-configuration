@@ -78,7 +78,10 @@ in {
         };
         nvim-tree.enable = true;
         telescope.enable = true;
-        treesitter.enable = true;
+        treesitter = {
+          enable = true;
+          indent = true;
+        };
       };
       keymaps = [
         {
