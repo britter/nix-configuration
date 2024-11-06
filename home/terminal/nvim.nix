@@ -69,13 +69,13 @@ in {
           settings.current_line_blame = true;
         };
         lazygit.enable = true;
-        lightline.enable = true;
         lsp = {
           enable = true;
           servers = {
             nixd.enable = true;
           };
         };
+        lualine.enable = true;
         neo-tree.enable = true;
         telescope.enable = true;
         treesitter = {
