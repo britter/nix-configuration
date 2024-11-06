@@ -76,7 +76,7 @@ in {
             nixd.enable = true;
           };
         };
-        nvim-tree.enable = true;
+        neo-tree.enable = true;
         telescope.enable = true;
         treesitter = {
           enable = true;
@@ -109,8 +109,8 @@ in {
           };
         }
         {
-          action = "<cmd>NvimTreeFindFileToggle<CR>";
-          key = "<leader>tt";
+          action = "<cmd>Neotree filesystem reveal toggle left<CR>";
+          key = "<C-n>";
           mode = ["n"];
         }
         {
