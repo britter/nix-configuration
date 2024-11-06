@@ -74,10 +74,18 @@ in {
           servers = {
             nixd.enable = true;
           };
+          keymaps.lspBuf = {
+            K = "hover";
+            gd = "definition";
+            "<leader>ca" = "code_action";
+          };
         };
         lualine.enable = true;
         neo-tree.enable = true;
-        telescope.enable = true;
+        telescope = {
+          enable = true;
+          extensions.ui-select.enable = true;
+        };
         treesitter = {
           enable = true;
           indent = true;
