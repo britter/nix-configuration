@@ -150,6 +150,11 @@ in {
           };
         }
         {
+          action = "<cmd>Gitsigns preview_hunk<CR>";
+          key = "<leader>gp";
+          mode = ["n"];
+        }
+        {
           action = "<cmd>Neotree filesystem reveal toggle left<CR>";
           key = "<C-n>";
           mode = ["n"];
