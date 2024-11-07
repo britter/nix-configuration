@@ -182,6 +182,10 @@ in {
             criteria.app_id = "qalculate-gtk";
             command = "floating enable";
           }
+          {
+            criteria.app_id = "qalculate-gtk";
+            command = "resize set 800 600";
+          }
         ];
       };
     };
