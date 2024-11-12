@@ -10,6 +10,7 @@
   ];
 
   facter.reportPath = ./facter.json;
+  # Can be removed after https://github.com/numtide/nixos-facter-modules/pull/61 was merged
   networking.useDHCP = lib.mkDefault true;
 
   my = {
@@ -27,7 +28,6 @@
   };
 
   services.printing.enable = true;
-  services.xserver.videoDrivers = ["amdgpu"];
 
   # Workaround for getting automatic downloads of protoc via ptotobuf-gradle-plugin working
   # Source: https://discourse.nixos.org/t/protobuf-cant-be-run/13568/8
