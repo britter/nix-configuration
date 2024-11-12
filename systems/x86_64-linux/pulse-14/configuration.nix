@@ -6,7 +6,7 @@
 }: {
   imports = [
     inputs.nixos-facter-modules.nixosModules.facter
-    ../../../modules/nixos
+    ../../../modules
   ];
 
   facter.reportPath = ./facter.json;
@@ -15,7 +15,6 @@
   my = {
     host = {
       role = "desktop";
-      profiles = ["private"];
     };
     user.signingKey = "394546A47BB40E12";
     modules = {

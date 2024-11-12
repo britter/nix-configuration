@@ -1,6 +1,6 @@
 {...}: {
   imports = [
-    ../../../modules/nixos
+    ../../../modules
   ];
 
   my = {

@@ -19,11 +19,6 @@
         type = types.enum ["desktop" "server"];
         description = "The role this machine has";
       };
-      profiles = mkOption {
-        type = types.listOf (types.enum ["private" "work"]);
-        description = "The profiles to enable on this host";
-        default = [];
-      };
     };
     user = {
       name = mkOption {

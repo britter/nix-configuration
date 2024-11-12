@@ -19,7 +19,7 @@ in {
         imports = [
           inputs.catppuccin.homeManagerModules.catppuccin
           inputs.nixvim.homeManagerModules.nixvim
-          ../../../home
+          ../../home
         ];
       };
     };

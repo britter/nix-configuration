@@ -20,7 +20,12 @@ in {
       package = pkgs.jdk21;
     };
 
-    programs.gradle.enable = true;
+    programs.gradle = {
+      enable = true;
+      settings = {
+        "org.gradle.java.installations.paths" = "${pkgs.jdk8},${pkgs.jdk11}";
+      };
+    };
 
     my.home.helix-java-support.enable = true;
   };
