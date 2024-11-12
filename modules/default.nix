@@ -28,6 +28,7 @@ in {
     ./sound
     ./ssh-access
     ./sway
+    ./utilities
     ./vaultwarden
   ];
 

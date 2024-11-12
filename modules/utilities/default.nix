@@ -1,12 +1,14 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
+    curl
     dig
     git
-    helix
     lsof
+    neovim
     nix-tree
+    unzip
     tmux
+    wget
+    zip
   ];
-
-  programs.fish.enable = true;
 }
