@@ -134,8 +134,9 @@ in {
         lsp = {
           enable = true;
           servers = {
-            nixd.enable = true;
             jdtls.enable = true;
+            nixd.enable = true;
+            tsserver.enable = true;
           };
           keymaps.lspBuf = {
             K = "hover";
