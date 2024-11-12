@@ -26,11 +26,7 @@ in {
       description = "jdtls language server for Java";
       package = pkgs.jdt-language-server;
       cmd = _cfg: [
-        "${pkgs.jdt-language-server}/bin/jdtls"
-        "-configuration"
-        "/build/.cache/jdtls/config"
-        "-data"
-        "/build/.cache/jdtls/workspace"
+        (lib.getExe pkgs.jdt-language-server)
       ];
     })
   ];
