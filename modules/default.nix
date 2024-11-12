@@ -2,7 +2,6 @@
   cfg = config.my.host;
 in {
   imports = [
-    ../common
     ./1password
     ./acme
     ./adguard
@@ -14,6 +13,7 @@ in {
     ./gaming
     ./grafana
     ./homelab
+    ./home-manager
     ./homepage
     ./https-proxy
     ./i18n
@@ -22,6 +22,7 @@ in {
     ./networking
     ./nextcloud
     ./nix
+    ./options
     ./proxmox-vm
     ./sops
     ./sound
@@ -38,9 +39,7 @@ in {
       my-user.enable = cfg.role == "desktop";
       sound.enable = cfg.role == "desktop";
       sway.enable = cfg.role == "desktop";
-
-      # enabled only on private desktops
-      gaming.enable = cfg.role == "desktop" && (builtins.elem "private" cfg.profiles);
+      gaming.enable = cfg.role == "desktop";
 
       # enabled only on servers
       comin.enable = cfg.role == "server";

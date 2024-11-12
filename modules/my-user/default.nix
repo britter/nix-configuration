@@ -21,6 +21,7 @@ in {
       extraGroups = ["networkmanager" "wheel"];
       shell = pkgs.fish;
     };
+    programs.fish.enable = true;
     my.modules.home-manager.enable = true;
     # unfree packages used in home-manager configuration
     my.modules.allowedUnfreePkgs = [
