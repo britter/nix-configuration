@@ -2,10 +2,39 @@
   config,
   lib,
   pkgs,
+  inputs,
   ...
 }: let
   cfg = config.my.home.terminal.nvim;
+  # Workaround to set up a custom LSP because jdt-language-server was not available in 24.05
+  # will be added with the 24.11 release, so this can be removed.
+  # Source of this snippet: https://github.com/nix-community/nixvim/discussions/2011#discussioncomment-10782956
+  mkLspModule = args:
+  # Return a module function
+  {
+    pkgs,
+    lib,
+    config,
+    ...
+  }: let
+    mkLsp' = import "${inputs.nixvim}/plugins/lsp/language-servers/_mk-lsp.nix" {inherit pkgs lib config;};
+  in {programs.nixvim = mkLsp' args;};
 in {
+  imports = [
+    (mkLspModule {
+      name = "jdtls";
+      description = "jdtls language server for Java";
+      package = pkgs.jdt-language-server;
+      cmd = _cfg: [
+        "${pkgs.jdt-language-server}/bin/jdtls"
+        "-configuration"
+        "/build/.cache/jdtls/config"
+        "-data"
+        "/build/.cache/jdtls/workspace"
+      ];
+    })
+  ];
+
   options.my.home.terminal.nvim = {
     enable = lib.mkEnableOption "nvim";
   };
@@ -106,6 +135,7 @@ in {
           enable = true;
           servers = {
             nixd.enable = true;
+            jdtls.enable = true;
           };
           keymaps.lspBuf = {
             K = "hover";
