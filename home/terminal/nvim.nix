@@ -184,8 +184,23 @@ in {
           };
         }
         {
+          action = "<cmd>Gitsigns prev_hunk<CR>";
+          key = "<leader>g[";
+          mode = ["n"];
+        }
+        {
+          action = "<cmd>Gitsigns next_hunk<CR>";
+          key = "<leader>g]";
+          mode = ["n"];
+        }
+        {
           action = "<cmd>Gitsigns preview_hunk<CR>";
           key = "<leader>gp";
+          mode = ["n"];
+        }
+        {
+          action = "<cmd>Gitsigns reset_hunk<CR>";
+          key = "<leader>gr";
           mode = ["n"];
         }
         {
