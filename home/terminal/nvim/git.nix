@@ -1,6 +1,7 @@
 _: {
   programs.nixvim = {
     plugins = {
+      fugitive.enable = true;
       gitsigns = {
         enable = true;
         settings.current_line_blame = true;
@@ -31,6 +32,11 @@ _: {
         options = {
           silent = true;
         };
+      }
+      {
+        action = "<cmd>Git blame<CR>";
+        key = "<leader>gb";
+        mode = ["n"];
       }
       {
         action = "<cmd>Gitsigns prev_hunk<CR>";
