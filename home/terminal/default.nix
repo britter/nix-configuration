@@ -15,7 +15,7 @@ in {
     ./git.nix
     ./gpg
     ./helix.nix
-    ./nvim.nix
+    ./nvim
     ./tmux.nix
     ./tools.nix
     ./yazi.nix
