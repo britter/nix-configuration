@@ -1,6 +1,5 @@
 {
   inputs,
-  lib,
   pkgs,
   ...
 }: {
@@ -10,8 +9,8 @@
   ];
 
   facter.reportPath = ./facter.json;
-  # Can be removed after https://github.com/numtide/nixos-facter-modules/pull/61 was merged
-  networking.useDHCP = lib.mkDefault true;
+  # see https://github.com/numtide/nixos-facter-modules/issues/62
+  facter.detected.dhcp.enable = false;
 
   my = {
     host = {
