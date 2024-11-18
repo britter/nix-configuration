@@ -10,6 +10,7 @@ in {
     ./completion.nix
     ./git.nix
     ./java.nix
+    ./lsp.nix
   ];
 
   options.my.home.terminal.nvim = {
@@ -69,25 +70,6 @@ in {
       globals.mapleader = " ";
       plugins = {
         bufferline.enable = true;
-        lsp = {
-          enable = true;
-          servers = {
-            nixd.enable = true;
-            tsserver.enable = true;
-          };
-          keymaps = {
-            lspBuf = {
-              K = "hover";
-              gd = "definition";
-              "<leader>ca" = "code_action";
-            };
-            diagnostic = {
-              "[d" = "goto_prev";
-              "]d" = "goto_next";
-              "<C-w>d" = "open_float";
-            };
-          };
-        };
         lualine.enable = true;
         neo-tree.enable = true;
         telescope = {
