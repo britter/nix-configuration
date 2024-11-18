@@ -11,6 +11,7 @@ in {
     ./git.nix
     ./java.nix
     ./lsp.nix
+    ./ui.nix
   ];
 
   options.my.home.terminal.nvim = {
@@ -26,17 +27,9 @@ in {
     programs.nixvim = {
       enable = true;
       defaultEditor = true;
-      colorschemes.catppuccin = {
-        enable = true;
-        settings.flavour = "macchiato";
-      };
       clipboard.providers.wl-copy.enable = true;
       # Add this to plugins below once switching to 24.11
-      extraPlugins = [pkgs.vimPlugins."nvim-web-devicons"];
       opts = {
-        number = true;
-        relativenumber = true;
-
         # Set tabs to 2 spaces
         tabstop = 2;
         softtabstop = 2;
@@ -50,28 +43,10 @@ in {
         # Enable smart indenting (see https://stackoverflow.com/questions/1204149/smart-wrap-in-vim)
         breakindent = true;
 
-        # Enable 24-bit colors
-        termguicolors = true;
-
-        # Enable the sign column to prevent the screen from jumping
-        signcolumn = "yes";
-
-        # Highlight cursor line
-        cursorline = true;
-
-        # Remaining lines visibile before starting to scroll
-        scrolloff = 5;
-
         swapfile = false;
-
-        list = true;
-        listchars = "tab:→·,lead:·,space:·,trail:~,extends:→,precedes:←,nbsp:␣";
       };
       globals.mapleader = " ";
       plugins = {
-        bufferline.enable = true;
-        lualine.enable = true;
-        neo-tree.enable = true;
         telescope = {
           enable = true;
           extensions.ui-select.enable = true;
@@ -95,11 +70,6 @@ in {
         {
           action = "<cmd>bdelete<CR>";
           key = "bd";
-          mode = ["n"];
-        }
-        {
-          action = "<cmd>Neotree filesystem reveal toggle left<CR>";
-          key = "<C-n>";
           mode = ["n"];
         }
         {
