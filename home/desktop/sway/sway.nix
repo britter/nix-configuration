@@ -10,6 +10,7 @@ in {
   config = lib.mkIf cfg.enable {
     home.sessionVariables = {
       WL_PRESENT_DMENU = "${rofi} -dmenu -p present";
+      XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/Screenshots";
     };
     wayland.windowManager.sway = {
       wrapperFeatures.gtk = true;
@@ -99,6 +100,11 @@ in {
 
             # default is mod+Shift+q
             "${mod}+q" = "kill";
+
+            # screenshot capturing
+            "${mod}+s" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy output";
+            "${mod}+Shift+s" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy window";
+            "${mod}+Ctrl+s" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy area";
 
             # Custom modes
             "${mod}+Escape" = ''mode "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit"'';

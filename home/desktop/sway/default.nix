@@ -7,7 +7,6 @@
   cfg = config.my.home.desktop.sway;
 in {
   imports = [
-    ./flameshot.nix
     ./kanshi.nix
     ./mako.nix
     ./sway.nix
@@ -40,7 +39,6 @@ in {
       enable = true;
     };
     my.home.desktop.sway = {
-      flameshot.enable = true;
       kanshi.enable = true;
       mako.enable = true;
       swayidle.enable = true;
