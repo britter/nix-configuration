@@ -139,12 +139,12 @@ in {
       keymaps = [
         {
           action = "<cmd>bprev<CR>";
-          key = "b[";
+          key = "[b";
           mode = ["n"];
         }
         {
           action = "<cmd>bnext<CR>";
-          key = "b]";
+          key = "]b";
           mode = ["n"];
         }
         {
@@ -178,12 +178,12 @@ in {
         }
         {
           action = "<cmd>Gitsigns prev_hunk<CR>";
-          key = "<leader>g[";
+          key = "[g";
           mode = ["n"];
         }
         {
           action = "<cmd>Gitsigns next_hunk<CR>";
-          key = "<leader>g]";
+          key = "]g";
           mode = ["n"];
         }
         {
