@@ -54,5 +54,7 @@ in {
       sway.enable = true;
       vscode.enable = true;
     };
+
+    services.nextcloud-client.enable = true;
   };
 }
