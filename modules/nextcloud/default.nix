@@ -67,8 +67,8 @@ in {
       extraApps = {
         inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts cookbook deck notes;
         news = pkgs.fetchNextcloudApp {
-          url = "https://github.com/nextcloud/news/releases/download/25.0.0-alpha14/news.tar.gz";
-          sha256 = "sha256-WUy/F4KyyefHZf0qsthmyJvSufKvS+xFbcUuXJBTeF8=";
+          url = "https://github.com/nextcloud/news/releases/download/25.0.0/news.tar.gz";
+          sha256 = "sha256-DNbHfRstY6C7UhdsyW3VvuzNHmMt/qJ/5dDrLQYqtN8=";
           license = "agpl3Plus";
         };
         integration_google = pkgs.fetchNextcloudApp {
