@@ -11,6 +11,7 @@ in {
     ./git.nix
     ./java.nix
     ./lsp.nix
+    ./navigation.nix
     ./ui.nix
   ];
 
@@ -57,21 +58,6 @@ in {
         };
       };
       keymaps = [
-        {
-          action = "<cmd>bprev<CR>";
-          key = "[b";
-          mode = ["n"];
-        }
-        {
-          action = "<cmd>bnext<CR>";
-          key = "]b";
-          mode = ["n"];
-        }
-        {
-          action = "<cmd>bdelete<CR>";
-          key = "bd";
-          mode = ["n"];
-        }
         {
           action = "<cmd>Telescope find_files<CR>";
           key = "<leader>ff";
