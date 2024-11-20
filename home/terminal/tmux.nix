@@ -19,17 +19,47 @@ in {
       disableConfirmationPrompt = true;
       sensibleOnTop = true;
       shell = "${pkgs.fish}/bin/fish";
+      # Prevent tmux from receiving ESC presses
+      # without this switching modes in helix or vim has a noticable input lag
+      escapeTime = 0;
+      mouse = true;
+      keyMode = "vi";
       plugins = with pkgs; [
         tmuxPlugins.vim-tmux-navigator
+        {
+          plugin = tmuxPlugins.catppuccin;
+          extraConfig = ''
+            set-option -g status-position top
+
+            set -g @catppuccin_window_left_separator ""
+            set -g @catppuccin_window_right_separator " "
+            set -g @catppuccin_window_middle_separator " █"
+            set -g @catppuccin_window_number_position "right"
+
+            set -g @catppuccin_window_default_fill "number"
+            set -g @catppuccin_window_default_text "#W"
+
+            set -g @catppuccin_window_current_fill "number"
+            set -g @catppuccin_window_current_text "#W"
+
+            set -g @catppuccin_status_modules_right "directory session"
+            set -g @catppuccin_status_left_separator  " "
+            set -g @catppuccin_status_right_separator ""
+            set -g @catppuccin_status_right_separator_inverse "no"
+            set -g @catppuccin_status_fill "icon"
+            set -g @catppuccin_status_connect_separator "no"
+
+            set -g @catppuccin_directory_text "#{pane_current_path}"
+          '';
+        }
       ];
       extraConfig = ''
+        set -g default-terminal "tmux-256color"
+        set -ag terminal-overrides ",xterm-256color:RGB"
+
         # Open new pane splits in CWD
         bind '"' split-window -v -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
-
-        # Prevent tmux from receiving ESC presses
-        # without this switching modes in helix or vim has a noticable input lag
-        set -sg escape-time 0
       '';
     };
   };
