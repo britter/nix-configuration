@@ -24,10 +24,10 @@ in {
       escapeTime = 0;
       mouse = true;
       keyMode = "vi";
-      plugins = with pkgs; [
-        tmuxPlugins.vim-tmux-navigator
+      plugins = [
+        pkgs.tmuxPlugins.vim-tmux-navigator
         {
-          plugin = tmuxPlugins.catppuccin;
+          plugin = pkgs.tmuxPlugins.catppuccin;
           extraConfig = ''
             set-option -g status-position top
 
@@ -61,6 +61,7 @@ in {
         bind '"' split-window -v -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
       '';
+      tmuxinator.enable = true;
     };
   };
 }
