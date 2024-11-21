@@ -51,7 +51,7 @@
           }
           {
             fqdn = "passwords.ritter.family";
-            target = "https://passwords.srv-eval-1.ritter.family";
+            target = "https://passwords.srv-prod-2.ritter.family";
           }
         ];
       };

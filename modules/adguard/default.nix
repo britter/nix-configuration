@@ -182,8 +182,8 @@ in {
               answer = config.my.homelab.srv-test-2.ip;
             }
             {
-              domain = "passwords.srv-eval-1.ritter.family";
-              answer = config.my.homelab.srv-eval-1.ip;
+              domain = "passwords.srv-prod-2.ritter.family";
+              answer = config.my.homelab.srv-prod-2.ip;
             }
           ];
         };
