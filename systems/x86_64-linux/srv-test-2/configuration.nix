@@ -18,6 +18,7 @@
         enable = true;
         stage = "test";
       };
+      vaultwarden.enable = true;
     };
   };
 
