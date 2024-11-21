@@ -13,7 +13,6 @@
         enable = true;
         bootDisk = "/dev/sda";
       };
-      vaultwarden.enable = true;
     };
   };
 
