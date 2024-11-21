@@ -24,6 +24,7 @@ in {
       escapeTime = 0;
       mouse = true;
       keyMode = "vi";
+      terminal = "tmux-256color";
       plugins = [
         pkgs.tmuxPlugins.vim-tmux-navigator
         {
@@ -54,9 +55,6 @@ in {
         }
       ];
       extraConfig = ''
-        set -g default-terminal "tmux-256color"
-        set -ag terminal-overrides ",xterm-256color:RGB"
-
         # Open new pane splits in CWD
         bind '"' split-window -v -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
