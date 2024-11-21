@@ -2,7 +2,6 @@
   cfg = config.my.host;
 in {
   imports = [
-    ./1password
     ./acme
     ./adguard
     ./comin
@@ -35,7 +34,6 @@ in {
   config = {
     my.modules = {
       # enabled only on desktops
-      _1password.enable = cfg.role == "desktop";
       fonts.enable = cfg.role == "desktop";
       my-user.enable = cfg.role == "desktop";
       sound.enable = cfg.role == "desktop";

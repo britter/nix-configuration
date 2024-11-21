@@ -23,10 +23,5 @@ in {
     };
     programs.fish.enable = true;
     my.modules.home-manager.enable = true;
-    # unfree packages used in home-manager configuration
-    my.modules.allowedUnfreePkgs = [
-      # Firefox browser extension
-      "onepassword-password-manager"
-    ];
   };
 }

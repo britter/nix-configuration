@@ -40,7 +40,6 @@ in {
           decentraleyes
           duckduckgo-privacy-essentials
           ghostery
-          onepassword-password-manager
           privacy-badger
           ublock-origin
         ];
