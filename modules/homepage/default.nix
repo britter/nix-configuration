@@ -46,6 +46,13 @@ in {
                 icon = "nextcloud-blue.svg";
               };
             }
+            {
+              "Vaultwarden" = {
+                description = "Password safe";
+                href = "https://passwords.ritter.family/";
+                icon = "vaultwarden.svg";
+              };
+            }
           ];
         }
         {
