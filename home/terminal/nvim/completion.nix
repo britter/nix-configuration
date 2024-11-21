@@ -31,7 +31,6 @@ _: {
         enable_autosnippets = true;
         store_selection_keys = "<Tab>";
       };
-      fromVscode = [{}];
     };
     friendly-snippets.enable = true;
   };
