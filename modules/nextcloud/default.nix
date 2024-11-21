@@ -15,6 +15,7 @@ in {
     enable = lib.mkEnableOption "nextcloud";
     stage = lib.mkOption {
       type = lib.types.enum ["test" "production"];
+      default = "test";
     };
     publicDomainName = lib.mkOption {
       type = lib.types.str;
