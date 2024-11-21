@@ -16,6 +16,7 @@ in {
     ./gpg
     ./helix.nix
     ./nvim
+    ./ssh.nix
     ./tmux.nix
     ./tools.nix
     ./yazi.nix
@@ -35,6 +36,7 @@ in {
       gpg.enable = true;
       helix.enable = true;
       nvim.enable = true;
+      ssh.enable = true;
       tmux.enable = true;
       tools.enable = true;
       yazi.enable = true;
