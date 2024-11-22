@@ -1,3 +1,5 @@
+-- See https://github.com/dwf/dotfiles/blob/6913670108bc9dcee5ca5264e17d162c57858967/neovim/snippets/nix.lua
+-- for more inspiration
 return {
     s(
         { trig = "module", desc = "Module template with options" },
