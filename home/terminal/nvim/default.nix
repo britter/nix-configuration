@@ -47,6 +47,19 @@ in {
 
         swapfile = false;
       };
+      autoCmd = [
+        {
+          event = ["BufNewFile" "BufRead"];
+          pattern = ["*.log"];
+          callback.__raw =
+            # lua
+            ''
+              function ()
+                vim.opt_local.wrap = false
+              end
+            '';
+        }
+      ];
       keymaps = [
         {
           action = "<cmd>Telescope find_files<CR>";
