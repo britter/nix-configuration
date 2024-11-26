@@ -30,6 +30,7 @@ in {
       defaultEditor = true;
       clipboard.providers.wl-copy.enable = true;
       # Add this to plugins below once switching to 24.11
+      globals.mapleader = " ";
       opts = {
         # Set tabs to 2 spaces
         tabstop = 2;
@@ -45,17 +46,6 @@ in {
         breakindent = true;
 
         swapfile = false;
-      };
-      globals.mapleader = " ";
-      plugins = {
-        telescope = {
-          enable = true;
-          extensions.ui-select.enable = true;
-        };
-        treesitter = {
-          enable = true;
-          indent = true;
-        };
       };
       keymaps = [
         {
@@ -74,6 +64,16 @@ in {
           mode = ["n"];
         }
       ];
+      plugins = {
+        telescope = {
+          enable = true;
+          extensions.ui-select.enable = true;
+        };
+        treesitter = {
+          enable = true;
+          indent = true;
+        };
+      };
     };
   };
 }
