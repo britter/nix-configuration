@@ -1,19 +1,15 @@
 {
-  stdenvNoCC,
+  buildGoModule,
   fetchFromGitHub,
 }:
-stdenvNoCC.mkDerivation rec {
+buildGoModule rec {
   pname = "gh-get";
-  version = "1.0.0";
+  version = "2.0.0";
   src = fetchFromGitHub {
     owner = "britter";
-    repo = pname;
+    repo = "gh-get";
     rev = "v${version}";
-    sha256 = "sha256-2o7Ugi8Ba3rso68Onc8tuh/RzWxZ9OTkdJYgo3K6+Gs=";
+    sha256 = "sha256-9YWftzKNKPxs06yTDvFPpcGHXLzWiNfHcA6kkz6zt0g=";
   };
-
-  installPhase = ''
-    mkdir -p $out/bin
-    cp gh-get $out/bin
-  '';
+  vendorHash = "sha256-2qgetyUwmoGetgpef1+JU9Av83/MpUfQGOLDxSzoa1E=";
 }
