@@ -50,6 +50,18 @@ in {
       autoCmd = [
         {
           event = ["BufNewFile" "BufRead"];
+          pattern = ["*.java" "*.kt" "*.kts" "*.groovy"];
+          callback.__raw =
+            # lua
+            ''
+              function ()
+                vim.opt_local.tabstop = 4
+                vim.opt_local.softtabstop = 4
+              end
+            '';
+        }
+        {
+          event = ["BufNewFile" "BufRead"];
           pattern = ["*.log"];
           callback.__raw =
             # lua
