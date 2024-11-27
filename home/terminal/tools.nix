@@ -38,6 +38,7 @@ in {
         tldr # better man pages
         unzip
         wget
+        yq
         zip
       ];
       programs.ripgrep.enable = true; # recursive grep
