@@ -62,6 +62,17 @@ in {
         }
         {
           event = ["BufNewFile" "BufRead"];
+          pattern = ["*.go"];
+          callback.__raw =
+            # lua
+            ''
+              function ()
+                vim.opt_local.expandtab = false
+              end
+            '';
+        }
+        {
+          event = ["BufNewFile" "BufRead"];
           pattern = ["*.log"];
           callback.__raw =
             # lua
