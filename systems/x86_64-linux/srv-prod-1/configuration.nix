@@ -13,7 +13,6 @@
         enable = true;
         bootDisk = "/dev/sda";
       };
-      dyndns.enable = true;
       grafana.enable = true;
       monitoring.openFirewall = false;
     };
