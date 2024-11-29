@@ -1,6 +1,7 @@
 {...}: {
   imports = [
     ../../../modules
+    ./nextcloud-sync.nix
   ];
 
   my = {
