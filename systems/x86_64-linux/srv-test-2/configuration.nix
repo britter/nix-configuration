@@ -1,4 +1,4 @@
-{...}: {
+{config, ...}: {
   imports = [
     ../../../modules
     ./nextcloud-sync.nix
@@ -23,6 +23,13 @@
     };
   };
 
+  programs.ssh.extraConfig = ''
+    Host srv-prod-2
+      HostName ${config.my.homelab.srv-prod-2.ip}
+      User nextcloud
+      IdentityFile /etc/ssh/ssh_host_ed25519_key
+      IdentitiesOnly yes
+  '';
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
