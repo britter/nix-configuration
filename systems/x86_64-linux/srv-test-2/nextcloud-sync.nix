@@ -12,16 +12,18 @@
   in
     pkgs.writeShellApplication {
       name = "nextcloud-sync";
-      runtimeInputs = [pkgs.rsync];
+      runtimeInputs = [pkgs.rsync config.services.nextcloud.occ];
       text = ''
+        nextcloud-occ maintenance:mode --on
         ssh ${nextcloudUser}@${prodHost} "pg_dump --username=${nextcloudUser} --file=${dbDump} ${dbName}"
         scp ${nextcloudUser}@${prodHost}:${dbDump} ${dbDump}
         ssh ${nextcloudUser}@${prodHost} "rm -f ${dbDump}"
         rsync -avz --delete ${nextcloudUser}@${prodHost}:${dataDir} ${dataDir}
-        sudo -u ${nextcloudUser} psql --command="DROP DATABASE IF EXISTS ${dbName};"
-        sudo -u ${nextcloudUser} psql --command="CREATE DATABASE ${dbName} OWNER ${nextcloudUser};"
+        sudo -u postgres psql --command="DROP DATABASE IF EXISTS ${dbName};"
+        sudo -u postgres psql --command="CREATE DATABASE ${dbName} OWNER ${nextcloudUser};"
         sudo -u ${nextcloudUser} psql --dbname=${dbName} --file=${dbDump}
         rm -f ${dbDump}
+        nextcloud-occ maintenance:mode --off
       '';
     };
 in {
