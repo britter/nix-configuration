@@ -99,6 +99,16 @@ in {
           key = "<leader>fb";
           mode = ["n"];
         }
+        {
+          action = "<cmd>split<CR>";
+          key = "<leader>\"";
+          mode = ["n"];
+        }
+        {
+          action = "<cmd>vsplit<CR>";
+          key = "<leader>%";
+          mode = ["n"];
+        }
       ];
       plugins = {
         telescope = {
