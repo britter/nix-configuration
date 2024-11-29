@@ -22,6 +22,8 @@
     };
   };
 
+  users.users.nextcloud.openssh.authorizedKeys.keyFiles = [../srv-test-2/ssh_srv-test-2_ed25519_key.pub];
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
