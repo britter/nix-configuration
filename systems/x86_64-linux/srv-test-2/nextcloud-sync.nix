@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }: let
@@ -36,4 +37,23 @@ in {
       IdentityFile /etc/ssh/ssh_host_ed25519_key
       IdentitiesOnly yes
   '';
+
+  systemd.services.nextcloud-sync = {
+    description = "Syncronizes the NextCloud installation on srv-prod-2 with the installation on this server";
+    after = ["network.target"];
+    wants = ["network.target"];
+    serviceConfig = {
+      ExecStart = lib.getExe nextcloud-sync;
+      Type = "oneshot";
+    };
+  };
+
+  systemd.timers.nextcloud-sync = {
+    description = "Timer to run nextcloud-sync service nightly";
+    timerConfig = {
+      OnCalendar = "daily";
+      Persistent = true;
+    };
+    wantedBy = ["timer.target"];
+  };
 }
