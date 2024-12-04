@@ -53,6 +53,7 @@ in {
   };
 
   systemd.timers.nextcloud-sync = {
+    enable = false;
     description = "Timer to run nextcloud-sync service nightly";
     timerConfig = {
       OnCalendar = "daily";
