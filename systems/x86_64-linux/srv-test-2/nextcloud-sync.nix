@@ -13,7 +13,11 @@
   in
     pkgs.writeShellApplication {
       name = "nextcloud-sync";
-      runtimeInputs = [pkgs.rsync config.services.nextcloud.occ];
+      runtimeInputs = [
+        config.services.nextcloud.occ
+        pkgs.openssh
+        pkgs.rsync
+      ];
       text = ''
         nextcloud-occ maintenance:mode --on
         ssh ${prodHost} "pg_dump --username=${nextcloudUser} --file=${dbDump} ${dbName}"
