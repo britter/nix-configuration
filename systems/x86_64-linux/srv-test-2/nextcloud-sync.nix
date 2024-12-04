@@ -16,6 +16,7 @@
       runtimeInputs = [
         config.services.nextcloud.occ
         pkgs.openssh
+        pkgs.postgresql
         pkgs.rsync
       ];
       text = ''
