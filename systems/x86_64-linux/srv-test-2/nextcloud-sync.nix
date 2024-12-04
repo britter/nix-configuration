@@ -54,6 +54,6 @@ in {
       OnCalendar = "daily";
       Persistent = true;
     };
-    wantedBy = ["timer.target"];
+    wantedBy = ["timers.target"];
   };
 }
