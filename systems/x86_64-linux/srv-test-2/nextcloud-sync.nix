@@ -18,6 +18,7 @@
         pkgs.openssh
         pkgs.postgresql
         pkgs.rsync
+        pkgs.sudo
       ];
       text = ''
         nextcloud-occ maintenance:mode --on
