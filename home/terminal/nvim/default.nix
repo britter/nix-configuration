@@ -47,42 +47,42 @@ in {
 
         swapfile = false;
       };
-      autoCmd = [
-        {
-          event = ["BufNewFile" "BufRead"];
-          pattern = ["*.java" "*.kt" "*.kts" "*.groovy"];
-          callback.__raw =
-            # lua
-            ''
-              function ()
-                vim.opt_local.tabstop = 4
-                vim.opt_local.softtabstop = 4
-              end
-            '';
-        }
-        {
-          event = ["BufNewFile" "BufRead"];
-          pattern = ["*.go"];
-          callback.__raw =
-            # lua
-            ''
-              function ()
-                vim.opt_local.expandtab = false
-              end
-            '';
-        }
-        {
-          event = ["BufNewFile" "BufRead"];
-          pattern = ["*.log"];
-          callback.__raw =
-            # lua
-            ''
-              function ()
-                vim.opt_local.wrap = false
-              end
-            '';
-        }
-      ];
+      filetype.extension = {
+        log = "log";
+      };
+      files = {
+        "ftplugin/java.lua" = {
+          opts = {
+            tabstop = 4;
+            softtabstop = 4;
+            shiftwidth = 4;
+          };
+        };
+        "ftplugin/kotlin.lua" = {
+          opts = {
+            tabstop = 4;
+            softtabstop = 4;
+            shiftwidth = 4;
+          };
+        };
+        "ftplugin/groovy.lua" = {
+          opts = {
+            tabstop = 4;
+            softtabstop = 4;
+            shiftwidth = 4;
+          };
+        };
+        "ftplugin/go.lua" = {
+          opts = {
+            expandtab = false;
+          };
+        };
+        "ftplugin/log.lua" = {
+          opts = {
+            wrap = false;
+          };
+        };
+      };
       keymaps = [
         {
           action = "<cmd>Telescope find_files<CR>";
