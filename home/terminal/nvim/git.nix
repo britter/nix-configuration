@@ -4,7 +4,6 @@ _: {
       fugitive.enable = true;
       gitsigns = {
         enable = true;
-        settings.current_line_blame = true;
       };
       lazygit.enable = true;
     };
