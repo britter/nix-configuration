@@ -114,8 +114,25 @@ in {
           key = "<leader>%";
           mode = ["n"];
         }
+        {
+          action = "<cmd>lua vim.lsp.buf.format({async=true})<CR>";
+          key = "<leader>l";
+          mode = ["n"];
+        }
       ];
       plugins = {
+        none-ls = {
+          enable = true;
+          sources = {
+            formatting = {
+              prettier.enable = true;
+              prettier.package = pkgs.writeShellScriptBin "prettier-via-npx" ''
+                npx prettier --write .
+              '';
+              prettier.disableTsServerFormatter = true;
+            };
+          };
+        };
         telescope = {
           enable = true;
           extensions.ui-select.enable = true;
