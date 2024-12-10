@@ -114,11 +114,6 @@ in {
           key = "<leader>%";
           mode = ["n"];
         }
-        {
-          action = "<cmd>lua vim.lsp.buf.format({async=true})<CR>";
-          key = "<leader>l";
-          mode = ["n"];
-        }
       ];
       plugins = {
         none-ls = {
