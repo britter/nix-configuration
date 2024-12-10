@@ -102,9 +102,9 @@ in {
             "${mod}+q" = "kill";
 
             # screenshot capturing
-            "${mod}+s" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy output";
-            "${mod}+Shift+s" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy window";
-            "${mod}+Ctrl+s" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy area";
+            "${mod}+x" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy output";
+            "${mod}+Shift+x" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy window";
+            "${mod}+Ctrl+x" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy area";
 
             # Custom modes
             "${mod}+Escape" = ''mode "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit"'';
