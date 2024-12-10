@@ -7,4 +7,4 @@
   inherit (pkgs-unstable) jetbrains;
 }
 // my-pkgs
-// (nur.overlay _final _prev)
+// (nur.overlays.default _final _prev)
