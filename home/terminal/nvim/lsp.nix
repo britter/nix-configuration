@@ -1,6 +1,7 @@
 _: {
   programs.nixvim.plugins.lsp = {
     enable = true;
+    inlayHints = true;
     servers = {
       gopls.enable = true;
       nixd.enable = true;
