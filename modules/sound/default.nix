@@ -10,7 +10,6 @@ in {
   };
 
   config = lib.mkIf cfg.enable {
-    sound.enable = true;
     hardware.pulseaudio.enable = false;
     # The PulseAudio server uses this to acquire realtime priority
     security.rtkit.enable = true;

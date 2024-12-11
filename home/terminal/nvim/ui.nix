@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+_: {
   programs.nixvim = {
     colorschemes.catppuccin = {
       enable = true;
@@ -24,11 +24,11 @@
       list = true;
       listchars = "tab:→·,lead:·,space:·,trail:~,extends:→,precedes:←,nbsp:␣";
     };
-    extraPlugins = [pkgs.vimPlugins."nvim-web-devicons"];
     plugins = {
       bufferline.enable = true;
       lualine.enable = true;
       neo-tree.enable = true;
+      web-devicons.enable = true;
     };
     keymaps = [
       {

@@ -23,10 +23,10 @@ in {
     home.packages = with pkgs; [
       dconf
       evince # pdf viewer
-      gnome.nautilus
-      gnome.adwaita-icon-theme
-      gnome.file-roller # archive manager
-      gnome.gnome-calendar
+      nautilus
+      adwaita-icon-theme
+      file-roller # archive manager
+      gnome-calendar
       loupe # image provider
       qalculate-gtk # calculator
       wl-clipboard # terminal access to the clipboard

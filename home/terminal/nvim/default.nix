@@ -134,7 +134,7 @@ in {
         };
         treesitter = {
           enable = true;
-          indent = true;
+          settings.indent.enable = true;
         };
       };
     };

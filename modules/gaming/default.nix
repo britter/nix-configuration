@@ -19,6 +19,7 @@ in {
       "steam"
       "steam-original"
       "steam-run"
+      "steam-unwrapped"
     ];
 
     # performance stats overlay
