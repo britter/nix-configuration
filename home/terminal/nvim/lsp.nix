@@ -4,7 +4,7 @@ _: {
     servers = {
       gopls.enable = true;
       nixd.enable = true;
-      tsserver.enable = true;
+      ts_ls.enable = true;
     };
     keymaps = {
       lspBuf = {

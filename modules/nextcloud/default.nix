@@ -66,15 +66,10 @@ in {
       };
       database.createLocally = true;
       extraApps = {
-        inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts cookbook deck notes;
-        news = pkgs.fetchNextcloudApp {
-          url = "https://github.com/nextcloud/news/releases/download/25.0.0/news.tar.gz";
-          sha256 = "sha256-DNbHfRstY6C7UhdsyW3VvuzNHmMt/qJ/5dDrLQYqtN8=";
-          license = "agpl3Plus";
-        };
+        inherit (config.services.nextcloud.package.packages.apps) bookmarks calendar contacts cookbook deck news notes;
         integration_google = pkgs.fetchNextcloudApp {
           url = "https://github.com/nextcloud-releases/integration_google/releases/download/v3.1.0/integration_google-v3.1.0.tar.gz";
-          sha256 = "sha256-tqsi95+CIoHRFvv8I0HoVl5hjhROrr9epWvNeDynMXQ=";
+          sha256 = "sha256-KZoslAdLUes/Myc8QD9MuwFBt6gdF1U0+Gv0vIusllY=";
           license = "agpl3Plus";
         };
       };
