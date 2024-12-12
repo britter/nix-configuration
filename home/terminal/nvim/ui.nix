@@ -3,6 +3,10 @@ _: {
     colorschemes.catppuccin = {
       enable = true;
       settings.flavour = "macchiato";
+      settings.integrations.treesitter = true;
+      settings.integrations.gitsigns = true;
+      settings.integrations.native_lsp.enabled = true;
+      settings.integrations.neotree = true;
     };
 
     opts = {
