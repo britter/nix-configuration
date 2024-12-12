@@ -2,11 +2,16 @@ _: {
   programs.nixvim = {
     colorschemes.catppuccin = {
       enable = true;
-      settings.flavour = "macchiato";
-      settings.integrations.treesitter = true;
-      settings.integrations.gitsigns = true;
-      settings.integrations.native_lsp.enabled = true;
-      settings.integrations.neotree = true;
+      settings = {
+        flavour = "macchiato";
+        term_colors = true;
+        integrations = {
+          treesitter = true;
+          gitsigns = true;
+          native_lsp.enabled = true;
+          neotree = true;
+        };
+      };
     };
 
     opts = {
