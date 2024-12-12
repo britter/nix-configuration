@@ -32,8 +32,9 @@ in {
       # Add this to plugins below once switching to 24.11
       globals.mapleader = " ";
       opts = {
-        # Set tabs to 2 spaces
-        tabstop = 2;
+        # Set tab width to 4 spaces (instead of 8)
+        tabstop = 4;
+        # Set how many spaces will be inserted when tab is pressed
         softtabstop = 2;
         showtabline = 2;
         expandtab = true;
@@ -53,21 +54,18 @@ in {
       files = {
         "ftplugin/java.lua" = {
           opts = {
-            tabstop = 4;
             softtabstop = 4;
             shiftwidth = 4;
           };
         };
         "ftplugin/kotlin.lua" = {
           opts = {
-            tabstop = 4;
             softtabstop = 4;
             shiftwidth = 4;
           };
         };
         "ftplugin/groovy.lua" = {
           opts = {
-            tabstop = 4;
             softtabstop = 4;
             shiftwidth = 4;
           };
@@ -75,6 +73,9 @@ in {
         "ftplugin/go.lua" = {
           opts = {
             expandtab = false;
+            # Align tab width with what is being inserted when pressing tab
+            softtabstop = 4;
+            shiftwidth = 4;
           };
         };
         "ftplugin/log.lua" = {
