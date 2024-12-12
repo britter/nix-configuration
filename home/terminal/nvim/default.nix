@@ -120,11 +120,14 @@ in {
           enable = true;
           sources = {
             formatting = {
-              prettier.enable = true;
-              prettier.package = pkgs.writeShellScriptBin "prettier-via-npx" ''
-                npx prettier --write .
-              '';
-              prettier.disableTsServerFormatter = true;
+              gofmt.enable = true;
+              prettier = {
+                enable = true;
+                package = pkgs.writeShellScriptBin "prettier-via-npx" ''
+                  npx prettier --write .
+                '';
+                disableTsServerFormatter = true;
+              };
             };
           };
         };
