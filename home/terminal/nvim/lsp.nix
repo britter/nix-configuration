@@ -12,6 +12,8 @@ _: {
         K = "hover";
         gd = "definition";
         "<leader>ca" = "code_action";
+        "<leader>rr" = "rename";
+        "<leader>gq" = "format";
       };
       diagnostic = {
         "[d" = "goto_prev";
