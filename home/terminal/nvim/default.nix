@@ -124,9 +124,6 @@ in {
               gofmt.enable = true;
               prettier = {
                 enable = true;
-                package = pkgs.writeShellScriptBin "prettier-via-npx" ''
-                  npx prettier --write .
-                '';
                 disableTsServerFormatter = true;
               };
             };
