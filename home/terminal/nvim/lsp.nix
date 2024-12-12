@@ -13,9 +13,9 @@ _: {
         if client.supports_method('textDocument/formatting') then
           -- Format the current buffer on save
           vim.api.nvim_create_autocmd('BufWritePre', {
-            buffer = buffer;
+            buffer = bufnr;
             callback = function()
-              vim.lsp.buf.format({ bufnr = buffer, id = client.id })
+              vim.lsp.buf.format({ bufnr = bufnr, id = client.id })
             end,
           })
         end
