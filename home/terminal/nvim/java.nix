@@ -9,4 +9,7 @@
       (lib.getExe pkgs.jdt-language-server)
     ];
   };
+  programs.git.ignores = [
+    "bin/"
+  ];
 }
