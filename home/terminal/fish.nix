@@ -28,7 +28,8 @@ in {
         "....." = "cd ../../../..";
         "cat" = "bat";
         "ls" = "eza";
-        "ll" = "eza -la";
+        "ll" = "eza --all --long --icons=always --git";
+        "tree" = "eza --tree --level=2";
         "loc" = "tokei";
       };
 
