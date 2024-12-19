@@ -3,6 +3,7 @@ _: {
     enable = true;
     inlayHints = true;
     servers = {
+      astro.enable = true;
       gopls.enable = true;
       nixd.enable = true;
       ts_ls.enable = true;
