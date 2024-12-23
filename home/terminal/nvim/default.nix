@@ -132,6 +132,7 @@ in {
                 enable = true;
                 disableTsServerFormatter = true;
               };
+              terraform_fmt.enable = true;
             };
           };
         };

@@ -36,7 +36,6 @@ _: {
     plugins = {
       bufferline.enable = true;
       lualine.enable = true;
-      markview.enable = true;
       neo-tree.enable = true;
       web-devicons.enable = true;
     };

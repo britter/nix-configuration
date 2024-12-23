@@ -6,6 +6,7 @@ _: {
       astro.enable = true;
       gopls.enable = true;
       nixd.enable = true;
+      terraformls.enable = true;
       ts_ls.enable = true;
     };
     onAttach =
