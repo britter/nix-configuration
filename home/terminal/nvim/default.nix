@@ -52,12 +52,6 @@ in {
         log = "log";
       };
       files = {
-        "ftplugin/astro.lua" = {
-          opts = {
-            softtabstop = 4;
-            shiftwidth = 4;
-          };
-        };
         "ftplugin/java.lua" = {
           opts = {
             softtabstop = 4;
