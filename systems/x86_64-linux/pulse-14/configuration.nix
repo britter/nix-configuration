@@ -27,6 +27,12 @@
   };
 
   services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    # Enables mDNS NSS plugin for IPv4. Enabling it allows applications to resolve names in the .local domain
+    # This is required for printing on a HP network printer
+    nssmdns4 = true;
+  };
 
   # Workaround for getting automatic downloads of protoc via ptotobuf-gradle-plugin working
   # Source: https://discourse.nixos.org/t/protobuf-cant-be-run/13568/8
