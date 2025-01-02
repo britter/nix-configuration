@@ -22,7 +22,7 @@
     mitmCache = gradle_7.fetchDeps {
       pkg = self;
       # update or regenerate this by running
-      #  eval (nix build .#groovy-language-server.mitmCache.updateScript --print-out-path)
+      #  eval (nix build .#groovy-language-server.mitmCache.updateScript --print-out-paths)
       data = ./deps.json;
     };
 
