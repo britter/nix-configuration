@@ -10,10 +10,10 @@ in {
     enable = lib.mkEnableOption "waybar";
   };
   config = lib.mkIf cfg.enable {
+    catppuccin.waybar.mode = "createLink";
     programs.waybar = {
       enable = true;
       systemd.target = "sway-session.target";
-      catppuccin.mode = "createLink";
       style = ./waybar.css;
       settings = {
         mainBar = {

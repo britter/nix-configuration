@@ -28,7 +28,7 @@ in {
       vlc
     ];
 
-    catppuccin.pointerCursor = {
+    catppuccin.cursors = {
       enable = true;
       accent = "dark";
     };
