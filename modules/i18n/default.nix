@@ -13,7 +13,7 @@ in {
     };
     defaultLocale = lib.mkOption {
       type = lib.types.str;
-      default = "en_US.UTF8";
+      default = "en_US.UTF-8";
     };
     extraLocale = lib.mkOption {
       type = lib.types.str;
