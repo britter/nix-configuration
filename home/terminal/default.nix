@@ -14,7 +14,6 @@ in {
     ./gh.nix
     ./git.nix
     ./gpg
-    ./helix.nix
     ./nvim
     ./ssh.nix
     ./tmux.nix
@@ -34,7 +33,6 @@ in {
       gh.enable = true;
       git.enable = true;
       gpg.enable = true;
-      helix.enable = true;
       nvim.enable = true;
       ssh.enable = true;
       tmux.enable = true;

@@ -37,7 +37,7 @@ in {
       sensibleOnTop = true;
       shell = "${pkgs.fish}/bin/fish";
       # Prevent tmux from receiving ESC presses
-      # without this switching modes in helix or vim has a noticable input lag
+      # without this switching modes in vim has a noticable input lag
       escapeTime = 0;
       mouse = true;
       keyMode = "vi";
