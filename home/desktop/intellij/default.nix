@@ -16,7 +16,7 @@ in {
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
-      (jetbrains.plugins.addPlugins jetbrains.idea-community cfg.plugins)
+      (jetbrains.plugins.addPlugins jetbrains.idea-community-bin cfg.plugins)
     ];
     programs.git.ignores = [
       ## IntelliJ stuff
