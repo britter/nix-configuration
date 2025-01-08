@@ -25,7 +25,7 @@
         ssh ${prodHost} "pg_dump --username=${nextcloudUser} --file=${dbDump} ${dbName}"
         scp ${prodHost}:${dbDump} ${dbDump}
         ssh ${prodHost} "rm -f ${dbDump}"
-        rsync -avz --delete ${prodHost}:${dataDir} ${dataDir}
+        rsync -avz --delete ${prodHost}:${dataDir}/ ${dataDir}
         sudo -u postgres psql --command="DROP DATABASE IF EXISTS ${dbName};"
         sudo -u postgres psql --command="CREATE DATABASE ${dbName} OWNER ${nextcloudUser};"
         sudo -u ${nextcloudUser} psql --dbname=${dbName} --file=${dbDump}
