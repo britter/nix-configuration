@@ -51,6 +51,11 @@ in {
           identityFile = privateKey;
           user = "root";
         };
+        "git.ritter.family" = {
+          hostname = osConfig.my.homelab.srv-test-2.ip;
+          identityFile = privateKey;
+          user = "git";
+        };
       };
     };
   };
