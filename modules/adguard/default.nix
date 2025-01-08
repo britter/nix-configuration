@@ -117,6 +117,12 @@ in {
         filtering = {
           filtering_enabled = true;
           rewrites = [
+            # All production domains point to directions, because it proxies HTTPS requests
+            # to the actual URL on the target server. For example:
+            #
+            #   nextcloud.ritter.family is proxied to srv-prod-2.nextcloud.ritter.family
+            #
+            # See systems/aarch64-linux/directions/configuration.nix
             {
               domain = "adguard.ritter.family";
               answer = config.my.homelab.directions.ip;
