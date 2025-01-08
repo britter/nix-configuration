@@ -7,7 +7,7 @@
   cfg = config.my.modules.git-server;
 in {
   options.my.modules.git-server = {
-    enable = lib.mkEnableOption "default";
+    enable = lib.mkEnableOption "git-server";
   };
 
   config = lib.mkIf cfg.enable {
