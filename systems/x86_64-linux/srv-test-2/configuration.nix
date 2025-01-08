@@ -1,4 +1,4 @@
-{...}: {
+{pkgs, ...}: {
   imports = [
     ../../../modules
     ./nextcloud-sync.nix
@@ -22,6 +22,16 @@
       vaultwarden.enable = true;
     };
   };
+
+  users.users.git = {
+    isSystemUser = true;
+    group = "git";
+    description = "git user";
+    home = "/srv/git";
+    shell = "${pkgs.git}/bin/git-shell";
+    openssh.authorizedKeys.keyFiles = [../../../modules/ssh-access/id_ed25519.pub];
+  };
+  users.groups.git = {};
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
