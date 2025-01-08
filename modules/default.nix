@@ -8,6 +8,7 @@ in {
     ./disko
     ./fonts
     ./gaming
+    ./git-server
     ./grafana
     ./homelab
     ./home-manager

@@ -14,6 +14,7 @@
         bootDisk = "/dev/sda";
         storageDisk = "/dev/sdb";
       };
+      git-server.enable = true;
       nextcloud = {
         enable = true;
         stage = "production";
