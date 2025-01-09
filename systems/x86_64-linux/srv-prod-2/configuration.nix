@@ -23,6 +23,17 @@
     };
   };
 
+  systemd.tmpfiles.settings = {
+    "backup-root" = {
+      "/var/backup" = {
+        d = {
+          group = "root";
+          user = "root";
+          mode = "0777";
+        };
+      };
+    };
+  };
   users.users = {
     nextcloud = {
       openssh.authorizedKeys.keyFiles = [../srv-test-2/ssh_srv-test-2_ed25519_key.pub];
