@@ -70,6 +70,12 @@ in {
             shiftwidth = 4;
           };
         };
+        "ftplugin/python.lua" = {
+          opts = {
+            softtabstop = 4;
+            shiftwidth = 4;
+          };
+        };
         "ftplugin/go.lua" = {
           opts = {
             expandtab = false;
