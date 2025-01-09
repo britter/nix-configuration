@@ -33,7 +33,7 @@ in {
 
     services.nextcloud = {
       enable = true;
-      package = pkgs.nextcloud29;
+      package = pkgs.nextcloud30;
       hostName = "nextcloud.${config.my.host.name}.ritter.family";
       https = true;
       config = {
