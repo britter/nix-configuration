@@ -83,6 +83,7 @@
         ++ job.runtimeInputs;
       text = lib.strings.concatLines (
         lib.optionals (job.preCommand != null) [job.preCommand]
+        ++ ["mkdir -p ${job.backupDir}"]
         ++ lib.optionals job.databaseSync.enable [
           ''ssh -i ${job.sshKey} ${job.user}@${job.host} "pg_dump --username=${job.databaseSync.user} --file=${job.databaseSync.dumpFile} ${job.databaseSync.database}"''
           ''scp -i ${job.sshKey} ${job.user}@${job.host}:${job.databaseSync.dumpFile} ${job.databaseSync.dumpFile}''
@@ -95,6 +96,7 @@
           ''sudo -u ${job.databaseSync.user} psql --dbname=${job.databaseSync.database} --file=${job.databaseSync.dumpFile}''
           ''rm -f ${job.databaseSync.dumpFile}''
         ]
+        ++ ["rm -rf ${job.backupDir}"]
         ++ lib.optionals (job.postCommand != null) [job.postCommand]
       );
     };
