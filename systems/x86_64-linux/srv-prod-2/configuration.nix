@@ -25,7 +25,7 @@
 
   systemd.tmpfiles.settings = {
     "backup-root" = {
-      "/var/backup" = {
+      "/var/backups" = {
         d = {
           group = "root";
           user = "root";
