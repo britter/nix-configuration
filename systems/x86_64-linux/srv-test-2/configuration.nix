@@ -19,7 +19,7 @@
         jobs = [
           {
             serviceName = "nextcloud";
-            host = "srv-prod-2";
+            host = config.my.homelab.srv-prod-2.ip;
             dataDir = "/var/lib/nextcloud/data";
             preCommand = "nextcloud-occ maintenance:mode --on";
             postCommand = "nextcloud-occ maintenance:mode --off";
@@ -28,7 +28,7 @@
           }
           {
             serviceName = "git";
-            host = "srv-prod-2";
+            host = config.my.homelab.srv-prod-2.ip;
             dataDir = "/srv/git";
           }
         ];
