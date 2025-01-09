@@ -1,7 +1,6 @@
-{...}: {
+{config, ...}: {
   imports = [
     ../../../modules
-    ./nextcloud-sync.nix
   ];
 
   my = {
@@ -14,6 +13,20 @@
         enable = true;
         bootDisk = "/dev/sda";
         storageDisk = "/dev/sdb";
+      };
+      app-sync = {
+        enable = true;
+        jobs = [
+          {
+            serviceName = "nextcloud";
+            host = "srv-prod-2";
+            dataDir = "/var/lib/nextcloud/data";
+            preCommand = "nextcloud-occ maintenance:mode --on";
+            postCommand = "nextcloud-occ maintenance:mode --off";
+            runtimeInputs = [config.services.nextcloud.occ];
+            databaseSync.enable = true;
+          }
+        ];
       };
       git-server.enable = true;
       nextcloud = {

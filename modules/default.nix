@@ -4,6 +4,7 @@ in {
   imports = [
     ./acme
     ./adguard
+    ./app-sync
     ./comin
     ./disko
     ./fonts
