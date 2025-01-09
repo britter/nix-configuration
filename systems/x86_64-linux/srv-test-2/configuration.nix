@@ -18,6 +18,11 @@
         enable = true;
         jobs = [
           {
+            serviceName = "git";
+            host = config.my.homelab.srv-prod-2.ip;
+            dataDir = "/srv/git";
+          }
+          {
             serviceName = "nextcloud";
             host = config.my.homelab.srv-prod-2.ip;
             dataDir = "/var/lib/nextcloud/data";
@@ -27,9 +32,10 @@
             databaseSync.enable = true;
           }
           {
-            serviceName = "git";
+            serviceName = "vaultwarden";
             host = config.my.homelab.srv-prod-2.ip;
-            dataDir = "/srv/git";
+            dataDir = "/var/lib/bitwarden_rs";
+            databaseSync.enable = true;
           }
         ];
       };
