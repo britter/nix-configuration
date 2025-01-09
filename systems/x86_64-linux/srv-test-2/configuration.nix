@@ -26,6 +26,11 @@
             runtimeInputs = [config.services.nextcloud.occ];
             databaseSync.enable = true;
           }
+          {
+            serviceName = "git";
+            host = "srv-prod-2";
+            dataDir = "/srv/git";
+          }
         ];
       };
       git-server.enable = true;

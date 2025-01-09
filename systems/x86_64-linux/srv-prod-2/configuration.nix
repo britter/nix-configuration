@@ -23,9 +23,15 @@
     };
   };
 
-  users.users.nextcloud = {
-    openssh.authorizedKeys.keyFiles = [../srv-test-2/ssh_srv-test-2_ed25519_key.pub];
-    useDefaultShell = true;
+  users.users = {
+    nextcloud = {
+      openssh.authorizedKeys.keyFiles = [../srv-test-2/ssh_srv-test-2_ed25519_key.pub];
+      useDefaultShell = true;
+    };
+    git = {
+      openssh.authorizedKeys.keyFiles = [../srv-test-2/ssh_srv-test-2_ed25519_key.pub];
+      useDefaultShell = true;
+    };
   };
 
   # This value determines the NixOS release from which the default
