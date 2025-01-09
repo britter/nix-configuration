@@ -35,6 +35,8 @@
             serviceName = "vaultwarden";
             host = config.my.homelab.srv-prod-2.ip;
             dataDir = "/var/lib/bitwarden_rs";
+            preCommand = "systemctl stop vaultwarden";
+            postCommand = "systemctl start vaultwarden";
             databaseSync.enable = true;
           }
         ];
