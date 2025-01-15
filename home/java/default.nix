@@ -8,19 +8,35 @@
 in {
   options.my.home.java = {
     enable = lib.mkEnableOption "java";
+    version = lib.mkOption {
+      type = lib.types.int;
+      default = "21";
+    };
+    additionalVersions = lib.mkOption {
+      type = lib.types.listOf lib.types.int;
+      default = [];
+    };
   };
 
-  config = lib.mkIf cfg.enable {
-    programs.java = {
-      enable = true;
-      package = pkgs.jdk21;
-    };
+  config = let
+    allVersions = lib.map toString (cfg.additionalVersions ++ [cfg.version]);
+    versionToHome = version: pkgs."jdk${version}".home;
+  in
+    lib.mkIf cfg.enable {
+      home.sessionVariables =
+        lib.mapAttrs' (name: value: lib.nameValuePair ("JDK_" + name) value)
+        (lib.genAttrs allVersions versionToHome);
 
-    programs.gradle = {
-      enable = true;
-      settings = {
-        "org.gradle.java.installations.paths" = "${pkgs.jdk8.home},${pkgs.jdk11.home}";
+      programs.java = {
+        enable = true;
+        package = pkgs."jdk${toString cfg.version}";
+      };
+
+      programs.gradle = {
+        enable = true;
+        settings = {
+          "org.gradle.java.installations.paths" = lib.concatStringsSep "," (lib.map versionToHome allVersions);
+        };
       };
     };
-  };
 }
