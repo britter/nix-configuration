@@ -34,6 +34,9 @@
     nssmdns4 = true;
   };
 
+  services.gnome.gnome-keyring.enable = true;
+  security.polkit.enable = true;
+
   # Workaround for getting automatic downloads of protoc via ptotobuf-gradle-plugin working
   # Source: https://discourse.nixos.org/t/protobuf-cant-be-run/13568/8
   systemd.tmpfiles.rules = [
