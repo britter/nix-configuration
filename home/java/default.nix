@@ -36,6 +36,7 @@ in {
         enable = true;
         settings = {
           "org.gradle.java.installations.paths" = lib.concatStringsSep "," (lib.map versionToHome allVersions);
+          "systemProp.jna.library.path" = lib.makeLibraryPath [pkgs.udev];
         };
       };
     };
