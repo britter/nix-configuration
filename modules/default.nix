@@ -1,4 +1,8 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   cfg = config.my.host;
 in {
   imports = [
@@ -33,24 +37,24 @@ in {
   ];
 
   config = {
-    my.modules = {
-      # enabled only on desktops
-      fonts.enable = cfg.role == "desktop";
-      gaming.enable = cfg.role == "desktop";
-      my-user.enable = cfg.role == "desktop";
-      sound.enable = cfg.role == "desktop";
-      sway.enable = cfg.role == "desktop";
-      system-recovery.enable = cfg.role == "desktop";
-
-      # enabled only on servers
-      comin.enable = cfg.role == "server";
-      monitoring.enable = cfg.role == "server";
-      sops.enable = cfg.role == "server";
-      ssh-access.enable = cfg.role == "server";
-
-      # enabled on all machines by default
-      i18n.enable = true;
-      networking.enable = true;
-    };
+    my.modules =
+      {
+        i18n.enable = true;
+        networking.enable = true;
+      }
+      // lib.optionalAttrs (cfg.role == "desktop") {
+        fonts.enable = true;
+        gaming.enable = true;
+        my-user.enable = true;
+        sound.enable = true;
+        sway.enable = true;
+        system-recovery.enable = true;
+      }
+      // lib.optionalAttrs (cfg.role == "server") {
+        comin.enable = true;
+        monitoring.enable = true;
+        sops.enable = true;
+        ssh-access.enable = true;
+      };
   };
 }
