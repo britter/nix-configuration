@@ -24,7 +24,10 @@ in {
         ];
       };
     };
-    # required by terraformls used in nixvim configuration
-    my.modules.allowedUnfreePkgs = ["terraform"];
+    my.modules.allowedUnfreePkgs = [
+      "obsidian"
+      # required by terraformls used in nixvim configuration
+      "terraform"
+    ];
   };
 }

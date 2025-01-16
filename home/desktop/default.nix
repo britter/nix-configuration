@@ -24,7 +24,7 @@ in {
     home.packages = with pkgs; [
       bitwarden-desktop
       libreoffice
-      logseq
+      obsidian
       vlc
     ];
 
