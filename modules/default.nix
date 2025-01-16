@@ -27,6 +27,7 @@ in {
     ./sound
     ./ssh-access
     ./sway
+    ./system-recovery
     ./utilities
     ./vaultwarden
   ];
@@ -35,10 +36,11 @@ in {
     my.modules = {
       # enabled only on desktops
       fonts.enable = cfg.role == "desktop";
+      gaming.enable = cfg.role == "desktop";
       my-user.enable = cfg.role == "desktop";
       sound.enable = cfg.role == "desktop";
       sway.enable = cfg.role == "desktop";
-      gaming.enable = cfg.role == "desktop";
+      system-recovery.enable = cfg.role == "desktop";
 
       # enabled only on servers
       comin.enable = cfg.role == "server";
