@@ -6,6 +6,30 @@ resource "cloudflare_record" "srv_test_2_wildcard" {
   proxied = false
 }
 
+resource "cloudflare_record" "nextcloud_test" {
+  zone_id = var.cloudflare_zone_id
+  name    = "nextcloud-test"
+  value   = "srv-test-2.tail74798e.ts.net"
+  type    = "CNAME"
+  proxied = false
+}
+
+resource "cloudflare_record" "collabora-test" {
+  zone_id = var.cloudflare_zone_id
+  name    = "collabora-test"
+  value   = "srv-test-2.tail74798e.ts.net"
+  type    = "CNAME"
+  proxied = false
+}
+
+resource "cloudflare_record" "vaultwarden-test" {
+  zone_id = var.cloudflare_zone_id
+  name    = "passwords-test"
+  value   = "srv-test-2.tail74798e.ts.net"
+  type    = "CNAME"
+  proxied = false
+}
+
 resource "cloudflare_api_token" "srv_test_2_acme_token" {
   name = "srv-test-2 acme token"
 
