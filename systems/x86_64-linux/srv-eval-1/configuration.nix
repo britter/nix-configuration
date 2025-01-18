@@ -13,6 +13,7 @@
         enable = true;
         bootDisk = "/dev/sda";
       };
+      tailscale.enable = true;
     };
   };
 
