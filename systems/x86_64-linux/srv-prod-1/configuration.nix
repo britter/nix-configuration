@@ -15,6 +15,7 @@
       };
       grafana.enable = true;
       monitoring.openFirewall = false;
+      tailscale.enable = true;
     };
   };
 
