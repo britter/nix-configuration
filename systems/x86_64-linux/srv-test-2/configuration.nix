@@ -46,6 +46,7 @@
         enable = true;
         stage = "test";
       };
+      tailscale.enable = true;
       vaultwarden.enable = true;
     };
   };
