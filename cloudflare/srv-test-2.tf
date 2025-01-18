@@ -1,12 +1,8 @@
-locals {
-  srv_test_2_ip = "192.168.178.222"
-}
-
 resource "cloudflare_record" "srv_test_2_wildcard" {
   zone_id = var.cloudflare_zone_id
   name    = "*.srv-test-2"
-  value   = local.srv_test_2_ip
-  type    = "A"
+  value   = "srv-test-2.tail74798e.ts.net"
+  type    = "CNAME"
   proxied = false
 }
 
