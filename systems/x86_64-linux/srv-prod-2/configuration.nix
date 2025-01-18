@@ -19,6 +19,7 @@
         enable = true;
         stage = "production";
       };
+      tailscale.enable = true;
       vaultwarden.enable = true;
     };
   };

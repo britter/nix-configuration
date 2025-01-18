@@ -32,6 +32,7 @@ in {
     ./ssh-access
     ./sway
     ./system-recovery
+    ./tailscale
     ./utilities
     ./vaultwarden
   ];
