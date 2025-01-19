@@ -6,14 +6,6 @@ resource "cloudflare_record" "srv_prod_1_wildcard" {
   proxied = false
 }
 
-resource "cloudflare_record" "grafana_prod" {
-  zone_id = var.cloudflare_zone_id
-  name    = "grafana"
-  value   = "srv-prod-1.tail74798e.ts.net"
-  type    = "CNAME"
-  proxied = false
-}
-
 resource "cloudflare_api_token" "srv_prod_1_acme_token" {
   name = "srv-prod-1 acme token"
 

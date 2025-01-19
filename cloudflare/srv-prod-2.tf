@@ -6,30 +6,6 @@ resource "cloudflare_record" "srv_prod_2_wildcard" {
   proxied = false
 }
 
-resource "cloudflare_record" "nextcloud_prod" {
-  zone_id = var.cloudflare_zone_id
-  name    = "nextcloud"
-  value   = "srv-prod-2.tail74798e.ts.net"
-  type    = "CNAME"
-  proxied = false
-}
-
-resource "cloudflare_record" "collabora_prod" {
-  zone_id = var.cloudflare_zone_id
-  name    = "collabora"
-  value   = "srv-prod-2.tail74798e.ts.net"
-  type    = "CNAME"
-  proxied = false
-}
-
-resource "cloudflare_record" "vaultwarden_prod" {
-  zone_id = var.cloudflare_zone_id
-  name    = "passwords"
-  value   = "srv-prod-2.tail74798e.ts.net"
-  type    = "CNAME"
-  proxied = false
-}
-
 resource "cloudflare_api_token" "srv_prod_2_acme_token" {
   name = "srv-prod-2 acme token"
 
