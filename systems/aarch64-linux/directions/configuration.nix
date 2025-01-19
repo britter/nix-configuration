@@ -55,6 +55,7 @@
           }
         ];
       };
+      tailscale.enable = true;
     };
   };
 
