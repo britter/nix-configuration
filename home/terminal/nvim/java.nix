@@ -11,5 +11,8 @@
   };
   programs.git.ignores = [
     "bin/"
+    ".classpath"
+    ".project"
+    ".settings/"
   ];
 }
