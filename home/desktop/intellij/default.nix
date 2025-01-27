@@ -14,15 +14,26 @@ in {
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      (jetbrains.plugins.addPlugins jetbrains.idea-community-bin cfg.plugins)
-    ];
-    programs.git.ignores = [
-      ## IntelliJ stuff
-      ".idea"
-      "*.iml"
-      "out/"
-    ];
-  };
+  config = let
+    idea = pkgs.jetbrains.plugins.addPlugins pkgs.jetbrains.idea-community-bin cfg.plugins;
+    ideaStartScript = pkgs.writeShellApplication {
+      name = "idea";
+      text = ''
+        DIR=''${1:-$(pwd)}
+        nohup ${lib.getExe idea} "$DIR" > /dev/null 2>&1 &
+      '';
+    };
+  in
+    lib.mkIf cfg.enable {
+      home.packages = [
+        idea
+        ideaStartScript
+      ];
+      programs.git.ignores = [
+        ## IntelliJ stuff
+        ".idea"
+        "*.iml"
+        "out/"
+      ];
+    };
 }
