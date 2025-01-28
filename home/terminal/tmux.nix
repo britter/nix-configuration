@@ -22,6 +22,22 @@
       }
     ];
   };
+  gradlex-website = {
+    name = "gradlex-website";
+    root = "~/github/gradlex-org/gradlex-org.github.io";
+    windows = [
+      {
+        workspace = {
+          layout = "main-horizontal";
+          panes = [
+            {editor = "v";}
+            {dev-server = "npm run dev";}
+            {term = "";}
+          ];
+        };
+      }
+    ];
+  };
 in {
   options.my.home.terminal.tmux = {
     enable = lib.mkEnableOption "tmux";
@@ -79,5 +95,6 @@ in {
       tmuxinator.enable = true;
     };
     home.file.".config/tmuxinator/website.yml".source = yaml.generate "website.yaml" websiteConfig;
+    home.file.".config/tmuxinator/gradlex-website.yml".source = yaml.generate "gradlex-website.yaml" gradlex-website;
   };
 }

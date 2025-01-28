@@ -16,6 +16,7 @@ in {
         whitelist = {
           prefix = [
             "~/github/britter"
+            "~/github/gradlex-org"
           ];
         };
       };
