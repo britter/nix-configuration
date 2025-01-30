@@ -1,8 +1,8 @@
 resource "cloudflare_record" "srv_prod_2_wildcard" {
   zone_id = var.cloudflare_zone_id
   name    = "*.srv-prod-2"
-  value   = "srv-prod-2.tail74798e.ts.net"
-  type    = "CNAME"
+  value   = "100.94.107.46"
+  type    = "A"
   proxied = false
 }
 
