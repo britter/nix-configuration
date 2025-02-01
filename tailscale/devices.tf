@@ -1,6 +1,6 @@
 data "tailscale_device" "devices" {
   for_each = toset(local.devices)
-  name     = "${each.key}.${local.tailnet}"
+  name     = "${each.key}.${var.tailnet}"
   wait_for = "60s"
 }
 
