@@ -1,7 +1,7 @@
 resource "cloudflare_record" "srv_prod_2_wildcard" {
   zone_id = var.cloudflare_zone_id
   name    = "*.srv-prod-2"
-  content = "100.94.107.46"
+  content = var.host_ips["srv-prod-2"]
   type    = "A"
   proxied = false
 }

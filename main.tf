@@ -10,6 +10,7 @@ module "tailscale" {
 module "cloudflare" {
   source             = "./cloudflare"
   cloudflare_zone_id = var.cloudflare_zone_id
+  host_ips           = module.tailscale.device_ips
 }
 
 output "srv_eval_1_acme_token" {

@@ -1,7 +1,7 @@
 resource "cloudflare_record" "srv_eval_1_wildcard" {
   zone_id = var.cloudflare_zone_id
   name    = "*.srv-eval-1"
-  content = "100.75.235.113"
+  content = var.host_ips["srv-eval-1"]
   type    = "A"
   proxied = false
 }
