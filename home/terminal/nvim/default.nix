@@ -13,6 +13,7 @@ in {
     ./lsp.nix
     ./navigation.nix
     ./ui.nix
+    ./opentofu.nix
   ];
 
   options.my.home.terminal.nvim = {
