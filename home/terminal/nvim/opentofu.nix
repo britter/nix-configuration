@@ -6,12 +6,12 @@ _: {
     plugins = {
       lsp.servers.terraformls = {
         enable = true;
-        filetypes = ["terraform" "tfvars" "tofu"];
+        filetypes = ["tf" "terraform" "terraform-vars" "tfvars" "tofu"];
       };
       treesitter = {
         enable = true;
         languageRegister = {
-          hcl = ["terraform" "tofu"];
+          hcl = ["tf" "terraform" "tofu"];
         };
       };
       none-ls.sources.formatting.opentofu_fmt = {

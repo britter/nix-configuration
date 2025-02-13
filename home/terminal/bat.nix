@@ -12,6 +12,11 @@ in {
   config = lib.mkIf cfg.enable {
     programs.bat = {
       enable = true;
+      config = {
+        map-syntax = [
+          "*.tofu:Terraform"
+        ];
+      };
     };
   };
 }
