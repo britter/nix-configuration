@@ -33,7 +33,7 @@ in {
             }
           ];
           profile.exec = [
-            "${pkgs.sway}/bin/swaymsg workspace 0, move workspace to eDP-1"
+            "${pkgs.sway}/bin/swaymsg workspace 10, move workspace to eDP-1"
             "${pkgs.sway}/bin/swaymsg workspace 1, move workspace to DP-2"
           ];
         }
