@@ -19,7 +19,7 @@
 
   services.calibre-web = {
     enable = true;
-    listen.ip = "::";
+    listen.ip = "::,0.0.0.0";
     openFirewall = true;
     options = {
       enableBookConversion = true;
