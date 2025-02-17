@@ -19,8 +19,13 @@
 
   services.calibre-web = {
     enable = true;
+    listen.ip = "::";
     openFirewall = true;
-    options.enableBookUploading = true;
+    options = {
+      enableBookConversion = true;
+      enableBookUploading = true;
+      enableKepubify = true;
+    };
   };
 
   # This value determines the NixOS release from which the default
