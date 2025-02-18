@@ -17,6 +17,16 @@ _: {
         key = "bd";
         mode = ["n"];
       }
+      {
+        action = "<cmd>cprevious<CR>";
+        key = "[c";
+        mode = ["n"];
+      }
+      {
+        action = "<cmd>cnext<CR>";
+        key = "]c";
+        mode = ["n"];
+      }
     ];
   };
 }
