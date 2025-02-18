@@ -155,6 +155,7 @@ in {
         };
         window.titlebar = false;
         window.border = 2;
+        # Display the window tree by running swaymsg -t get_tree
         window.commands = [
           {
             criteria.app_id = ".*-floating";
