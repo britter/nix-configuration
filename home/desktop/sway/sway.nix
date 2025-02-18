@@ -192,6 +192,10 @@ in {
             criteria.app_id = "qalculate-gtk";
             command = "resize set 800 600";
           }
+          {
+            criteria.title = "Extension: (Bitwarden Password Manager) - Bitwarden — Mozilla Firefox";
+            command = "floating enable";
+          }
         ];
       };
     };
