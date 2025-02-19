@@ -46,6 +46,7 @@
         enable = true;
         stage = "test";
       };
+      calibre-web.enable = true;
       tailscale.enable = true;
       vaultwarden.enable = true;
     };

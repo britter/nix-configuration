@@ -9,6 +9,7 @@ in {
     ./acme
     ./adguard
     ./app-sync
+    ./calibre-web
     ./comin
     ./disko
     ./fonts
