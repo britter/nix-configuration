@@ -128,6 +128,10 @@ in {
               answer = config.my.homelab.directions.ip;
             }
             {
+              domain = "books.ritter.family";
+              answer = config.my.homelab.directions.ip;
+            }
+            {
               domain = "collabora.ritter.family";
               answer = config.my.homelab.directions.ip;
             }

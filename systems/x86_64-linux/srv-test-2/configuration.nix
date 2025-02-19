@@ -23,6 +23,11 @@
             dataDir = "/srv/git";
           }
           {
+            serviceName = "calibre-web";
+            host = config.my.homelab.srv-prod-2.ip;
+            dataDir = "/var/lib/calibre-library";
+          }
+          {
             serviceName = "nextcloud";
             host = config.my.homelab.srv-prod-2.ip;
             dataDir = "/var/lib/nextcloud/data";

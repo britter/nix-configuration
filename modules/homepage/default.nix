@@ -36,6 +36,7 @@ in {
           };
         }
       ];
+      # see https://gethomepage.dev/configs/services/#icons for how to set icons
       services = [
         {
           "Office" = [
@@ -51,6 +52,17 @@ in {
                 description = "Password safe";
                 href = "https://passwords.ritter.family/";
                 icon = "vaultwarden.svg";
+              };
+            }
+          ];
+        }
+        {
+          "Media" = [
+            {
+              "Calibre Web" = {
+                description = "App for browsing, reading and downloading eBooks";
+                href = "https://books.ritter.family";
+                icon = "calibre-web.svg";
               };
             }
           ];

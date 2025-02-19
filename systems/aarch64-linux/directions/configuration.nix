@@ -20,6 +20,10 @@
         enable = true;
         configurations = [
           {
+            fqdn = "books.ritter.family";
+            target = "https://books.srv-prod-2.ritter.family";
+          }
+          {
             fqdn = "collabora.ritter.family";
             target = "https://collabora.srv-prod-2.ritter.family";
             proxyWebsockets = true;

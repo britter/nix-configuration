@@ -15,6 +15,7 @@
         storageDisk = "/dev/sdb";
       };
       git-server.enable = true;
+      calibre-web.enable = true;
       nextcloud = {
         enable = true;
         stage = "production";
@@ -36,6 +37,10 @@
     };
   };
   users.users = {
+    calibre-web = {
+      openssh.authorizedKeys.keyFiles = [../srv-test-2/ssh_srv-test-2_ed25519_key.pub];
+      useDefaultShell = true;
+    };
     nextcloud = {
       openssh.authorizedKeys.keyFiles = [../srv-test-2/ssh_srv-test-2_ed25519_key.pub];
       useDefaultShell = true;
