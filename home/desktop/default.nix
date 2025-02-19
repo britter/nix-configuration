@@ -24,6 +24,7 @@ in {
     home.packages = with pkgs; [
       audacity
       bitwarden-desktop
+      calibre
       libreoffice
       obsidian
       vlc
