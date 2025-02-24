@@ -41,6 +41,7 @@ in {
           duckduckgo-privacy-essentials
           ghostery
           privacy-badger
+          refined-github
           ublock-origin
         ];
         bookmarks = [
