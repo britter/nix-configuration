@@ -14,7 +14,7 @@ _: {
       }
       {
         action = "<cmd>bdelete<CR>";
-        key = "bd";
+        key = "<leader>bd";
         mode = ["n"];
       }
       {
