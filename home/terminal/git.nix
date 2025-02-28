@@ -41,6 +41,13 @@ in {
             user.signingKey = "9DAADC1C9FCC82D0";
           };
         }
+        {
+          condition = "gitdir:~/clients/";
+          contents = {
+            user.email = "benedikt.ritter@proton.me";
+            user.signingKey = "F9190A44AEFC562C";
+          };
+        }
       ];
 
       extraConfig = {
