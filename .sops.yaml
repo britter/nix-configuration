@@ -7,6 +7,10 @@ keys:
   - &srv-eval-1 age15vkuesucjf60x8dcfyre4aus4djyxamsk20ce2u7nrprml2j533qcsc7pd
   - &directions age1tqwmx8ge4fxkj2l8sfam94eg52km2w3dqjgazjez46m4ywln7qls0unsdw
 creation_rules:
+  - path_regex: systems/host-keys\.yaml$
+    key_groups:
+      - age:
+        - *pulse-14
   - path_regex: systems/x86_64-linux/srv-prod-1/secrets\.yaml$
     key_groups:
       - age:
