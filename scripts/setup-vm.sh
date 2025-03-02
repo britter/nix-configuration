@@ -29,12 +29,12 @@ trap cleanup EXIT
 install -d -m755 "$temp/etc/ssh"
 
 # copy public ket to the temporary directory
-sops -- decrypt ../systems/host-keys.yaml --extract "[\"$host\"]["public-key"]" --output "$temp/etc/ssh/ssh_host_ed25519_key.pub"
+sops -- decrypt ../systems/host-keys.yaml --extract "[\"$host\"][\"public-key\"]" --output "$temp/etc/ssh/ssh_host_ed25519_key.pub"
 # Set the correct permissions so sshd will accept the key
-chmod 644 "$temp/etc/ssh/ssh_host_ed25519_key"
+chmod 644 "$temp/etc/ssh/ssh_host_ed25519_key.pub"
 
 # copy private ket to the temporary directory
-sops -- decrypt ../systems/host-keys.yaml --extract "[\"$host\"]["private-key"]" --output "$temp/etc/ssh/ssh_host_ed25519_key"
+sops -- decrypt ../systems/host-keys.yaml --extract "[\"$host\"][\"private-key\"]" --output "$temp/etc/ssh/ssh_host_ed25519_key"
 # Set the correct permissions so sshd will accept the key
 chmod 600 "$temp/etc/ssh/ssh_host_ed25519_key"
 
