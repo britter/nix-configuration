@@ -20,6 +20,10 @@
         type = lib.types.bool;
         default = false;
       };
+      extraConfig = lib.mkOption {
+        type = lib.types.lines;
+        default = "";
+      };
     };
   });
 in {
@@ -38,6 +42,7 @@ in {
     services.nginx.virtualHosts = let
       makeHost = conf: {
         ${conf.fqdn} = {
+          inherit (conf) extraConfig;
           serverAliases = conf.aliases;
           useACMEHost = conf.fqdn;
           forceSSL = true;

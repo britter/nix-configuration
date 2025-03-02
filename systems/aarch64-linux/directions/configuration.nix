@@ -44,10 +44,16 @@
           {
             fqdn = "nextcloud.ritter.family";
             target = "https://nextcloud.srv-prod-2.ritter.family";
+            extraConfig = ''
+              client_max_body_size 512M;
+            '';
           }
           {
             fqdn = "nextcloud-test.ritter.family";
             target = "https://nextcloud.srv-test-2.ritter.family";
+            extraConfig = ''
+              client_max_body_size 512M;
+            '';
           }
           {
             fqdn = "proxmox.ritter.family";
