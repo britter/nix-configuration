@@ -22,6 +22,9 @@
           {
             fqdn = "books.ritter.family";
             target = "https://books.srv-prod-2.ritter.family";
+            extraConfig = ''
+              client_max_body_size 512M;
+            '';
           }
           {
             fqdn = "collabora.ritter.family";
