@@ -13,6 +13,11 @@ module "cloudflare" {
   host_ips           = module.tailscale.device_ips
 }
 
+output "directions_acme_token" {
+  value     = module.cloudflare.directions_acme_token_value
+  sensitive = true
+}
+
 output "srv_eval_1_acme_token" {
   value     = module.cloudflare.srv_eval_1_acme_token_value
   sensitive = true
