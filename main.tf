@@ -42,3 +42,9 @@ output "srv_prod_2_acme_token" {
   value     = module.cloudflare.srv_prod_2_acme_token_value
   sensitive = true
 }
+
+output "srv_backup_1_acme_token" {
+  value     = module.cloudflare.srv_backup_1_acme_token_value
+  sensitive = true
+}
+
