@@ -1,5 +1,4 @@
 {
-  pkgs,
   inputs,
   ...
 }: {
@@ -30,10 +29,20 @@
     description = "Backup user";
     home = "/var/backups";
     createHome = true;
-    shell = pkgs.bash;
     openssh.authorizedKeys.keyFiles = [../srv-prod-2/ssh_srv-prod-2_ed25519_key.pub];
   };
   users.groups.backup = {};
+
+  # Configure SFTP-Only Access for backup user
+  services.openssh.extraConfig = ''
+    Match User backup
+    ForceCommand internal-sftp
+    ChrootDirectory /home/backupuser
+    PermitTunnel no
+    AllowAgentForwarding no
+    AllowTcpForwarding no
+    X11Forwarding no
+  '';
 
   system.stateVersion = "24.11";
 }
