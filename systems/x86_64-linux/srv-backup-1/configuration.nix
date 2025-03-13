@@ -21,7 +21,6 @@
   };
 
   users.users.backup = {
-    isSystemUser = true;
     group = "backup";
     description = "Backup user";
     home = "/var/backups";
