@@ -14,12 +14,13 @@ in {
       enable = true;
       settings = {
         font = {
-          size = 9;
+          size = 11;
           normal.family = "FiraCode Nerd Font";
         };
         window = {
           opacity = 0.85;
           decorations = "None";
+          dynamic_padding = true;
         };
       };
     };

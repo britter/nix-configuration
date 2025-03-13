@@ -23,13 +23,11 @@ in {
               criteria = lg32;
               status = "enable";
               position = "0,0";
-              scale = 1.5;
             }
             {
               criteria = pulse-14;
               status = "enable";
-              # positioned at the bottom honoring the scale of 1.5: y = 2160 / 1.5 = 1440
-              position = "960,1440";
+              position = "960,2160";
             }
           ];
           profile.exec = [

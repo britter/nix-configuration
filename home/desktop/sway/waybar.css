@@ -5,9 +5,9 @@
 * {
 	border: none;
 	border-radius: 0px;
-	font-size: 9px;
+	font-size: 11px;
 	padding: 0px;
-	min-height: 10px;
+	min-height: 12px;
 	font-family: "DejaVu Sans", "Font Awesome 6 Free", "Font Awesome 6 Brands";
 	color: @text;
 }
