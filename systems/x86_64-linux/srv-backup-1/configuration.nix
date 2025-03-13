@@ -1,7 +1,4 @@
-{
-  inputs,
-  ...
-}: {
+{inputs, ...}: {
   imports = [
     ../../../modules
     inputs.nixos-facter-modules.nixosModules.facter
