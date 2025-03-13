@@ -25,6 +25,7 @@
     group = "backup";
     description = "Backup user";
     home = "/var/backups";
+    createHome = true;
     openssh.authorizedKeys.keyFiles = [../srv-prod-2/ssh_srv-prod-2_ed25519_key.pub];
   };
   users.groups.backup = {};
