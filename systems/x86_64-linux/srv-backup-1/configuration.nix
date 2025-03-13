@@ -20,5 +20,14 @@
     };
   };
 
+  users.users.backup = {
+    isSystemUser = true;
+    group = "backup";
+    description = "Backup user";
+    home = "/var/backups";
+    openssh.authorizedKeys.keyFiles = [../srv-prod-2/ssh_srv-prod-2_ed25519_key.pub];
+  };
+  users.groups.backup = {};
+
   system.stateVersion = "24.11";
 }

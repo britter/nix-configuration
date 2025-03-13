@@ -1,4 +1,4 @@
-{...}: {
+{config, ...}: {
   imports = [
     ../../../modules
   ];
@@ -52,6 +52,23 @@
     vaultwarden = {
       openssh.authorizedKeys.keyFiles = [../srv-test-2/ssh_srv-test-2_ed25519_key.pub];
       useDefaultShell = true;
+    };
+  };
+
+  sops.secrets."restic/repository-password" = {};
+  services.restic.backups = {
+    srv-backup-1 = {
+      passwordFile = config.sops.secrets."restic/repository-password".path;
+      paths = [
+        # "/var/lib/nextcloud/data"
+        # "/var/lib/bitwarden_rs"
+        # "/var/lib/calibre-web"
+        # "/var/lib/calibre-library"
+        "/srv/git"
+      ];
+      repository = "sftp:backup@srv-backup-1.ritter.family:restic/srv-prod-1";
+      initialize = true;
+      timerConfig = null;
     };
   };
 
