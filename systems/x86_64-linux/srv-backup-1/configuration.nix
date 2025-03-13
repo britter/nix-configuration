@@ -37,7 +37,7 @@
   services.openssh.extraConfig = ''
     Match User backup
     ForceCommand internal-sftp
-    ChrootDirectory /home/backupuser
+    ChrootDirectory /var/backups
     PermitTunnel no
     AllowAgentForwarding no
     AllowTcpForwarding no
