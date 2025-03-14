@@ -72,7 +72,14 @@
       ];
       repository = "sftp:backup@srv-backup-1.ritter.family:restic/srv-prod-1";
       initialize = true;
-      timerConfig = null;
+      # keep the most recent snapshot per <unit> for the last .. <unit>
+      # e.g. for the last 8 week, we will keep the most recent snapshot of that week.
+      pruneOpts = [
+        "--keep-daily 14"
+        "--keep-weekly 8"
+        "--keep-monthly 12"
+        "--keep-yearly 5"
+      ];
     };
   };
 
