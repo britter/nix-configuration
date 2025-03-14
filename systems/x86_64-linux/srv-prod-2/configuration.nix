@@ -59,7 +59,7 @@
   services.restic.backups = {
     srv-backup-1 = {
       passwordFile = config.sops.secrets."restic/repository-password".path;
-      extraOptions = ["sftp.command='ssh -i /etc/ssh/ssh_host_ed25519_key'"];
+      extraOptions = ["sftp.args='-i /etc/ssh/ssh_host_ed25519_key'"];
       paths = [
         # "/var/lib/nextcloud/data"
         # "/var/lib/bitwarden_rs"
