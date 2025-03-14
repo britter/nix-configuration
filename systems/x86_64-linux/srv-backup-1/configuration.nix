@@ -24,11 +24,13 @@
     isSystemUser = true;
     group = "backup";
     description = "Backup user";
-    home = "/var/backups";
-    createHome = true;
     openssh.authorizedKeys.keyFiles = [../srv-prod-2/ssh_srv-prod-2_ed25519_key.pub];
   };
   users.groups.backup = {};
+
+  systemd.tmpfiles.rules = [
+    "d /var/backups 0755 root root"
+  ];
 
   # Configure SFTP-Only Access for backup user
   services.openssh.extraConfig = ''
