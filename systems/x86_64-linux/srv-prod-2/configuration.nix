@@ -61,7 +61,7 @@
       passwordFile = config.sops.secrets."restic/repository-password".path;
       extraOptions = ["sftp.args='-i /etc/ssh/ssh_host_ed25519_key'"];
       paths = [
-        # "/var/lib/nextcloud/data"
+        "/var/lib/nextcloud/data"
         "/var/lib/bitwarden_rs"
         "/var/lib/calibre-web"
         "/var/lib/calibre-library"
