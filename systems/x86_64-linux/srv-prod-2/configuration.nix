@@ -1,4 +1,8 @@
-{config, ...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   imports = [
     ../../../modules
   ];
@@ -54,8 +58,8 @@
       passwordFile = config.sops.secrets."restic/repository-password".path;
       extraOptions = ["sftp.args='-i /etc/ssh/ssh_host_ed25519_key'"];
       backupPrepareCommand = ''
-        sudo -u postgres pg_dump --format=custom --file=/var/backups/postgres/nextcloud.dump nextcloud
-        sudo -u postgres pg_dump --format=custom --file=/var/backups/postgres/vaultwarden.dump vaultwarden
+        ${pkgs.sudo} -u postgres pg_dump --format=custom --file=/var/backups/postgres/nextcloud.dump nextcloud
+        ${pkgs.sudo} -u postgres pg_dump --format=custom --file=/var/backups/postgres/vaultwarden.dump vaultwarden
       '';
       paths = [
         "/var/backups/postgres"
