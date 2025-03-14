@@ -25,17 +25,10 @@
     };
   };
 
-  systemd.tmpfiles.settings = {
-    "backup-root" = {
-      "/var/backups" = {
-        d = {
-          group = "root";
-          user = "root";
-          mode = "0777";
-        };
-      };
-    };
-  };
+  systemd.tmpfiles.rules = [
+    "d /var/backups 0777 root root"
+    "d /var/backups/postgresql 0755 root root"
+  ];
   users.users = {
     calibre-web = {
       openssh.authorizedKeys.keyFiles = [../srv-test-2/ssh_srv-test-2_ed25519_key.pub];
@@ -60,6 +53,10 @@
     srv-backup-1 = {
       passwordFile = config.sops.secrets."restic/repository-password".path;
       extraOptions = ["sftp.args='-i /etc/ssh/ssh_host_ed25519_key'"];
+      backupPrepareCommand = ''
+        sudo -u postgres pg_dump --format=custom --file=/var/backups/postgresql/nextcloud.dump nextcloud
+        sudo -u postgres pg_dump --format=custom --file=/var/backups/postgresql/vaultwarden.dump vaultwarden
+      '';
       paths = [
         "/var/lib/nextcloud/data"
         "/var/lib/bitwarden_rs"
