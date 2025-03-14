@@ -123,7 +123,7 @@ in {
         timers."${job.serviceName}-sync" = {
           description = "Timer for ${job.serviceName} sync job";
           timerConfig = {
-            OnCalendar = "daily";
+            OnCalendar = "02:00";
             Persistent = true;
           };
           wantedBy = ["timers.target"];
