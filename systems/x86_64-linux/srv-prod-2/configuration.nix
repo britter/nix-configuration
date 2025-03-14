@@ -58,6 +58,7 @@
         sudo -u postgres pg_dump --format=custom --file=/var/backups/postgres/vaultwarden.dump vaultwarden
       '';
       paths = [
+        "/var/backups/postgres"
         "/var/lib/nextcloud/data"
         "/var/lib/bitwarden_rs"
         "/var/lib/calibre-web"
