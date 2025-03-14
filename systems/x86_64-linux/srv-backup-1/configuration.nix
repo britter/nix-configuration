@@ -28,8 +28,10 @@
   };
   users.groups.backup = {};
 
+  # Create backup directories with permissions matching openssh configuratoin
   systemd.tmpfiles.rules = [
     "d /var/backups 0755 root root"
+    "d /var/backups/restic 0755 backup backup"
   ];
 
   # Configure SFTP-Only Access for backup user
