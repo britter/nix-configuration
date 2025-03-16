@@ -1,11 +1,3 @@
-resource "cloudflare_record" "srv_eval_1_wildcard" {
-  zone_id = var.cloudflare_zone_id
-  name    = "*.srv-eval-1"
-  content = var.host_ips["srv-eval-1"]
-  type    = "A"
-  proxied = false
-}
-
 resource "cloudflare_api_token" "srv_eval_1_acme_token" {
   name = "srv-eval-1 acme token"
 
