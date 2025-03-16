@@ -1,3 +1,12 @@
+resource "cloudflare_record" "global_wildcard" {
+  zone_id = var.cloudflare_zone_id
+  name    = "*"
+  content = var.host_ips["directions"]
+  type    = "A"
+  proxied = false
+}
+
+
 resource "cloudflare_api_token" "directions_acme_token" {
   name = "directions acme token"
 
