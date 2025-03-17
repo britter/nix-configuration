@@ -109,6 +109,13 @@ in {
             # Custom modes
             "${mod}+Escape" = ''mode "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit"'';
             "${mod}+p" = ''mode "present"'';
+
+            # Fn functionality on F keys
+            "XF86AudioMute" = "exec ${pkgs.pamixer}/bin/pamixer -t";
+            "XF86AudioRaiseVolume" = "exec ${pkgs.pamixer}/bin/pamixer -i 5";
+            "XF86AudioLowerVolume" = "exec ${pkgs.pamixer}/bin/pamixer -d 5";
+            "XF86MonBrightnessUp" = "exec ${pkgs.brightnessctl}/bin/brightnessctl s +10%";
+            "XF86MonBrightnessDown" = "exec ${pkgs.brightnessctl}/bin/brightnessctl s 10%-";
           };
         modes = {
           # redeclare resize mode in order not to override it
