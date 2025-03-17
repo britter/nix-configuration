@@ -3,7 +3,7 @@ _: {
     colorschemes.catppuccin = {
       enable = true;
       settings = {
-        flavour = "macchiato";
+        flavour = "latte";
         term_colors = true;
         integrations = {
           treesitter = true;
