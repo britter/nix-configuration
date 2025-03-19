@@ -37,6 +37,11 @@ _: {
       bufferline.enable = true;
       lualine.enable = true;
       neo-tree.enable = true;
+      noice.enable = true;
+      toggleterm = {
+        enable = true;
+        settings.direction = "float";
+      };
       web-devicons.enable = true;
     };
     keymaps = [
@@ -44,6 +49,18 @@ _: {
         action = "<cmd>Neotree filesystem reveal toggle left<CR>";
         key = "<C-n>";
         mode = ["n"];
+      }
+      # Toggle the terminal
+      {
+        action = "<cmd>ToggleTerm<CR>";
+        key = "<leader>t";
+        mode = ["n" "t"];
+      }
+      # Press esc in the term to go to normal mode
+      {
+        action = "<c-\\><c-n>";
+        key = "<esc>";
+        mode = ["t"];
       }
     ];
   };
