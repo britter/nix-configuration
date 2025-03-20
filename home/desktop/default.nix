@@ -49,6 +49,7 @@ in {
     my.home.desktop = {
       alacritty.enable = true;
       firefox.enable = true;
+      librewolf.enable = true;
       intellij = {
         enable = true;
         plugins = ["asciidoc" "protocol-buffers"];

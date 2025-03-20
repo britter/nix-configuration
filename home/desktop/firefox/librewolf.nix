@@ -4,19 +4,18 @@
   pkgs,
   ...
 }: let
-  cfg = config.my.home.desktop.firefox;
+  cfg = config.my.home.desktop.librewolf;
 in {
-  imports = [
-    ./librewolf.nix
-  ];
-
-  options.my.home.desktop.firefox = {
-    enable = lib.mkEnableOption "firefox";
+  options.my.home.desktop.librewolf = {
+    enable = lib.mkEnableOption "librewolf";
   };
 
   config = lib.mkIf cfg.enable {
-    programs.firefox = {
+    programs.librewolf = {
       enable = true;
+      settings = {
+        "privacy.sanitize.sanitizeOnShutdown" = false;
+      };
       # see https://mozilla.github.io/policy-templates/
       policies = {
         DisableFirefoxStudies = true;
