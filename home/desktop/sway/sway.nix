@@ -185,10 +185,6 @@ in {
             command = "resize set 800 600";
           }
           {
-            criteria.app_id = "org.gnome.Nautilus";
-            command = "floating enable";
-          }
-          {
             criteria.class = "Bitwarden";
             command = "floating enable";
           }
