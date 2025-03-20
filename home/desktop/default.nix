@@ -7,9 +7,9 @@
   cfg = config.my.home.desktop;
 in {
   imports = [
-    ./alacritty
     ./firefox
     ./intellij
+    ./ghostty
     ./sway
     ./vscode
     ./wallpapers
@@ -47,8 +47,8 @@ in {
     };
 
     my.home.desktop = {
-      alacritty.enable = true;
       firefox.enable = true;
+      ghostty.enable = true;
       librewolf.enable = true;
       intellij = {
         enable = true;
@@ -61,10 +61,5 @@ in {
     # this requires security.polkit.enable and services.gnome.gnome-keyring.enable in the host config
     # in order to store the authentication data across reboots.
     services.nextcloud-client.enable = true;
-
-    programs.ghostty = {
-      enable = true;
-      enableFishIntegration = true;
-    };
   };
 }
