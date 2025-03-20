@@ -15,7 +15,7 @@ in {
     wayland.windowManager.sway = {
       wrapperFeatures.gtk = true;
       config = {
-        terminal = "${pkgs.alacritty}/bin/alacritty";
+        terminal = lib.getExe pkgs.ghostty;
         menu = "${rofi} -show drun -show-icons -pid";
         bars = [{command = "${pkgs.waybar}/bin/waybar";}];
         defaultWorkspace = "workspace number 1";
