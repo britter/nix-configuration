@@ -11,7 +11,6 @@ in {
     ./intellij
     ./ghostty
     ./sway
-    ./vscode
     ./wallpapers
   ];
 
@@ -55,7 +54,6 @@ in {
         plugins = ["asciidoc" "protocol-buffers"];
       };
       sway.enable = true;
-      vscode.enable = true;
     };
 
     # this requires security.polkit.enable and services.gnome.gnome-keyring.enable in the host config
