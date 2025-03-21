@@ -31,6 +31,7 @@ in {
         "ll" = "eza --all --long --icons=always --git";
         "tree" = "eza --tree --level=2";
         "loc" = "tokei";
+        "tmp" = "cd (mktemp -d)";
       };
 
       shellInit = ''
