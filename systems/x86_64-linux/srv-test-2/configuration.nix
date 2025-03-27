@@ -52,6 +52,7 @@
         stage = "test";
       };
       calibre-web.enable = true;
+      stirling-pdf.enable = true;
       tailscale.enable = true;
       vaultwarden.enable = true;
     };

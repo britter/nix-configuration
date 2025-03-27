@@ -31,6 +31,7 @@ in {
     ./sops
     ./sound
     ./ssh-access
+    ./stirling-pdf
     ./sway
     ./system-recovery
     ./tailscale

@@ -48,6 +48,13 @@ in {
               };
             }
             {
+              "Stirling PDF" = {
+                description = "Web application that allows you to perform various operations on PDF files";
+                href = "https://pdf.ritter.family/";
+                icon = "stirling-pdf.svg";
+              };
+            }
+            {
               "Vaultwarden" = {
                 description = "Password safe";
                 href = "https://passwords.ritter.family/";

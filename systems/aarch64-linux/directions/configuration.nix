@@ -66,6 +66,13 @@
             fqdn = "passwords.ritter.family";
             target = "https://passwords.srv-prod-2.ritter.family";
           }
+          {
+            fqdn = "pdf.ritter.family";
+            target = "https://pdf.srv-prod-2.ritter.family";
+            extraConfig = ''
+              client_max_body_size 100M;
+            '';
+          }
         ];
       };
       tailscale.enable = true;

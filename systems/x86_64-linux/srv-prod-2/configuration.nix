@@ -25,6 +25,7 @@
         enable = true;
         stage = "production";
       };
+      stirling-pdf.enable = true;
       tailscale.enable = true;
       vaultwarden.enable = true;
     };
