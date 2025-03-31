@@ -27,6 +27,7 @@
       inputs.home-manager.follows = "home-manager";
     };
     nur.url = "github:nix-community/NUR";
+    pre-commit-hooks.url = "github:cachix/git-hooks.nix";
     sops-nix.url = "github:Mic92/sops-nix";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
@@ -51,6 +52,13 @@
       {
         formatter = treefmtEval.config.build.wrapper;
         checks = {
+          pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+            src = ./.;
+            hooks = {
+              deadnix.enable = true;
+              nixfmt-rfc-style.enable = true;
+            };
+          };
           formatting = treefmtEval.config.build.check self;
         };
         packages = import ./packages { inherit pkgs; };
@@ -58,6 +66,10 @@
           inherit pkgs-unstable;
           inherit my-pkgs;
           inherit (inputs) nur;
+        };
+        devShells.default = pkgs.mkShell {
+          inherit (self.checks.${system}.pre-commit-check) shellHook;
+          buildInputs = self.checks.${system}.pre-commit-check.enabledPackages;
         };
       }
     )
