@@ -53,7 +53,7 @@ in
       clock24 = true;
       disableConfirmationPrompt = true;
       sensibleOnTop = true;
-      shell = "${pkgs.fish}/bin/fish";
+      shell = lib.getExe pkgs.fish;
       # Prevent tmux from receiving ESC presses
       # without this switching modes in vim has a noticable input lag
       escapeTime = 0;
