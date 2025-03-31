@@ -13,70 +13,34 @@ in {
     programs.ssh = {
       enable = true;
       matchBlocks = let
-        sshDirectory = "${config.home.homeDirectory}/.ssh";
-        privateKey = "${sshDirectory}/id_ed25519";
-      in {
-        "github.com" = {
-          hostname = "github.com";
-          identityFile = privateKey;
-          identitiesOnly = true;
-        };
-        "directions.ritter.family" = {
-          identityFile = privateKey;
-          user = "root";
-          # fix for ghostty until servers update to ncurses 6.5+, see https://ghostty.org/docs/help/terminfo
-          setEnv = {
-            TERM = "xterm-256color";
+        privateKey = "${config.home.homeDirectory}/.ssh/id_ed25519";
+        mkHost = host: {
+          "${host}.ritter.family" = {
+            identityFile = privateKey;
+            user = "root";
+            # fix for ghostty until servers update to ncurses 6.5+, see https://ghostty.org/docs/help/terminfo
+            setEnv = {
+              TERM = "xterm-256color";
+            };
           };
         };
-        "srv-prod-1.ritter.family" = {
-          identityFile = privateKey;
-          user = "root";
-          setEnv = {
-            TERM = "xterm-256color";
-          };
-        };
-        "srv-prod-2.ritter.family" = {
-          identityFile = privateKey;
-          user = "root";
-          setEnv = {
-            TERM = "xterm-256color";
-          };
-        };
-        "srv-test-1.ritter.family" = {
-          identityFile = privateKey;
-          user = "root";
-          setEnv = {
-            TERM = "xterm-256color";
-          };
-        };
-        "srv-test-2.ritter.family" = {
-          identityFile = privateKey;
-          user = "root";
-          setEnv = {
-            TERM = "xterm-256color";
-          };
-        };
-        "srv-eval-1.ritter.family" = {
-          identityFile = privateKey;
-          user = "root";
-          setEnv = {
-            TERM = "xterm-256color";
-          };
-        };
-        "srv-backup-1.ritter.family" = {
-          identityFile = privateKey;
-          user = "root";
-          setEnv = {
-            TERM = "xterm-256color";
-          };
-        };
-        "git.ritter.family" = {
-          hostname = osConfig.my.homelab.srv-prod-2.ip;
-          identityFile = privateKey;
-          user = "git";
-        };
-      };
+        myHosts = lib.map mkHost ["directions" "srv-prod-1" "srv-prod-2" "srv-test-1" "srv-test-2" "srv-eval-1" "srv-backup-1"];
+      in
+        lib.mkMerge
+        (myHosts
+          ++ [
+            {
+              "github.com" = {
+                identityFile = privateKey;
+                identitiesOnly = true;
+              };
+              "git.ritter.family" = {
+                hostname = osConfig.my.homelab.srv-prod-2.ip;
+                identityFile = privateKey;
+                user = "git";
+              };
+            }
+          ]);
     };
   };
 }
