@@ -27,7 +27,10 @@
       inputs.home-manager.follows = "home-manager";
     };
     nur.url = "github:nix-community/NUR";
-    pre-commit-hooks.url = "github:cachix/git-hooks.nix";
+    pre-commit-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     sops-nix.url = "github:Mic92/sops-nix";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
