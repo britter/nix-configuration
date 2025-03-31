@@ -1,3 +1,4 @@
-{pkgs-unstable, ...}: _final: _prev: {
+{ pkgs-unstable, ... }:
+_final: _prev: {
   inherit (pkgs-unstable) jetbrains;
 }

@@ -35,25 +35,31 @@
     # keep-sorted end
   };
 
-  outputs = {self, ...} @ inputs: let
-    lib = import ./lib.nix;
-  in
-    inputs.flake-utils.lib.eachDefaultSystem (system: let
-      pkgs = inputs.nixpkgs.legacyPackages.${system};
-      pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
-      my-pkgs = self.outputs.packages.${system};
-      treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-    in {
-      formatter = treefmtEval.config.build.wrapper;
-      checks = {
-        formatting = treefmtEval.config.build.check self;
-      };
-      packages = import ./packages {inherit pkgs;};
-      overlays = import ./overlays {
-        inherit pkgs-unstable;
-        inherit my-pkgs;
-        inherit (inputs) nur;
-      };
-    })
+  outputs =
+    { self, ... }@inputs:
+    let
+      lib = import ./lib.nix;
+    in
+    inputs.flake-utils.lib.eachDefaultSystem (
+      system:
+      let
+        pkgs = inputs.nixpkgs.legacyPackages.${system};
+        pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
+        my-pkgs = self.outputs.packages.${system};
+        treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+      in
+      {
+        formatter = treefmtEval.config.build.wrapper;
+        checks = {
+          formatting = treefmtEval.config.build.check self;
+        };
+        packages = import ./packages { inherit pkgs; };
+        overlays = import ./overlays {
+          inherit pkgs-unstable;
+          inherit my-pkgs;
+          inherit (inputs) nur;
+        };
+      }
+    )
     // lib.defineSystems inputs;
 }

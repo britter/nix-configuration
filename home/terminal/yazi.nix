@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.yazi;
-in {
+in
+{
   options.my.home.terminal.yazi = {
     enable = lib.mkEnableOption "yazi";
   };

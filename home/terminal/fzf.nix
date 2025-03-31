@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.fzf;
-in {
+in
+{
   options.my.home.terminal.fzf = {
     enable = lib.mkEnableOption "fzf";
   };

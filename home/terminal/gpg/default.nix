@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.gpg;
-in {
+in
+{
   options.my.home.terminal.gpg = {
     enable = lib.mkEnableOption "gpg";
   };

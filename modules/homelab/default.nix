@@ -1,4 +1,5 @@
-{lib, ...}: {
+{ lib, ... }:
+{
   options.my.homelab = {
     fritz-box = {
       ip = lib.mkOption {

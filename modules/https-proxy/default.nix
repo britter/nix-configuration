@@ -2,7 +2,8 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.https-proxy;
   proxyConfig = lib.types.submodule (_: {
     options = {
@@ -11,7 +12,7 @@
       };
       aliases = lib.mkOption {
         type = lib.types.listOf lib.types.str;
-        default = [];
+        default = [ ];
       };
       target = lib.mkOption {
         type = lib.types.str;
@@ -26,44 +27,48 @@
       };
     };
   });
-in {
+in
+{
   options.my.modules.https-proxy = {
     enable = lib.mkEnableOption "https-proxy";
     configurations = lib.mkOption {
       type = lib.types.listOf proxyConfig;
-      default = [];
+      default = [ ];
     };
   };
 
   config = lib.mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts = [80 443];
+    networking.firewall.allowedTCPPorts = [
+      80
+      443
+    ];
 
     services.nginx.enable = true;
-    services.nginx.virtualHosts = let
-      makeHost = conf: {
-        ${conf.fqdn} = {
-          inherit (conf) extraConfig;
-          serverAliases = conf.aliases;
-          useACMEHost = conf.fqdn;
-          forceSSL = true;
-          locations."/" = {
-            inherit (conf) proxyWebsockets;
-            recommendedProxySettings = true;
-            proxyPass = conf.target;
+    services.nginx.virtualHosts =
+      let
+        makeHost = conf: {
+          ${conf.fqdn} = {
+            inherit (conf) extraConfig;
+            serverAliases = conf.aliases;
+            useACMEHost = conf.fqdn;
+            forceSSL = true;
+            locations."/" = {
+              inherit (conf) proxyWebsockets;
+              recommendedProxySettings = true;
+              proxyPass = conf.target;
+            };
           };
         };
-      };
-    in
-      lib.mkMerge (lib.map makeHost
-        cfg.configurations);
+      in
+      lib.mkMerge (lib.map makeHost cfg.configurations);
 
     my.modules.acme.enable = true;
-    security.acme.certs = let
-      makeCert = conf: {
-        ${conf.fqdn} = {};
-      };
-    in
-      lib.mkMerge (lib.map makeCert
-        cfg.configurations);
+    security.acme.certs =
+      let
+        makeCert = conf: {
+          ${conf.fqdn} = { };
+        };
+      in
+      lib.mkMerge (lib.map makeCert cfg.configurations);
   };
 }

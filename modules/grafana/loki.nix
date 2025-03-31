@@ -2,14 +2,18 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.grafana.loki;
-in {
+in
+{
   options.my.modules.grafana.loki = {
     enable = lib.mkEnableOption "loki";
   };
   config = lib.mkIf cfg.enable {
-    networking.firewall.allowedTCPPorts = [config.services.loki.configuration.server.http_listen_port];
+    networking.firewall.allowedTCPPorts = [
+      config.services.loki.configuration.server.http_listen_port
+    ];
 
     # This is extracted from various sources, including:
     # https://github.com/mrVanDalo/nix-nomad-cluster/blob/6a605c89dc25cada4c59beea864e9bae150b8eea/nixos/roles/monitor/loki.nix

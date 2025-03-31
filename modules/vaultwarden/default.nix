@@ -2,16 +2,18 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.vaultwarden;
-in {
+in
+{
   options.my.modules.vaultwarden = {
     enable = lib.mkEnableOption "vaultwarden";
   };
   config = lib.mkIf cfg.enable {
-    sops.secrets."vaultwarden/admin-token" = {};
-    sops.secrets."vaultwarden/smtp-username" = {};
-    sops.secrets."vaultwarden/smtp-password" = {};
+    sops.secrets."vaultwarden/admin-token" = { };
+    sops.secrets."vaultwarden/smtp-username" = { };
+    sops.secrets."vaultwarden/smtp-password" = { };
     sops.templates."vaultwarden.env" = {
       owner = "vaultwarden";
       content = ''
@@ -38,7 +40,7 @@ in {
     };
     services.postgresql = {
       enable = true;
-      ensureDatabases = ["vaultwarden"];
+      ensureDatabases = [ "vaultwarden" ];
       ensureUsers = [
         {
           name = "vaultwarden";
@@ -47,24 +49,27 @@ in {
       ];
     };
     systemd.services.vaultwarden = {
-      after = ["postgresql.service"];
-      requires = ["postgresql.service"];
+      after = [ "postgresql.service" ];
+      requires = [ "postgresql.service" ];
     };
     my.modules.https-proxy = {
       enable = true;
-      configurations = let
-        # TODO pull the stage parameter up to the host level
-        publicDomainName =
-          if config.my.modules.nextcloud.stage == "production"
-          then "passwords.ritter.family"
-          else "passwords-test.ritter.family";
-      in [
-        {
-          fqdn = "passwords.${config.my.host.name}.ritter.family";
-          aliases = [publicDomainName];
-          target = "http://localhost:8222";
-        }
-      ];
+      configurations =
+        let
+          # TODO pull the stage parameter up to the host level
+          publicDomainName =
+            if config.my.modules.nextcloud.stage == "production" then
+              "passwords.ritter.family"
+            else
+              "passwords-test.ritter.family";
+        in
+        [
+          {
+            fqdn = "passwords.${config.my.host.name}.ritter.family";
+            aliases = [ publicDomainName ];
+            target = "http://localhost:8222";
+          }
+        ];
     };
   };
 }

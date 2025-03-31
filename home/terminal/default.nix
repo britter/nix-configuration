@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal;
-in {
+in
+{
   imports = [
     ./bat.nix
     ./btop.nix

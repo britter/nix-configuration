@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.grafana;
-in {
+in
+{
   imports = [
     ./loki.nix
     ./prometheus.nix
@@ -56,7 +58,7 @@ in {
       configurations = [
         {
           fqdn = "grafana.${config.my.host.name}.ritter.family";
-          aliases = ["grafana.ritter.family"];
+          aliases = [ "grafana.ritter.family" ];
           target = "http://localhost:3000";
           proxyWebsockets = true;
         }

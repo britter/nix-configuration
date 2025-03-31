@@ -2,17 +2,19 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.adguard;
-in {
+in
+{
   options.my.modules.adguard = {
     enable = lib.mkEnableOption "AdGuard";
   };
 
   config = lib.mkIf cfg.enable {
     networking.firewall = {
-      allowedUDPPorts = [config.services.adguardhome.settings.dns.port];
-      allowedTCPPorts = [config.services.adguardhome.settings.dns.port];
+      allowedUDPPorts = [ config.services.adguardhome.settings.dns.port ];
+      allowedTCPPorts = [ config.services.adguardhome.settings.dns.port ];
     };
     services.adguardhome = {
       enable = true;
@@ -24,7 +26,7 @@ in {
           port = 53;
           # DDoS protection only required when AdGuard is exposed via the internet
           ratelimit = 0;
-          bootstrap_dns = ["1.1.1.1"];
+          bootstrap_dns = [ "1.1.1.1" ];
           upstream_dns = [
             # Cloudflare DNS
             "1.1.1.1"

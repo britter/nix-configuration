@@ -2,15 +2,17 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.acme;
-in {
+in
+{
   options.my.modules.acme = {
     enable = lib.mkEnableOption "acme";
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets."acme/cloudflare-dns-api-token" = {};
+    sops.secrets."acme/cloudflare-dns-api-token" = { };
 
     security.acme = {
       acceptTerms = true;
@@ -23,6 +25,6 @@ in {
         };
       };
     };
-    users.users.nginx.extraGroups = ["acme"];
+    users.users.nginx.extraGroups = [ "acme" ];
   };
 }

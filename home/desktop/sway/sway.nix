@@ -3,10 +3,12 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.desktop.sway;
   rofi = lib.getExe config.programs.rofi.finalPackage;
-in {
+in
+{
   config = lib.mkIf cfg.enable {
     home.sessionVariables = {
       WL_PRESENT_DMENU = "${rofi} -dmenu -p present";
@@ -17,10 +19,13 @@ in {
       config = {
         terminal = lib.getExe pkgs.ghostty;
         menu = "${rofi} -show drun -show-icons -pid";
-        bars = [{command = "${pkgs.waybar}/bin/waybar";}];
+        bars = [ { command = "${pkgs.waybar}/bin/waybar"; } ];
         defaultWorkspace = "workspace number 1";
         fonts = {
-          names = ["DejaVu Sans" "Font Awesome 6 Free"];
+          names = [
+            "DejaVu Sans"
+            "Font Awesome 6 Free"
+          ];
           size = 10.0;
         };
         colors = {
@@ -80,9 +85,10 @@ in {
         };
 
         modifier = "Mod4";
-        keybindings = let
-          mod = config.wayland.windowManager.sway.config.modifier;
-        in
+        keybindings =
+          let
+            mod = config.wayland.windowManager.sway.config.modifier;
+          in
           lib.mkOptionDefault {
             # for defaults, see https://github.com/nix-community/home-manager/blob/master/modules/services/window-managers/i3-sway/sway.nix
 
@@ -119,20 +125,22 @@ in {
           };
         modes = {
           # redeclare resize mode in order not to override it
-          resize = let
-            inherit (config.wayland.windowManager) sway;
-          in {
-            "${sway.config.left}" = "resize shrink width 10 px";
-            "${sway.config.down}" = "resize grow height 10 px";
-            "${sway.config.up}" = "resize shrink height 10 px";
-            "${sway.config.right}" = "resize grow width 10 px";
-            "Left" = "resize shrink width 10 px";
-            "Down" = "resize grow height 10 px";
-            "Up" = "resize shrink height 10 px";
-            "Right" = "resize grow width 10 px";
-            "Escape" = "mode default";
-            "Return" = "mode default";
-          };
+          resize =
+            let
+              inherit (config.wayland.windowManager) sway;
+            in
+            {
+              "${sway.config.left}" = "resize shrink width 10 px";
+              "${sway.config.down}" = "resize grow height 10 px";
+              "${sway.config.up}" = "resize shrink height 10 px";
+              "${sway.config.right}" = "resize grow width 10 px";
+              "Left" = "resize shrink width 10 px";
+              "Down" = "resize grow height 10 px";
+              "Up" = "resize shrink height 10 px";
+              "Right" = "resize grow width 10 px";
+              "Escape" = "mode default";
+              "Return" = "mode default";
+            };
           "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit" = {
             l = ''mode "default"; exec ${config.programs.swaylock.package}/bin/swaylock'';
             s = ''mode "default"; exec systemctl suspend'';
@@ -143,22 +151,24 @@ in {
             Return = "mode default";
             Escape = "mode default";
           };
-          present = let
-            wl-present = "${pkgs.wl-mirror}/bin/wl-present";
-          in {
-            # command starts mirroring
-            m = ''mode "default"; exec ${wl-present} mirror'';
-            # these commands modify an already running mirroring window
-            o = ''mode "default"; exec ${wl-present} set-output'';
-            r = ''mode "default"; exec ${wl-present} set-region'';
-            "Shift+r" = ''mode "default"; exec ${wl-present} unset-region'';
-            s = ''mode "default"; exec ${wl-present} set-scaling'';
-            f = ''mode "default"; exec ${wl-present} toggle-freeze'';
-            c = ''mode "default"; exec ${wl-present} custom'';
-            # return to default mode
-            "Escape" = "mode default";
-            "Return" = "mode default";
-          };
+          present =
+            let
+              wl-present = "${pkgs.wl-mirror}/bin/wl-present";
+            in
+            {
+              # command starts mirroring
+              m = ''mode "default"; exec ${wl-present} mirror'';
+              # these commands modify an already running mirroring window
+              o = ''mode "default"; exec ${wl-present} set-output'';
+              r = ''mode "default"; exec ${wl-present} set-region'';
+              "Shift+r" = ''mode "default"; exec ${wl-present} unset-region'';
+              s = ''mode "default"; exec ${wl-present} set-scaling'';
+              f = ''mode "default"; exec ${wl-present} toggle-freeze'';
+              c = ''mode "default"; exec ${wl-present} custom'';
+              # return to default mode
+              "Escape" = "mode default";
+              "Return" = "mode default";
+            };
         };
         window.titlebar = false;
         window.border = 2;

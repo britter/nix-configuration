@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.i18n;
-in {
+in
+{
   options.my.modules.i18n = {
     enable = lib.mkEnableOption "i18n";
     timeZone = lib.mkOption {

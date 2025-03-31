@@ -5,7 +5,8 @@
   device ? throw "Set this to your disk device, e.g. /dev/sda",
   swapSize ? throw "Set this to your desired swap partition size in GB, e.g. 8GB",
   ...
-}: {
+}:
+{
   disko.devices = {
     disk.main = {
       inherit device;
@@ -20,7 +21,7 @@
               type = "filesystem";
               format = "vfat";
               mountpoint = "/boot";
-              mountOptions = ["defaults"];
+              mountOptions = [ "defaults" ];
             };
           };
           swap-luks = {
@@ -28,7 +29,7 @@
             content = {
               type = "luks";
               name = "swap-crypted";
-              extraOpenArgs = ["--allow-discards"];
+              extraOpenArgs = [ "--allow-discards" ];
               askPassword = true;
               content = {
                 type = "swap";
@@ -41,27 +42,27 @@
             content = {
               type = "luks";
               name = "crypted";
-              extraOpenArgs = ["--allow-discards"];
+              extraOpenArgs = [ "--allow-discards" ];
               askPassword = true;
               content = {
                 type = "btrfs";
-                extraArgs = ["-f"];
+                extraArgs = [ "-f" ];
                 subvolumes = {
                   "@" = {
                     mountpoint = "/";
-                    mountOptions = ["noatime"];
+                    mountOptions = [ "noatime" ];
                   };
                   "@nix" = {
                     mountpoint = "/nix";
-                    mountOptions = ["noatime"];
+                    mountOptions = [ "noatime" ];
                   };
                   "@persist" = {
                     mountpoint = "/persist";
-                    mountOptions = ["noatime"];
+                    mountOptions = [ "noatime" ];
                   };
                   "@home" = {
                     mountpoint = "/home";
-                    mountOptions = ["noatime"];
+                    mountOptions = [ "noatime" ];
                   };
                 };
               };

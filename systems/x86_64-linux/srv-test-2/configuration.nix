@@ -1,4 +1,5 @@
-{config, ...}: {
+{ config, ... }:
+{
   imports = [
     ../../../modules
   ];
@@ -33,7 +34,7 @@
             dataDir = "/var/lib/nextcloud/data";
             preCommand = "nextcloud-occ maintenance:mode --on";
             postCommand = "nextcloud-occ maintenance:mode --off";
-            runtimeInputs = [config.services.nextcloud.occ];
+            runtimeInputs = [ config.services.nextcloud.occ ];
             databaseSync.enable = true;
           }
           {

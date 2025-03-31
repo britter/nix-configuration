@@ -1,4 +1,5 @@
-{inputs, ...}: {
+{ inputs, ... }:
+{
   imports = [
     ../../../modules
     inputs.nixos-facter-modules.nixosModules.facter
@@ -24,9 +25,9 @@
     isSystemUser = true;
     group = "backup";
     description = "Backup user";
-    openssh.authorizedKeys.keyFiles = [../srv-prod-2/ssh_srv-prod-2_ed25519_key.pub];
+    openssh.authorizedKeys.keyFiles = [ ../srv-prod-2/ssh_srv-prod-2_ed25519_key.pub ];
   };
-  users.groups.backup = {};
+  users.groups.backup = { };
 
   # Create backup directories with permissions matching openssh configuratoin
   systemd.tmpfiles.rules = [

@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.desktop.sway.swaylock;
-in {
+in
+{
   options.my.home.desktop.sway.swaylock = {
     enable = lib.mkEnableOption "swaylock";
   };

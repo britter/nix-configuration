@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.home.desktop.ghostty;
-in {
+in
+{
   options.my.home.desktop.ghostty = {
     enable = lib.mkEnableOption "ghostty";
   };

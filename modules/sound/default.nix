@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.sound;
-in {
+in
+{
   options.my.modules.sound = {
     enable = lib.mkEnableOption "sound";
   };

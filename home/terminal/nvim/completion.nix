@@ -23,9 +23,9 @@ _: {
               end
             '';
           sources = [
-            {name = "nvim_lsp";}
-            {name = "luasnip";}
-            {name = "buffer";}
+            { name = "nvim_lsp"; }
+            { name = "luasnip"; }
+            { name = "buffer"; }
           ];
         };
       };
@@ -48,7 +48,10 @@ _: {
       {
         action.__raw = "function() require(\"luasnip\").jump(1) end";
         key = "<C-L>";
-        mode = ["i" "s"];
+        mode = [
+          "i"
+          "s"
+        ];
         options = {
           silent = true;
         };
@@ -56,7 +59,10 @@ _: {
       {
         action.__raw = "function() require(\"luasnip\").jump(-1) end";
         key = "<C-K>";
-        mode = ["i" "s"];
+        mode = [
+          "i"
+          "s"
+        ];
         options = {
           silent = true;
         };

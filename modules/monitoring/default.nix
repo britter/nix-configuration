@@ -2,10 +2,12 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.monitoring;
   homelabCfg = config.my.homelab;
-in {
+in
+{
   options.my.modules.monitoring = {
     enable = lib.mkEnableOption "monitoring";
     openFirewall = lib.mkOption {
@@ -48,7 +50,7 @@ in {
             };
             relabel_configs = [
               {
-                source_labels = ["__journal__systemd_unit"];
+                source_labels = [ "__journal__systemd_unit" ];
                 target_label = "unit";
               }
             ];

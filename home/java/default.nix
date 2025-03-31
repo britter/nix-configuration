@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.java;
-in {
+in
+{
   options.my.home.java = {
     enable = lib.mkEnableOption "java";
     version = lib.mkOption {
@@ -14,18 +16,19 @@ in {
     };
     additionalVersions = lib.mkOption {
       type = lib.types.listOf lib.types.int;
-      default = [];
+      default = [ ];
     };
   };
 
-  config = let
-    allVersions = lib.map toString (cfg.additionalVersions ++ [cfg.version]);
-    versionToHome = version: pkgs."jdk${version}".home;
-  in
+  config =
+    let
+      allVersions = lib.map toString (cfg.additionalVersions ++ [ cfg.version ]);
+      versionToHome = version: pkgs."jdk${version}".home;
+    in
     lib.mkIf cfg.enable {
-      home.sessionVariables =
-        lib.mapAttrs' (name: value: lib.nameValuePair ("JDK_" + name) value)
-        (lib.genAttrs allVersions versionToHome);
+      home.sessionVariables = lib.mapAttrs' (name: value: lib.nameValuePair ("JDK_" + name) value) (
+        lib.genAttrs allVersions versionToHome
+      );
 
       programs.java = {
         enable = true;
@@ -35,8 +38,10 @@ in {
       programs.gradle = {
         enable = true;
         settings = {
-          "org.gradle.java.installations.paths" = lib.concatStringsSep "," (lib.map versionToHome allVersions);
-          "systemProp.jna.library.path" = lib.makeLibraryPath [pkgs.udev];
+          "org.gradle.java.installations.paths" = lib.concatStringsSep "," (
+            lib.map versionToHome allVersions
+          );
+          "systemProp.jna.library.path" = lib.makeLibraryPath [ pkgs.udev ];
         };
       };
     };

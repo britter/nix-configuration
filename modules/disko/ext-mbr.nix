@@ -7,7 +7,8 @@
   storageDisk,
   lib,
   ...
-}: {
+}:
+{
   disko.devices = {
     disk.main = {
       inherit device;
@@ -44,7 +45,7 @@
               subvolumes = {
                 "/var/lib" = {
                   mountpoint = "/var/lib";
-                  mountOptions = ["noatime"];
+                  mountOptions = [ "noatime" ];
                 };
               };
             };

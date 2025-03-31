@@ -2,7 +2,8 @@
   pkgs-unstable,
   my-pkgs,
   nur,
-}: _final: _prev:
+}:
+_final: _prev:
 {
   inherit (pkgs-unstable) jetbrains;
 }

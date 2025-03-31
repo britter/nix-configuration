@@ -2,14 +2,17 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.networking;
   hostCfg = config.my.host;
   homelabCfg =
-    if (builtins.hasAttr "${hostCfg.name}" config.my.homelab)
-    then config.my.homelab.${hostCfg.name}
-    else null;
-in {
+    if (builtins.hasAttr "${hostCfg.name}" config.my.homelab) then
+      config.my.homelab.${hostCfg.name}
+    else
+      null;
+in
+{
   options.my.modules.networking = {
     enable = lib.mkEnableOption "networking";
   };
@@ -29,7 +32,7 @@ in {
           }
         ];
         defaultGateway = config.my.homelab.fritz-box.ip;
-        nameservers = [config.my.homelab.directions.ip];
+        nameservers = [ config.my.homelab.directions.ip ];
       });
   };
 }

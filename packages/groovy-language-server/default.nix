@@ -4,7 +4,8 @@
   gradle_7,
   jre,
   makeWrapper,
-}: let
+}:
+let
   self = stdenv.mkDerivation (_finalAttrs: {
     # see https://github.com/NixOS/nixpkgs/blob/b32a0943687d2a5094a6d92f25a4b6e16a76b5b7/doc/languages-frameworks/gradle.section.md
     pname = "groovy-language-server";
@@ -17,7 +18,10 @@
       sha256 = "sha256-LXCdF/cUYWy7mD3howFXexG0+fGfwFyKViuv9xZfgXc=";
     };
 
-    nativeBuildInputs = [gradle_7 makeWrapper];
+    nativeBuildInputs = [
+      gradle_7
+      makeWrapper
+    ];
 
     mitmCache = gradle_7.fetchDeps {
       pkg = self;
@@ -41,4 +45,4 @@
     '';
   });
 in
-  self
+self

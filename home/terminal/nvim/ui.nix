@@ -44,7 +44,7 @@ _: {
       {
         action = "<cmd>Neotree filesystem reveal toggle left<CR>";
         key = "<C-n>";
-        mode = ["n"];
+        mode = [ "n" ];
       }
     ];
   };

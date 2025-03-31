@@ -3,10 +3,12 @@
   lib,
   inputs,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.disko;
   inherit (config.my.host) role;
-in {
+in
+{
   imports = [
     inputs.disko.nixosModules.disko
   ];
@@ -29,19 +31,18 @@ in {
     };
   };
 
-  config = let
-    efi = cfg.enable && role == "desktop";
-    mbr = cfg.enable && role == "server";
-  in
+  config =
+    let
+      efi = cfg.enable && role == "desktop";
+      mbr = cfg.enable && role == "server";
+    in
     lib.mkMerge [
       (lib.mkIf efi {
         disko.devices =
           (import ./btrfs-luks.nix {
             device = cfg.bootDisk;
             inherit (cfg) swapSize;
-          })
-          .disko
-          .devices;
+          }).disko.devices;
 
         boot.loader = {
           systemd-boot = {
@@ -57,9 +58,7 @@ in {
             device = cfg.bootDisk;
             inherit (cfg) storageDisk;
             inherit lib;
-          })
-          .disko
-          .devices;
+          }).disko.devices;
 
         boot.loader.grub = {
           enable = true;

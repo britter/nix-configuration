@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.desktop.sway;
-in {
+in
+{
   imports = [
     ./kanshi.nix
     ./mako.nix

@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.btop;
-in {
+in
+{
   options.my.home.terminal.btop = {
     enable = lib.mkEnableOption "btop";
   };

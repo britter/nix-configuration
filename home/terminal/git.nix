@@ -4,16 +4,18 @@
   pkgs,
   osConfig,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.git;
   osUser = osConfig.my.user;
-in {
+in
+{
   options.my.home.terminal.git = {
     enable = lib.mkEnableOption "git";
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [pkgs.git-absorb];
+    home.packages = [ pkgs.git-absorb ];
 
     programs.git = {
       enable = true;

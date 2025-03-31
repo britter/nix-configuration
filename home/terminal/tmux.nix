@@ -3,9 +3,10 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.tmux;
-  yaml = pkgs.formats.yaml {};
+  yaml = pkgs.formats.yaml { };
   websiteConfig = {
     name = "website";
     root = "~/github/britter/website";
@@ -14,9 +15,9 @@
         workspace = {
           layout = "main-horizontal";
           panes = [
-            {editor = "v";}
-            {dev-server = "npm run dev";}
-            {term = "";}
+            { editor = "v"; }
+            { dev-server = "npm run dev"; }
+            { term = ""; }
           ];
         };
       }
@@ -30,15 +31,16 @@
         workspace = {
           layout = "main-horizontal";
           panes = [
-            {editor = "v";}
-            {dev-server = "npm run dev";}
-            {term = "";}
+            { editor = "v"; }
+            { dev-server = "npm run dev"; }
+            { term = ""; }
           ];
         };
       }
     ];
   };
-in {
+in
+{
   options.my.home.terminal.tmux = {
     enable = lib.mkEnableOption "tmux";
   };
@@ -95,6 +97,7 @@ in {
       tmuxinator.enable = true;
     };
     home.file.".config/tmuxinator/website.yml".source = yaml.generate "website.yaml" websiteConfig;
-    home.file.".config/tmuxinator/gradlex-website.yml".source = yaml.generate "gradlex-website.yaml" gradlex-website;
+    home.file.".config/tmuxinator/gradlex-website.yml".source =
+      yaml.generate "gradlex-website.yaml" gradlex-website;
   };
 }

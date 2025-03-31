@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.desktop.librewolf;
-in {
+in
+{
   options.my.home.desktop.librewolf = {
     enable = lib.mkEnableOption "librewolf";
   };
@@ -104,7 +106,7 @@ in {
                 }
               ];
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-              definedAliases = ["@np"];
+              definedAliases = [ "@np" ];
             };
             "NixOS Options" = {
               urls = [
@@ -123,7 +125,7 @@ in {
                 }
               ];
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-              definedAliases = ["@no"];
+              definedAliases = [ "@no" ];
             };
             "Home Manager Options" = {
               urls = [
@@ -142,7 +144,7 @@ in {
                 }
               ];
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-              definedAliases = ["@hm"];
+              definedAliases = [ "@hm" ];
             };
             "NixVim" = {
               urls = [
@@ -161,7 +163,7 @@ in {
                 }
               ];
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-              definedAliases = ["@nv"];
+              definedAliases = [ "@nv" ];
             };
             "Noogle" = {
               urls = [
@@ -176,13 +178,13 @@ in {
                 }
               ];
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
-              definedAliases = ["@ng"];
+              definedAliases = [ "@ng" ];
             };
             "NixOS Wiki" = {
-              urls = [{template = "https://wiki.nixos.org/w/index.php?search={searchTerms}";}];
+              urls = [ { template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; } ];
               iconUpdateURL = "https://nixos.wiki/favicon.png";
               updateInterval = 24 * 60 * 60 * 1000;
-              definedAliases = ["@nw"];
+              definedAliases = [ "@nw" ];
             };
             "Wikipedia (en)".metaData.alias = "@wiki";
             "Google".metaData.hidden = true;
@@ -198,12 +200,12 @@ in {
       mimeApps = {
         enable = true;
         defaultApplications = {
-          "text/html" = ["librewolf.desktop"];
-          "application/xhtml+xml" = ["librewolf.desktop"];
-          "x-scheme-handler/http" = ["librewolf.desktop"];
-          "x-scheme-handler/https" = ["librewolf.desktop"];
-          "x-scheme-handler/about" = ["librewolf.desktop"];
-          "x-scheme-handler/unknown" = ["librewolf.desktop"];
+          "text/html" = [ "librewolf.desktop" ];
+          "application/xhtml+xml" = [ "librewolf.desktop" ];
+          "x-scheme-handler/http" = [ "librewolf.desktop" ];
+          "x-scheme-handler/https" = [ "librewolf.desktop" ];
+          "x-scheme-handler/about" = [ "librewolf.desktop" ];
+          "x-scheme-handler/unknown" = [ "librewolf.desktop" ];
         };
       };
     };

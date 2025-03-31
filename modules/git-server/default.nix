@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.git-server;
-in {
+in
+{
   options.my.modules.git-server = {
     enable = lib.mkEnableOption "git-server";
   };
@@ -15,8 +17,8 @@ in {
       group = "git";
       description = "git user";
       home = "/srv/git";
-      openssh.authorizedKeys.keyFiles = [../ssh-access/id_ed25519.pub];
+      openssh.authorizedKeys.keyFiles = [ ../ssh-access/id_ed25519.pub ];
     };
-    users.groups.git = {};
+    users.groups.git = { };
   };
 }

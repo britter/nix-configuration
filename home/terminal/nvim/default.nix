@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.nvim;
-in {
+in
+{
   imports = [
     ./completion.nix
     ./git.nix
@@ -23,7 +25,8 @@ in {
   config = lib.mkIf cfg.enable {
     programs.fish = {
       shellAliases = {
-        "v" = "nvim (${pkgs.fzf}/bin/fzf --preview=\"${pkgs.bat}/bin/bat --style=numbers --color=always {}\")";
+        "v" =
+          "nvim (${pkgs.fzf}/bin/fzf --preview=\"${pkgs.bat}/bin/bat --style=numbers --color=always {}\")";
       };
     };
     programs.nixvim = {
@@ -95,32 +98,32 @@ in {
         {
           action = "<cmd>Telescope find_files<CR>";
           key = "<leader>ff";
-          mode = ["n"];
+          mode = [ "n" ];
         }
         {
           action = "<cmd>Telescope live_grep<CR>";
           key = "<leader>fg";
-          mode = ["n"];
+          mode = [ "n" ];
         }
         {
           action = "<cmd>Telescope buffers<CR>";
           key = "<leader>fb";
-          mode = ["n"];
+          mode = [ "n" ];
         }
         {
           action = "<cmd>Telescope lsp_document_symbols<CR>";
           key = "<leader>o";
-          mode = ["n"];
+          mode = [ "n" ];
         }
         {
           action = "<cmd>split<CR>";
           key = "<leader>\"";
-          mode = ["n"];
+          mode = [ "n" ];
         }
         {
           action = "<cmd>vsplit<CR>";
           key = "<leader>%";
-          mode = ["n"];
+          mode = [ "n" ];
         }
       ];
       plugins = {
@@ -129,6 +132,10 @@ in {
           sources = {
             formatting = {
               gofmt.enable = true;
+              nixfmt = {
+                enable = true;
+                package = pkgs.nixfmt-rfc-style;
+              };
               prettier = {
                 enable = true;
                 disableTsServerFormatter = true;

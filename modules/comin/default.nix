@@ -3,9 +3,11 @@
   lib,
   inputs,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.comin;
-in {
+in
+{
   imports = [
     inputs.comin.nixosModules.comin
   ];

@@ -3,9 +3,11 @@
   pkgs,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.home.desktop.sway.waybar;
-in {
+in
+{
   options.my.home.desktop.sway.waybar = {
     enable = lib.mkEnableOption "waybar";
   };
@@ -101,7 +103,11 @@ in {
               headset = "";
               phone = "";
               portable = "";
-              default = ["" "" ""];
+              default = [
+                ""
+                ""
+                ""
+              ];
             };
             "on-click" = "${lib.getExe pkgs.pavucontrol}";
           };
@@ -113,7 +119,13 @@ in {
               critical = 15;
             };
             format = "{capacity}% {icon}";
-            format-icons = ["" "" "" "" ""];
+            format-icons = [
+              ""
+              ""
+              ""
+              ""
+              ""
+            ];
           };
 
           "sway/mode" = {

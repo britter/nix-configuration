@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.host;
-in {
+in
+{
   imports = [
     ./acme
     ./adguard

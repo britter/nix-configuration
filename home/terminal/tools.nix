@@ -3,28 +3,31 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.tools;
-in {
+in
+{
   options.my.home.terminal.tools = {
     enable = lib.mkEnableOption "tools";
   };
-  config = let
-    pdf-fax = pkgs.writeShellApplication {
-      name = "pdf-fax";
-      runtimeInputs = [pkgs.ghostscript_headless];
-      text = ''
-        rotation=$((1 + RANDOM % 1000))
-        bool=$((1 + RANDOM % 2))
-        if [ $bool -eq 1 ]; then
-          sign="-"
-        else
-          sign="+"
-        fi
-        ${pkgs.imagemagick}/bin/magick -density 150 "$1" -rotate "''${sign}0.$rotation" -attenuate 0.4 +noise Multiplicative -attenuate 0.03 +noise Multiplicative -sharpen 0x1.0 -colorspace Gray "$2"
-      '';
-    };
-  in
+  config =
+    let
+      pdf-fax = pkgs.writeShellApplication {
+        name = "pdf-fax";
+        runtimeInputs = [ pkgs.ghostscript_headless ];
+        text = ''
+          rotation=$((1 + RANDOM % 1000))
+          bool=$((1 + RANDOM % 2))
+          if [ $bool -eq 1 ]; then
+            sign="-"
+          else
+            sign="+"
+          fi
+          ${pkgs.imagemagick}/bin/magick -density 150 "$1" -rotate "''${sign}0.$rotation" -attenuate 0.4 +noise Multiplicative -attenuate 0.03 +noise Multiplicative -sharpen 0x1.0 -colorspace Gray "$2"
+        '';
+      };
+    in
     lib.mkIf cfg.enable {
       home.packages = with pkgs; [
         curl

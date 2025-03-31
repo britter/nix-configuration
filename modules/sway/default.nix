@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.sway;
-in {
+in
+{
   options.my.modules.sway = {
     enable = lib.mkEnableOption "sway";
   };
@@ -13,7 +15,7 @@ in {
   config = lib.mkIf cfg.enable {
     # puts systemd init logs on tty1
     # so that tuigreet and systemd logs don't clobber each other
-    boot.kernelParams = ["console=tty1"];
+    boot.kernelParams = [ "console=tty1" ];
 
     # Allow swaylock to unlock the computer for us
     security.pam.services.swaylock = {

@@ -5,27 +5,27 @@ _: {
       {
         action = "<cmd>bprev<CR>";
         key = "[b";
-        mode = ["n"];
+        mode = [ "n" ];
       }
       {
         action = "<cmd>bnext<CR>";
         key = "]b";
-        mode = ["n"];
+        mode = [ "n" ];
       }
       {
         action = "<cmd>bdelete<CR>";
         key = "<leader>bd";
-        mode = ["n"];
+        mode = [ "n" ];
       }
       {
         action = "<cmd>cprevious<CR>";
         key = "[c";
-        mode = ["n"];
+        mode = [ "n" ];
       }
       {
         action = "<cmd>cnext<CR>";
         key = "]c";
-        mode = ["n"];
+        mode = [ "n" ];
       }
     ];
   };

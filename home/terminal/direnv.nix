@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.direnv;
-in {
+in
+{
   options.my.home.terminal.direnv = {
     enable = lib.mkEnableOption "direnv";
   };

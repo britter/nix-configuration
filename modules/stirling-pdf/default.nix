@@ -3,19 +3,22 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.stirling-pdf;
-in {
+in
+{
   options.my.modules.stirling-pdf = {
     enable = lib.mkEnableOption "stirling-pdf";
   };
 
-  config = let
-    deu-traineddata = pkgs.fetchurl {
-      url = "https://github.com/tesseract-ocr/tessdata/raw/refs/heads/main/deu.traineddata";
-      hash = "sha256-iWs7SVZQOrnaoQKF2zMIgbLXS3DYibeSYsxTS57GmaQ=";
-    };
-  in
+  config =
+    let
+      deu-traineddata = pkgs.fetchurl {
+        url = "https://github.com/tesseract-ocr/tessdata/raw/refs/heads/main/deu.traineddata";
+        hash = "sha256-iWs7SVZQOrnaoQKF2zMIgbLXS3DYibeSYsxTS57GmaQ=";
+      };
+    in
     lib.mkIf cfg.enable {
       services.stirling-pdf = {
         enable = true;
@@ -35,7 +38,7 @@ in {
         configurations = [
           {
             fqdn = "pdf.${config.my.host.name}.ritter.family";
-            aliases = ["pdf.ritter.family"];
+            aliases = [ "pdf.ritter.family" ];
             target = "http://localhost:8090";
             extraConfig = ''
               client_max_body_size 100M;

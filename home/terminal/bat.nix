@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.bat;
-in {
+in
+{
   options.my.home.terminal.bat = {
     enable = lib.mkEnableOption "bat";
   };

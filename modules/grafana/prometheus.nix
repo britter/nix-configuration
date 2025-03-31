@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.grafana.prometheus;
-in {
+in
+{
   options.my.modules.grafana.prometheus = {
     enable = lib.mkEnableOption "prometheus";
   };
@@ -13,7 +15,7 @@ in {
     services.prometheus = {
       enable = true;
       # keep data for 90 days
-      extraFlags = ["--storage.tsdb.retention.time=90d"];
+      extraFlags = [ "--storage.tsdb.retention.time=90d" ];
       scrapeConfigs = [
         {
           job_name = "node";

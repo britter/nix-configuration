@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.desktop.sway.swayidle;
-in {
+in
+{
   options.my.home.desktop.sway.swayidle = {
     enable = lib.mkEnableOption "swayidle";
   };

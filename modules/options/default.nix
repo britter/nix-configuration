@@ -4,7 +4,8 @@
   system,
   hostName,
   ...
-}: {
+}:
+{
   options.my = with lib; {
     host = {
       name = mkOption {
@@ -16,7 +17,10 @@
         default = system;
       };
       role = mkOption {
-        type = types.enum ["desktop" "server"];
+        type = types.enum [
+          "desktop"
+          "server"
+        ];
         description = "The role this machine has";
       };
     };
@@ -39,7 +43,7 @@
     };
     modules.allowedUnfreePkgs = mkOption {
       type = types.listOf types.str;
-      default = [];
+      default = [ ];
     };
   };
 }

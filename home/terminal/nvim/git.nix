@@ -11,7 +11,7 @@ _: {
       {
         action = "<cmd>LazyGit<CR>";
         key = "<leader>gg";
-        mode = ["n"];
+        mode = [ "n" ];
         options = {
           silent = true;
         };
@@ -19,7 +19,7 @@ _: {
       {
         action = "<cmd>LazyGitFilter<CR>";
         key = "<leader>gl";
-        mode = ["n"];
+        mode = [ "n" ];
         options = {
           silent = true;
         };
@@ -27,7 +27,7 @@ _: {
       {
         action = "<cmd>LazyGitFilterCurrentFile<CR>";
         key = "<leader>glf";
-        mode = ["n"];
+        mode = [ "n" ];
         options = {
           silent = true;
         };
@@ -35,27 +35,27 @@ _: {
       {
         action = "<cmd>Git blame<CR>";
         key = "<leader>gb";
-        mode = ["n"];
+        mode = [ "n" ];
       }
       {
         action = "<cmd>Gitsigns prev_hunk<CR>";
         key = "[g";
-        mode = ["n"];
+        mode = [ "n" ];
       }
       {
         action = "<cmd>Gitsigns next_hunk<CR>";
         key = "]g";
-        mode = ["n"];
+        mode = [ "n" ];
       }
       {
         action = "<cmd>Gitsigns preview_hunk<CR>";
         key = "<leader>gp";
-        mode = ["n"];
+        mode = [ "n" ];
       }
       {
         action = "<cmd>Gitsigns reset_hunk<CR>";
         key = "<leader>gr";
-        mode = ["n"];
+        mode = [ "n" ];
       }
     ];
   };

@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.terminal.fish;
-in {
+in
+{
   options.my.home.terminal.fish = {
     enable = lib.mkEnableOption "fish";
   };

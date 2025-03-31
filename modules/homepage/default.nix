@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.homepage;
-in {
+in
+{
   options.my.modules.homepage = {
     enable = lib.mkEnableOption "homepage";
   };

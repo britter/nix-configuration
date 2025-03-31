@@ -2,9 +2,11 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.system-recovery;
-in {
+in
+{
   options.my.modules.system-recovery = {
     enable = lib.mkEnableOption "system-recovery";
   };

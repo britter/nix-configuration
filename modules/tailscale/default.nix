@@ -2,15 +2,17 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.tailscale;
-in {
+in
+{
   options.my.modules.tailscale = {
     enable = lib.mkEnableOption "tailscale";
   };
 
   config = lib.mkIf cfg.enable {
-    sops.secrets."tailscale/auth-key" = {};
+    sops.secrets."tailscale/auth-key" = { };
 
     services.tailscale = {
       enable = true;

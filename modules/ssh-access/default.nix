@@ -2,14 +2,16 @@
   config,
   lib,
   ...
-}: let
+}:
+let
   cfg = config.my.modules.ssh-access;
-in {
+in
+{
   options.my.modules.ssh-access = {
     enable = lib.mkEnableOption "ssh-access";
   };
   config = lib.mkIf cfg.enable {
-    users.users.root.openssh.authorizedKeys.keyFiles = [./id_ed25519.pub];
+    users.users.root.openssh.authorizedKeys.keyFiles = [ ./id_ed25519.pub ];
 
     services.openssh = {
       enable = true;

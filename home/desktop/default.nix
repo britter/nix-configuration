@@ -3,9 +3,11 @@
   lib,
   pkgs,
   ...
-}: let
+}:
+let
   cfg = config.my.home.desktop;
-in {
+in
+{
   imports = [
     ./firefox
     ./intellij
@@ -39,8 +41,8 @@ in {
       mimeApps = {
         enable = true;
         defaultApplications = {
-          "application/pdf" = ["org.gnome.Evince.desktop"];
-          "inode/directory" = ["org.gnome.Nautilus.desktop"];
+          "application/pdf" = [ "org.gnome.Evince.desktop" ];
+          "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
         };
       };
     };
@@ -51,7 +53,10 @@ in {
       librewolf.enable = true;
       intellij = {
         enable = true;
-        plugins = ["asciidoc" "protocol-buffers"];
+        plugins = [
+          "asciidoc"
+          "protocol-buffers"
+        ];
       };
       sway.enable = true;
     };
