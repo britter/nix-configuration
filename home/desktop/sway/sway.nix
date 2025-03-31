@@ -107,6 +107,10 @@ in
             # default is mod+Shift+q
             "${mod}+q" = "kill";
 
+            # Bring up ssh prompt using rofi
+            "${mod}+Shift+Return" =
+              "exec ${rofi} -show ssh -no-parse-known-hosts -terminal ${config.wayland.windowManager.sway.config.terminal}";
+
             # screenshot capturing
             "${mod}+x" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy output";
             "${mod}+Shift+x" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy window";
