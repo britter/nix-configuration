@@ -19,7 +19,7 @@ in
       config = {
         terminal = lib.getExe pkgs.ghostty;
         menu = "${rofi} -show drun -show-icons -pid";
-        bars = [ { command = "${pkgs.waybar}/bin/waybar"; } ];
+        bars = [ { command = lib.getExe pkgs.waybar; } ];
         defaultWorkspace = "workspace number 1";
         fonts = {
           names = [
