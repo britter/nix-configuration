@@ -17,6 +17,7 @@ in
       enableFishIntegration = true;
       settings = {
         confirm-close-surface = false;
+        font-family = "FiraCode Nerd Font Mono";
       };
     };
   };
