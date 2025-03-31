@@ -163,6 +163,21 @@ in {
               icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
               definedAliases = ["@nv"];
             };
+            "Noogle" = {
+              urls = [
+                {
+                  template = "https://noogle.dev/q";
+                  params = [
+                    {
+                      name = "term";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+              icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
+              definedAliases = ["@ng"];
+            };
             "NixOS Wiki" = {
               urls = [{template = "https://wiki.nixos.org/w/index.php?search={searchTerms}";}];
               iconUpdateURL = "https://nixos.wiki/favicon.png";
