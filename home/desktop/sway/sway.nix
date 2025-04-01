@@ -26,7 +26,7 @@ in
             "DejaVu Sans"
             "Font Awesome 6 Free"
           ];
-          size = 10.0;
+          size = 11.0;
         };
         colors = {
           background = "$base";
@@ -66,8 +66,8 @@ in
             indicator = "$overlay0";
           };
         };
-        gaps.outer = 1;
-        gaps.inner = 1;
+        gaps.outer = 2;
+        gaps.inner = 2;
         focus.followMouse = false;
 
         input = {
@@ -175,7 +175,7 @@ in
             };
         };
         window.titlebar = false;
-        window.border = 2;
+        window.border = 3;
         # Display the window tree by running swaymsg -t get_tree
         window.commands = [
           {
