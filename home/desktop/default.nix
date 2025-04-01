@@ -26,6 +26,7 @@ in
       audacity
       bitwarden-desktop
       calibre
+      gimp
       libreoffice
       obsidian
       vlc
