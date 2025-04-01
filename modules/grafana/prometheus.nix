@@ -16,32 +16,36 @@ in
       enable = true;
       # keep data for 90 days
       extraFlags = [ "--storage.tsdb.retention.time=90d" ];
-      scrapeConfigs = [
-        {
-          job_name = "node";
-          static_configs = [
-            {
-              targets = [
-                "localhost:9100"
-                "${config.my.homelab.srv-prod-2.ip}:9100"
-                "${config.my.homelab.directions.ip}:9100"
-              ];
-            }
+      scrapeConfigs =
+        let
+          allHosts = [
+            "directions"
+            "srv-prod-1"
+            "srv-prod-2"
+            "srv-test-1"
+            "srv-test-2"
+            "srv-eval-1"
+            "srv-backup-1"
           ];
-        }
-        {
-          job_name = "comin";
-          static_configs = [
-            {
-              targets = [
-                "localhost:4243"
-                "${config.my.homelab.srv-prod-2.ip}:4243"
-                "${config.my.homelab.directions.ip}:4243"
-              ];
-            }
-          ];
-        }
-      ];
+        in
+        [
+          {
+            job_name = "node";
+            static_configs = [
+              {
+                targets = lib.map (h: "${h}.ritter.family:9100") allHosts;
+              }
+            ];
+          }
+          {
+            job_name = "comin";
+            static_configs = [
+              {
+                targets = lib.map (h: "${h}.ritter.family:4243") allHosts;
+              }
+            ];
+          }
+        ];
     };
   };
 }
