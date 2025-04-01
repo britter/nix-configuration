@@ -38,15 +38,23 @@ in
               name = "Loki";
               type = "loki";
               uid = "Loki1";
-              # TODO reference Loki service configuration
-              url = "http://localhost:3100";
+              url = "http://localhost:${toString config.services.loki.configuration.server.http_listen_port}";
             }
             {
               name = "Prometheus";
               type = "prometheus";
               uid = "Prometheus1";
-              # TODO reference prometheus service configuration
-              url = "http://localhost:9090";
+              url = "http://localhost:${toString config.services.prometheus.port}";
+            }
+          ];
+        };
+        dashboards.settings = {
+          apiVersion = 1;
+          providers = [
+            {
+              name = "dashboards";
+              options.path = ./dashboards;
+              options.foldersFromFilesStructure = true;
             }
           ];
         };
