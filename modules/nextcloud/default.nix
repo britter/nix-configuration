@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  home-lab,
   ...
 }:
 let
@@ -48,7 +49,7 @@ in
       };
       settings = {
         trusted_domains = [ cfg.publicDomainName ];
-        trusted_proxies = [ config.my.homelab.directions.ip ];
+        trusted_proxies = [ home-lab.hosts.directions.ip ];
         default_language = "de";
         default_locale = "de_DE";
         reduce_to_languages = [

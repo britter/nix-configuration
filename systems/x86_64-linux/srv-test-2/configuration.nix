@@ -1,4 +1,8 @@
-{ config, ... }:
+{
+  config,
+  home-lab,
+  ...
+}:
 {
   imports = [
     ../../../modules
@@ -20,17 +24,17 @@
         jobs = [
           {
             serviceName = "git";
-            host = config.my.homelab.srv-prod-2.ip;
+            host = home-lab.hosts.srv-prod-2.ip;
             dataDir = "/srv/git";
           }
           {
             serviceName = "calibre-web";
-            host = config.my.homelab.srv-prod-2.ip;
+            host = home-lab.hosts.srv-prod-2.ip;
             dataDir = "/var/lib/calibre-library";
           }
           {
             serviceName = "nextcloud";
-            host = config.my.homelab.srv-prod-2.ip;
+            host = home-lab.hosts.srv-prod-2.ip;
             dataDir = "/var/lib/nextcloud/data";
             preCommand = "nextcloud-occ maintenance:mode --on";
             postCommand = "nextcloud-occ maintenance:mode --off";
@@ -39,7 +43,7 @@
           }
           {
             serviceName = "vaultwarden";
-            host = config.my.homelab.srv-prod-2.ip;
+            host = home-lab.hosts.srv-prod-2.ip;
             dataDir = "/var/lib/bitwarden_rs";
             preCommand = "systemctl stop vaultwarden";
             postCommand = "systemctl start vaultwarden";

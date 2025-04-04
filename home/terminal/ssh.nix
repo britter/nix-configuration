@@ -1,7 +1,7 @@
 {
   config,
   lib,
-  osConfig,
+  home-lab,
   ...
 }:
 let
@@ -17,8 +17,8 @@ in
       matchBlocks =
         let
           privateKey = "${config.home.homeDirectory}/.ssh/id_ed25519";
-          mkHost = host: {
-            "${host}.ritter.family" = {
+          mkHost = _k: v: {
+            "${v.dns}" = {
               identityFile = privateKey;
               user = "root";
               # fix for ghostty until servers update to ncurses 6.5+, see https://ghostty.org/docs/help/terminfo
@@ -27,15 +27,7 @@ in
               };
             };
           };
-          myHosts = lib.map mkHost [
-            "directions"
-            "srv-prod-1"
-            "srv-prod-2"
-            "srv-test-1"
-            "srv-test-2"
-            "srv-eval-1"
-            "srv-backup-1"
-          ];
+          myHosts = lib.mapAttrsToList mkHost home-lab.hosts;
         in
         lib.mkMerge (
           myHosts
@@ -46,7 +38,7 @@ in
                 identitiesOnly = true;
               };
               "git.ritter.family" = {
-                hostname = osConfig.my.homelab.srv-prod-2.ip;
+                hostname = home-lab.hosts.srv-prod-2.ip;
                 identityFile = privateKey;
                 user = "git";
               };

@@ -1,11 +1,11 @@
 {
   config,
   lib,
+  home-lab,
   ...
 }:
 let
   cfg = config.my.modules.monitoring;
-  homelabCfg = config.my.homelab;
 in
 {
   options.my.modules.monitoring = {
@@ -35,7 +35,7 @@ in
         };
         clients = [
           {
-            url = "http://${homelabCfg.srv-prod-1.ip}:3100/loki/api/v1/push";
+            url = "http://${home-lab.hosts.srv-prod-1.ip}:3100/loki/api/v1/push";
           }
         ];
         scrape_configs = [

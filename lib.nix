@@ -1,4 +1,56 @@
 let
+  home-lab = {
+    hosts = {
+      srv-prod-1 = {
+        ip = "192.168.178.211";
+        dns = "srv-prod-1.ritter.family";
+        vm = true;
+      };
+      srv-prod-2 = {
+        ip = "192.168.178.211";
+        dns = "srv-prod-2.ritter.family";
+        vm = true;
+      };
+      srv-test-1 = {
+        ip = "192.168.178.221";
+        dns = "srv-test-1.ritter.family";
+        vm = true;
+      };
+      srv-test-2 = {
+        ip = "192.168.178.222";
+        dns = "srv-test-2.ritter.family";
+        vm = true;
+      };
+      srv-eval-1 = {
+        ip = "192.168.178.231";
+        dns = "srv-eval-1.ritter.family";
+        vm = true;
+      };
+      srv-backup-1 = {
+        dns = "srv-backup-1.ritter.family";
+        vm = false;
+      };
+      directions = {
+        ip = "192.168.178.105";
+        dns = "directions.ritter.family";
+        vm = false;
+      };
+    };
+    hypervisors = {
+      pve = {
+        ip = "192.168.178.100";
+        dns = "pve.ritter.family";
+        vm = false;
+      };
+    };
+    devices = {
+      fritz-box = {
+        ip = "192.168.178.1";
+        dns = "fritz-box.ritter.family";
+        vm = false;
+      };
+    };
+  };
   defineSystems =
     inputs:
     let
@@ -11,6 +63,7 @@ let
             inherit inputs;
             inherit system;
             inherit hostName;
+            inherit home-lab;
           };
           modules = [
             ./systems/${system}/${hostName}/configuration.nix
@@ -35,6 +88,7 @@ let
     };
   lib = {
     inherit defineSystems;
+    inherit home-lab;
   };
 in
 lib

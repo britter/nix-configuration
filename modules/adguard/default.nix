@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  home-lab,
   ...
 }:
 let
@@ -127,75 +128,75 @@ in
             # See systems/aarch64-linux/directions/configuration.nix
             {
               domain = "adguard.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "books.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "collabora.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "collabora-test.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "fritz-box.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "grafana.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "home.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "nextcloud.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "nextcloud-test.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "passwords.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              answer = home-lab.hosts.directions.ip;
             }
             {
-              domain = "proxmox.ritter.family";
-              answer = config.my.homelab.directions.ip;
+              domain = "pve.ritter.family";
+              answer = home-lab.hosts.directions.ip;
             }
             {
               domain = "collabora.srv-prod-2.ritter.family";
-              answer = config.my.homelab.srv-prod-2.ip;
+              answer = home-lab.hosts.srv-prod-2.ip;
             }
             {
               domain = "grafana.srv-prod-1.ritter.family";
-              answer = config.my.homelab.srv-prod-1.ip;
+              answer = home-lab.hosts.srv-prod-1.ip;
             }
             {
               domain = "nextcloud.srv-prod-2.ritter.family";
-              answer = config.my.homelab.srv-prod-2.ip;
+              answer = home-lab.hosts.srv-prod-2.ip;
             }
             {
               domain = "collabora.srv-test-2.ritter.family";
-              answer = config.my.homelab.srv-test-2.ip;
+              answer = home-lab.hosts.srv-test-2.ip;
             }
             {
               domain = "grafana.srv-test-1.ritter.family";
-              answer = config.my.homelab.srv-test-1.ip;
+              answer = home-lab.hosts.srv-test-1.ip;
             }
             {
               domain = "nextcloud.srv-test-2.ritter.family";
-              answer = config.my.homelab.srv-test-2.ip;
+              answer = home-lab.hosts.srv-test-2.ip;
             }
             {
               domain = "passwords.srv-prod-2.ritter.family";
-              answer = config.my.homelab.srv-prod-2.ip;
+              answer = home-lab.hosts.srv-prod-2.ip;
             }
           ];
         };

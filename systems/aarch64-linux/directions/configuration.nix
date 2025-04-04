@@ -1,6 +1,6 @@
 {
-  config,
   inputs,
+  home-lab,
   ...
 }:
 {
@@ -39,7 +39,7 @@
           }
           {
             fqdn = "fritz-box.ritter.family";
-            target = "https://${config.my.homelab.fritz-box.ip}";
+            target = "https://${home-lab.devices.fritz-box.ip}";
           }
           {
             fqdn = "grafana.ritter.family";
@@ -60,8 +60,8 @@
             '';
           }
           {
-            fqdn = "proxmox.ritter.family";
-            target = "https://${config.my.homelab.proxmox.ip}:8006";
+            fqdn = "pve.ritter.family";
+            target = "https://${home-lab.hypervisors.pve.ip}:8006";
           }
           {
             fqdn = "passwords.ritter.family";

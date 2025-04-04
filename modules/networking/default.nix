@@ -1,14 +1,15 @@
 {
   config,
   lib,
+  home-lab,
   ...
 }:
 let
   cfg = config.my.modules.networking;
   hostCfg = config.my.host;
   homelabCfg =
-    if (builtins.hasAttr "${hostCfg.name}" config.my.homelab) then
-      config.my.homelab.${hostCfg.name}
+    if (builtins.hasAttr "${hostCfg.name}" home-lab.hosts) then
+      home-lab.hosts.${hostCfg.name}
     else
       null;
 in
@@ -23,7 +24,7 @@ in
         hostName = hostCfg.name;
         networkmanager.enable = hostCfg.role == "desktop";
       }
-      // (lib.optionalAttrs (homelabCfg != null) {
+      // (lib.optionalAttrs (homelabCfg != null && (builtins.hasAttr "ip" homelabCfg)) {
         usePredictableInterfaceNames = false;
         interfaces.eth0.ipv4.addresses = [
           {
@@ -31,8 +32,8 @@ in
             prefixLength = 24;
           }
         ];
-        defaultGateway = config.my.homelab.fritz-box.ip;
-        nameservers = [ config.my.homelab.directions.ip ];
+        defaultGateway = home-lab.devices.fritz-box.ip;
+        nameservers = [ home-lab.hosts.directions.ip ];
       });
   };
 }

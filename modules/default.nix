@@ -18,7 +18,6 @@ in
     ./gaming
     ./git-server
     ./grafana
-    ./homelab
     ./home-manager
     ./homepage
     ./https-proxy

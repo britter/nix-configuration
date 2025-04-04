@@ -1,14 +1,12 @@
 {
-  config,
-  lib,
   pkgs,
   inputs,
+  home-lab,
   ...
 }:
 {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
-    ../../../modules/homelab
   ];
 
   nix.settings.experimental-features = [
@@ -32,7 +30,7 @@
         prefixLength = 24;
       }
     ];
-    defaultGateway = config.my.homelab.fritz-box.ip;
-    nameservers = [ config.my.homelab.directions.ip ];
+    defaultGateway = home-lab.devices.fritz-box.ip;
+    nameservers = [ home-lab.hosts.directions.ip ];
   };
 }
