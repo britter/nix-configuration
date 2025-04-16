@@ -13,6 +13,7 @@ in
     ./intellij
     ./ghostty
     ./sway
+    ./syncthing
     ./wallpapers
   ];
 
@@ -60,6 +61,7 @@ in
         ];
       };
       sway.enable = true;
+      syncthing.enable = true;
     };
 
     # this requires security.polkit.enable and services.gnome.gnome-keyring.enable in the host config
