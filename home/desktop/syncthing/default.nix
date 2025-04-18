@@ -14,7 +14,10 @@ in
   config = lib.mkIf cfg.enable {
     services.syncthing = {
       enable = true;
-      tray = true;
+      tray = {
+        enable = true;
+        command = "syncthingtray --wait";
+      };
     };
   };
 }
