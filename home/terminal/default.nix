@@ -33,10 +33,10 @@ in
       fish.enable = true;
       fzf.enable = true;
       gh.enable = true;
-      git.enable = true;
-      gpg.enable = true;
+      git.enable = lib.mkDefault true;
+      gpg.enable = lib.mkDefault true;
       nvim.enable = true;
-      ssh.enable = true;
+      ssh.enable = lib.mkDefault true;
       tmux.enable = true;
       tools.enable = true;
       yazi.enable = true;

@@ -92,6 +92,22 @@
           inputs.catppuccin.homeManagerModules.catppuccin
           inputs.nixvim.homeManagerModules.nixvim
           ./home/benedikt.nix
+          (
+            { pkgs, lib, ... }:
+            {
+              nixpkgs.overlays = [
+                (_self: _super: {
+                  gh-get = pkgs.callPackage ./packages/gh-get { };
+                })
+              ];
+              nixpkgs.config.allowUnfreePredicate =
+                pkg:
+                builtins.elem (lib.getName pkg) [
+                  "terraform"
+                ];
+
+            }
+          )
         ];
 
         # Optionally use extraSpecialArgs
