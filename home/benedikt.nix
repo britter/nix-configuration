@@ -1,4 +1,4 @@
-{ ... }:
+{ config, ... }:
 
 {
   imports = [
@@ -27,6 +27,15 @@
       git.enable = false;
       ssh.enable = false;
       gpg.enable = false;
+    };
+  };
+  programs.ssh = {
+    enable = true;
+    matchBlocks = {
+      "github.com" = {
+        identityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
+        identitiesOnly = true;
+      };
     };
   };
 }
