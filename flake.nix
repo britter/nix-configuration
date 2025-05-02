@@ -83,6 +83,20 @@
           description = "A flake with a minimal dev shell for all systems";
         };
       };
+      homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
+        pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+
+        # Specify your home configuration modules here, for example,
+        # the path to your home.nix.
+        modules = [
+          inputs.catppuccin.homeManagerModules.catppuccin
+          inputs.nixvim.homeManagerModules.nixvim
+          ./home/benedikt.nix
+        ];
+
+        # Optionally use extraSpecialArgs
+        # to pass through arguments to home.nix
+      };
     }
     // lib.defineSystems inputs;
 }
