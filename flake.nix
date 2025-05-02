@@ -110,8 +110,13 @@
           )
         ];
 
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
+        extraSpecialArgs = {
+          osConfig.my.user = {
+            fullName = "Benedikt Ritter";
+            email = "benedikt.ritter@chainguard.dev";
+            signingKey = "EA363E64382563CF";
+          };
+        };
       };
     }
     // lib.defineSystems inputs;

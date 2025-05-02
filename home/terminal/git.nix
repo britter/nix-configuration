@@ -12,6 +12,10 @@ in
 {
   options.my.home.terminal.git = {
     enable = lib.mkEnableOption "git";
+    addIncludes = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -28,7 +32,7 @@ in
         key = osUser.signingKey;
       };
 
-      includes = [
+      includes = lib.mkIf cfg.addIncludes [
         {
           condition = "gitdir:~/github/gradlex-org/";
           contents = {

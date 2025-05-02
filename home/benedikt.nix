@@ -24,7 +24,7 @@
     };
     terminal = {
       enable = true;
-      git.enable = false;
+      git.addIncludes = false;
       ssh.enable = false;
       gpg.enable = false;
     };
