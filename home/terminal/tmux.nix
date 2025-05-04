@@ -6,41 +6,9 @@
 }:
 let
   cfg = config.my.home.terminal.tmux;
-  yaml = pkgs.formats.yaml { };
-  websiteConfig = {
-    name = "website";
-    root = "~/github/britter/website";
-    windows = [
-      {
-        workspace = {
-          layout = "main-horizontal";
-          panes = [
-            { editor = "v"; }
-            { dev-server = "npm run dev"; }
-            { term = ""; }
-          ];
-        };
-      }
-    ];
-  };
-  gradlex-website = {
-    name = "gradlex-website";
-    root = "~/github/gradlex-org/gradlex-org.github.io";
-    windows = [
-      {
-        workspace = {
-          layout = "main-horizontal";
-          panes = [
-            { editor = "v"; }
-            { dev-server = "npm run dev"; }
-            { term = ""; }
-          ];
-        };
-      }
-    ];
-  };
 in
 {
+  imports = [ ./tmuxinator.nix ];
   options.my.home.terminal.tmux = {
     enable = lib.mkEnableOption "tmux";
   };
@@ -94,10 +62,43 @@ in
         bind '"' split-window -v -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
       '';
-      tmuxinator.enable = true;
+      tmuxinator = {
+        enable = true;
+        projects = [
+          {
+            name = "website";
+            root = "~/github/britter/website";
+            windows = [
+              {
+                workspace = {
+                  layout = "main-horizontal";
+                  panes = [
+                    { editor = "v"; }
+                    { dev-server = "npm run dev"; }
+                    { term = ""; }
+                  ];
+                };
+              }
+            ];
+          }
+          {
+            name = "gradlex-website";
+            root = "~/github/gradlex-org/gradlex-org.github.io";
+            windows = [
+              {
+                workspace = {
+                  layout = "main-horizontal";
+                  panes = [
+                    { editor = "v"; }
+                    { dev-server = "npm run dev"; }
+                    { term = ""; }
+                  ];
+                };
+              }
+            ];
+          }
+        ];
+      };
     };
-    home.file.".config/tmuxinator/website.yml".source = yaml.generate "website.yaml" websiteConfig;
-    home.file.".config/tmuxinator/gradlex-website.yml".source =
-      yaml.generate "gradlex-website.yaml" gradlex-website;
   };
 }
