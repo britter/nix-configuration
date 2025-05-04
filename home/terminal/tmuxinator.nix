@@ -6,18 +6,31 @@
 }:
 let
   yamlFormat = pkgs.formats.yaml { };
+  projectsType = lib.types.submodule (
+    { name, ... }:
+    {
+      freeformType = yamlFormat.type;
+      options = {
+        name = lib.mkOption {
+          type = lib.types.str;
+          default = name;
+        };
+      };
+    }
+  );
 in
 {
   options.programs.tmux.tmuxinator.projects = lib.mkOption {
-    type = lib.types.listOf (lib.types.submodule { freeformType = yamlFormat.type; });
-    default = [ ];
+    type = lib.types.attrsOf projectsType;
+    default = { };
   };
 
   config = lib.mkIf (config.programs.tmux.enable && config.programs.tmux.tmuxinator.enable) {
-    home.file = lib.mkMerge (
-      lib.map (p: {
-        ".config/tmuxinator/${p.name}.yaml".source = yamlFormat.generate "${p.name}.yaml" p;
-      }) config.programs.tmux.tmuxinator.projects
-    );
+    home.file = lib.mapAttrs' (
+      _k: v:
+      lib.nameValuePair ".config/tmuxinator/${v.name}.yaml" {
+        source = yamlFormat.generate "${v.name}.yaml" v;
+      }
+    ) config.programs.tmux.tmuxinator.projects;
   };
 }

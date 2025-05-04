@@ -64,9 +64,8 @@ in
       '';
       tmuxinator = {
         enable = true;
-        projects = [
-          {
-            name = "website";
+        projects = {
+          website = {
             root = "~/github/britter/website";
             windows = [
               {
@@ -80,9 +79,8 @@ in
                 };
               }
             ];
-          }
-          {
-            name = "gradlex-website";
+          };
+          gradlex-website = {
             root = "~/github/gradlex-org/gradlex-org.github.io";
             windows = [
               {
@@ -96,8 +94,8 @@ in
                 };
               }
             ];
-          }
-        ];
+          };
+        };
       };
     };
   };
