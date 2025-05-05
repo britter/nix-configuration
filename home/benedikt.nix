@@ -42,13 +42,18 @@
     };
   };
   programs.git = {
+    extraConfig = {
+      gpg.x509.program = "${pkgs.gitsign}/bin/gitsign";
+      gpg.format = "x509";
+      gitsign.connectorID = "https://accounts.google.com";
+    };
     includes = [
       {
-        condition = "gitdir:~/github/chainguard-dev/";
+        condition = "gitdir:~/github/britter/";
         contents = {
-          gpg.x509.program = "${pkgs.gitsign}/bin/gitsign";
-          gpg.format = "x509";
-          gitsign.connectorID = "https://accounts.google.com";
+          gpg.format = "openpgp";
+          user.email = "beneritter@gmail.com";
+          user.signingKey = "14907572088F4FA7";
         };
       }
     ];
