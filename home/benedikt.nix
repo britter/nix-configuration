@@ -88,16 +88,16 @@
     };
   };
   home.packages = with pkgs; [
+    argo
+    crane
     google-cloud-sdk
+    grype
     kubectl
     kubectx
-    argo
-    terraform
     maven
     melange
     syft
-    grype
-    crane
+    terraform
     yubikey-manager
   ];
 }
