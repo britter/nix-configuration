@@ -19,12 +19,7 @@
   my.home = {
     java = {
       enable = true;
-      version = 21;
-      additionalVersions = [
-        8
-        11
-        17
-      ];
+      version = 23;
     };
     terminal = {
       enable = true;
@@ -98,6 +93,7 @@
     kubectx
     argo
     terraform
+    maven
     melange
     syft
     grype
