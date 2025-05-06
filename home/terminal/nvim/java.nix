@@ -15,5 +15,6 @@
     ".classpath"
     ".project"
     ".settings/"
+    ".factorypath"
   ];
 }
