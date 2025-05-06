@@ -6,6 +6,7 @@
 
 {
   imports = [
+    ./desktop/intellij
     ./java
     ./terminal
   ];
@@ -17,6 +18,7 @@
   programs.home-manager.enable = true;
 
   my.home = {
+    desktop.intellij.enable = true;
     java = {
       enable = true;
       version = 23;
