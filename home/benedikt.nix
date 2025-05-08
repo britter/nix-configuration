@@ -29,6 +29,7 @@
       ssh.enable = false;
     };
   };
+  programs.nixvim.plugins.none-ls.sources.formatting.google_java_format.enable = true;
   programs.ssh = {
     enable = true;
     matchBlocks = {
