@@ -21,7 +21,7 @@
     };
     catppuccin = {
       enable = true;
-      flavor = "latte";
+      flavor = "macchiato";
     };
   };
 }
