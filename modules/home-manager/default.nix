@@ -21,7 +21,7 @@ in
       users.${myUser.name} = {
         home.stateVersion = "23.05";
         imports = [
-          inputs.catppuccin.homeManagerModules.catppuccin
+          inputs.catppuccin.homeModules.catppuccin
           inputs.nixvim.homeManagerModules.nixvim
           ../../home
         ];
