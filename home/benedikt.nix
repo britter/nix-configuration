@@ -21,7 +21,7 @@
     desktop.intellij.enable = true;
     java = {
       enable = true;
-      version = 23;
+      version = 21;
     };
     terminal = {
       enable = true;
