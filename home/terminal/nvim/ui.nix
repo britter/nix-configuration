@@ -37,7 +37,6 @@ _: {
       bufferline.enable = true;
       lualine.enable = true;
       neo-tree.enable = true;
-      noice.enable = true;
       web-devicons.enable = true;
     };
     keymaps = [
