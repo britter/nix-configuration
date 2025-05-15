@@ -93,6 +93,7 @@
   home.packages = with pkgs; [
     argo
     crane
+    dotenvx
     (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
     grype
     kubectl
