@@ -38,7 +38,6 @@ in
 
       shellInit = ''
         set -x LANG en_US.utf-8
-        set -x MAVEN_OPTS "-Duser.name=benedikt"
         set -x GPG_TTY (tty)
       '';
     };
