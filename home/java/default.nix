@@ -18,16 +18,21 @@ in
       type = lib.types.listOf lib.types.int;
       default = [ ];
     };
+    linkToUserHome = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+    };
   };
 
   config =
     let
       allVersions = lib.map toString (cfg.additionalVersions ++ [ cfg.version ]);
-      versionToHome = version: pkgs."jdk${version}".home;
+      jdkPackageForVersion = version: pkgs."jdk${version}";
+      javaHomeForVersion = version: (jdkPackageForVersion version).home;
     in
     lib.mkIf cfg.enable {
       home.sessionVariables = lib.mapAttrs' (name: value: lib.nameValuePair ("JDK_" + name) value) (
-        lib.genAttrs allVersions versionToHome
+        lib.genAttrs allVersions javaHomeForVersion
       );
 
       programs.java = {
@@ -35,11 +40,21 @@ in
         package = pkgs."jdk${toString cfg.version}";
       };
 
+      systemd.user.tmpfiles.rules = lib.mkIf cfg.linkToUserHome (
+        lib.map (
+          v:
+          let
+            pkg = jdkPackageForVersion v;
+          in
+          "L ${config.home.homeDirectory}/.java-installs/${pkg.name} - - - - ${pkg}"
+        ) allVersions
+      );
+
       programs.gradle = {
         enable = true;
         settings = {
           "org.gradle.java.installations.paths" = lib.concatStringsSep "," (
-            lib.map versionToHome allVersions
+            lib.map javaHomeForVersion allVersions
           );
           "systemProp.jna.library.path" = lib.makeLibraryPath [ pkgs.udev ];
         };

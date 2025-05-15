@@ -22,6 +22,12 @@
     java = {
       enable = true;
       version = 21;
+      additionalVersions = [
+        8
+        11
+        17
+      ];
+      linkToUserHome = true;
     };
     terminal = {
       enable = true;
