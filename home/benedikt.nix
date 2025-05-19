@@ -108,6 +108,7 @@
     melange
     syft
     terraform
+    witness
     yubikey-manager
   ];
 }
