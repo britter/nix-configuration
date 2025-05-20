@@ -14,12 +14,13 @@ in
     services.mako = {
       # test with notify-send.
       enable = true;
-      defaultTimeout = 4500;
-      ignoreTimeout = true;
-      extraConfig = ''
-        [mode=do-not-disturb]
-        invisible=1
-      '';
+      settings = {
+        "mode=do-not-disturb" = {
+          invisible = 1;
+        };
+        default-timeout = 4500;
+        ignore-timeout = true;
+      };
     };
   };
 }
