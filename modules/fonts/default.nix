@@ -12,13 +12,12 @@ in
     enable = lib.mkEnableOption "fonts";
     fonts = lib.mkOption {
       type = lib.types.listOf lib.types.str;
-      default = [ "FiraCode" ];
+      default = [ "fira-code" ];
     };
   };
   config = lib.mkIf cfg.enable {
-    fonts.packages = with pkgs; [
-      font-awesome
-      (nerdfonts.override { inherit (cfg) fonts; })
-    ];
+    fonts.packages = [
+      pkgs.font-awesome
+    ] ++ (lib.map (font: pkgs.nerd-fonts."${font}") cfg.fonts);
   };
 }
