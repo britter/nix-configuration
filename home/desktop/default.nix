@@ -9,7 +9,7 @@ let
 in
 {
   imports = [
-    ./firefox
+    ./browser
     ./intellij
     ./ghostty
     ./sway
@@ -50,9 +50,8 @@ in
     };
 
     my.home.desktop = {
-      firefox.enable = true;
+      browser.enable = true;
       ghostty.enable = true;
-      librewolf.enable = true;
       intellij = {
         enable = true;
         plugins = [

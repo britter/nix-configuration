@@ -5,10 +5,10 @@
   ...
 }:
 let
-  cfg = config.my.home.desktop.librewolf;
+  cfg = config.my.home.desktop.browser.librewolf;
 in
 {
-  options.my.home.desktop.librewolf = {
+  options.my.home.desktop.browser.librewolf = {
     enable = lib.mkEnableOption "librewolf";
   };
 
@@ -38,7 +38,7 @@ in
         };
       };
       profiles.bene = {
-        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
           bitwarden
           clearurls
           consent-o-matic
@@ -49,45 +49,48 @@ in
           refined-github
           ublock-origin
         ];
-        bookmarks = [
-          {
-            name = "Bookmarks Toolbar";
-            toolbar = true;
-            bookmarks = [
-              {
-                name = "Google Mail";
-                url = "https://mail.google.com";
-              }
-              {
-                name = "Google Calendar";
-                url = "https://calendar.google.com";
-              }
-              {
-                name = "Goole Drive";
-                url = "https://drive.google.com";
-              }
-              {
-                name = "GitHub";
-                url = "https://github.com/notifications";
-              }
-              {
-                name = "Mastodon";
-                url = "https://chaos.social";
-              }
-              {
-                name = "Komoot";
-                url = "https://www.komoot.de";
-              }
-              {
-                name = "Tmux Cheat Sheet";
-                url = "https://tmuxcheatsheet.com";
-              }
-            ];
-          }
-        ];
+        bookmarks = {
+          force = true;
+          settings = [
+            {
+              name = "Bookmarks Toolbar";
+              toolbar = true;
+              bookmarks = [
+                {
+                  name = "Google Mail";
+                  url = "https://mail.google.com";
+                }
+                {
+                  name = "Google Calendar";
+                  url = "https://calendar.google.com";
+                }
+                {
+                  name = "Goole Drive";
+                  url = "https://drive.google.com";
+                }
+                {
+                  name = "GitHub";
+                  url = "https://github.com/notifications";
+                }
+                {
+                  name = "Mastodon";
+                  url = "https://chaos.social";
+                }
+                {
+                  name = "Komoot";
+                  url = "https://www.komoot.de";
+                }
+                {
+                  name = "Tmux Cheat Sheet";
+                  url = "https://tmuxcheatsheet.com";
+                }
+              ];
+            }
+          ];
+        };
         search = {
           force = true;
-          default = "DuckDuckGo";
+          default = "ddg";
           engines = {
             "Nix Packages" = {
               urls = [
@@ -182,15 +185,14 @@ in
             };
             "NixOS Wiki" = {
               urls = [ { template = "https://wiki.nixos.org/w/index.php?search={searchTerms}"; } ];
-              iconUpdateURL = "https://nixos.wiki/favicon.png";
-              updateInterval = 24 * 60 * 60 * 1000;
+              icon = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake.svg";
               definedAliases = [ "@nw" ];
             };
-            "Wikipedia (en)".metaData.alias = "@wiki";
-            "Google".metaData.hidden = true;
-            "Amazon.com".metaData.hidden = true;
-            "Bing".metaData.hidden = true;
-            "eBay".metaData.hidden = true;
+            "wikipedia".metaData.alias = "@wiki";
+            "google".metaData.hidden = true;
+            "amazondotcom-us".metaData.hidden = true;
+            "bing".metaData.hidden = true;
+            "ebay".metaData.hidden = true;
           };
         };
       };
