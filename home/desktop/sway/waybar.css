@@ -3,45 +3,46 @@
 /* debug this using `env GTK_DEBUG=interactive waybar` */
 
 * {
-	border: none;
-	border-radius: 0px;
-	font-size: 11px;
-	padding: 0px;
-	min-height: 16px;
-	font-family: "DejaVu Sans", "Font Awesome 6 Free", "Font Awesome 6 Brands";
-	color: @text;
+  border: none;
+  border-radius: 0px;
+  font-family: "FiraCode", "FiraCode Nerd Font";
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0px;
+  min-height: 20px;
+  color: @text;
 }
 
 window#waybar {
-	background: @base;
-	opacity: 0.85;
+  background: @base;
+  opacity: 0.85;
 }
 
 window#waybar.hidden {
-	opacity: 0.2;
+  opacity: 0.2;
 }
 
 #window {
-	background: transparent;
+  background: transparent;
 }
 
 /* fix for font color issue, see https: //github.com/Alexays/Waybar/issues/1741#issuecomment-1288336263 */
 label:disabled,
 button:disabled {
-	color: inherit;
-	background-image: none;
+  color: inherit;
+  background-image: none;
 }
 
 #workspaces button.focused {
-	border-bottom: 2px solid @teal;
+  border-bottom: 2px solid @teal;
 }
 
 #workspaces button:not(.focused) {
-	border-bottom: 2px solid @base;
+  border-bottom: 2px solid @base;
 }
 
 #workspaces button * {
-	color: inherit;
+  color: inherit;
 }
 
 #clock,
@@ -59,85 +60,86 @@ button:disabled {
 #language,
 #idle_inhibitor,
 #mpd {
-	margin-left: 3px;
-	padding: 0px 5px 0px 5px;
-	border-radius: 3px;
+  margin-left: 3px;
+  padding: 0px 5px 0px 5px;
+  border-radius: 3px;
 }
 
 #bluetooth {
-	/* Use Nerd Font for bluetooth icons */
-	font-family: "DejaVu Sans", "FiraCode Nerd Font", "Font Awesome 6 Free", "Font Awesome 6 Brands";
+  /* Use Nerd Font for bluetooth icons */
+  font-family:
+    "DejaVu Sans", "FiraCode Nerd Font", "Font Awesome 6 Free",
+    "Font Awesome 6 Brands";
 }
 
 /* If workspaces is the leftmost module, omit left margin */
-.modules-left>widget:first-child>#workspaces {
-	margin-left: 0px;
+.modules-left > widget:first-child > #workspaces {
+  margin-left: 0px;
 }
 
 /* If workspaces is the rightmost module, omit right margin */
-.modules-right>widget:last-child>#workspaces {
-	margin-right: 0px;
+.modules-right > widget:last-child > #workspaces {
+  margin-right: 0px;
 }
 
 #battery.charging {
-	background-color: @green;
-	color: @base;
+  background-color: @green;
+  color: @base;
 }
 
 #battery.critical:not(.charging),
 #temperature.critical,
 #cpu.critical,
 #memory.critical {
-	animation-name: critical;
-	animation-duration: 0.5s;
-	animation-timing-function: linear;
-	animation-iteration-count: infinite;
-	animation-direction: alternate;
+  animation-name: critical;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
 @keyframes critical {
-	to {
-		background-color: @red;
-		color: @base;
-	}
+  to {
+    background-color: @red;
+    color: @base;
+  }
 }
 
 #battery.warning:not(.charging),
 #temperature.warning,
 #cpu.warning,
 #memory.warning {
-	animation-name: warning;
-	animation-duration: 0.5s;
-	animation-timing-function: linear;
-	animation-iteration-count: infinite;
-	animation-direction: alternate;
+  animation-name: warning;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
 @keyframes warning {
-	to {
-		background-color: @yellow;
-		color: @base;
-	}
+  to {
+    background-color: @yellow;
+    color: @base;
+  }
 }
 
-#tray>.needs-attention {
-	-gtk-icon-effect: highlight;
+#tray > .needs-attention {
+  -gtk-icon-effect: highlight;
 }
 
-#tray>.passive {
-	-gtk-icon-effect: dim;
+#tray > .passive {
+  -gtk-icon-effect: dim;
 }
 
 #language {
-	min-width: 8px;
+  min-width: 8px;
 }
 
 tooltip {
-	background-color: @crust;
-	border-radius: 5px;
+  background-color: @crust;
+  border-radius: 5px;
 }
 
 tooltip label {
-	color: @text;
+  color: @text;
 }
-
