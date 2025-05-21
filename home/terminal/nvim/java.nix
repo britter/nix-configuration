@@ -4,9 +4,9 @@
   ...
 }:
 {
-  programs.nixvim.plugins.nvim-jdtls = {
+  programs.nixvim.plugins.jdtls = {
     enable = true;
-    cmd = [
+    settings.cmd = [
       (lib.getExe pkgs.jdt-language-server)
     ];
   };
