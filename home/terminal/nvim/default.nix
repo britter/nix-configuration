@@ -31,6 +31,7 @@ in
     };
     programs.nixvim = {
       enable = true;
+      nixpkgs.useGlobalPackages = true;
       defaultEditor = true;
       clipboard.providers.wl-copy.enable = true;
       # Add this to plugins below once switching to 24.11
