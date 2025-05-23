@@ -36,6 +36,13 @@ _: {
     plugins = {
       bufferline.enable = true;
       lualine.enable = true;
+      indent-blankline = {
+        enable = true;
+        settings.scope = {
+          show_start = false;
+          show_end = false;
+        };
+      };
       neo-tree.enable = true;
       web-devicons.enable = true;
     };
