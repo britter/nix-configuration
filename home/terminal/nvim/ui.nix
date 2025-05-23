@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   programs.nixvim = {
     colorschemes.catppuccin = {
       enable = true;
@@ -33,6 +34,22 @@ _: {
       list = true;
       listchars = "tab:→·,lead:·,space:·,trail:~,extends:→,precedes:←,nbsp:␣";
     };
+    extraPlugins = [
+      (pkgs.vimUtils.buildVimPlugin {
+        name = "webify";
+        src = pkgs.fetchFromGitHub {
+          owner = "pabloariasal";
+          repo = "webify.nvim";
+          rev = "69bc088e21834898477df69694ce86ee5561e20b";
+          hash = "sha256-Q9tJeo281JhEhjtxrh9BMzFfVQhJSZ3XShX4Agi6+1s=";
+        };
+      })
+    ];
+    extraConfigLua =
+      # lua
+      ''
+        require('webify')
+      '';
     plugins = {
       bufferline.enable = true;
       lualine.enable = true;
