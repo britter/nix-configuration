@@ -41,7 +41,7 @@ in
         tldr # better man pages
         unzip
         wget
-        yq
+        yq-go
         zip
       ];
       programs.ripgrep.enable = true; # recursive grep
