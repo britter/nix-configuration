@@ -38,7 +38,7 @@ in
         jq
         mob # smooth git handover
         tokei # count lines of code
-        tldr # better man pages
+        tealdeer # better man pages
         unzip
         wget
         yq-go
