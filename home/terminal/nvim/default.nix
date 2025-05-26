@@ -26,7 +26,7 @@ in
     programs.fish = {
       shellAliases = {
         "v" =
-          "nvim (${pkgs.fzf}/bin/fzf --preview=\"${pkgs.bat}/bin/bat --style=numbers --color=always {}\")";
+          "nvim (${lib.getExe pkgs.fzf} --preview=\"${lib.getExe pkgs.bat} --style=numbers --color=always {}\")";
       };
     };
     programs.nixvim = {
