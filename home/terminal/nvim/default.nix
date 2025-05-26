@@ -112,6 +112,11 @@ in
           mode = [ "n" ];
         }
         {
+          action = "<cmd>Telescope help_tag<CR>";
+          key = "<leader>fh";
+          mode = [ "n" ];
+        }
+        {
           action = "<cmd>Telescope lsp_document_symbols<CR>";
           key = "<leader>o";
           mode = [ "n" ];
