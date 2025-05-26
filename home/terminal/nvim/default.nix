@@ -154,6 +154,29 @@ in
           enable = true;
           extensions.ui-select.enable = true;
           extensions.fzf-native.enable = true;
+          settings =
+            let
+              rgArgs = [
+                "--hidden"
+                "--glob"
+                "!**/.git/*"
+              ];
+            in
+            {
+              defaults.vimgrep_arguments = [
+                (lib.getExe pkgs.ripgrep)
+                "--color=never"
+                "--no-heading"
+                "--with-filename"
+                "--line-number"
+                "--column"
+                "--smart-case"
+              ] ++ rgArgs;
+              pickers.find_files.find_command = [
+                (lib.getExe pkgs.ripgrep)
+                "--files"
+              ] ++ rgArgs;
+            };
         };
         treesitter = {
           enable = true;
