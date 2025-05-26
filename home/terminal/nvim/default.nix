@@ -153,6 +153,7 @@ in
         telescope = {
           enable = true;
           extensions.ui-select.enable = true;
+          extensions.fzf-native.enable = true;
         };
         treesitter = {
           enable = true;
