@@ -14,7 +14,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.fzf = {
       enable = true;
-      defaultCommand = "${pkgs.ripgrep}/bin/rg --files";
+      defaultCommand = "${pkgs.ripgrep}/bin/rg --files --hidden --glob '!.git'";
     };
   };
 }
