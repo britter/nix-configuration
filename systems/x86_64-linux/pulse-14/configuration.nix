@@ -40,12 +40,6 @@
   services.gnome.gnome-keyring.enable = true;
   security.polkit.enable = true;
 
-  # Workaround for getting automatic downloads of protoc via ptotobuf-gradle-plugin working
-  # Source: https://discourse.nixos.org/t/protobuf-cant-be-run/13568/8
-  systemd.tmpfiles.rules = [
-    "L+ /lib64/ld-linux-x86-64.so.2 - - - - ${pkgs.glibc}/lib64/ld-linux-x86-64.so.2"
-  ];
-
   virtualisation.podman = {
     enable = true;
     dockerCompat = true;
@@ -53,6 +47,7 @@
   environment.systemPackages = [
     pkgs.podman-compose
   ];
+  programs.nix-ld.enable = true;
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
