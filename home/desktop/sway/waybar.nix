@@ -21,6 +21,7 @@ in
         mainBar = {
           layer = "top";
           position = "top";
+          height = 30;
 
           modules-left = [
             "sway/workspaces"
