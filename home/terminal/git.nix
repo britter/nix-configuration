@@ -59,6 +59,8 @@ in
       extraConfig = {
         init.defaultBranch = "main";
         push.autoSetupRemote = "true";
+        merge.tool = "nvimdiff";
+        merge.conflictstyle = "diff3";
       };
 
       aliases = {
