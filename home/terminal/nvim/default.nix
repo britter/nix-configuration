@@ -117,11 +117,6 @@ in
           mode = [ "n" ];
         }
         {
-          action = "<cmd>Telescope lsp_document_symbols<CR>";
-          key = "<leader>o";
-          mode = [ "n" ];
-        }
-        {
           action = "<cmd>split<CR>";
           key = "<leader>\"";
           mode = [ "n" ];
