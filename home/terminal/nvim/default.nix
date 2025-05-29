@@ -158,15 +158,27 @@ in
               ];
             in
             {
-              defaults.vimgrep_arguments = [
-                (lib.getExe pkgs.ripgrep)
-                "--color=never"
-                "--no-heading"
-                "--with-filename"
-                "--line-number"
-                "--column"
-                "--smart-case"
-              ] ++ rgArgs;
+              defaults = {
+                mappings = {
+                  i = {
+                    "<C-j>" = {
+                      __raw = "require('telescope.actions').move_selection_next";
+                    };
+                    "<C-k>" = {
+                      __raw = "require('telescope.actions').move_selection_previous";
+                    };
+                  };
+                };
+                vimgrep_arguments = [
+                  (lib.getExe pkgs.ripgrep)
+                  "--color=never"
+                  "--no-heading"
+                  "--with-filename"
+                  "--line-number"
+                  "--column"
+                  "--smart-case"
+                ] ++ rgArgs;
+              };
               pickers.find_files.find_command = [
                 (lib.getExe pkgs.ripgrep)
                 "--files"
