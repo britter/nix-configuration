@@ -47,7 +47,7 @@ _: {
     keymaps = [
       {
         action.__raw = "function() require(\"luasnip\").jump(1) end";
-        key = "<C-L>";
+        key = "<C-j>";
         mode = [
           "i"
           "s"
@@ -58,7 +58,7 @@ _: {
       }
       {
         action.__raw = "function() require(\"luasnip\").jump(-1) end";
-        key = "<C-K>";
+        key = "<C-k>";
         mode = [
           "i"
           "s"
