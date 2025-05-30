@@ -84,6 +84,11 @@ _: {
         key = "<leader>fU";
         mode = [ "n" ];
       }
+      {
+        action = "<cmd>Telescope lsp_implementations<CR>";
+        key = "<leader>fi";
+        mode = [ "n" ];
+      }
     ];
   };
 }
