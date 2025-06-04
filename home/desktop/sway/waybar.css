@@ -3,46 +3,65 @@
 /* debug this using `env GTK_DEBUG=interactive waybar` */
 
 * {
-  border: none;
-  border-radius: 0px;
+  color: @lavender;
+  border: 0;
+  padding: 0 0;
   font-family: "FiraCode", "FiraCode Nerd Font";
-  font-size: 13px;
-  font-weight: 600;
-  padding: 0px;
-  min-height: 20px;
-  color: @text;
 }
 
 window#waybar {
-  background: @base;
-  opacity: 0.85;
+  border: 0px solid rgba(0, 0, 0, 0);
+  background-color: rgba(0, 0, 0, 0);
 }
 
-window#waybar.hidden {
-  opacity: 0.2;
+#workspaces button {
+  color: @base;
+  border-radius: 50%;
+  /* background-color: @base; */
+  margin: 0px 0px;
+  padding: 4 6 2 0;
 }
 
-#window {
-  background: transparent;
+#workspaces button:hover {
+  color: @mauve;
+  box-shadow: none;
+  /* Remove predefined box-shadow */
+  text-shadow: none;
+  /* Remove predefined text-shadow */
+  border: 0px;
+  background: none;
 }
 
-/* fix for font color issue, see https: //github.com/Alexays/Waybar/issues/1741#issuecomment-1288336263 */
-label:disabled,
-button:disabled {
-  color: inherit;
-  background-image: none;
+#workspaces button:hover * {
+  color: @mauve;
+  background-color: @base;
+}
+
+#workspaces * {
+  color: whitesmoke;
+}
+
+#workspaces {
+  border-style: solid;
+  background-color: @base;
+  opacity: 1;
+  border-radius: 10px;
+  margin: 8px 0px 8px 8px;
+  padding: 0px 10px;
 }
 
 #workspaces button.focused {
-  border-bottom: 2px solid @teal;
+  color: @mauve;
+  border-radius: 20px;
+  /* background-color: @flamingo; */
 }
 
-#workspaces button:not(.focused) {
-  border-bottom: 2px solid @base;
+#workspaces button.focused * {
+  color: @mauve;
 }
 
-#workspaces button * {
-  color: inherit;
+#mode {
+  color: #ebcb8b;
 }
 
 #clock,
@@ -60,9 +79,11 @@ button:disabled {
 #language,
 #idle_inhibitor,
 #mpd {
-  margin-left: 3px;
-  padding: 0px 5px 0px 5px;
-  border-radius: 3px;
+  padding: 5px 8px;
+  border-style: solid;
+  background-color: shade(@base, 1);
+  opacity: 1;
+  margin: 8px 0;
 }
 
 #bluetooth {
@@ -72,37 +93,57 @@ button:disabled {
     "Font Awesome 6 Brands";
 }
 
-/* If workspaces is the leftmost module, omit left margin */
-.modules-left > widget:first-child > #workspaces {
-  margin-left: 0px;
+#clock {
+  /* background-color:#a3be8c; */
+  color: @sky;
+  border-radius: 10px;
+  margin: 8px 10px;
 }
 
-/* If workspaces is the rightmost module, omit right margin */
-.modules-right > widget:last-child > #workspaces {
-  margin-right: 0px;
+#tray {
+  border-radius: 10px 0 0 10px;
+}
+
+#battery {
+  color: @green;
+  /* border-bottom: 2px solid @sky; */
+  /* border-bottom: 2px solid #d8dee9; */
 }
 
 #battery.charging {
-  background-color: @green;
-  color: @base;
+  color: #81a1c1;
+  /* border-bottom: 2px solid #81a1c1; */
+}
+
+#pulseaudio {
+  color: @flamingo;
+  border-radius: 0 10px 10px 0;
+  margin-right: 10px;
+}
+
+@keyframes blink {
+  to {
+    color: @red;
+    /* border-bottom: 2px solid @red; */
+  }
+}
+
+#battery.warning:not(.charging) {
+  color: @yellow;
+  /* border-bottom: 2px solid #81a1c1; */
 }
 
 #battery.critical:not(.charging),
 #temperature.critical,
 #cpu.critical,
 #memory.critical {
-  animation-name: critical;
+  color: #bf616a;
+  /* border-bottom: 2px solid #bf616a; */
+  animation-name: blink;
   animation-duration: 0.5s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-direction: alternate;
-}
-
-@keyframes critical {
-  to {
-    background-color: @red;
-    color: @base;
-  }
 }
 
 #battery.warning:not(.charging),
@@ -119,7 +160,6 @@ button:disabled {
 @keyframes warning {
   to {
     background-color: @yellow;
-    color: @base;
   }
 }
 
@@ -129,10 +169,6 @@ button:disabled {
 
 #tray > .passive {
   -gtk-icon-effect: dim;
-}
-
-#language {
-  min-width: 8px;
 }
 
 tooltip {
