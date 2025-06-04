@@ -94,31 +94,37 @@ window#waybar {
 }
 
 #clock {
-  /* background-color:#a3be8c; */
   color: @sky;
   border-radius: 10px;
   margin: 8px 10px;
 }
 
+#memory {
+  border-radius: 10px 0 0 10px;
+}
+
+#cpu {
+  border-radius: 0 10px 10px 0;
+  margin-right: 5px;
+}
+
 #tray {
   border-radius: 10px 0 0 10px;
+  margin-left: 5px;
 }
 
 #battery {
   color: @green;
-  /* border-bottom: 2px solid @sky; */
-  /* border-bottom: 2px solid #d8dee9; */
+  margin-right: 10px;
+  border-radius: 0 10px 10px 0;
 }
 
 #battery.charging {
   color: #81a1c1;
-  /* border-bottom: 2px solid #81a1c1; */
 }
 
 #pulseaudio {
   color: @flamingo;
-  border-radius: 0 10px 10px 0;
-  margin-right: 10px;
 }
 
 @keyframes blink {

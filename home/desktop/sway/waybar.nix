@@ -31,13 +31,13 @@ in
             "clock"
           ];
           modules-right = [
+            "memory"
+            "cpu"
             "tray"
             "bluetooth"
             "network"
-            "battery"
-            "cpu"
-            "memory"
             "pulseaudio"
+            "battery"
           ];
 
           "clock" = {
