@@ -50,11 +50,16 @@ in
               weeks-pos = "right";
               on-scroll = 1;
               format = {
-                months = "<span color='#ffead3'><b>{}</b></span>";
-                days = "<span color='#ecc6d9'><b>{}</b></span>";
-                weeks = "<span color='#99ffdd'><b>W{}</b></span>";
-                weekdays = "<span color='#ffcc66'><b>{}</b></span>";
-                today = "<span color='#ff6699'><b><u>{}</u></b></span>";
+                # @mauve
+                months = "<span color='#c6a0f6'><b>{}</b></span>";
+                # @text
+                days = "<span color='#cad3f5'><b>{}</b></span>";
+                # @yellow
+                weeks = "<span color='#eed49f'><b>W{}</b></span>";
+                # @sky
+                weekdays = "<span color='#91d7e3'><b>{}</b></span>";
+                # @red
+                today = "<span color='#ed8796'><b><u>{}</u></b></span>";
               };
             };
           };
