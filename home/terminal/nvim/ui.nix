@@ -61,12 +61,18 @@
         };
       };
       neo-tree.enable = true;
+      oil.enable = true;
       web-devicons.enable = true;
     };
     keymaps = [
       {
         action = "<cmd>Neotree filesystem reveal toggle left<CR>";
         key = "<C-n>";
+        mode = [ "n" ];
+      }
+      {
+        action = "<cmd>Oil<CR>";
+        key = "-";
         mode = [ "n" ];
       }
     ];
