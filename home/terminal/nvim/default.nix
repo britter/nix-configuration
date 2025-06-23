@@ -192,6 +192,7 @@ in
             highlight.enable = true;
           };
         };
+        treesitter-context.enable = true;
       };
     };
   };
