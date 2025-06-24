@@ -3,7 +3,7 @@ _: {
   programs = {
     deadnix.enable = true;
     keep-sorted.enable = true;
-    nixfmt-rfc-style.enable = true;
+    nixfmt.enable = true;
     statix.enable = true;
     stylua.enable = true;
   };
