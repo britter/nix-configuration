@@ -30,6 +30,7 @@ in
     in
     lib.mkIf cfg.enable {
       home.packages = with pkgs; [
+        caligula # tui for disk imaging
         curl
         eza # ls replacement
         pdf-fax
