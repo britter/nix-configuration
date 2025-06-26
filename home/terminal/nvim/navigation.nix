@@ -19,12 +19,12 @@ _: {
       }
       {
         action = "<cmd>cprevious<CR>";
-        key = "[c";
+        key = "[q";
         mode = [ "n" ];
       }
       {
         action = "<cmd>cnext<CR>";
-        key = "]c";
+        key = "]q";
         mode = [ "n" ];
       }
     ];
