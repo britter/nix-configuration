@@ -10,10 +10,6 @@
     ../../../modules
   ];
 
-  facter.reportPath = ./facter.json;
-  # see https://github.com/numtide/nixos-facter-modules/issues/62
-  facter.detected.dhcp.enable = false;
-
   my = {
     host = {
       role = "desktop";
@@ -27,6 +23,12 @@
       };
     };
   };
+
+  facter.reportPath = ./facter.json;
+  # see https://github.com/numtide/nixos-facter-modules/issues/62
+  facter.detected.dhcp.enable = false;
+
+  services.fwupd.enable = true;
 
   services.printing.enable = true;
   services.avahi = {
