@@ -128,6 +128,7 @@ in
         }
       ];
       plugins = {
+        nvim-surround.enable = true;
         none-ls = {
           enable = true;
           sources = {
