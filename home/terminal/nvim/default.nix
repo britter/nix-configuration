@@ -29,6 +29,9 @@ in
           "nvim (${lib.getExe pkgs.fzf} --preview=\"${lib.getExe pkgs.bat} --style=numbers --color=always {}\")";
       };
     };
+    home.sessionVariables = {
+      MANPAGER = "${lib.getExe config.programs.nixvim.build.package} +Man!";
+    };
     programs.nixvim = {
       enable = true;
       nixpkgs.useGlobalPackages = true;
