@@ -51,7 +51,7 @@
         require('webify')
       '';
     plugins = {
-      bufferline.enable = true;
+      dropbar.enable = true;
       lualine.enable = true;
       indent-blankline = {
         enable = true;
