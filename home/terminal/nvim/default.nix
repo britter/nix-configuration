@@ -147,6 +147,7 @@ in
               };
               terraform_fmt.enable = true;
             };
+            diagnostics.actionlint.enable = true;
           };
         };
         telescope = {
