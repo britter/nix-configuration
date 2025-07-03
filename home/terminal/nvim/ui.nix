@@ -61,7 +61,10 @@
         };
       };
       neo-tree.enable = true;
-      oil.enable = true;
+      oil = {
+        enable = true;
+        settings.skip_confirm_for_simple_edits = true;
+      };
       web-devicons.enable = true;
     };
     keymaps = [
