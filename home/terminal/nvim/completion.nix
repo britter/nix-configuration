@@ -8,12 +8,19 @@ _: {
         settings = {
           mapping = {
             "<C-Space>" = "cmp.mapping.complete()";
-            "<C-d>" = "cmp.mapping.scroll_docs(-4)";
-            "<C-e>" = "cmp.mapping.close()";
-            "<C-f>" = "cmp.mapping.scroll_docs(4)";
-            "<CR>" = "cmp.mapping.confirm({ select = true })";
-            "<S-Tab>" = "cmp.mapping(cmp.mapping.select_prev_item(), {'i', 's'})";
-            "<Tab>" = "cmp.mapping(cmp.mapping.select_next_item(), {'i', 's'})";
+            "<C-n>" = "cmp.mapping.select_next_item { behavior = cmp.SelectBehavior.Insert }";
+            "<C-p>" = "cmp.mapping.select_prev_item { behavior = cmp.SelectBehavior.Insert }";
+            "<C-y>" =
+              # lua
+              ''
+                cmp.mapping(
+                  cmp.mapping.confirm {
+                    behavior = cmp.ConfirmBehavior.Insert,
+                    select = true,
+                  },
+                  { "i", "c" }
+                )
+              '';
           };
           snippet.expand =
             # lua
@@ -32,10 +39,6 @@ _: {
       cmp_luasnip.enable = true;
       luasnip = {
         enable = true;
-        settings = {
-          enable_autosnippets = true;
-          store_selection_keys = "<Tab>";
-        };
         fromLua = [
           {
             paths = ./snippets;
@@ -46,8 +49,17 @@ _: {
     };
     keymaps = [
       {
-        action.__raw = "function() require(\"luasnip\").jump(1) end";
-        key = "<C-j>";
+        action.__raw =
+          # lua
+          ''
+            function()
+              local ls = require "luasnip"
+              if ls.expand_or_jumpable() then
+                ls.expand_or_jump()
+              end
+            end
+          '';
+        key = "<C-k>";
         mode = [
           "i"
           "s"
@@ -57,7 +69,16 @@ _: {
         };
       }
       {
-        action.__raw = "function() require(\"luasnip\").jump(-1) end";
+        action.__raw =
+          # lua
+          ''
+            function()
+              local ls = require "luasnip"
+              if ls.jumpable(-1) then
+                ls.jump(-1)
+              end
+            end
+          '';
         key = "<C-k>";
         mode = [
           "i"
