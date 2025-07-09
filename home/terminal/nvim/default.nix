@@ -129,6 +129,11 @@ in
           key = "<leader>%";
           mode = [ "n" ];
         }
+        {
+          action = "<ESC>";
+          key = "jj";
+          mode = [ "i" ];
+        }
       ];
       plugins = {
         nvim-surround.enable = true;
