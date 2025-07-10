@@ -169,16 +169,6 @@ in
             in
             {
               defaults = {
-                mappings = {
-                  i = {
-                    "<C-j>" = {
-                      __raw = "require('telescope.actions').move_selection_next";
-                    };
-                    "<C-k>" = {
-                      __raw = "require('telescope.actions').move_selection_previous";
-                    };
-                  };
-                };
                 vimgrep_arguments = [
                   (lib.getExe pkgs.ripgrep)
                   "--color=never"
