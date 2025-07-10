@@ -79,7 +79,7 @@ _: {
               end
             end
           '';
-        key = "<C-k>";
+        key = "<C-j>";
         mode = [
           "i"
           "s"
