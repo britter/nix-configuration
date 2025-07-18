@@ -115,7 +115,7 @@ in
           mode = [ "n" ];
         }
         {
-          action = "<cmd>Telescope help_tag<CR>";
+          action = "<cmd>Telescope help_tags<CR>";
           key = "<leader>fh";
           mode = [ "n" ];
         }
