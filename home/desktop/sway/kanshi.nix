@@ -16,7 +16,7 @@ in
       enable = true;
       settings =
         let
-          pulse-14 = "Tianma Microelectronics Ltd. TL140ADXP24-0 Unknown";
+          framework-13 = "BOE NE135A1M-NY1 Unkown";
           lg32 = "LG Electronics LG HDR 4K 111NTBKD6957";
         in
         [
@@ -29,9 +29,9 @@ in
                 position = "0,0";
               }
               {
-                criteria = pulse-14;
+                criteria = framework-13;
                 status = "enable";
-                position = "960,2160";
+                position = "480,2160";
               }
             ];
             profile.exec = [
