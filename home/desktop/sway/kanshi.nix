@@ -16,7 +16,7 @@ in
       enable = true;
       settings =
         let
-          framework-13 = "BOE NE135A1M-NY1 Unkown";
+          framework-13 = "BOE NE135A1M-NY1 Unknown";
           lg32 = "LG Electronics LG HDR 4K 111NTBKD6957";
         in
         [
