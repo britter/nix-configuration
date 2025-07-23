@@ -10,6 +10,7 @@ in
 {
   imports = [
     ./browser
+    ./calibre
     ./intellij
     ./ghostty
     ./sway
@@ -26,7 +27,6 @@ in
     home.packages = with pkgs; [
       audacity
       bitwarden-desktop
-      calibre
       gimp
       libreoffice
       obsidian
@@ -51,6 +51,7 @@ in
 
     my.home.desktop = {
       browser.enable = true;
+      calibre.enable = true;
       ghostty.enable = true;
       intellij = {
         enable = true;
