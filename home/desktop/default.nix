@@ -33,9 +33,12 @@ in
       vlc
     ];
 
-    catppuccin.cursors = {
-      enable = true;
-      accent = "dark";
+    catppuccin = {
+      cursors = {
+        enable = true;
+        accent = "dark";
+      };
+      librewolf.profiles.default.enable = false;
     };
 
     xdg = {
