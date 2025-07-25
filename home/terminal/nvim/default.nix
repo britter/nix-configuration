@@ -60,38 +60,6 @@ in
         log = "log";
       };
       files = {
-        "ftplugin/java.lua" = {
-          opts = {
-            softtabstop = 4;
-            shiftwidth = 4;
-          };
-        };
-        "ftplugin/kotlin.lua" = {
-          opts = {
-            softtabstop = 4;
-            shiftwidth = 4;
-          };
-        };
-        "ftplugin/groovy.lua" = {
-          opts = {
-            softtabstop = 4;
-            shiftwidth = 4;
-          };
-        };
-        "ftplugin/python.lua" = {
-          opts = {
-            softtabstop = 4;
-            shiftwidth = 4;
-          };
-        };
-        "ftplugin/go.lua" = {
-          opts = {
-            expandtab = false;
-            # Align tab width with what is being inserted when pressing tab
-            softtabstop = 4;
-            shiftwidth = 4;
-          };
-        };
         "ftplugin/log.lua" = {
           opts = {
             wrap = false;
@@ -155,6 +123,7 @@ in
             diagnostics.actionlint.enable = true;
           };
         };
+        sleuth.enable = true;
         telescope = {
           enable = true;
           extensions.ui-select.enable = true;
