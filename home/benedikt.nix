@@ -1,9 +1,12 @@
 {
   pkgs,
+  lib,
   config,
   ...
 }:
-
+let
+  npmGlobalDir = "${config.home.homeDirectory}/.npm-global";
+in
 {
   imports = [
     ./desktop/intellij
@@ -69,6 +72,18 @@
       }
     ];
   };
+
+  systemd.user.tmpfiles.rules = [
+    "d ${npmGlobalDir} 0700 ${config.home.username} - -"
+  ];
+  home.sessionPath = [
+    "${npmGlobalDir}/bin"
+  ];
+  # Run npm config set during activation to store prefix in ~/.npmrc
+  home.activation.setNpmPrefix = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ${pkgs.nodejs}/bin/npm config set prefix ${npmGlobalDir}
+  '';
+
   home.sessionVariables = {
     GITSIGN_CREDENTIAL_CACHE = "${config.home.homeDirectory}/.cache/sigstore/gitsign/cache.sock";
   };
@@ -105,7 +120,6 @@
   };
   home.packages = with pkgs; [
     argo
-    claude-code
     crane
     dotenvx
     (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
@@ -114,6 +128,7 @@
     kubectx
     maven
     melange
+    nodejs
     syft
     terraform
     witness
