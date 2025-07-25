@@ -103,6 +103,7 @@
                 pkg:
                 builtins.elem (lib.getName pkg) [
                   "terraform"
+                  "claude-code"
                 ];
 
             }

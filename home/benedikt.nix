@@ -35,7 +35,14 @@
       ssh.enable = false;
     };
   };
-  programs.nixvim.plugins.none-ls.sources.formatting.google_java_format.enable = true;
+
+  programs.nixvim = {
+    plugins = {
+      none-ls.sources.formatting.google_java_format.enable = true;
+      claude-code.enable = true;
+    };
+  };
+
   programs.ssh = {
     enable = true;
     matchBlocks = {
@@ -98,6 +105,7 @@
   };
   home.packages = with pkgs; [
     argo
+    claude-code
     crane
     dotenvx
     (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
