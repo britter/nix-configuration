@@ -41,24 +41,23 @@ in
   ];
 
   config = {
-    my.modules =
-      {
-        i18n.enable = true;
-        networking.enable = true;
-      }
-      // lib.optionalAttrs (cfg.role == "desktop") {
-        fonts.enable = true;
-        gaming.enable = true;
-        my-user.enable = true;
-        sound.enable = true;
-        sway.enable = true;
-        system-recovery.enable = true;
-      }
-      // lib.optionalAttrs (cfg.role == "server") {
-        comin.enable = true;
-        monitoring.enable = true;
-        sops.enable = true;
-        ssh-access.enable = true;
-      };
+    my.modules = {
+      i18n.enable = true;
+      networking.enable = true;
+    }
+    // lib.optionalAttrs (cfg.role == "desktop") {
+      fonts.enable = true;
+      gaming.enable = true;
+      my-user.enable = true;
+      sound.enable = true;
+      sway.enable = true;
+      system-recovery.enable = true;
+    }
+    // lib.optionalAttrs (cfg.role == "server") {
+      comin.enable = true;
+      monitoring.enable = true;
+      sops.enable = true;
+      ssh-access.enable = true;
+    };
   };
 }

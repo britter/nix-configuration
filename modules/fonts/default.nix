@@ -18,6 +18,7 @@ in
   config = lib.mkIf cfg.enable {
     fonts.packages = [
       pkgs.font-awesome
-    ] ++ (lib.map (font: pkgs.nerd-fonts."${font}") cfg.fonts);
+    ]
+    ++ (lib.map (font: pkgs.nerd-fonts."${font}") cfg.fonts);
   };
 }

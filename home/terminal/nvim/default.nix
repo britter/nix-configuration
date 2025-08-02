@@ -146,12 +146,14 @@ in
                   "--line-number"
                   "--column"
                   "--smart-case"
-                ] ++ rgArgs;
+                ]
+                ++ rgArgs;
               };
               pickers.find_files.find_command = [
                 (lib.getExe pkgs.ripgrep)
                 "--files"
-              ] ++ rgArgs;
+              ]
+              ++ rgArgs;
             };
         };
         treesitter = {
