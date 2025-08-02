@@ -19,21 +19,20 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    networking =
-      {
-        hostName = hostCfg.name;
-        networkmanager.enable = hostCfg.role == "desktop";
-      }
-      // (lib.optionalAttrs (homelabCfg != null && (builtins.hasAttr "ip" homelabCfg)) {
-        usePredictableInterfaceNames = false;
-        interfaces.eth0.ipv4.addresses = [
-          {
-            address = homelabCfg.ip;
-            prefixLength = 24;
-          }
-        ];
-        defaultGateway = home-lab.devices.fritz-box.ip;
-        nameservers = [ home-lab.hosts.directions.ip ];
-      });
+    networking = {
+      hostName = hostCfg.name;
+      networkmanager.enable = hostCfg.role == "desktop";
+    }
+    // (lib.optionalAttrs (homelabCfg != null && (builtins.hasAttr "ip" homelabCfg)) {
+      usePredictableInterfaceNames = false;
+      interfaces.eth0.ipv4.addresses = [
+        {
+          address = homelabCfg.ip;
+          prefixLength = 24;
+        }
+      ];
+      defaultGateway = home-lab.devices.fritz-box.ip;
+      nameservers = [ home-lab.hosts.directions.ip ];
+    });
   };
 }

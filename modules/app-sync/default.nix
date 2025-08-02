@@ -83,7 +83,8 @@ let
         pkgs.postgresql
         pkgs.rsync
         pkgs.sudo
-      ] ++ job.runtimeInputs;
+      ]
+      ++ job.runtimeInputs;
       text = lib.strings.concatLines (
         lib.optionals (job.preCommand != null) [ job.preCommand ]
         ++ [ "mkdir -p ${job.backupDir}" ]
