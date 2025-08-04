@@ -86,19 +86,21 @@ nix flake update --commit-lock-file
 ```shell
 nix flake show <flake url>
 ```
+
 ### Secrets management with sops
 
 - https://github.com/Mic92/sops-nix
 - https://github.com/getsops/sops
 - https://www.youtube.com/watch?v=G5f6GC7SnhU
 
-** Adding a new host
+**Adding a new host**
 
 - Generate SSH key for the host using `ssh-key-gen`
 - Convert the public key to age
 
 ```shell
 nix run nixpkgs#ssh-to-age -- -i ~/.ssh/key.pub
+nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt
 ```
 
 - Add an entry to `.sops.yaml` for that host
@@ -108,7 +110,7 @@ nix run nixpkgs#ssh-to-age -- -i ~/.ssh/key.pub
 nix run nixpkgs#sops -- path/to/secrets.yaml
 ```
 
-**Rotating a key in  a sops file**
+**Rotating a key in a sops file**
 
 Modify `.sops.yaml` and update the key.
 
@@ -212,7 +214,8 @@ sudo chmod 600 img/home/nixos/authorized_keys
 1. Once the key is on the device, ssh into it as the `nixos` user.
 2. Run `sudo nixos-generate-config` to generate the initial configuration.
 3. IMPORTANT: You need to make two modifications to `/etc/nixos/configuration.nix`. If you forget to add this to the config, when you `nixos-rebuild switch` you won't be able to login anymore!
-  - Configure the `nixos` user:
+
+- Configure the `nixos` user:
 
 ```nix
 users.users.nixos = {
@@ -221,7 +224,7 @@ users.users.nixos = {
 }
 ```
 
-  - Enable the SSH services:
+- Enable the SSH services:
 
 ```nix
 services.openssh = {
