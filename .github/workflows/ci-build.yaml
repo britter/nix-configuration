@@ -2,9 +2,9 @@ name: "CI Build"
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build-x86:
@@ -12,7 +12,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        configuration: ["framework-13", "pulse-14", "srv-prod-1", "srv-prod-2", "srv-test-1", "srv-test-2", "srv-eval-1", "srv-backup-1"]
+        configuration:
+          [
+            "framework-13",
+            "pulse-14",
+            "srv-prod-1",
+            "srv-prod-2",
+            "srv-test-1",
+            "srv-test-2",
+            "srv-eval-1",
+            "srv-backup-1",
+            "srv-offsite-1",
+          ]
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@main
