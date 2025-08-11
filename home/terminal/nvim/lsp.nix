@@ -56,11 +56,6 @@ _: {
           "<leader>ca" = "code_action";
           "<leader>rr" = "rename";
         };
-        diagnostic = {
-          "[d" = "goto_prev";
-          "]d" = "goto_next";
-          "<C-w>d" = "open_float";
-        };
       };
     };
     keymaps = [

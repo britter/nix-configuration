@@ -2,31 +2,9 @@ _: {
   programs.nixvim = {
     plugins.tmux-navigator.enable = true;
     keymaps = [
-      # Jump through and delete buffers
-      {
-        action = "<cmd>bprev<CR>";
-        key = "[b";
-        mode = [ "n" ];
-      }
-      {
-        action = "<cmd>bnext<CR>";
-        key = "]b";
-        mode = [ "n" ];
-      }
       {
         action = "<cmd>bdelete<CR>";
         key = "<leader>bd";
-        mode = [ "n" ];
-      }
-      # Jump through quickfix list
-      {
-        action = "<cmd>cprevious<CR>";
-        key = "[q";
-        mode = [ "n" ];
-      }
-      {
-        action = "<cmd>cnext<CR>";
-        key = "]q";
         mode = [ "n" ];
       }
       # Remap Crtl-d and Crtl-z to also center the view
