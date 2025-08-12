@@ -34,6 +34,8 @@
       list = true;
       listchars = "tab:→·,lead:·,space:·,trail:~,extends:→,precedes:←,nbsp:␣";
     };
+    # Show diagnostic as a virtual line but only below the current cursor line
+    diagnostic.settings.virtual_lines.current_line = true;
     extraPlugins = [
       (pkgs.vimUtils.buildVimPlugin {
         name = "webify";
