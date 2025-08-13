@@ -27,6 +27,7 @@ in
     home.packages = with pkgs; [
       audacity
       bitwarden-desktop
+      chromium
       gimp
       libreoffice
       obsidian
