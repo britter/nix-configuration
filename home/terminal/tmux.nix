@@ -47,6 +47,8 @@ in
         }
       ];
       extraConfig = ''
+        # fix colors
+        set-option -sa terminal-overrides ",xterm*:Tc"
         # Open new pane splits in CWD
         bind '"' split-window -v -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
