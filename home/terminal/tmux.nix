@@ -30,6 +30,7 @@ in
       terminal = "tmux-256color";
       plugins = [
         pkgs.tmuxPlugins.vim-tmux-navigator
+        pkgs.tmuxPlugins.yank
         {
           plugin = pkgs.tmuxPlugins.catppuccin;
           extraConfig = ''
@@ -49,6 +50,12 @@ in
       extraConfig = ''
         # fix colors
         set-option -sa terminal-overrides ",xterm*:Tc"
+
+        # Configure vim like selection in copy mode
+        bind-key -T copy-mode-vi v send-keys -X begin-selection
+        bind-key -T copy-mode-vi C-v send-keys -X rectangle-toggle
+        bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+
         # Open new pane splits in CWD
         bind '"' split-window -v -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
