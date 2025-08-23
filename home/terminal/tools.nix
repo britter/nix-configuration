@@ -33,11 +33,12 @@ in
         caligula # tui for disk imaging
         curl
         eza # ls replacement
-        pdf-fax
+        fd # find replacement
         file
         httpie
         jq
         mob # smooth git handover
+        pdf-fax
         tokei # count lines of code
         tealdeer # better man pages
         unzip
