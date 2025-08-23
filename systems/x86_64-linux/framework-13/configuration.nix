@@ -24,6 +24,8 @@
     };
   };
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   facter.reportPath = ./facter.json;
   # see https://github.com/numtide/nixos-facter-modules/issues/62
   facter.detected.dhcp.enable = false;
