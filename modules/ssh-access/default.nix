@@ -13,7 +13,6 @@ in
   config = lib.mkIf cfg.enable {
     users.users.root.openssh.authorizedKeys.keyFiles = [
       ./id_ed25519-framework-13.pub
-      ./id_ed25519-pulse-14.pub
     ];
 
     services.openssh = {

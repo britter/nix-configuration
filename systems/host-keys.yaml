@@ -24,23 +24,14 @@ directions:
     private-key: ENC[AES256_GCM,data:7NHpqnBiOQL7RkXKir4+EYvXlsAnq2eqWVtbXuxwuU8Ieq6X7fACstqyd/Sx6lM+48AjOmRe1EP29NZpjE8iJMUGm7qYzoL2mRbowSi2/yykafTCi852t5Nk1GBcSTLjqjBHpufK1wiqcqxXogQqUL3f6fjoPkOlgqjot1bK4T3GgwIhioeCsXSpgmzsyvd1h/5SiTErUGt0UP6NkVLBEa4HQE/hzR30ZSpXMYKbDjm2+5fxJzfwO4JJ2PUdubAuerx9eOiSf1I6Kh1Paxi/rNEtdHDF9EZmZ7FcQTHpPqYClI1JLLR8ahkOSnX3PK5hOsnCxNE/Ib84Q09OoHJ60qlH2ZqjFDta3RL2K8842ZTB4x5fWaJlpyP6S3lM68KXr42Jxwt0Yi9JSfWxxLHEiqKMH+IHkdIGvEjLKv6wzQFCGPoj0rg70O1AVYw/aNfja2YlSusmimuKjLsg6WiobJHfajw0YsV2swrrsUw280/gvoZ+xmGsHG/WnSBwNGbCewbmH1RlL3Ctl3Yr6pVL,iv:kvcgIWYRX2/vGgPs5yZKOHW8jnI3xNvCW8Xlg5rwqeg=,tag:B2V02dzfz1SBZ7Q9pxi1ng==,type:str]
 sops:
     age:
-        - recipient: age18mrc4ttzg8xldevwfvtxqd0942hlv2az75l060flc4c0tqnmkaus0ueqpl
-          enc: |
-            -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB0bitFR1hQQTA1dzZlSmFh
-            Ulg3NWVqOWYyVSt2Q2ExcHBHamFwS2FRWmg4CllaNVBORG1NTGNraEt3S0IyUERl
-            TVhpYWhuMVhFVzRKRHBBYW4yTXdOczgKLS0tIHRTN0dOS2VsQm51MXErZFJHa0x0
-            V0gyekFLTWZkM2ZUdUZwV2pRUy9HM0UKDaxrs+G6U/F0XDs1fdETtoLCLcbqrbYe
-            EWVIuZuK4slFNkZFYKg1jugw0ywgNqFH20mi+fHDKskWj8HMRkW9dg==
-            -----END AGE ENCRYPTED FILE-----
         - recipient: age14dnfyq56r7exkjx58gs4s8xlhn6sd05l3aufr540r374ca7mcf6qdv0yhw
           enc: |
             -----BEGIN AGE ENCRYPTED FILE-----
-            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBiNmVtenJQa0d6ZDEvOFpp
-            Y1lhOU55ZnN6RmhJNnA2aXcrY3JNQ1d6OHlvCnJCRFpRRFpleTl2TGZiMGpSRDNh
-            R0RoQmRKbGc2YmVsdU42S2hiREN4VDAKLS0tIGJ6T05yajVOV3lQNFVxTkZZSnUw
-            WFRyeHlPSkhENXpWZy9TaFVwVDJjOVUKt1qo2/oU1mm+LnYLVVcbAHn7UojRyDlK
-            +413GdVPq+JnbSD9QrAlXYIQIDo2ayHnzqZ7uE0LrU/SoSphGwFoWw==
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBsTVUveW5Bb3VndkwrQTRz
+            Q2RiSGE4MzFjZTZMZisrNWFVaFM2bkVUMmhrCmRJUHg5UlFmakVpMmZTa3JnQy94
+            VDN2RVV1L04yQSt0SzVwOXR2RHNFN3MKLS0tIFlUSUp4ZlpDdlhIZjlSL3k0dzh2
+            bzVlTDEyNkFZNFMwSFl6WGFjSXFjcm8K5nBS54UsLPzWJx/w9D7qryJlCPuq7sB2
+            IHhCUOILGOScUZhZpXviZfnkQkvNR4i847fsRyQtRYW5QAwsa6ySoQ==
             -----END AGE ENCRYPTED FILE-----
     lastmodified: "2025-08-04T18:56:11Z"
     mac: ENC[AES256_GCM,data:MWZGe4/ZHaG90HRsK+LbrYeoELr0nED+ucBpe+Ifk/baP9ofSX9hz8Slkgp6NXUgF+mWB73izeRSoS/bL0m3+MPCnEGhe07EiTBVza4K+a50Y/eqJcSGZVF6LwwEwxefjLxPd+7BpoD0w6afo/4f/tQ5V7ZpXvmuL1cdcJ5uac4=,iv:IVI2rCbjXaih+uWY/MTBW1r9TlFNfPEIHnyCGz8W49k=,tag:ZiuwzvIrP5f7XWDinrh8GQ==,type:str]

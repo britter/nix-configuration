@@ -1,5 +1,4 @@
 keys:
-  - &pulse-14 age18mrc4ttzg8xldevwfvtxqd0942hlv2az75l060flc4c0tqnmkaus0ueqpl
   - &framework-13 age14dnfyq56r7exkjx58gs4s8xlhn6sd05l3aufr540r374ca7mcf6qdv0yhw
   - &srv-prod-1 age1wsytzmsk73z4253uc8e9050cjdgg9dvchy9m2dmj9tgml4rrsshqy9uku2
   - &srv-prod-2 age1azlfwa6wlup8vc9vjqhn2nv8hnpphrg5f0chyhn8xq63tv54zyjsr8yng2
@@ -13,53 +12,44 @@ creation_rules:
   - path_regex: systems/host-keys\.yaml$
     key_groups:
       - age:
-          - *pulse-14
           - *framework-13
   - path_regex: systems/x86_64-linux/srv-prod-1/secrets\.yaml$
     key_groups:
       - age:
-          - *pulse-14
           - *framework-13
           - *srv-prod-1
   - path_regex: systems/x86_64-linux/srv-prod-2/secrets\.yaml$
     key_groups:
       - age:
-          - *pulse-14
           - *framework-13
           - *srv-prod-2
   - path_regex: systems/x86_64-linux/srv-test-1/secrets\.yaml$
     key_groups:
       - age:
-          - *pulse-14
           - *framework-13
           - *srv-test-1
   - path_regex: systems/x86_64-linux/srv-test-2/secrets\.yaml$
     key_groups:
       - age:
-          - *pulse-14
           - *framework-13
           - *srv-test-2
   - path_regex: systems/x86_64-linux/srv-eval-1/secrets\.yaml$
     key_groups:
       - age:
-          - *pulse-14
           - *framework-13
           - *srv-eval-1
   - path_regex: systems/x86_64-linux/srv-backup-1/secrets\.yaml$
     key_groups:
       - age:
-          - *pulse-14
           - *framework-13
           - *srv-backup-1
   - path_regex: systems/x86_64-linux/srv-offsite-1/secrets\.yaml$
     key_groups:
       - age:
-          - *pulse-14
           - *framework-13
           - *srv-offsite-1
   - path_regex: systems/aarch64-linux/directions/secrets\.yaml$
     key_groups:
       - age:
-          - *pulse-14
           - *framework-13
           - *directions

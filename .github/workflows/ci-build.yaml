@@ -15,7 +15,6 @@ jobs:
         configuration:
           [
             "framework-13",
-            "pulse-14",
             "srv-prod-1",
             "srv-prod-2",
             "srv-test-1",
