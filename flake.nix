@@ -14,15 +14,14 @@
     };
     flake-utils.url = "github:numtide/flake-utils";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.05";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {
-      url = "github:nix-community/nixvim/nixos-25.05";
+      url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nur.url = "github:nix-community/NUR";
@@ -47,7 +46,6 @@
       system:
       let
         pkgs = inputs.nixpkgs.legacyPackages.${system};
-        pkgs-unstable = inputs.nixpkgs-unstable.legacyPackages.${system};
         my-pkgs = self.outputs.packages.${system};
         treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
       in
@@ -65,7 +63,6 @@
         };
         packages = import ./packages { inherit pkgs; };
         overlays = import ./overlays {
-          inherit pkgs-unstable;
           inherit my-pkgs;
           inherit (inputs) nur;
         };
@@ -89,7 +86,7 @@
         # the path to your home.nix.
         modules = [
           inputs.catppuccin.homeModules.catppuccin
-          inputs.nixvim.homeManagerModules.nixvim
+          inputs.nixvim.homeModules.nixvim
           ./home/benedikt.nix
           (
             { pkgs, lib, ... }:

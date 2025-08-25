@@ -25,7 +25,6 @@ in
         DisableTelemetry = true;
         DisableFirefoxAccounts = false;
         DisplayBookmarksToolbar = "newtab";
-        NoDefaultBookmarks = true;
         OfferToSaveLogins = false;
         OfferToSaveLoginsDefault = false;
         PasswordManagerEnabled = false;
