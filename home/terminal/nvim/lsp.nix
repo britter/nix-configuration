@@ -10,6 +10,7 @@ _: {
         nixd.enable = true;
         terraformls.enable = true;
         ts_ls.enable = true;
+        zls.enable = true;
       };
       luaConfig.pre = ''
         local augroup = vim.api.nvim_create_augroup('Autoformat', {})
