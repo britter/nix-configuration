@@ -35,15 +35,14 @@ in
     services = {
       greetd = {
         enable = true;
-        vt = 2;
         settings = {
           default_session = {
             command = ''
-              ${pkgs.greetd.tuigreet}/bin/tuigreet \
+              ${lib.getExe pkgs.tuigreet} \
                 --remember \
                 --time \
                 --asterisks \
-                --cmd ${pkgs.sway}/bin/sway
+                --cmd ${lib.getExe pkgs.sway}
             '';
           };
         };
