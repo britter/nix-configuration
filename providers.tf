@@ -12,12 +12,12 @@ terraform {
 }
 
 ## Tailscale ##
-variable "tailscape_api_token" {
+variable "tailscale_api_token" {
   type = string
 }
 
 provider "tailscale" {
-  api_key = var.tailscape_api_token
+  api_key = var.tailscale_api_token
   tailnet = local.tailnet
 }
 
@@ -33,4 +33,3 @@ variable "cloudflare_zone_id" {
 provider "cloudflare" {
   api_token = var.cloudflare_api_token
 }
-
