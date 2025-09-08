@@ -24,3 +24,21 @@ resource "cloudflare_record" "host_wildcard" {
   proxied  = false
 }
 
+resource "cloudflare_api_token" "acme_tokens" {
+  for_each = var.host_ips
+  name     = "${each.key} acme token"
+
+  policy {
+    permission_groups = [
+      data.cloudflare_api_token_permission_groups.all.zone["DNS Write"],
+    ]
+    resources = {
+      "com.cloudflare.api.account.zone.${var.cloudflare_zone_id}" = "*"
+    }
+  }
+}
+
+output "acme_tokens" {
+  value     = { for k, t in cloudflare_api_token.acme_tokens : k => t.value }
+  sensitive = true
+}

@@ -6,6 +6,5 @@ Each server has a decidated file that creates a wildcard DNS record pointing at 
 Copy a token value into the system clipboard:
 
 ```
-terraform output -raw name_of_value | wl-copy
+tofu output -json acme_tokens | jq -r '."srv_eval_1"' | wl-copy
 ```
-
