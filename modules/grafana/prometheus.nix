@@ -22,6 +22,7 @@ in
             "directions"
             "srv-prod-1"
             "srv-prod-2"
+            "srv-prod-3"
             "srv-test-1"
             "srv-test-2"
             "srv-eval-1"

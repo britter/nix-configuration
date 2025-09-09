@@ -11,6 +11,11 @@ let
         dns = "srv-prod-2.ritter.family";
         vm = true;
       };
+      srv-prod-3 = {
+        ip = "192.168.178.213";
+        dns = "srv-prod-3.ritter.family";
+        vm = true;
+      };
       srv-test-1 = {
         ip = "192.168.178.221";
         dns = "srv-test-1.ritter.family";
