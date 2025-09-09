@@ -6,7 +6,7 @@ resource "proxmox_vm_qemu" "srv_test_1" {
   desc        = "VM running monitoring stack"
   tags        = "nixos;linux;test"
 
-  onboot  = true
+  onboot  = false
   agent   = 1
   cores   = 2
   sockets = 1
@@ -17,7 +17,7 @@ resource "proxmox_vm_qemu" "srv_test_1" {
   full_clone             = false
   scsihw                 = "virtio-scsi-single"
   boot                   = "order=scsi0;ide2;net0"
-  vm_state               = "running"
+  vm_state               = "stopped"
 
   network {
     bridge = "vmbr0"
