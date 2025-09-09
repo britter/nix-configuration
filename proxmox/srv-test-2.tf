@@ -17,7 +17,7 @@ resource "proxmox_vm_qemu" "srv_test_2" {
   full_clone             = false
   scsihw                 = "virtio-scsi-single"
   boot                   = "order=scsi0;ide2;net0"
-  vm_state               = "stopped"
+  vm_state               = "running"
 
   network {
     bridge = "vmbr0"
