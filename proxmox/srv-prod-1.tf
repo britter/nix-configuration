@@ -11,7 +11,7 @@ resource "proxmox_vm_qemu" "srv_prod_1" {
   cores   = 2
   sockets = 1
   cpu     = "host"
-  memory  = 4096
+  memory  = 2048
 
   define_connection_info = false
   full_clone             = false
