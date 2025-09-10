@@ -28,7 +28,7 @@ resource "proxmox_vm_qemu" "srv_prod_3" {
     ide {
       ide2 {
         cdrom {
-          iso = "local:iso/nixos-24.05.20240615.752c634-x86_64-linux.iso"
+          iso = "local:iso/nixos-minimal-25.11.20250905.8eb28ad-x86_64-linux.iso"
         }
       }
     }
