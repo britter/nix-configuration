@@ -17,6 +17,7 @@
         bootDisk = "/dev/sda";
         storageDisk = "/dev/sdb";
       };
+      minio.enable = true;
       tailscale.enable = true;
     };
   };
