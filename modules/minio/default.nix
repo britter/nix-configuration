@@ -45,34 +45,19 @@ in
           # Disable buffering
           proxy_buffering off;
           proxy_request_buffering off;
+          proxy_connect_timeout 300;
+          chunked_transfer_encoding off;
         '';
         locations = {
           "/" = {
-            extraConfig = ''
-              proxy_connect_timeout 300;
-              # Default is HTTP/1, keepalive is only enabled in HTTP/1.1
-              proxy_http_version 1.1;
-              proxy_set_header Connection "";
-              chunked_transfer_encoding off;
-            '';
             proxyPass = "http://localhost:9000";
             proxyWebsockets = true;
           };
           "/minio/" = {
             extraConfig = ''
               proxy_set_header X-NginX-Proxy true;
-
               # This is necessary to pass the correct IP to be hashed
               real_ip_header X-Real-IP;
-
-              proxy_connect_timeout 300;
-
-              # To support websockets in MinIO versions released after January 2023
-              proxy_http_version 1.1;
-              proxy_set_header Upgrade $http_upgrade;
-              proxy_set_header Connection "upgrade";
-
-              chunked_transfer_encoding off;
             '';
             proxyPass = "http://localhost:9001/";
             proxyWebsockets = true;
