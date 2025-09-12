@@ -56,10 +56,10 @@ in
               chunked_transfer_encoding off;
             '';
             proxyPass = "http://localhost:9000";
+            proxyWebsockets = true;
           };
-          "/minio/ui" = {
+          "/minio/" = {
             extraConfig = ''
-              rewrite ^/minio/ui/(.*) /$1 break;
               proxy_set_header X-NginX-Proxy true;
 
               # This is necessary to pass the correct IP to be hashed
@@ -74,7 +74,8 @@ in
 
               chunked_transfer_encoding off;
             '';
-            proxyPass = "http://localhost:9001";
+            proxyPass = "http://localhost:9001/";
+            proxyWebsockets = true;
           };
         };
       };
