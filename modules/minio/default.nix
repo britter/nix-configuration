@@ -53,14 +53,13 @@ in
             proxyPass = "http://localhost:9000";
             proxyWebsockets = true;
           };
-          "/minio/ui/" = {
+          "/console/" = {
             extraConfig = ''
-              rewrite ^/minio/ui/(.*) /$1 break;
               proxy_set_header X-NginX-Proxy true;
               # This is necessary to pass the correct IP to be hashed
               real_ip_header X-Real-IP;
             '';
-            proxyPass = "http://localhost:9001";
+            proxyPass = "http://localhost:9001/";
             proxyWebsockets = true;
           };
         };
