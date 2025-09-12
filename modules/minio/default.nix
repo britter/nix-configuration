@@ -26,6 +26,9 @@ in
       region = "eu-central-1";
       rootCredentialsFile = config.sops.templates."minio-root-credentials".path;
     };
+    systemd.services.minio.environment = {
+      MINIO_BROWSER_REDIRECT_URL = "https://minio.${config.my.host.name}.ritter.family/console/";
+    };
     networking.firewall.allowedTCPPorts = [
       80
       443
