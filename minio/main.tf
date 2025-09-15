@@ -1,4 +1,14 @@
 terraform {
+  backend "s3" {
+    bucket                      = "tofu-states"
+    key                         = "home-lab/minio/terraform.tfstate"
+    region                      = "eu-central-1"
+    endpoint                    = "https://minio.srv-prod-3.ritter.family"
+    skip_credentials_validation = true
+    skip_region_validation      = true
+    skip_requesting_account_id  = true
+    use_path_style              = true
+  }
   required_providers {
     minio = {
       source  = "aminueza/minio"

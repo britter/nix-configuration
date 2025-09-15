@@ -40,3 +40,6 @@ terraform.rc
 
 # Ignore hcl file
 .terraform.lock.hcl
+
+# Credentials file
+credentials.env

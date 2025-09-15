@@ -18,6 +18,9 @@
           buildInputs = with pkgs; [
             opentofu
           ];
+          shellHook = ''
+            source credentials.env
+          '';
         };
       }
     );
