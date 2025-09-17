@@ -35,7 +35,6 @@ in
     ];
     programs.rofi = {
       enable = true;
-      package = pkgs.rofi-wayland;
     };
     wayland.windowManager.sway = {
       enable = true;
