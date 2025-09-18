@@ -32,3 +32,12 @@ output "srv_prod_3_state_user_credentials" {
   value     = module.srv-prod-3.state_user_credentials
   sensitive = true
 }
+
+output "srv_prod_3_restic_bucket_domain_name" {
+  value = module.srv-prod-3.restic_bucket_domain_name
+}
+
+output "srv_prod_3_restic_user_credentials" {
+  value     = module.srv-prod-3.restic_user_credentials
+  sensitive = true
+}
