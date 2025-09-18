@@ -27,3 +27,8 @@ module "srv-prod-3" {
 output "srv_prod_3_state_bucket_domain_name" {
   value = module.srv-prod-3.state_bucket_domain_name
 }
+
+output "srv_prod_3_state_user_credentials" {
+  value     = module.srv-prod-3.state_user_credentials
+  sensitive = true
+}
