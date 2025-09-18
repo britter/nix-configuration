@@ -16,11 +16,10 @@
       {
         devShell = pkgs.mkShell {
           buildInputs = with pkgs; [
+            jq
             opentofu
+            sops
           ];
-          shellHook = ''
-            source credentials.env
-          '';
         };
       }
     );
