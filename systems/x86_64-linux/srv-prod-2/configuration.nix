@@ -56,7 +56,32 @@
   };
 
   sops.secrets."restic/repository-password" = { };
+  sops.secrets."restic/git/repository-password" = { };
+  sops.secrets."restic/git/minio-access-key-id" = { };
+  sops.secrets."restic/git/minio-secret-access-key" = { };
+  sops.templates."restic/git/secrets.env" = {
+    content = ''
+      AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/git/minio-access-key-id"}
+      AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/git/minio-secret-access-key"}
+      RESTIC_PASSWORD=${config.sops.placeholder."restic/git/repository-password"}
+    '';
+  };
   services.restic.backups = {
+    git = {
+      environmentFile = config.sops.templates."restic/git/secrets.env".path;
+      paths = [ "/srv/git" ];
+      repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
+      initialize = true;
+      # keep the most recent snapshot per <unit> for the last .. <unit>
+      # e.g. for the last 8 weeks, we will keep the most recent snapshot of that week.
+      pruneOpts = [
+        "--keep-daily 14"
+        "--keep-weekly 8"
+        "--keep-monthly 12"
+        "--keep-yearly 5"
+      ];
+    };
+    # legacy backups, to be removed
     srv-backup-1 = {
       passwordFile = config.sops.secrets."restic/repository-password".path;
       extraOptions = [ "sftp.args='-i /etc/ssh/ssh_host_ed25519_key'" ];
@@ -75,7 +100,7 @@
       repository = "sftp:backup@srv-backup-1.ritter.family:restic/srv-prod-1";
       initialize = true;
       # keep the most recent snapshot per <unit> for the last .. <unit>
-      # e.g. for the last 8 week, we will keep the most recent snapshot of that week.
+      # e.g. for the last 8 weeks, we will keep the most recent snapshot of that week.
       pruneOpts = [
         "--keep-daily 14"
         "--keep-weekly 8"
