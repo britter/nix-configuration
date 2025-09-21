@@ -130,7 +130,7 @@
       };
       nextcloud =
         let
-          occ = config.services.nextcloud.occ;
+          inherit (config.services.nextcloud) occ;
         in
         {
           environmentFile = config.sops.templates."restic/nextcloud/secrets.env".path;
