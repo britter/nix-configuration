@@ -66,49 +66,73 @@
       RESTIC_PASSWORD=${config.sops.placeholder."restic/git/repository-password"}
     '';
   };
-  services.restic.backups = {
-    git = {
-      environmentFile = config.sops.templates."restic/git/secrets.env".path;
-      paths = [ "/srv/git" ];
-      repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
-      initialize = true;
-      # keep the most recent snapshot per <unit> for the last .. <unit>
-      # e.g. for the last 8 weeks, we will keep the most recent snapshot of that week.
-      pruneOpts = [
-        "--keep-daily 14"
-        "--keep-weekly 8"
-        "--keep-monthly 12"
-        "--keep-yearly 5"
-      ];
-    };
-    # legacy backups, to be removed
-    srv-backup-1 = {
-      passwordFile = config.sops.secrets."restic/repository-password".path;
-      extraOptions = [ "sftp.args='-i /etc/ssh/ssh_host_ed25519_key'" ];
-      backupPrepareCommand = ''
-        ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_dump --format=custom --file=/var/backups/postgres/nextcloud.dump nextcloud
-        ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_dump --format=custom --file=/var/backups/postgres/vaultwarden.dump vaultwarden
-      '';
-      paths = [
-        "/var/backups/postgres"
-        "/var/lib/nextcloud/data"
-        "/var/lib/bitwarden_rs"
-        "/var/lib/calibre-web"
-        "/var/lib/calibre-library"
-        "/srv/git"
-      ];
-      repository = "sftp:backup@srv-backup-1.ritter.family:restic/srv-prod-1";
-      initialize = true;
-      # keep the most recent snapshot per <unit> for the last .. <unit>
-      # e.g. for the last 8 weeks, we will keep the most recent snapshot of that week.
-      pruneOpts = [
-        "--keep-daily 14"
-        "--keep-weekly 8"
-        "--keep-monthly 12"
-        "--keep-yearly 5"
-      ];
-    };
+  sops.secrets."restic/calibre/repository-password" = { };
+  sops.secrets."restic/calibre/minio-access-key-id" = { };
+  sops.secrets."restic/calibre/minio-secret-access-key" = { };
+  sops.templates."restic/calibre/secrets.env" = {
+    content = ''
+      AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/calibre/minio-access-key-id"}
+      AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/calibre/minio-secret-access-key"}
+      RESTIC_PASSWORD=${config.sops.placeholder."restic/calibre/repository-password"}
+    '';
   };
+  services.restic.backups =
+    # keep the most recent snapshot per <unit> for the last .. <unit>
+    # e.g. for the last 8 weeks, we will keep the most recent snapshot of that week.
+    let
+      pruneOpts = [
+        "--keep-daily 14"
+        "--keep-weekly 8"
+        "--keep-monthly 12"
+        "--keep-yearly 5"
+      ];
+    in
+    {
+      git = {
+        environmentFile = config.sops.templates."restic/git/secrets.env".path;
+        paths = [ "/srv/git" ];
+        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
+        initialize = true;
+        inherit pruneOpts;
+      };
+      calibre = {
+        environmentFile = config.sops.templates."restic/calibre/secrets.env".path;
+        paths = [
+          "/var/lib/calibre-web"
+          "/var/lib/calibre-library"
+        ];
+        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/calibre";
+        initialize = true;
+        inherit pruneOpts;
+      };
+      # legacy backups, to be removed
+      srv-backup-1 = {
+        passwordFile = config.sops.secrets."restic/repository-password".path;
+        extraOptions = [ "sftp.args='-i /etc/ssh/ssh_host_ed25519_key'" ];
+        backupPrepareCommand = ''
+          ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_dump --format=custom --file=/var/backups/postgres/nextcloud.dump nextcloud
+          ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_dump --format=custom --file=/var/backups/postgres/vaultwarden.dump vaultwarden
+        '';
+        paths = [
+          "/var/backups/postgres"
+          "/var/lib/nextcloud/data"
+          "/var/lib/bitwarden_rs"
+          "/var/lib/calibre-web"
+          "/var/lib/calibre-library"
+          "/srv/git"
+        ];
+        repository = "sftp:backup@srv-backup-1.ritter.family:restic/srv-prod-1";
+        initialize = true;
+        # keep the most recent snapshot per <unit> for the last .. <unit>
+        # e.g. for the last 8 weeks, we will keep the most recent snapshot of that week.
+        pruneOpts = [
+          "--keep-daily 14"
+          "--keep-weekly 8"
+          "--keep-monthly 12"
+          "--keep-yearly 5"
+        ];
+      };
+    };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
