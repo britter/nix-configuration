@@ -20,7 +20,8 @@
         storageDisk = "/dev/sdb";
       };
       app-sync = {
-        enable = true;
+        # temporary disabled until minIO based solution is implemented
+        enable = false;
         jobs = [
           {
             serviceName = "git";
