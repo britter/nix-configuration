@@ -35,6 +35,7 @@
   systemd.tmpfiles.rules = [
     "d /var/backups 0777 root root"
     "d /var/backups/postgres 0755 postgres postgres"
+    "d /var/backups/vaultwarden 0755 postgres postgres"
   ];
   users.users = {
     calibre-web = {
@@ -56,6 +57,17 @@
   };
 
   sops.secrets."restic/repository-password" = { };
+
+  sops.secrets."restic/calibre/repository-password" = { };
+  sops.secrets."restic/calibre/minio-access-key-id" = { };
+  sops.secrets."restic/calibre/minio-secret-access-key" = { };
+  sops.templates."restic/calibre/secrets.env" = {
+    content = ''
+      AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/calibre/minio-access-key-id"}
+      AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/calibre/minio-secret-access-key"}
+      RESTIC_PASSWORD=${config.sops.placeholder."restic/calibre/repository-password"}
+    '';
+  };
   sops.secrets."restic/git/repository-password" = { };
   sops.secrets."restic/git/minio-access-key-id" = { };
   sops.secrets."restic/git/minio-secret-access-key" = { };
@@ -66,14 +78,14 @@
       RESTIC_PASSWORD=${config.sops.placeholder."restic/git/repository-password"}
     '';
   };
-  sops.secrets."restic/calibre/repository-password" = { };
-  sops.secrets."restic/calibre/minio-access-key-id" = { };
-  sops.secrets."restic/calibre/minio-secret-access-key" = { };
-  sops.templates."restic/calibre/secrets.env" = {
+  sops.secrets."restic/vaultwarden/repository-password" = { };
+  sops.secrets."restic/vaultwarden/minio-access-key-id" = { };
+  sops.secrets."restic/vaultwarden/minio-secret-access-key" = { };
+  sops.templates."restic/vaultwarden/secrets.env" = {
     content = ''
-      AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/calibre/minio-access-key-id"}
-      AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/calibre/minio-secret-access-key"}
-      RESTIC_PASSWORD=${config.sops.placeholder."restic/calibre/repository-password"}
+      AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/vaultwarden/minio-access-key-id"}
+      AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/vaultwarden/minio-secret-access-key"}
+      RESTIC_PASSWORD=${config.sops.placeholder."restic/vaultwarden/repository-password"}
     '';
   };
   services.restic.backups =
@@ -103,6 +115,24 @@
         ];
         repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/calibre";
         initialize = true;
+        inherit pruneOpts;
+      };
+      vaultwarden = {
+        environmentFile = config.sops.templates."restic/vaultwarden/secrets.env".path;
+        paths = [
+          "/var/lib/bitwarden_rs"
+          "/var/backups/vaultwarden"
+        ];
+        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
+        initialize = true;
+        backupPrepareCommand = ''
+          systemctl stop vaultwarden
+          ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_dump --format=custom --file=/var/backups/vaultwarden/vaultwarden.dump vaultwarden
+        '';
+        backupCleanupCommand = ''
+          rm /var/backups/vaultwarden/vaultwarden.dump
+          systemctl restart vaultwarden
+        '';
         inherit pruneOpts;
       };
       # legacy backups, to be removed
