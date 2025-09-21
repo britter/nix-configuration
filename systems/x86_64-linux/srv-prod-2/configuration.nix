@@ -36,6 +36,7 @@
     "d /var/backups 0777 root root"
     "d /var/backups/postgres 0755 postgres postgres"
     "d /var/backups/vaultwarden 0755 postgres postgres"
+    "d /var/backups/nextcloud 0755 postgres postgres"
   ];
   users.users = {
     calibre-web = {
@@ -78,6 +79,16 @@
       RESTIC_PASSWORD=${config.sops.placeholder."restic/git/repository-password"}
     '';
   };
+  sops.secrets."restic/nextcloud/repository-password" = { };
+  sops.secrets."restic/nextcloud/minio-access-key-id" = { };
+  sops.secrets."restic/nextcloud/minio-secret-access-key" = { };
+  sops.templates."restic/nextcloud/secrets.env" = {
+    content = ''
+      AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/nextcloud/minio-access-key-id"}
+      AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/nextcloud/minio-secret-access-key"}
+      RESTIC_PASSWORD=${config.sops.placeholder."restic/nextcloud/repository-password"}
+    '';
+  };
   sops.secrets."restic/vaultwarden/repository-password" = { };
   sops.secrets."restic/vaultwarden/minio-access-key-id" = { };
   sops.secrets."restic/vaultwarden/minio-secret-access-key" = { };
@@ -117,6 +128,27 @@
         initialize = true;
         inherit pruneOpts;
       };
+      nextcloud =
+        let
+          occ = config.services.nextcloud.occ;
+        in
+        {
+          environmentFile = config.sops.templates."restic/nextcloud/secrets.env".path;
+          paths = [
+            "/var/lib/nextcloud/data"
+          ];
+          repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/nextcloud";
+          initialize = true;
+          backupPrepareCommand = ''
+            ${occ} maintenance:mode --on
+            ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_dump --format=custom --file=/var/backups/nextcloud/nextcloud.dump nextcloud
+          '';
+          backupCleanupCommand = ''
+            rm /var/backups/nextcloud/nextcloud.dump
+            ${occ} maintenance:mode --off
+          '';
+          inherit pruneOpts;
+        };
       vaultwarden = {
         environmentFile = config.sops.templates."restic/vaultwarden/secrets.env".path;
         paths = [
