@@ -136,6 +136,7 @@
           environmentFile = config.sops.templates."restic/nextcloud/secrets.env".path;
           paths = [
             "/var/lib/nextcloud/data"
+            "/var/backups/nextcloud"
           ];
           repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/nextcloud";
           initialize = true;
