@@ -17,6 +17,7 @@
         bootDisk = "/dev/nvme0n1"; # 256GB
         storageDisk = "/dev/sda"; # 2TB
       };
+      minio.enable = true;
       tailscale.enable = true;
     };
   };
