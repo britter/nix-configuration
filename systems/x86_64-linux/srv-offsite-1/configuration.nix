@@ -1,4 +1,10 @@
-{ inputs, ... }:
+{
+  pkgs,
+  lib,
+  inputs,
+  config,
+  ...
+}:
 {
   imports = [
     ../../../modules
@@ -19,6 +25,44 @@
       };
       minio.enable = true;
       tailscale.enable = true;
+    };
+  };
+
+  sops.secrets."srv-prod-3/minio/access-key" = { };
+  sops.secrets."srv-prod-3/minio/secret-key" = { };
+  sops.templates."rclone.conf" = {
+    content = ''
+      [srv-prod-3]
+      type = s3
+      provider = Minio
+      env_auth = false
+      region = eu-central-1
+      access_key_id = ${config.sops.placeholder."srv-prod-3/minio/access-key"}
+      secret_access_key = ${config.sops.placeholder."srv-prod-3/minio/secret-key"}
+      endpoint = "https://minio.srv-prod-3.ritter.family"
+      location_constraint =
+      server_side_encryption =
+
+      [srv-offsite-1]
+      type = s3
+      provider = Minio
+      env_auth = false
+      region = eu-central-1
+      access_key_id = ${config.sops.placeholder."minio/root-user"}
+      secret_access_key = ${config.sops.placeholder."minio/root-password"}
+      endpoint = "http://localhost:9000"
+      location_constraint =
+      server_side_encryption =
+    '';
+  };
+
+  systemd.services.minio-sync = {
+    description = "Synchronizes the contents of the minio on srv-prod-3 to the minio on this server.";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${lib.getExe pkgs.rclone} sync srv-prod-3: srv-offsite-1: --config ${
+        config.sops.templates."rclone.conf".path
+      }";
     };
   };
 
