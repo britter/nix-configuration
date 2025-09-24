@@ -11,6 +11,7 @@ locals {
     "srv-prod-2",
     "srv-prod-3",
     "srv-backup-1",
+    "srv-offsite-1",
     "directions"
   ]
 }
