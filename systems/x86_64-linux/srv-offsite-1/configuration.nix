@@ -39,7 +39,7 @@
       region = eu-central-1
       access_key_id = ${config.sops.placeholder."srv-prod-3/minio/access-key"}
       secret_access_key = ${config.sops.placeholder."srv-prod-3/minio/secret-key"}
-      endpoint = "https://minio.srv-prod-3.ritter.family"
+      endpoint = https://minio.srv-prod-3.ritter.family
       location_constraint =
       server_side_encryption =
 
@@ -50,7 +50,7 @@
       region = eu-central-1
       access_key_id = ${config.sops.placeholder."minio/root-user"}
       secret_access_key = ${config.sops.placeholder."minio/root-password"}
-      endpoint = "http://localhost:9000"
+      endpoint = http://localhost:9000
       location_constraint =
       server_side_encryption =
     '';
