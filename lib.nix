@@ -35,6 +35,10 @@ let
         dns = "srv-backup-1.ritter.family";
         vm = false;
       };
+      srv-offsite-1 = {
+        dns = "srv-offsite-1.ritter.family";
+        vm = false;
+      };
       directions = {
         ip = "192.168.178.105";
         dns = "directions.ritter.family";
