@@ -41,3 +41,13 @@ output "srv_prod_3_restic_user_credentials" {
   value     = module.srv-prod-3.restic_user_credentials
   sensitive = true
 }
+
+output "srv_prod_3_global_read_user_access_key" {
+  value     = module.srv-prod-3.global_read_access_key
+  sensitive = true
+}
+
+output "srv_prod_3_global_read_user_secret_key" {
+  value     = module.srv-prod-3.global_read_secret_key
+  sensitive = true
+}
