@@ -61,6 +61,7 @@ in
         push.autoSetupRemote = "true";
         merge.tool = "nvimdiff";
         merge.conflictstyle = "diff3";
+        mergetool.keepBackup = "false";
       };
 
       aliases = {
