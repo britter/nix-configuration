@@ -56,6 +56,7 @@
     '';
   };
 
+  # nightly minio-sync
   systemd.services.minio-sync = {
     description = "Synchronizes the contents of the minio on srv-prod-3 to the minio on this server.";
     serviceConfig = {
@@ -86,6 +87,43 @@
     };
     unitConfig = {
       Requires = [ "nightly-shutdown.service" ];
+    };
+  };
+
+  # weekly comin update window
+  # Since we can not coordinate comins fetch / deploy cycle with system shutdown, we wake the system
+  # once per week for 30 minutes so it can run an update.
+  # This is required, because most of the time the minIO sync will run much faster then the time required
+  # to fetch config changes, eval config, and update the system, resulting in no updates being applied
+  # during nightly sync wake ups.
+  # https://github.com/nlewo/comin/issues/104
+  systemd.services."weekly-shutdown" = {
+    description = "Shutdown after weekly Comin upgrade window";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl suspend";
+    };
+  };
+
+  systemd.timers."weekly-comin-start" = {
+    description = "Wake for Comin update window";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "Wed 03:00";
+      Persistent = true;
+      WakeSystem = true;
+    };
+  };
+
+  systemd.timers."weekly-comin-stop" = {
+    description = "Shutdown after Comin update window";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "Wed 03:30";
+      Persistent = true;
+    };
+    unitConfig = {
+      Requires = [ "weekly-shutdown.service" ];
     };
   };
 
