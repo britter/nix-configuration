@@ -66,5 +66,28 @@
     };
   };
 
+  systemd.services.nightly-supend = {
+    description = "Suspend after nightly MinIO sync";
+    after = [ "minio-sync.service" ];
+    requires = [ "minio-sync.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl suspend";
+    };
+  };
+
+  systemd.timers.nightly-backup = {
+    description = "Timer for nightly MinIO sync + suspend";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "daily 02:00";
+      Persistent = true;
+      WakeSystem = true;
+    };
+    unitConfig = {
+      Requires = [ "nightly-shutdown.service" ];
+    };
+  };
+
   system.stateVersion = "25.05";
 }
