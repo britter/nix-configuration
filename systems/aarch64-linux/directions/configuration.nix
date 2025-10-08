@@ -48,6 +48,7 @@
           {
             fqdn = "jetkvm.ritter.family";
             target = "https://${home-lab.devices.jetkvm.ip}";
+            proxyWebsockets = true;
           }
           {
             fqdn = "nextcloud.ritter.family";
