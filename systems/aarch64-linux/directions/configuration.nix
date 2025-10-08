@@ -46,6 +46,10 @@
             target = "https://grafana.srv-prod-1.ritter.family";
           }
           {
+            fqdn = "jetkvm.ritter.family";
+            target = "https://${home-lab.devices.jetkvm.ip}";
+          }
+          {
             fqdn = "nextcloud.ritter.family";
             target = "https://nextcloud.srv-prod-2.ritter.family";
             extraConfig = ''

@@ -58,6 +58,11 @@ let
         dns = "fritz-box.ritter.family";
         vm = false;
       };
+      jetkvm = {
+        ip = "100.96.211.6";
+        dns = "jetkvm.ritter.family";
+        vm = false;
+      };
     };
   };
   defineSystems =
