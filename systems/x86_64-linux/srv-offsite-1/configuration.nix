@@ -57,6 +57,18 @@
   };
 
   # nightly minio-sync
+  systemd.timers.nightly-wakeup = {
+    description = "Nightly timer to wake up the system for the minio sync";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "02:00";
+      Persistent = true;
+      WakeSystem = true;
+    };
+    unitConfig = {
+      Requires = [ "nightly-shutdown.service" ];
+    };
+  };
   systemd.services.minio-sync = {
     description = "Synchronizes the contents of the minio on srv-prod-3 to the minio on this server.";
     serviceConfig = {
@@ -66,27 +78,13 @@
       }";
     };
   };
-
   systemd.services.nightly-supend = {
-    description = "Suspend after nightly MinIO sync";
+    description = "Suspends the system after nightly minio sync";
     after = [ "minio-sync.service" ];
     requires = [ "minio-sync.service" ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${pkgs.systemd}/bin/systemctl suspend";
-    };
-  };
-
-  systemd.timers.nightly-backup = {
-    description = "Timer for nightly MinIO sync + suspend";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "daily 02:00";
-      Persistent = true;
-      WakeSystem = true;
-    };
-    unitConfig = {
-      Requires = [ "nightly-shutdown.service" ];
     };
   };
 
@@ -97,16 +95,8 @@
   # to fetch config changes, eval config, and update the system, resulting in no updates being applied
   # during nightly sync wake ups.
   # https://github.com/nlewo/comin/issues/104
-  systemd.services."weekly-shutdown" = {
-    description = "Shutdown after weekly Comin upgrade window";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/systemctl suspend";
-    };
-  };
-
-  systemd.timers."weekly-comin-start" = {
-    description = "Wake for Comin update window";
+  systemd.timers.weekly-update-wakeup = {
+    description = "Weekly timer to wake up the system for the Comin update window";
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "Wed 03:00";
@@ -114,16 +104,24 @@
       WakeSystem = true;
     };
   };
-
-  systemd.timers."weekly-comin-stop" = {
-    description = "Shutdown after Comin update window";
+  systemd.services.weekly-update-wakeup = {
+    description = "Logs the time of the system wakeup";
+    serviceConfig.Type = "oneshot";
+    script = "echo 'Weekly wakeup triggered at $(date)'";
+  };
+  systemd.timers.weekly-update-suspend = {
+    description = "Weekly timer to suspend the system at the end of the Comin update window";
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnCalendar = "Wed 03:30";
       Persistent = true;
     };
-    unitConfig = {
-      Requires = [ "weekly-shutdown.service" ];
+  };
+  systemd.services.weekly-update-suspend = {
+    description = "Suspends the system";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.systemd}/bin/systemctl suspend";
     };
   };
 
