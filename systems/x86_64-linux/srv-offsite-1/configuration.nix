@@ -57,7 +57,7 @@
   };
 
   # nightly minio-sync
-  systemd.timers.nightly-wakeup = {
+  systemd.timers.nightly-minio-sync = {
     description = "Nightly timer to wake up the system for the minio sync";
     wantedBy = [ "timers.target" ];
     timerConfig = {
@@ -65,26 +65,16 @@
       Persistent = true;
       WakeSystem = true;
     };
-    unitConfig = {
-      Requires = [ "nightly-shutdown.service" ];
-    };
   };
-  systemd.services.minio-sync = {
-    description = "Synchronizes the contents of the minio on srv-prod-3 to the minio on this server.";
+  systemd.services.nightly-minio-sync = {
+    description = "Nightly minio sync that suspends the system after running";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${lib.getExe pkgs.rclone} sync srv-prod-3: srv-offsite-1: --config ${
+      # prefix ExecStart with - so that ExecStartPost is executed even if sync fails
+      ExecStart = "-${lib.getExe pkgs.rclone} sync srv-prod-3: srv-offsite-1: --config ${
         config.sops.templates."rclone.conf".path
       }";
-    };
-  };
-  systemd.services.nightly-supend = {
-    description = "Suspends the system after nightly minio sync";
-    after = [ "minio-sync.service" ];
-    requires = [ "minio-sync.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/systemctl suspend";
+      ExecStartPost = "${pkgs.systemd}/bin/systemctl suspend";
     };
   };
 
@@ -105,23 +95,11 @@
     };
   };
   systemd.services.weekly-update-wakeup = {
-    description = "Logs the time of the system wakeup";
-    serviceConfig.Type = "oneshot";
-    script = "echo 'Weekly wakeup triggered at $(date)'";
-  };
-  systemd.timers.weekly-update-suspend = {
-    description = "Weekly timer to suspend the system at the end of the Comin update window";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "Wed 03:30";
-      Persistent = true;
-    };
-  };
-  systemd.services.weekly-update-suspend = {
-    description = "Suspends the system";
+    description = "Sleeps for 30 minutes, then suspends the system again";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${pkgs.systemd}/bin/systemctl suspend";
+      ExecStart = "sleep 30m";
+      ExecStartPost = "${pkgs.systemd}/bin/systemctl suspend";
     };
   };
 
