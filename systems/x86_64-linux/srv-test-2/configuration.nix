@@ -169,7 +169,7 @@
       "/var/backups/vaultwarden"
     ];
     repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
-    initialize = true;
+    timerConfig = null;
   };
   systemd.timers.restic-restore-vaultwarden = {
     description = "Timer for restoring vaultwarden";
