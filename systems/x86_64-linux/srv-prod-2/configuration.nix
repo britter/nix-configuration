@@ -57,8 +57,6 @@
     };
   };
 
-  sops.secrets."restic/repository-password" = { };
-
   sops.secrets."restic/calibre/repository-password" = { };
   sops.secrets."restic/calibre/minio-access-key-id" = { };
   sops.secrets."restic/calibre/minio-secret-access-key" = { };
