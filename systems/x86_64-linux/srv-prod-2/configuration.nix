@@ -34,28 +34,9 @@
 
   systemd.tmpfiles.rules = [
     "d /var/backups 0777 root root"
-    "d /var/backups/postgres 0755 postgres postgres"
     "d /var/backups/vaultwarden 0755 postgres postgres"
     "d /var/backups/nextcloud 0755 postgres postgres"
   ];
-  users.users = {
-    calibre-web = {
-      openssh.authorizedKeys.keyFiles = [ ../srv-test-2/ssh_srv-test-2_ed25519_key.pub ];
-      useDefaultShell = true;
-    };
-    nextcloud = {
-      openssh.authorizedKeys.keyFiles = [ ../srv-test-2/ssh_srv-test-2_ed25519_key.pub ];
-      useDefaultShell = true;
-    };
-    git = {
-      openssh.authorizedKeys.keyFiles = [ ../srv-test-2/ssh_srv-test-2_ed25519_key.pub ];
-      useDefaultShell = true;
-    };
-    vaultwarden = {
-      openssh.authorizedKeys.keyFiles = [ ../srv-test-2/ssh_srv-test-2_ed25519_key.pub ];
-      useDefaultShell = true;
-    };
-  };
 
   sops.secrets."restic/calibre/repository-password" = { };
   sops.secrets."restic/calibre/minio-access-key-id" = { };

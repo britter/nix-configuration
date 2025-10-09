@@ -10,7 +10,6 @@ in
   imports = [
     ./acme
     ./adguard
-    ./app-sync
     ./calibre-web
     ./comin
     ./disko
