@@ -18,6 +18,7 @@ in
       description = "git user";
       home = "/srv/git";
       openssh.authorizedKeys.keyFiles = [ ../ssh-access/id_ed25519-framework-13.pub ];
+      useDefaultShell = true;
     };
     users.groups.git = { };
   };
