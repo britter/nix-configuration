@@ -56,6 +56,7 @@
       AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/git/minio-access-key-id"}
       AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/git/minio-secret-access-key"}
       RESTIC_PASSWORD=${config.sops.placeholder."restic/git/repository-password"}
+      RESTIC_REPOSITORY=s3:https://minio.srv-prod-3.ritter.family/restic-backups/git;
     '';
   };
   sops.secrets."restic/nextcloud/repository-password" = { };
@@ -99,7 +100,8 @@
     description = "Runs restic restore to restore the git repository";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "restic-git restore latest --delete";
+      ExecStart = "${lib.getExe pkgs.restic} restore latest:/srv/git --delete --no-lock --target /srv/git";
+      EnvironmentFile = config.sops.templates."restic/git/secrets.env".path;
     };
   };
 
