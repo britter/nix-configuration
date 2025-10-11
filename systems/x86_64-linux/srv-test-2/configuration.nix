@@ -105,7 +105,7 @@
     wants = [ "network.online.target" ];
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "${lib.getExe pkgs.restic} restore latest:/srv/git --no-lock --include /srv/git --delete --target /";
+      ExecStart = "${lib.getExe pkgs.restic} restore latest --no-lock --include /srv/git --delete --target /";
       EnvironmentFile = config.sops.templates."restic/git/secrets.env".path;
       RestartIfChanged = false;
       CacheDirectory = "restic-restores-git";
