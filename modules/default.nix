@@ -29,6 +29,7 @@ in
     ./nix
     ./options
     ./proxmox-vm
+    ./restic-restore
     ./sops
     ./sound
     ./ssh-access
