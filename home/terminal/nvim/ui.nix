@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+_: {
   programs.nixvim = {
     colorschemes.catppuccin = {
       enable = true;
@@ -36,22 +35,6 @@
     };
     # Show diagnostic as a virtual line but only below the current cursor line
     diagnostic.settings.virtual_lines.current_line = true;
-    extraPlugins = [
-      (pkgs.vimUtils.buildVimPlugin {
-        name = "webify";
-        src = pkgs.fetchFromGitHub {
-          owner = "pabloariasal";
-          repo = "webify.nvim";
-          rev = "69bc088e21834898477df69694ce86ee5561e20b";
-          hash = "sha256-Q9tJeo281JhEhjtxrh9BMzFfVQhJSZ3XShX4Agi6+1s=";
-        };
-      })
-    ];
-    extraConfigLua =
-      # lua
-      ''
-        require('webify')
-      '';
     plugins = {
       dropbar.enable = true;
       lualine.enable = true;

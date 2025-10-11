@@ -1,7 +1,10 @@
 _: {
   programs.nixvim = {
     plugins = {
+      # git integration
       fugitive.enable = true;
+      # GitHub integration, enabling :GBrowse
+      rhubarb.enable = true;
       gitsigns = {
         enable = true;
       };
