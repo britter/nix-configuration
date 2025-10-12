@@ -138,7 +138,9 @@
     repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
     restorePrepareCommand = "systemctl stop vaultwarden";
     restorePostCommand = ''
-      ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_restore --clean --create -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
+      sudo -u postgres psql --command="DROP DATABASE IF EXISTS vaultwarden;"
+      sudo -u postgres psql --command="CREATE DATABASE vaultwarden OWNER vaultwarden;"
+      sudo -u vaultwarden psql --dbname=vaultwarden --file=/var/backups/waultwarden/vaultwarden.dump
       systemctl restart vaultwarden
     '';
   };
