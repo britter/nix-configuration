@@ -88,6 +88,7 @@
         "--keep-monthly 12"
         "--keep-yearly 5"
       ];
+      pg_dump = "${config.services.postgresql.package}/bin/pg_dump";
     in
     {
       git = {
@@ -121,7 +122,7 @@
           initialize = true;
           backupPrepareCommand = ''
             ${occ} maintenance:mode --on
-            ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_dump --format=custom --file=/var/backups/nextcloud/nextcloud.dump nextcloud
+            ${lib.getExe pkgs.sudo} -u postgres ${pg_dump} --format=custom --file=/var/backups/nextcloud/nextcloud.dump nextcloud
           '';
           backupCleanupCommand = ''
             rm /var/backups/nextcloud/nextcloud.dump
@@ -139,7 +140,7 @@
         initialize = true;
         backupPrepareCommand = ''
           systemctl stop vaultwarden
-          ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_dump --format=custom --file=/var/backups/vaultwarden/vaultwarden.dump vaultwarden
+          ${lib.getExe pkgs.sudo} -u postgres ${pg_dump} --format=custom --file=/var/backups/vaultwarden/vaultwarden.dump vaultwarden
         '';
         backupCleanupCommand = ''
           rm /var/backups/vaultwarden/vaultwarden.dump

@@ -79,76 +79,58 @@
     '';
   };
 
-  services.restic.restores.git = {
-    environmentFile = config.sops.templates."restic/git/secrets.env".path;
-    paths = [ "/srv/git" ];
-    repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
-  };
-
-  services.restic.restores.calibre = {
-    environmentFile = config.sops.templates."restic/calibre/secrets.env".path;
-    paths = [
-      "/var/lib/calibre-web"
-      "/var/lib/calibre-library"
-    ];
-    repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/calibre";
-    restorePostCommand = "systemctl restart calibre-web.service";
-  };
-
-  services.restic.backups.nextcloud = {
-    environmentFile = config.sops.templates."restic/nextcloud/secrets.env".path;
-    paths = [
-      "/var/lib/nextcloud/data"
-      "/var/backups/nextcloud"
-    ];
-    repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/nextcloud";
-    timerConfig = null;
-  };
-  systemd.timers.restic-restore-nextcloud = {
-    description = "Timer for restoring nextcloud";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "daily";
-      Persistent = true;
-    };
-  };
-  systemd.services.restic-restore-nextcloud =
+  services.restic.restores =
     let
-      occ = lib.getExe config.services.nextcloud.occ;
+      pg_restore = "${config.services.postgresql.package}/bin/pg_restore";
     in
     {
-      description = "Runs restic restore to restore nextcloud";
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStartPre = "${occ} maintenance:mode --on";
-        ExecStart = ''
-          restic-nextcloud restore latest --delete
-          ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_restore --clean --create -d nextcloud /var/backups/nextcloud/nextcloud.dump
+      git = {
+        environmentFile = config.sops.templates."restic/git/secrets.env".path;
+        paths = [ "/srv/git" ];
+        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
+      };
+
+      calibre = {
+        environmentFile = config.sops.templates."restic/calibre/secrets.env".path;
+        paths = [
+          "/var/lib/calibre-web"
+          "/var/lib/calibre-library"
+        ];
+        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/calibre";
+        restorePostCommand = "systemctl restart calibre-web.service";
+      };
+
+      nextcloud =
+        let
+          occ = lib.getExe config.services.nextcloud.occ;
+        in
+        {
+          environmentFile = config.sops.templates."restic/nextcloud/secrets.env".path;
+          paths = [
+            "/var/lib/nextcloud/data"
+            "/var/backups/nextcloud"
+          ];
+          repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/nextcloud";
+          restorePrepareCommand = "${occ} maintenance:mode --on";
+          restorePostCommand = ''
+            ${lib.getExe pkgs.sudo} -u nextcloud ${pg_restore} --clean --create -d nextcloud /var/backups/nextcloud/nextcloud.dump
+            ${occ} maintenance:mode --off
+          '';
+        };
+      vaultwarden = {
+        environmentFile = config.sops.templates."restic/vaultwarden/secrets.env".path;
+        paths = [
+          "/var/lib/bitwarden_rs"
+          "/var/backups/vaultwarden"
+        ];
+        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
+        restorePrepareCommand = "systemctl stop vaultwarden";
+        restorePostCommand = ''
+          ${lib.getExe pkgs.sudo} -u vaultwarden ${pg_restore} --clean --create -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
+          systemctl restart vaultwarden
         '';
-        ExecStartPost = "${occ} maintenance:mode --off";
       };
     };
-
-  services.restic.restores.vaultwarden = {
-    environmentFile = config.sops.templates."restic/vaultwarden/secrets.env".path;
-    paths = [
-      "/var/lib/bitwarden_rs"
-      "/var/backups/vaultwarden"
-    ];
-    repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
-    restorePrepareCommand = "systemctl stop vaultwarden";
-    restorePostCommand =
-      let
-        sudo = lib.getExe pkgs.sudo;
-        psql = "${pkgs.postgresql}/bin/psql";
-      in
-      ''
-        ${sudo} -u postgres ${psql} --command="DROP DATABASE IF EXISTS vaultwarden;"
-        ${sudo} -u postgres ${psql} --command="CREATE DATABASE vaultwarden OWNER vaultwarden;"
-        ${sudo} -u vaultwarden ${psql} --dbname=vaultwarden --file=/var/backups/vaultwarden/vaultwarden.dump
-        systemctl restart vaultwarden
-      '';
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
