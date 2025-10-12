@@ -137,12 +137,16 @@
     ];
     repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
     restorePrepareCommand = "systemctl stop vaultwarden";
-    restorePostCommand = ''
-      sudo -u postgres psql --command="DROP DATABASE IF EXISTS vaultwarden;"
-      sudo -u postgres psql --command="CREATE DATABASE vaultwarden OWNER vaultwarden;"
-      sudo -u vaultwarden psql --dbname=vaultwarden --file=/var/backups/waultwarden/vaultwarden.dump
-      systemctl restart vaultwarden
-    '';
+    restorePostCommand =
+      let
+        sudo = lib.getExe pkgs.sudo;
+      in
+      ''
+        ${sudo} -u postgres psql --command="DROP DATABASE IF EXISTS vaultwarden;"
+        ${sudo} -u postgres psql --command="CREATE DATABASE vaultwarden OWNER vaultwarden;"
+        ${sudo} -u vaultwarden psql --dbname=vaultwarden --file=/var/backups/waultwarden/vaultwarden.dump
+        systemctl restart vaultwarden
+      '';
   };
 
   # This value determines the NixOS release from which the default
