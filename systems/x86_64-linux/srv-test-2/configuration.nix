@@ -129,34 +129,18 @@
       };
     };
 
-  services.restic.backups.vaultwarden = {
+  services.restic.restores.vaultwarden = {
     environmentFile = config.sops.templates."restic/vaultwarden/secrets.env".path;
     paths = [
       "/var/lib/bitwarden_rs"
       "/var/backups/vaultwarden"
     ];
     repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
-    timerConfig = null;
-  };
-  systemd.timers.restic-restore-vaultwarden = {
-    description = "Timer for restoring vaultwarden";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "daily";
-      Persistent = true;
-    };
-  };
-  systemd.services.restic-restore-vaultwarden = {
-    description = "Runs restic restore to restore vaultwarden";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStartPre = "systemctl stop vaultwarden";
-      ExecStart = ''
-        restic-vaultwarden restore latest --delete
-        ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_restore --clean --create -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
-      '';
-      ExecStartPost = "systemctl restart vaultwarden";
-    };
+    restorePrepareCommand = "systemctl stop vaultwarden";
+    restorePostCommand = ''
+      ${lib.getExe pkgs.sudo} -u postgres ${pkgs.postgresql}/bin/pg_restore --clean --create -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
+      systemctl restart vaultwarden
+    '';
   };
 
   # This value determines the NixOS release from which the default
