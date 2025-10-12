@@ -79,37 +79,20 @@
     '';
   };
 
-  # duplicate restic configurations to get a restic wrapper per backup that can be used
-  # to run restore commands
   services.restic.restores.git = {
     environmentFile = config.sops.templates."restic/git/secrets.env".path;
     paths = [ "/srv/git" ];
     repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
   };
 
-  services.restic.backups.calibre = {
+  services.restic.restores.calibre = {
     environmentFile = config.sops.templates."restic/calibre/secrets.env".path;
     paths = [
       "/var/lib/calibre-web"
       "/var/lib/calibre-library"
     ];
     repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/calibre";
-    timerConfig = null;
-  };
-  systemd.timers.restic-restore-calibre = {
-    description = "Timer for restoring calibre";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "daily";
-      Persistent = true;
-    };
-  };
-  systemd.services.restic-restore-calibre = {
-    description = "Runs restic restore to restore calibre";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "restic-calibre restore latest --delete";
-    };
+    restorePostCommand = "systemctl restart calibre-web.service";
   };
 
   services.restic.backups.nextcloud = {

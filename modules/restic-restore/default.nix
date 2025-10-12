@@ -102,7 +102,7 @@ in
               '';
             };
 
-            restoreCleanupCommand = lib.mkOption {
+            restorePostCommand = lib.mkOption {
               type = with lib.types; nullOr str;
               default = null;
               description = ''
@@ -167,8 +167,8 @@ in
         // lib.optionalAttrs (doRestore && restore.restorePrepareCommand != null) {
           preStart = (pkgs.writeScript "restorePrepareCommand" restore.restorePrepareCommand);
         }
-        // lib.optionalAttrs (doRestore && restore.restoreCleanupCommand != null) {
-          postStop = (pkgs.writeScript "restoreCleanupCommand" restore.restoreCleanupCommand);
+        // lib.optionalAttrs (doRestore && restore.restorePostCommand != null) {
+          postStop = (pkgs.writeScript "restorePostCommand" restore.restorePostCommand);
         }
       )
     ) config.services.restic.restores;
