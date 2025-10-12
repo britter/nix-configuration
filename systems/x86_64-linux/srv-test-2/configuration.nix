@@ -140,11 +140,12 @@
     restorePostCommand =
       let
         sudo = lib.getExe pkgs.sudo;
+        psql = "${pkgs.postgresql}/bin/psql";
       in
       ''
-        ${sudo} -u postgres psql --command="DROP DATABASE IF EXISTS vaultwarden;"
-        ${sudo} -u postgres psql --command="CREATE DATABASE vaultwarden OWNER vaultwarden;"
-        ${sudo} -u vaultwarden psql --dbname=vaultwarden --file=/var/backups/waultwarden/vaultwarden.dump
+        ${sudo} -u postgres ${psql} --command="DROP DATABASE IF EXISTS vaultwarden;"
+        ${sudo} -u postgres ${psql} --command="CREATE DATABASE vaultwarden OWNER vaultwarden;"
+        ${sudo} -u vaultwarden ${psql} --dbname=vaultwarden --file=/var/backups/waultwarden/vaultwarden.dump
         systemctl restart vaultwarden
       '';
   };
