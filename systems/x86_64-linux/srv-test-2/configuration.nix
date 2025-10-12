@@ -145,7 +145,7 @@
       ''
         ${sudo} -u postgres ${psql} --command="DROP DATABASE IF EXISTS vaultwarden;"
         ${sudo} -u postgres ${psql} --command="CREATE DATABASE vaultwarden OWNER vaultwarden;"
-        ${sudo} -u vaultwarden ${psql} --dbname=vaultwarden --file=/var/backups/waultwarden/vaultwarden.dump
+        ${sudo} -u vaultwarden ${psql} --dbname=vaultwarden --file=/var/backups/vaultwarden/vaultwarden.dump
         systemctl restart vaultwarden
       '';
   };
