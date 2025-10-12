@@ -164,15 +164,11 @@ in
             EnvironmentFile = restore.environmentFile;
           };
         }
-        // lib.optionalAttrs (doRestore || restore.restorePrepareCommand != null) {
-          preStart = lib.optionalString (
-            restore.restorePrepareCommand != null
-          ) pkgs.writeScript "restorePrepareCommand" restore.restorePrepareCommand;
+        // lib.optionalAttrs (doRestore && restore.restorePrepareCommand != null) {
+          preStart = (pkgs.writeScript "restorePrepareCommand" restore.restorePrepareCommand);
         }
-        // lib.optionalAttrs (doRestore || restore.restoreCleanupCommand != null) {
-          postStop = lib.optionalString (
-            restore.restoreCleanupCommand != null
-          ) pkgs.writeScript "restoreCleanupCommand" restore.restoreCleanupCommand;
+        // lib.optionalAttrs (doRestore && restore.restoreCleanupCommand != null) {
+          postStop = (pkgs.writeScript "restoreCleanupCommand" restore.restoreCleanupCommand);
         }
       )
     ) config.services.restic.restores;

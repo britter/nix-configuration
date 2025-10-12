@@ -81,38 +81,10 @@
 
   # duplicate restic configurations to get a restic wrapper per backup that can be used
   # to run restore commands
-  services.restic.backups.git = {
+  services.restic.restores.git = {
     environmentFile = config.sops.templates."restic/git/secrets.env".path;
     paths = [ "/srv/git" ];
     repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
-    timerConfig = null;
-  };
-  systemd.timers.restic-restores-git = {
-    description = "Timer for restoring git";
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "daily";
-      Persistent = true;
-    };
-  };
-  systemd.services.restic-restores-git = {
-    description = "Runs restic restore to restore the git repository";
-    environment = {
-      RESTIC_CACHE_DIR = "%C/restic-restores-git";
-      RESTIC_REPOSITORY = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
-    };
-    after = [ "network.online.target" ];
-    wants = [ "network.online.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = "${lib.getExe pkgs.restic} restore latest --no-lock --include /srv/git --delete --target /";
-      EnvironmentFile = config.sops.templates."restic/git/secrets.env".path;
-      RestartIfChanged = false;
-      CacheDirectory = "restic-restores-git";
-      CacheDirectoryMode = "0700";
-      PrivateTmp = true;
-      RuntimeDirectory = "restic-restores-git";
-    };
   };
 
   services.restic.backups.calibre = {
