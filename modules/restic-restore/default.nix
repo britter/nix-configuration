@@ -165,10 +165,10 @@ in
           };
         }
         // lib.optionalAttrs (doRestore && restore.restorePrepareCommand != null) {
-          preStart = (pkgs.writeScript "restorePrepareCommand" restore.restorePrepareCommand);
+          preStart = "${pkgs.writeScript "restorePrepareCommand" restore.restorePrepareCommand}";
         }
         // lib.optionalAttrs (doRestore && restore.restorePostCommand != null) {
-          postStop = (pkgs.writeScript "restorePostCommand" restore.restorePostCommand);
+          postStop = "${pkgs.writeScript "restorePostCommand" restore.restorePostCommand}";
         }
       )
     ) config.services.restic.restores;
