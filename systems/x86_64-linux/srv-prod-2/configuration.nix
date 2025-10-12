@@ -89,6 +89,11 @@
         "--keep-yearly 5"
       ];
       pg_dump = "${config.services.postgresql.package}/bin/pg_dump";
+      timerConfig = {
+        OnCalendar = "00:00";
+        RandomizedDelaySec = "30mm";
+        Persistent = true;
+      };
     in
     {
       git = {
@@ -97,6 +102,7 @@
         repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
         initialize = true;
         inherit pruneOpts;
+        inherit timerConfig;
       };
       calibre = {
         environmentFile = config.sops.templates."restic/calibre/secrets.env".path;
@@ -107,6 +113,7 @@
         repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/calibre";
         initialize = true;
         inherit pruneOpts;
+        inherit timerConfig;
       };
       nextcloud =
         let
@@ -129,6 +136,7 @@
             ${occ} maintenance:mode --off
           '';
           inherit pruneOpts;
+          inherit timerConfig;
         };
       vaultwarden = {
         environmentFile = config.sops.templates."restic/vaultwarden/secrets.env".path;
@@ -147,6 +155,7 @@
           systemctl restart vaultwarden
         '';
         inherit pruneOpts;
+        inherit timerConfig;
       };
     };
 
