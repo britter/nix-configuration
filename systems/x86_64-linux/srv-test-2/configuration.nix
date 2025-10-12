@@ -113,7 +113,7 @@
           repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/nextcloud";
           restorePrepareCommand = "${occ} maintenance:mode --on";
           restorePostCommand = ''
-            ${lib.getExe pkgs.sudo} -u nextcloud ${pg_restore} --clean --create -d nextcloud /var/backups/nextcloud/nextcloud.dump
+            ${lib.getExe pkgs.sudo} -u nextcloud ${pg_restore} --clean -d nextcloud /var/backups/nextcloud/nextcloud.dump
             ${occ} maintenance:mode --off
           '';
         };
@@ -126,7 +126,7 @@
         repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
         restorePrepareCommand = "systemctl stop vaultwarden";
         restorePostCommand = ''
-          ${lib.getExe pkgs.sudo} -u vaultwarden ${pg_restore} --clean --create -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
+          ${lib.getExe pkgs.sudo} -u vaultwarden ${pg_restore} --create -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
           systemctl restart vaultwarden
         '';
       };
