@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   ...
@@ -17,6 +18,7 @@ in
       group = "git";
       description = "git user";
       home = "/srv/git";
+      shell = "${pkgs.git}/bin/git-shell";
       openssh.authorizedKeys.keyFiles = [ ../ssh-access/id_ed25519-framework-13.pub ];
       useDefaultShell = true;
     };
