@@ -176,7 +176,7 @@ in
           preStart = "${writeScript "restorePrepareCommand" restore.restorePrepareCommand}";
         }
         // lib.optionalAttrs (doRestore && restore.restorePostCommand != null) {
-          postStop = "${writeScript "restorePostCommand" restore.restorePostCommand}";
+          postStart = "${writeScript "restorePostCommand" restore.restorePostCommand}";
         }
       )
     ) config.services.restic.restores;
