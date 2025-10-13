@@ -134,7 +134,7 @@
         repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
         restorePrepareCommand = "systemctl stop vaultwarden";
         restorePostCommand = ''
-          ${lib.getExe pkgs.sudo} -u vaultwarden ${pg_restore} --create -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
+          ${lib.getExe pkgs.sudo} -u vaultwarden ${pg_restore} --clean -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
           systemctl restart vaultwarden
         '';
         inherit timerConfig;
