@@ -136,10 +136,12 @@ in
         doRestore = restore.paths != [ ];
         writeScript = (
           name: text:
-          lib.getExe pkgs.writeShellApplication {
-            inherit name;
-            inherit text;
-          }
+          lib.getExe (
+            pkgs.writeShellApplication {
+              inherit name;
+              inherit text;
+            }
+          )
         );
       in
       lib.nameValuePair "restic-restores-${name}" (
