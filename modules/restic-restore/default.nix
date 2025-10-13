@@ -134,6 +134,13 @@ in
       let
         resticCmd = "${lib.getExe restore.package}";
         doRestore = restore.paths != [ ];
+        writeScript = (
+          name: text:
+          lib.getExe pkgs.writeShellApplication {
+            inherit name;
+            inherit text;
+          }
+        );
       in
       lib.nameValuePair "restic-restores-${name}" (
         {
@@ -165,10 +172,10 @@ in
           };
         }
         // lib.optionalAttrs (doRestore && restore.restorePrepareCommand != null) {
-          preStart = "${pkgs.writeScript "restorePrepareCommand" restore.restorePrepareCommand}";
+          preStart = "${writeScript "restorePrepareCommand" restore.restorePrepareCommand}";
         }
         // lib.optionalAttrs (doRestore && restore.restorePostCommand != null) {
-          postStop = "${pkgs.writeScript "restorePostCommand" restore.restorePostCommand}";
+          postStop = "${writeScript "restorePostCommand" restore.restorePostCommand}";
         }
       )
     ) config.services.restic.restores;
