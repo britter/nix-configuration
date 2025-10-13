@@ -134,15 +134,14 @@ in
       let
         resticCmd = "${lib.getExe restore.package}";
         doRestore = restore.paths != [ ];
-        writeScript = (
+        writeScript =
           name: text:
           lib.getExe (
             pkgs.writeShellApplication {
               inherit name;
               inherit text;
             }
-          )
-        );
+          );
       in
       lib.nameValuePair "restic-restores-${name}" (
         {
