@@ -14,6 +14,12 @@ in
   config = lib.mkIf cfg.enable {
     programs.ssh = {
       enable = true;
+      # Disables matchBlocks.* which used to be written by default but can cause problems
+      # in some situations. This behavior will be removed as some point, which is when
+      # this option setting can be removed without replacement.
+      #
+      # See https://github.com/nix-community/home-manager/pull/7655
+      enableDefaultConfig = false;
       matchBlocks =
         let
           privateKey = "${config.home.homeDirectory}/.ssh/id_ed25519";
