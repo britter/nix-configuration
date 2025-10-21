@@ -24,8 +24,35 @@ in
     programs.git = {
       enable = true;
 
-      userName = osUser.fullName;
-      userEmail = osUser.email;
+      settings = {
+        user.name = osUser.fullName;
+        user.email = osUser.email;
+
+        init.defaultBranch = "main";
+        push.autoSetupRemote = "true";
+        merge.tool = "nvimdiff";
+        merge.conflictstyle = "diff3";
+        mergetool.keepBackup = "false";
+
+        alias = {
+          this = "!f() { git init && git add --all && git commit -m 'Initial commit'; }; f";
+          tags = "tag -l";
+          branches = "branch -a";
+          remotes = "remote -v";
+          lg = "log --all --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
+          cleanup = "!f() { git branch --merged main | grep -v main | xargs -n 1 git branch -D;  }; f";
+          cleanup-deleted = "!git remote prune origin && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D";
+          sync = "!f() { git checkout main && git fetch upstream && git merge upstream/main && git push origin main && git cleanup && git fetch -p;  }; f";
+          co = "checkout";
+          cm = "checkout main";
+          st = "status";
+          ci = "commit";
+          cia = "commit --amend";
+          rbi = "rebase --interactive main";
+          rbm = "rebase main";
+          rbc = "rebase --continue";
+        };
+      };
 
       signing = {
         signByDefault = true;
@@ -55,35 +82,15 @@ in
           };
         }
       ];
+    };
 
-      extraConfig = {
-        init.defaultBranch = "main";
-        push.autoSetupRemote = "true";
-        merge.tool = "nvimdiff";
-        merge.conflictstyle = "diff3";
-        mergetool.keepBackup = "false";
+    programs.delta = {
+      enable = true;
+      enableGitIntegration = true;
+      options = {
+        side-by-side = true;
+        line-numbers = true;
       };
-
-      aliases = {
-        this = "!f() { git init && git add --all && git commit -m 'Initial commit'; }; f";
-        tags = "tag -l";
-        branches = "branch -a";
-        remotes = "remote -v";
-        lg = "log --all --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
-        cleanup = "!f() { git branch --merged main | grep -v main | xargs -n 1 git branch -D;  }; f";
-        cleanup-deleted = "!git remote prune origin && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D";
-        sync = "!f() { git checkout main && git fetch upstream && git merge upstream/main && git push origin main && git cleanup && git fetch -p;  }; f";
-        co = "checkout";
-        cm = "checkout main";
-        st = "status";
-        ci = "commit";
-        cia = "commit --amend";
-        rbi = "rebase --interactive main";
-        rbm = "rebase main";
-        rbc = "rebase --continue";
-      };
-
-      diff-so-fancy.enable = true;
     };
 
     programs.lazygit = {
