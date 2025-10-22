@@ -98,7 +98,7 @@
     description = "Sleeps for 30 minutes, then suspends the system again";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = "sleep 30m";
+      ExecStart = "${pkgs.coreutils}/bin/sleep 30m";
       ExecStartPost = "${pkgs.systemd}/bin/systemctl suspend";
     };
   };
