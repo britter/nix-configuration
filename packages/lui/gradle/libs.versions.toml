@@ -1,7 +1,10 @@
 [versions]
-junit-jupiter = "5.12.1"
+jackson= "2.20.0"
+junit-jupiter = "6.0.0"
 
 [libraries]
+jackson-dataformat-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
+jackson-module-kotlin =  {  module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version = "7.4.0.202509020913-r" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
 

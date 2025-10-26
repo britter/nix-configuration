@@ -4,6 +4,8 @@ plugins {
 }
 
 dependencies {
+    implementation(libs.jackson.dataformat.yaml)
+    implementation(libs.jackson.module.kotlin)
     implementation(libs.jgit)
 
     testImplementation(libs.junit.jupiter)
