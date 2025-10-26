@@ -26,7 +26,7 @@
         backend = "docker";
         containers = {
           collabora-code = {
-            image = "collabora/code:24.04.7.2.1";
+            image = "collabora/code:25.04.6.2.1";
             ports = [ "9980:9980" ];
             environment = {
               extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
