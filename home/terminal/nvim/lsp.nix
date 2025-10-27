@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   programs.nixvim = {
     plugins.telescope.enable = true;
     plugins.lsp = {
@@ -7,6 +8,10 @@ _: {
       servers = {
         astro.enable = true;
         gopls.enable = true;
+        kotlin_lsp = {
+          enable = true;
+          package = pkgs.kotlin-lsp;
+        };
         nixd.enable = true;
         terraformls.enable = true;
         ts_ls.enable = true;
