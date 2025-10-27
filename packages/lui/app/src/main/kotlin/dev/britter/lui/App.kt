@@ -17,16 +17,17 @@ class App(val config: Config) {
                 it.pull().call()
             }
         else
-            CloneCommand().setURI(config.repositoryURI.toString()).setDirectory(config.repositoryDirectory.toFile()).call()
+            CloneCommand().setURI(config.repositoryURI.toString()).setDirectory(config.repositoryDirectory.toFile())
+                .call()
 
-        git.repository.config.run {
-            setBoolean("commit", null, "gpgsign", false)
-            save()
-        }
-
+        val transaction = """
+            2025-10-31 Halloween transaction
+                assets:bank:savings                -10 $
+                expenses:groceries                  10 $
+        """.trimIndent()
         Files.writeString(
             config.repositoryDirectory.resolve(config.journalFile),
-            "Hello world!",
+            "\n\n$transaction\n",
             StandardOpenOption.CREATE,
             StandardOpenOption.APPEND
         )
@@ -35,7 +36,10 @@ class App(val config: Config) {
         git.commit().also {
             it.author = PersonIdent("lui", "lui@britter.dev")
             it.message = "Update journal"
+            it.setSign(false)
         }.call()
+
+        git.push().call()
     }
 }
 
