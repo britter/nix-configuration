@@ -98,6 +98,7 @@
               nixpkgs.overlays = [
                 (_self: _super: {
                   gh-get = pkgs.callPackage ./packages/gh-get { };
+                  kotlin-lsp = pkgs.callPackage ./packages/kotlin-lsp { };
                 })
               ];
               nixpkgs.config.allowUnfreePredicate =
