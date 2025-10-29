@@ -1,13 +1,18 @@
 [versions]
 jackson= "2.20.0"
+javalin = "6.7.0"
 junit-jupiter = "6.0.0"
 
 [libraries]
 assertj = { module = "org.assertj:assertj-core", version = "3.27.3" }
 jackson-dataformat-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jackson" }
 jackson-module-kotlin =  {  module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jackson" }
+javalin = { module = "io.javalin:javalin", version.ref = "javalin" }
+javalin-rendering = { module = "io.javalin:javalin-rendering", version.ref = "javalin" }
 jgit = { module = "org.eclipse.jgit:org.eclipse.jgit", version = "7.4.0.202509020913-r" }
+jte = { module = "gg.jte:jte", version = "3.2.1" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit-jupiter" }
+slf4j-simple = {module = "org.slf4j:slf4j-simple", version = "2.0.17" }
 
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "2.1.20" }

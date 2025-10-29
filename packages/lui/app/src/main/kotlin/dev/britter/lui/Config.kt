@@ -6,5 +6,7 @@ import java.nio.file.Path
 data class Config(
     val repositoryURI: URI,
     val repositoryDirectory: Path = Path.of("/var/lib/lui/git-clone"),
-    val journalFile: String
+    val journalFile: String,
+    val gitUser: String,
+    val gitEmail: String,
 )

@@ -6,7 +6,12 @@ plugins {
 dependencies {
     implementation(libs.jackson.dataformat.yaml)
     implementation(libs.jackson.module.kotlin)
+    implementation(libs.javalin)
+    implementation(libs.javalin.rendering)
     implementation(libs.jgit)
+    implementation(libs.jte)
+
+    runtimeOnly(libs.slf4j.simple)
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.assertj)
