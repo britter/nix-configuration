@@ -40,14 +40,18 @@ in
         package = pkgs."jdk${toString cfg.version}";
       };
 
-      systemd.user.tmpfiles.rules = lib.mkIf cfg.linkToUserHome (
-        lib.map (
+      systemd.user.tmpfiles.settings.java-installs.rules = lib.mkIf cfg.linkToUserHome (
+        lib.genAttrs' allVersions (
           v:
           let
             pkg = jdkPackageForVersion v;
           in
-          "L ${config.home.homeDirectory}/.java-installs/${pkg.name} - - - - ${pkg}"
-        ) allVersions
+          lib.nameValuePair "${config.home.homeDirectory}/.java-installs/${pkg.name}" {
+            L = {
+              argument = "${pkg}";
+            };
+          }
+        )
       );
 
       programs.gradle = {

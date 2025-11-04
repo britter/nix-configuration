@@ -73,9 +73,10 @@ in
     ];
   };
 
-  systemd.user.tmpfiles.rules = [
-    "d ${npmGlobalDir} 0700 ${config.home.username} - -"
-  ];
+  systemd.user.tmpfiles.settings.npm-global-dir.rules."${npmGlobalDir}".d = {
+    mode = "0700";
+    argument = config.home.username;
+  };
   home.sessionPath = [
     "${npmGlobalDir}/bin"
   ];
@@ -119,7 +120,7 @@ in
     };
   };
   home.packages = with pkgs; [
-    argo
+    argo-workflows
     cosign
     crane
     dotenvx
