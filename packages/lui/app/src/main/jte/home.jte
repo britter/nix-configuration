@@ -35,5 +35,5 @@
         <input name="commit-msg" type="text" required>
     </label>
     <br>
-    <button>Submit</button>
+    <button id="submit-button">Submit</button>
 </form>

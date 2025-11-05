@@ -15,6 +15,9 @@ dependencies {
 
     testImplementation(libs.junit.jupiter)
     testImplementation(libs.assertj)
+    testImplementation(libs.selenide)
+    testImplementation(libs.testcontainers.junitJupiter)
+    testImplementation(libs.testcontainers.selenium)
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
@@ -30,4 +33,9 @@ application {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
+
+    // configure podman as the docker backend for testcontainers
+    val uid = providers.exec { commandLine("id", "-u") }.standardOutput.asText.get().trim()
+    environment("DOCKER_HOST", "unix:///run/user/$uid/podman/podman.sock")
+    environment("TESTCONTAINERS_RYUK_DISABLED", "true")
 }

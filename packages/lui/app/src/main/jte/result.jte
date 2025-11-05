@@ -2,7 +2,7 @@
 
 Committed transaction: ${page.commitMsg}
 
-<pre>
+<pre id="transaction-summary">
 ${page.transaction.render()}
 </pre>
 
