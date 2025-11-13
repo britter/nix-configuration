@@ -13,7 +13,7 @@ in
     openFirewall = lib.mkOption {
       type = lib.types.bool;
       default = true;
-      description = "Whether to option ports for the monitoring agents enabled by this module.";
+      description = "Whether to open ports for the monitoring agents enabled by this module.";
     };
   };
   config = lib.mkIf cfg.enable {
