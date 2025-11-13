@@ -1,29 +1,30 @@
 {
   stdenv,
   fetchFromGitHub,
-  gradle_7,
+  gradle_9,
   jre,
   makeWrapper,
 }:
 let
+  gradle = gradle_9;
   self = stdenv.mkDerivation (_finalAttrs: {
     # see https://github.com/NixOS/nixpkgs/blob/b32a0943687d2a5094a6d92f25a4b6e16a76b5b7/doc/languages-frameworks/gradle.section.md
     pname = "groovy-language-server";
-    version = "unstable-2024-02-01";
+    version = "unstable-2025-10-09";
 
     src = fetchFromGitHub {
       owner = "GroovyLanguageServer";
       repo = "groovy-language-server";
-      rev = "4866a3f2c180f628405b1e4efbde0949a1418c10";
-      sha256 = "sha256-LXCdF/cUYWy7mD3howFXexG0+fGfwFyKViuv9xZfgXc=";
+      rev = "0466842f2b9e7d2c4620e81e3acf85e56c71097f";
+      sha256 = "sha256-2KRMrJGcx52uBQGyZ8cRW5y9ZUwxMoe1eF90oN3Yppw=";
     };
 
     nativeBuildInputs = [
-      gradle_7
+      gradle
       makeWrapper
     ];
 
-    mitmCache = gradle_7.fetchDeps {
+    mitmCache = gradle.fetchDeps {
       pkg = self;
       # update or regenerate this by running
       #  eval (nix build .#groovy-language-server.mitmCache.updateScript --print-out-paths)
