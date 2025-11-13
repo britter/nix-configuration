@@ -40,8 +40,8 @@ in
         package = pkgs."jdk${toString cfg.version}";
       };
 
-      systemd.user.tmpfiles.settings = lib.mkIf cfg.linkToUserHome {
-        java-installs.rules = lib.genAttrs' allVersions (
+      systemd.user.tmpfiles.settings.java-installs.rules = lib.mkIf cfg.linkToUserHome (
+        lib.genAttrs' allVersions (
           v:
           let
             pkg = jdkPackageForVersion v;
@@ -51,8 +51,8 @@ in
               argument = "${pkg}";
             };
           }
-        );
-      };
+        )
+      );
 
       programs.gradle = {
         enable = true;
