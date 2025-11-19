@@ -11,11 +11,10 @@ in
   imports = [
     ./completion.nix
     ./git.nix
-    ./java.nix
     ./lsp.nix
+    ./languages
     ./navigation.nix
     ./ui.nix
-    ./opentofu.nix
   ];
 
   options.my.home.terminal.nvim = {
