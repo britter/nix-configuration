@@ -13,7 +13,6 @@
           package = pkgs.kotlin-lsp;
         };
         nixd.enable = true;
-        terraformls.enable = true;
         ts_ls.enable = true;
         zls.enable = true;
       };

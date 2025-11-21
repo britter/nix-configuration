@@ -1,4 +1,5 @@
-_: {
+{ pkgs, ... }:
+{
   programs.nixvim = {
     filetype.extension = {
       tofu = "tofu";
@@ -6,6 +7,7 @@ _: {
     plugins = {
       lsp.servers.terraformls = {
         enable = true;
+        package = pkgs.opentofu-ls;
         filetypes = [
           "tf"
           "terraform"
@@ -24,12 +26,22 @@ _: {
           ];
         };
       };
-      none-ls.sources.formatting.opentofu_fmt = {
-        enable = true;
-        settings = {
-          extra_filetypes = [
-            "tofu"
-          ];
+      none-ls.sources = {
+        diagnostics.opentofu_validate = {
+          enable = true;
+          settings = {
+            extra_filetypes = [
+              "tofu"
+            ];
+          };
+        };
+        formatting.opentofu_fmt = {
+          enable = true;
+          settings = {
+            extra_filetypes = [
+              "tofu"
+            ];
+          };
         };
       };
     };

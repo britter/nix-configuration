@@ -117,7 +117,6 @@ in
                 enable = true;
                 disableTsServerFormatter = true;
               };
-              terraform_fmt.enable = true;
             };
             diagnostics.actionlint.enable = true;
           };
