@@ -7,7 +7,7 @@
     plugins = {
       lsp.servers.terraformls = {
         enable = true;
-        package = pkgs.opentofu-ls;
+        package = pkgs.tofu-ls;
         filetypes = [
           "tf"
           "terraform"
