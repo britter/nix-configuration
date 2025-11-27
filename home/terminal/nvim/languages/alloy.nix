@@ -49,18 +49,58 @@ in
           ''
             do
               local null_ls = require("null-ls")
+              local helpers = require("null-ls.helpers")
+
               local alloy_fmt = {
                 method = null_ls.methods.FORMATTING,
                 filetypes = { "alloy" },
                 name = "alloy-fmt",
-                generator = require("null-ls.helpers").formatter_factory({
+                generator = helpers.formatter_factory({
                   command = "${pkgs.grafana-alloy}/bin/alloy",
                   args = { "fmt" },
                   to_stdin = true,
                 }),
               }
               null_ls.register(alloy_fmt)
-            end
+
+              local pattern = [[^([%w]+):%s*(.-):(%d+):(%d+):%s*(.*)$]]
+              local alloy_validate = {
+                method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
+                filetypes = { "alloy" },
+                name = "alloy-validate",
+                generator = helpers.generator_factory({
+                  command = "${pkgs.grafana-alloy}/bin/alloy",
+                  args = { "validate", "$FILENAME" },
+                  format = "line",
+                  to_stdin = false,
+                  from_stderr = true,
+                  on_output = function(line, params)
+                    -- Only match the diagnostic header line. Ignore all others.
+                    local severity, filename, lnum, col, msg =
+                      line:match(pattern)
+
+                    if not severity then
+                        return nil
+                    end
+
+                    local sevmap = {
+                      Error   = helpers.diagnostics.severities.error,
+                      Warning = helpers.diagnostics.severities.warning,
+                    }
+
+                    return {
+                      row      = tonumber(lnum),
+                      col      = tonumber(col),
+                      end_col  = tonumber(col) + 1, -- mark single char
+                      source   = "alloy",
+                      message  = msg,
+                      severity = sevmap[severity] or helpers.diagnostics.severities.error,
+                      filename = filename,
+                    }
+                  end,
+                }),
+              }
+              null_ls.register(alloy_validate) end
           '';
       };
     };
