@@ -56,7 +56,7 @@ in
     };
   };
   programs.git = {
-    extraConfig = {
+    settings = {
       gpg.x509.program = "${pkgs.gitsign}/bin/gitsign";
       gpg.format = "x509";
       gitsign.connectorID = "https://accounts.google.com";
