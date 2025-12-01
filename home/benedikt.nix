@@ -119,7 +119,7 @@ in
     };
   };
   home.packages = with pkgs; [
-    argo
+    argo-workflows
     cosign
     crane
     dotenvx
