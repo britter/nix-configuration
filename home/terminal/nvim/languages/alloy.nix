@@ -7,8 +7,8 @@ let
       (pkgs.fetchFromGitHub {
         owner = "mattsre";
         repo = "tree-sitter-alloy";
-        rev = "3e18eb4e97f06c57a3925f3d20bef6329a6eaef3";
-        sha256 = "sha256-1ZQ9KkPBhK4pmkvZ7y1kEDeTs0y/fE3+2ea0cKCtQG8=";
+        rev = "58d462b1cdb077682b130caa324f3822aeb00b8e";
+        sha256 = "sha256-yDYGtM/vlZqeOy2O+scGHc6Dae0H/cXyC6Gu0inwJNA=";
       }).overrideAttrs
         (_drv: {
           fixupPhase = ''
