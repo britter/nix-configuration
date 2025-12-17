@@ -91,7 +91,12 @@ in
           force = true;
           default = "kagi";
           engines = {
-            "kagi" = {
+            kagi = {
+              name = "Kagi Search";
+              icon = pkgs.fetchurl {
+                url = "https://kagi.com/asset/419dc16/kagi_assets/logos/yellow_3.svg";
+                hash = "sha256-d24VRrszgUp7hlVezL/zN4f98hc/H3rMLsvgtcecya0=";
+              };
               urls = [
                 {
                   template = "https://kagi.com/search";
