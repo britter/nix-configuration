@@ -89,16 +89,29 @@ in
         };
         search = {
           force = true;
-          default = "ddg";
+          default = "kagi";
           engines = {
+            "kagi" = {
+              urls = [
+                {
+                  template = "https://kagi.com/search";
+                  params = [
+                    {
+                      name = "q";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+            };
             "Nix Packages" = {
               urls = [
                 {
                   template = "https://search.nixos.org/packages";
                   params = [
                     {
-                      name = "type";
-                      value = "packages";
+                      name = "channel";
+                      value = "unstable";
                     }
                     {
                       name = "query";
@@ -113,11 +126,11 @@ in
             "NixOS Options" = {
               urls = [
                 {
-                  template = "https://search.nüschtos.de";
+                  template = "https://search.nixos.org/options";
                   params = [
                     {
-                      name = "scope";
-                      value = "NixOS";
+                      name = "channel";
+                      value = "unstable";
                     }
                     {
                       name = "query";
@@ -132,11 +145,11 @@ in
             "Home Manager Options" = {
               urls = [
                 {
-                  template = "https://search.nüschtos.de";
+                  template = "https://home-manager-options.extranix.com";
                   params = [
                     {
-                      name = "scope";
-                      value = "Home+Manager";
+                      name = "release";
+                      value = "master";
                     }
                     {
                       name = "query";
@@ -151,14 +164,10 @@ in
             "NixVim" = {
               urls = [
                 {
-                  template = "https://search.nüschtos.de";
+                  template = "https://nix-community.github.io/nixvim";
                   params = [
                     {
-                      name = "scope";
-                      value = "NixVim";
-                    }
-                    {
-                      name = "query";
+                      name = "search";
                       value = "{searchTerms}";
                     }
                   ];
