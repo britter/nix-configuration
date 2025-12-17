@@ -23,6 +23,7 @@ in
           opacity = 50;
         };
       };
+      allowedHosts = "localhost:8082,127.0.0.1:8082,home.ritter.family";
       widgets = [
         {
           resources = {
