@@ -57,13 +57,7 @@ in
       browser.enable = true;
       calibre.enable = true;
       ghostty.enable = true;
-      intellij = {
-        enable = true;
-        plugins = [
-          "asciidoc"
-          "protocol-buffers"
-        ];
-      };
+      intellij.enable = true;
       sway.enable = true;
       syncthing.enable = true;
     };

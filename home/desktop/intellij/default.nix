@@ -10,15 +10,11 @@ in
 {
   options.my.home.desktop.intellij = {
     enable = lib.mkEnableOption "intellij";
-    plugins = lib.mkOption {
-      type = lib.types.listOf lib.types.str;
-      default = [ ];
-    };
   };
 
   config =
     let
-      idea = pkgs.jetbrains.plugins.addPlugins pkgs.jetbrains.idea-community-bin cfg.plugins;
+      idea = pkgs.jetbrains.idea-oss;
       ideaStartScript = pkgs.writeShellApplication {
         name = "idea";
         text = ''
