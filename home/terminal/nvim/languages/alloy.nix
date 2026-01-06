@@ -32,16 +32,17 @@ in
         luaConfig.post =
           # lua
           ''
-            do
-              local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-              parser_config.alloy = {
-              install_info = {
-              url = "${treesitter-alloy-grammar}",
-                  files = {"src/parser.c"},
-                },
-              }
-            end
+            vim.api.nvim_create_autocmd('User', { pattern = 'TSUpdate',
+            callback = function()
+              require("nvim-treesitter.parsers").alloy = {
+                install_info = {
+                url = "${treesitter-alloy-grammar}",
+                    files = {"src/parser.c"},
+                  },
+                }
+            end})
           '';
+
       };
       none-ls = {
         luaConfig.post =
