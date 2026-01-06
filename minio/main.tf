@@ -42,6 +42,12 @@ output "srv_prod_3_restic_user_credentials" {
   sensitive = true
 }
 
+output "srv_prod_3_restic_restore_user_credentials" {
+  value     = module.srv-prod-3.restic_restore_user_credentials
+  sensitive = true
+}
+
+# User for syncing the entire contents to another minIO installation
 output "srv_prod_3_global_read_user_access_key" {
   value     = module.srv-prod-3.global_read_access_key
   sensitive = true
