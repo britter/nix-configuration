@@ -128,7 +128,8 @@ in
     argo-workflows
     cosign
     crane
-    dotenvx
+    # see https://github.com/NixOS/nixpkgs/issues/478005
+    # dotenvx
     (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
     grype
     kubectl
