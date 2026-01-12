@@ -56,7 +56,7 @@
             src = ./.;
             hooks = {
               deadnix.enable = true;
-              nixfmt-rfc-style.enable = true;
+              nixfmt.enable = true;
             };
           };
           formatting = treefmtEval.config.build.check self;
