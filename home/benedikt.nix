@@ -132,6 +132,7 @@ in
     # dotenvx
     (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
     grype
+    inetutils
     kubectl
     kubectx
     maven
