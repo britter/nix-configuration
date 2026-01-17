@@ -2,32 +2,32 @@ let
   home-lab = {
     hosts = {
       srv-prod-1 = {
-        ip = "192.168.1.11";
+        ip = "192.168.5.11";
         dns = "srv-prod-1.ritter.family";
         vm = true;
       };
       srv-prod-2 = {
-        ip = "192.168.1.12";
+        ip = "192.168.5.12";
         dns = "srv-prod-2.ritter.family";
         vm = true;
       };
       srv-prod-3 = {
-        ip = "192.168.1.13";
+        ip = "192.168.5.13";
         dns = "srv-prod-3.ritter.family";
         vm = true;
       };
       srv-test-1 = {
-        ip = "192.168.1.21";
+        ip = "192.168.5.21";
         dns = "srv-test-1.ritter.family";
         vm = true;
       };
       srv-test-2 = {
-        ip = "192.168.1.22";
+        ip = "192.168.5.22";
         dns = "srv-test-2.ritter.family";
         vm = true;
       };
       srv-eval-1 = {
-        ip = "192.168.1.31";
+        ip = "192.168.5.31";
         dns = "srv-eval-1.ritter.family";
         vm = true;
       };
@@ -40,14 +40,14 @@ let
         vm = false;
       };
       directions = {
-        ip = "192.168.1.6";
+        ip = "192.168.5.6";
         dns = "directions.ritter.family";
         vm = false;
       };
     };
     hypervisors = {
       pve = {
-        ip = "192.168.1.10";
+        ip = "192.168.5.10";
         dns = "pve.ritter.family";
         vm = false;
       };
