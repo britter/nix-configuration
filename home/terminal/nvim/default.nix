@@ -25,7 +25,7 @@ in
     programs.fish = {
       shellAliases = {
         "v" =
-          "nvim (${lib.getExe pkgs.fzf} --preview=\"${lib.getExe pkgs.bat} --style=numbers --color=always {}\")";
+          ''nvim (${lib.getExe pkgs.fzf} --preview="${lib.getExe pkgs.bat} --style=numbers --color=always {}")'';
       };
     };
     home.sessionVariables = {
@@ -88,7 +88,7 @@ in
         }
         {
           action = "<cmd>split<CR>";
-          key = "<leader>\"";
+          key = ''<leader>"'';
           mode = [ "n" ];
         }
         {
@@ -111,7 +111,7 @@ in
               gofmt.enable = true;
               nixfmt = {
                 enable = true;
-                package = pkgs.nixfmt-rfc-style;
+                package = pkgs.nixfmt;
               };
               prettier = {
                 enable = true;
