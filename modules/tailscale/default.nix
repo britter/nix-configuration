@@ -17,7 +17,6 @@ in
     services.tailscale = {
       enable = true;
       authKeyFile = config.sops.secrets."tailscale/auth-key".path;
-      extraSetFlags = [ "--accept-dns=false" ];
     };
   };
 }
