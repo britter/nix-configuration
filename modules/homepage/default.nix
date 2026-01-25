@@ -83,7 +83,7 @@ in
               "Home Assistant" = {
                 description = "Open source home automation that puts local control and privacy first.";
                 href = "https://homeassistant.ritter.family/";
-                icon = "homeassistant.svg";
+                icon = "home-assistant.svg";
               };
             }
           ];
@@ -115,7 +115,7 @@ in
               "FritzBox" = {
                 description = "FritzBox Administration";
                 href = "https://fritz-box.ritter.family/";
-                icon = "avmfritzbox.svg";
+                icon = "fritzbox.svg";
               };
             }
           ];
