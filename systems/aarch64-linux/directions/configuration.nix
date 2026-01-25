@@ -48,6 +48,7 @@
           {
             fqdn = "homeassistant.ritter.family";
             target = "http://${home-lab.hosts.home-assistant.ip}:8123";
+            proxyWebsockets = true;
           }
           {
             fqdn = "jetkvm.ritter.family";
