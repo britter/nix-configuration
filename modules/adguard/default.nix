@@ -155,6 +155,10 @@ in
               answer = home-lab.hosts.directions.ip;
             }
             {
+              domain = "homeassistant.ritter.family";
+              answer = home-lab.hosts.directions.ip;
+            }
+            {
               domain = "nextcloud.ritter.family";
               answer = home-lab.hosts.directions.ip;
             }
