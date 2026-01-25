@@ -46,6 +46,10 @@
             target = "https://grafana.srv-prod-1.ritter.family";
           }
           {
+            fqdn = "homeassistant.ritter.family";
+            target = "http://${home-lab.hosts.home-assistant.ip}:8123";
+          }
+          {
             fqdn = "jetkvm.ritter.family";
             target = "https://${home-lab.devices.jetkvm.ip}";
             proxyWebsockets = true;

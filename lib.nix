@@ -44,6 +44,11 @@ let
         dns = "directions.ritter.family";
         vm = false;
       };
+      home-assistant = {
+        ip = "192.168.20.234";
+        dns = "homeassistant.ritter.family";
+        vm = false;
+      };
     };
     hypervisors = {
       pve = {

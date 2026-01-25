@@ -78,7 +78,25 @@ in
           ];
         }
         {
+          "Smart Home" = [
+            {
+              "Home Assistant" = {
+                description = "Open source home automation that puts local control and privacy first.";
+                href = "https://homeassistant.ritter.family/";
+                icon = "homeassistant.svg";
+              };
+            }
+          ];
+        }
+        {
           "Infrastructure" = [
+            {
+              "UniFi" = {
+                description = "UniFi Network Configuration";
+                href = "https://192.168.1.1";
+                icon = "unifi.svg";
+              };
+            }
             {
               "Proxmox" = {
                 description = "Proxmox Virtual Environment";
