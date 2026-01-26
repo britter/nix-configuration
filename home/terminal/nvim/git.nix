@@ -20,7 +20,7 @@ _: {
         };
       }
       {
-        action = "<cmd>LazyGitFilter<CR>";
+        action = "<cmd>Git log<CR>";
         key = "<leader>gl";
         mode = [ "n" ];
         options = {
@@ -28,7 +28,7 @@ _: {
         };
       }
       {
-        action = "<cmd>LazyGitFilterCurrentFile<CR>";
+        action = "<cmd>Git log %<CR>";
         key = "<leader>glf";
         mode = [ "n" ];
         options = {
