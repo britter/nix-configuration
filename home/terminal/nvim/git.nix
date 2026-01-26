@@ -12,7 +12,7 @@ _: {
     };
     keymaps = [
       {
-        action = "<cmd>LazyGit<CR>";
+        action = "<cmd>Git<CR>";
         key = "<leader>gg";
         mode = [ "n" ];
         options = {
