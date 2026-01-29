@@ -84,6 +84,7 @@ in
   ];
   home.sessionPath = [
     "${npmGlobalDir}/bin"
+    "${config.home.homeDirectory}/.local/bin"
   ];
   # Run npm config set during activation to store prefix in ~/.npmrc
   home.activation.setNpmPrefix = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
