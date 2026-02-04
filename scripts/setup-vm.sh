@@ -11,8 +11,13 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
+if [ -z "$2" ]; then
+  echo "Please provide the IP to setup as an argument!"
+  exit 1
+fi
+
 host="$1"
-ip="${2:-192.168.178.199}"
+ip="$2"
 script_path="$(realpath "${BASH_SOURCE[0]}")"
 
 echo "Setting up $host via $ip..."
