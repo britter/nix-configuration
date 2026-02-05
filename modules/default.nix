@@ -56,7 +56,7 @@ in
     }
     // lib.optionalAttrs (cfg.role == "server") {
       comin.enable = true;
-      monitoring.enable = true;
+      monitoring.enable = false;
       sops.enable = true;
       ssh-access.enable = true;
     };
