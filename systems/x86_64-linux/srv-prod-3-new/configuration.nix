@@ -50,6 +50,7 @@
 
   # nightly minio-sync
   systemd.timers.nightly-minio-sync = {
+    enable = false;
     description = "Nightly timer to wake up the system for the minio sync";
     wantedBy = [ "timers.target" ];
     timerConfig = {
@@ -59,14 +60,13 @@
     };
   };
   systemd.services.nightly-minio-sync = {
-    description = "Nightly minio sync that suspends the system after running";
+    description = "Nightly minio sync";
     serviceConfig = {
       Type = "oneshot";
       # prefix ExecStart with - so that ExecStartPost is executed even if sync fails
       ExecStart = "-${lib.getExe pkgs.rclone} sync srv-prod-3: srv-prod-3-new: --config ${
         config.sops.templates."rclone.conf".path
       }";
-      ExecStartPost = "${pkgs.systemd}/bin/systemctl suspend";
     };
   };
   # This value determines the NixOS release from which the default
