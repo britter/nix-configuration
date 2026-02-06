@@ -13,13 +13,19 @@ resource "proxmox_vm_qemu" "srv_prod_2" {
   memory = 4096
 
   agent                  = 1
-  start_at_node_boot     = true
   define_connection_info = false
   full_clone             = false
   bios                   = "ovmf"
   scsihw                 = "virtio-scsi-single"
   boot                   = "order=scsi0;ide2;net0"
-  vm_state               = "running"
+
+  vm_state           = "running"
+  start_at_node_boot = true
+  startup_shutdown {
+    order            = -1
+    shutdown_timeout = -1
+    startup_delay    = -1
+  }
 
   network {
     id     = 0
