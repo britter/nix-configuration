@@ -52,6 +52,7 @@ in
         jq
         mob # smooth git handover
         pdf-fax
+        pwgen
         tokei # count lines of code
         tealdeer # better man pages
         unzip
