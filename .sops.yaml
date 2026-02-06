@@ -3,6 +3,7 @@ keys:
   - &srv-prod-1 age1wsytzmsk73z4253uc8e9050cjdgg9dvchy9m2dmj9tgml4rrsshqy9uku2
   - &srv-prod-2 age1azlfwa6wlup8vc9vjqhn2nv8hnpphrg5f0chyhn8xq63tv54zyjsr8yng2
   - &srv-prod-3 age1t80a620qtzjrhcx0ndeyu9uccyq8uxa3q30rv9uu3nz9d6mxggtqdgzmhx
+  - &srv-prod-3-new age1nhvr8nmagdwjmp488edhh5zm9relctnue5mvqwrxynkzydl0aqqshzvy7w
   - &srv-test-1 age1gnt60tjm9k8v25a3cs8yhtrq5xnrgylvmxwyhkglq2c5lq0q2fcs4slgkx
   - &srv-test-2 age1jafz4xf567lgtcqv7lwxl7np0gf332yedghdlxgcxd0lfqmtxd2qpg0p4x
   - &srv-eval-1 age15vkuesucjf60x8dcfyre4aus4djyxamsk20ce2u7nrprml2j533qcsc7pd
@@ -29,6 +30,11 @@ creation_rules:
       - age:
           - *framework-13
           - *srv-prod-3
+  - path_regex: systems/x86_64-linux/srv-prod-3-new/secrets\.yaml$
+    key_groups:
+      - age:
+          - *framework-13
+          - *srv-prod-3-new
   - path_regex: systems/x86_64-linux/srv-test-1/secrets\.yaml$
     key_groups:
       - age:
