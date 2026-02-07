@@ -202,6 +202,10 @@ in
               domain = "passwords.srv-prod-2.ritter.family";
               answer = home-lab.hosts.srv-prod-2.ip;
             }
+            {
+              domain = "minio.srv-prod-3.ritter.family";
+              answer = home-lab.hosts.srv-prod-3.ip;
+            }
           ];
         };
       };
