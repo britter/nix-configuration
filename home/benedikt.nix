@@ -42,7 +42,6 @@ in
   programs.nixvim = {
     plugins = {
       none-ls.sources.formatting.google_java_format.enable = true;
-      claude-code.enable = true;
     };
   };
 
@@ -76,6 +75,9 @@ in
           user.signingKey = "14907572088F4FA7";
         };
       }
+    ];
+    ignores = [
+      ".claude/settings.local.json"
     ];
   };
 
