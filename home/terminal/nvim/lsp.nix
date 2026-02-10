@@ -14,7 +14,8 @@
         };
         nixd.enable = true;
         ts_ls.enable = true;
-        zls.enable = true;
+        # disabled due to build failures in nixpkgs, see https://github.com/NixOS/nixpkgs/issues/488701
+        zls.enable = false;
       };
       luaConfig.pre = ''
         local augroup = vim.api.nvim_create_augroup('Autoformat', {})
