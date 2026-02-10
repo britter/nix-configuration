@@ -29,6 +29,7 @@ in
         8
         11
         17
+        25
       ];
       linkToUserHome = true;
     };
