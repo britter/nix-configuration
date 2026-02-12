@@ -10,11 +10,12 @@
       desktop.enable = true;
       java = {
         enable = true;
-        version = 21;
+        version = 25;
         additionalVersions = [
           8
           11
           17
+          21
         ];
       };
       terminal.enable = true;
