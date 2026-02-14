@@ -18,7 +18,7 @@ terraform {
 }
 
 module "srv-prod-3" {
-  source        = "./srv-prod-3"
+  source        = "./minio"
   endpoint      = "minio.srv-prod-3.ritter.family"
   root_user     = var.srv_prod_3_root_user
   root_password = var.srv_prod_3_root_password
