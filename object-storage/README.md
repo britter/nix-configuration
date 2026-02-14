@@ -1,6 +1,6 @@
-# minIO
+# object-storage
 
-Module for managing minIO instances.
+Module for managing object storage, in particular minIO instances.
 The module is structured in a way to support rolling out the same configuration across multiple minIO instances.
 
 Currently a bucket for restic backups as well as a bucket for Tofu states is created, including users for fine-grained access.
