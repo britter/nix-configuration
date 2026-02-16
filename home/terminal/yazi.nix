@@ -14,6 +14,8 @@ in
     programs.yazi = {
       enable = true;
       enableFishIntegration = true;
+      # default for stateVersion >= 26.05
+      shellWrapperName = "y";
     };
   };
 }
