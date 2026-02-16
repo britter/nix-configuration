@@ -24,6 +24,13 @@ module "srv-prod-3" {
   root_password = var.srv_prod_3_root_password
 }
 
+module "srv-prod-3-new" {
+  source        = "./minio"
+  endpoint      = "minio.srv-prod-3-new.ritter.family"
+  root_user     = var.srv_prod_3_new_root_user
+  root_password = var.srv_prod_3_new_root_password
+}
+
 output "srv_prod_3_state_bucket_domain_name" {
   value = module.srv-prod-3.state_bucket_domain_name
 }
