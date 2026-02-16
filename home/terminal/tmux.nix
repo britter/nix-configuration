@@ -28,6 +28,7 @@ in
       mouse = true;
       keyMode = "vi";
       terminal = "tmux-256color";
+      historyLimit = 10000;
       plugins = [
         pkgs.tmuxPlugins.vim-tmux-navigator
         pkgs.tmuxPlugins.yank
