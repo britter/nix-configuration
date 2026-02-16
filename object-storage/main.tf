@@ -64,3 +64,37 @@ output "srv_prod_3_global_read_user_secret_key" {
   value     = module.srv-prod-3.global_read_secret_key
   sensitive = true
 }
+
+output "srv_prod_3_new_state_bucket_domain_name" {
+  value = module.srv-prod-3-new.state_bucket_domain_name
+}
+
+output "srv_prod_3_new_state_user_credentials" {
+  value     = module.srv-prod-3-new.state_user_credentials
+  sensitive = true
+}
+
+output "srv_prod_3_new_restic_bucket_domain_name" {
+  value = module.srv-prod-3-new.restic_bucket_domain_name
+}
+
+output "srv_prod_3_new_restic_user_credentials" {
+  value     = module.srv-prod-3-new.restic_user_credentials
+  sensitive = true
+}
+
+output "srv_prod_3_new_restic_restore_user_credentials" {
+  value     = module.srv-prod-3-new.restic_restore_user_credentials
+  sensitive = true
+}
+
+# User for syncing the entire contents to another minIO installation
+output "srv_prod_3_new_global_read_user_access_key" {
+  value     = module.srv-prod-3-new.global_read_access_key
+  sensitive = true
+}
+
+output "srv_prod_3_new_global_read_user_secret_key" {
+  value     = module.srv-prod-3-new.global_read_secret_key
+  sensitive = true
+}
