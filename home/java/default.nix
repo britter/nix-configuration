@@ -61,7 +61,7 @@ in
       };
       programs.nixvim.plugins.jdtls.settings.settings.java.configuration.runtimes = lib.map (v: {
         name = "JavaSE-${v}";
-        path = (javaHomeForVersion v);
+        path = javaHomeForVersion v;
       }) allVersions;
     };
 }
