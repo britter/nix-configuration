@@ -12,7 +12,7 @@ let
         vm = true;
       };
       srv-prod-2-new = {
-        ip = "192.168.20.12";
+        ip = "192.168.30.12";
         dns = "srv-prod-2-new.ritter.family";
         vm = true;
       };
