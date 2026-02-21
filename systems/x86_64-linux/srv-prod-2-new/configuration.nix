@@ -7,6 +7,7 @@
 {
   imports = [
     ../../../modules
+    ./disko-config.nix
   ];
 
   my = {
@@ -15,10 +16,6 @@
     };
     modules = {
       proxmox-vm.enable = true;
-      disko = {
-        enable = true;
-        bootDisk = "/dev/sda";
-      };
       git-server.enable = true;
       nextcloud = {
         enable = true;
