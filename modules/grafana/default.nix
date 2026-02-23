@@ -28,6 +28,7 @@ in
         server = {
           domain = "grafana.${config.my.host.name}.ritter.family";
         };
+        security.secret_key = "SW2YcwTIb9zpOOhoPsMm";
       };
       provision = {
         enable = true;
