@@ -9,7 +9,8 @@
         astro.enable = true;
         gopls.enable = true;
         kotlin_lsp = {
-          enable = true;
+          # JetBrains removes releases after a while, which causes the kotlin-lsp derivation to fail at random times.
+          enable = false;
           package = pkgs.kotlin-lsp;
         };
         nixd.enable = true;
