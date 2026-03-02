@@ -82,7 +82,7 @@
       git = {
         environmentFile = config.sops.templates."restic/git/secrets.env".path;
         paths = [ "/srv/git" ];
-        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
+        repository = "s3:https://minio.srv-prod-3-new.ritter.family/restic-backups/git";
       };
 
       calibre = {
@@ -91,7 +91,7 @@
           "/var/lib/calibre-web"
           "/var/lib/calibre-library"
         ];
-        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/calibre";
+        repository = "s3:https://minio.srv-prod-3-new.ritter.family/restic-backups/calibre";
         restorePostCommand = "systemctl restart calibre-web.service";
       };
 
@@ -105,7 +105,7 @@
             "/var/lib/nextcloud/data"
             "/var/backups/nextcloud"
           ];
-          repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/nextcloud";
+          repository = "s3:https://minio.srv-prod-3-new.ritter.family/restic-backups/nextcloud";
           restorePrepareCommand = "${occ} maintenance:mode --on";
           restorePostCommand = ''
             ${lib.getExe pkgs.sudo} -u nextcloud ${pg_restore} --clean -d nextcloud /var/backups/nextcloud/nextcloud.dump
@@ -118,7 +118,7 @@
           "/var/lib/bitwarden_rs"
           "/var/backups/vaultwarden"
         ];
-        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
+        repository = "s3:https://minio.srv-prod-3-new.ritter.family/restic-backups/vaultwarden";
         restorePrepareCommand = "systemctl stop vaultwarden";
         restorePostCommand = ''
           ${lib.getExe pkgs.sudo} -u vaultwarden ${pg_restore} --clean -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
