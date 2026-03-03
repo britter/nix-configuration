@@ -50,7 +50,6 @@
 
   # nightly minio-sync
   systemd.timers.nightly-minio-sync = {
-    enable = false;
     description = "Nightly timer to wake up the system for the minio sync";
     wantedBy = [ "timers.target" ];
     timerConfig = {
