@@ -209,7 +209,7 @@ in
             # temporary fixes needed during server migration
             {
               domain = "minio.srv-prod-3-new.ritter.family";
-              answer = "192.168.30.211";
+              answer = "192.168.30.13";
             }
           ];
         };
