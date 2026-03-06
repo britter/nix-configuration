@@ -1,0 +1,7 @@
+keys:
+  - &framework-13 age14dnfyq56r7exkjx58gs4s8xlhn6sd05l3aufr540r374ca7mcf6qdv0yhw
+creation_rules:
+  - path_regex: .*/secrets\.json$
+    key_groups:
+      - age:
+          - *framework-13
