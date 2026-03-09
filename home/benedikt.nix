@@ -134,6 +134,7 @@ in
     crane
     # see https://github.com/NixOS/nixpkgs/issues/478005
     # dotenvx
+    go
     (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
     grype
     inetutils
