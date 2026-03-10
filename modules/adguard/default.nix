@@ -27,17 +27,10 @@ in
           port = 53;
           # DDoS protection only required when AdGuard is exposed via the internet
           ratelimit = 0;
-          bootstrap_dns = [ "1.1.1.1" ];
+          bootstrap_dns = [ "192.168.1.1" ];
           upstream_dns = [
-            # Cloudflare DNS
-            "1.1.1.1"
-            "https://dns.cloudflare.com/dns-query"
-            # Quad 9
-            "9.9.9.9"
-            "https://dns10.quad9.net/dns-query"
-            # Google Public DNS
-            "8.8.8.8"
-            "https://dns.google/dns-query"
+            # Unifi Gateway
+            "192.168.1.1"
           ];
         };
         filters = [
@@ -205,11 +198,6 @@ in
             {
               domain = "minio.srv-prod-3.ritter.family";
               answer = home-lab.hosts.srv-prod-3.ip;
-            }
-            # temporary fixes needed during server migration
-            {
-              domain = "minio.srv-prod-3-new.ritter.family";
-              answer = "192.168.30.13";
             }
           ];
         };
