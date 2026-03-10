@@ -77,12 +77,18 @@
   services.restic.restores =
     let
       pg_restore = "${config.services.postgresql.package}/bin/pg_restore";
+      timerConfig = {
+        OnCalendar = "03:00";
+        RandomizedDelaySec = "30m";
+        Persistent = true;
+      };
     in
     {
       git = {
         environmentFile = config.sops.templates."restic/git/secrets.env".path;
         paths = [ "/srv/git" ];
         repository = "s3:https://minio.srv-prod-3-new.ritter.family/restic-backups/git";
+        inherit timerConfig;
       };
 
       calibre = {
@@ -93,6 +99,7 @@
         ];
         repository = "s3:https://minio.srv-prod-3-new.ritter.family/restic-backups/calibre";
         restorePostCommand = "systemctl restart calibre-web.service";
+        inherit timerConfig;
       };
 
       nextcloud =
@@ -109,8 +116,10 @@
           restorePrepareCommand = "${occ} maintenance:mode --on";
           restorePostCommand = ''
             ${lib.getExe pkgs.sudo} -u nextcloud ${pg_restore} --clean -d nextcloud /var/backups/nextcloud/nextcloud.dump
+            ${lib.getExe pkgs.sudo} chown -R nextcloud:nextcloud /var/lib/nextcloud
             ${occ} maintenance:mode --off
           '';
+          inherit timerConfig;
         };
       vaultwarden = {
         environmentFile = config.sops.templates."restic/vaultwarden/secrets.env".path;
@@ -124,6 +133,7 @@
           ${lib.getExe pkgs.sudo} -u vaultwarden ${pg_restore} --clean -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
           systemctl restart vaultwarden
         '';
+        inherit timerConfig;
       };
     };
 
