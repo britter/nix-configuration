@@ -14,6 +14,10 @@ in
       WL_PRESENT_DMENU = "${rofi} -dmenu -p present";
       XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/Screenshots";
     };
+    # make sure the target directory for grimshot exists
+    systemd.user.tmpfiles.rules = [
+      "d ${config.home.homeDirectory}/Pictures/Screenshots 0700 ${config.home.username} - -"
+    ];
     wayland.windowManager.sway = {
       wrapperFeatures.gtk = true;
       config = {
