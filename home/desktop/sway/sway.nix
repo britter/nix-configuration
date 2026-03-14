@@ -7,6 +7,14 @@
 let
   cfg = config.my.home.desktop.sway;
   rofi = lib.getExe config.programs.rofi.finalPackage;
+  screenshotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
+  capture-screenhot = pkgs.writeShellApplication {
+    name = "capture-screenshot";
+    runtimeInputs = [ pkgs.sway-contrib.grimshot ];
+    text = ''
+      grimshot --notify savecopy "$1" "${screenshotsDir}/$(date -Ins).png"
+    '';
+  };
 in
 {
   config = lib.mkIf cfg.enable {
@@ -16,7 +24,7 @@ in
     };
     # make sure the target directory for grimshot exists
     systemd.user.tmpfiles.rules = [
-      "d ${config.home.homeDirectory}/Pictures/Screenshots 0700 ${config.home.username} - -"
+      "d ${screenshotsDir} 0700 ${config.home.username} - -"
     ];
     wayland.windowManager.sway = {
       wrapperFeatures.gtk = true;
@@ -116,9 +124,9 @@ in
               "exec ${rofi} -show ssh -no-parse-known-hosts -terminal ${config.wayland.windowManager.sway.config.terminal}";
 
             # screenshot capturing
-            "${mod}+x" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy output";
-            "${mod}+Shift+x" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy window";
-            "${mod}+Ctrl+x" = "exec ${lib.getExe pkgs.sway-contrib.grimshot} savecopy area";
+            "${mod}+x" = "exec ${lib.getExe capture-screenhot} output";
+            "${mod}+Shift+x" = "exec ${lib.getExe capture-screenhot}  window";
+            "${mod}+Ctrl+x" = "exec ${lib.getExe capture-screenhot} area";
 
             # Custom modes
             "${mod}+Escape" = ''mode "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit"'';
