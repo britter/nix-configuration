@@ -39,6 +39,14 @@ in
           xdg-open "$PORTAL_URL"
         '';
       };
+      serve_dir = pkgs.writeShellApplication {
+        name = "serve";
+        runtimeInputs = [ pkgs.python3 ];
+        text = ''
+          dir="''${1:-.}"
+          python3 -m http.server --directory "$dir"
+        '';
+      };
     in
     lib.mkIf cfg.enable {
       home.packages = with pkgs; [
@@ -55,6 +63,7 @@ in
         pwgen
         tokei # count lines of code
         tealdeer # better man pages
+        serve_dir
         unzip
         wget
         yq-go
