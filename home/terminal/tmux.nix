@@ -60,6 +60,10 @@ in
         # Open new pane splits in CWD
         bind '"' split-window -v -c "#{pane_current_path}"
         bind % split-window -h -c "#{pane_current_path}"
+
+        # Highlight active pane
+        set-option -g pane-active-border-style fg=magenta
+        set-option -g pane-border-indicators arrows
       '';
       tmuxinator = {
         enable = true;
