@@ -1,3 +1,9 @@
+resource "unifi_client" "directions" {
+  name     = "directions"
+  mac      = "d8:3a:dd:72:2a:26"
+  fixed_ip = "192.168.5.6"
+}
+
 resource "unifi_client" "pve" {
   name     = "pve"
   mac      = "a8:2b:dd:ce:bf:b5"
