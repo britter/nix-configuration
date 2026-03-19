@@ -1,3 +1,17 @@
+resource "unifi_dns_record" "directions" {
+  name        = "directions.ritter.family"
+  record_type = "A"
+  value       = unifi_client.directions.fixed_ip
+  ttl         = 60
+}
+
+resource "unifi_dns_record" "directions_wildcard" {
+  name        = "*.ritter.family"
+  record_type = "A"
+  value       = unifi_client.directions.fixed_ip
+  ttl         = 60
+}
+
 resource "unifi_dns_record" "srv_prod_2" {
   name        = "srv-prod-2.ritter.family"
   record_type = "A"
