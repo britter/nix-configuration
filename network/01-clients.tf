@@ -1,3 +1,9 @@
+resource "unifi_client" "homeassistant" {
+  name     = "homeassistant"
+  mac      = "20:f8:3b:01:fa:16"
+  fixed_ip = "192.168.20.234"
+}
+
 resource "unifi_client" "srv_prod_2" {
   name     = "srv-prod-2"
   mac      = "1a:d8:70:16:71:8a"
