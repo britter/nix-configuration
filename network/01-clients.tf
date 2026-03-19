@@ -1,3 +1,9 @@
+resource "unifi_client" "srv_test_2" {
+  name     = "srv-test-2"
+  mac      = "1e:1e:b9:3a:7a:56"
+  fixed_ip = "192.168.5.21"
+}
+
 resource "unifi_client" "srv_prod_2_new" {
   name     = "srv-prod-2-new"
   mac      = "bc:24:11:82:d1:0d"
