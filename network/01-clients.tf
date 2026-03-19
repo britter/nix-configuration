@@ -1,3 +1,9 @@
+resource "unifi_client" "pve" {
+  name     = "pve"
+  mac      = "a8:2b:dd:ce:bf:b5"
+  fixed_ip = "192.168.10.10"
+}
+
 resource "unifi_client" "homeassistant" {
   name     = "homeassistant"
   mac      = "20:f8:3b:01:fa:16"
