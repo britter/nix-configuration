@@ -36,8 +36,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     substituteInPlace $out/share/kotlin-lsp.sh \
       --replace-fail 'LOCAL_JRE_PATH="$DIR/jre/Contents/Home"' 'LOCAL_JRE_PATH="${jdk21}"' \
       --replace-fail 'LOCAL_JRE_PATH="$DIR/jre"' 'LOCAL_JRE_PATH="${jdk21}"'
-    makeWrapper $out/share/kotlin-lsp.sh $out/bin/kotlin-lsp \
-      --set JAVA_HOME ${jdk21}
+    makeWrapper $out/share/kotlin-lsp.sh $out/bin/kotlin-lsp
 
     runHook postInstall
   '';
