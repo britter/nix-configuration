@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  home-lab,
   ...
 }:
 let
@@ -110,97 +109,6 @@ in
             url = "https://abp.oisd.nl/";
           }
         ];
-        filtering = {
-          filtering_enabled = true;
-          rewrites = [
-            # All production domains point to directions, because it proxies HTTPS requests
-            # to the actual URL on the target server. For example:
-            #
-            #   nextcloud.ritter.family is proxied to srv-prod-2.nextcloud.ritter.family
-            #
-            # See systems/aarch64-linux/directions/configuration.nix
-            {
-              domain = "adguard.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "books.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "collabora.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "collabora-test.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "fritz-box.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "grafana.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "home.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "homeassistant.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "nextcloud.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "nextcloud-test.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "passwords.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "pve.ritter.family";
-              answer = home-lab.hosts.directions.ip;
-            }
-            {
-              domain = "collabora.srv-prod-2.ritter.family";
-              answer = home-lab.hosts.srv-prod-2.ip;
-            }
-            {
-              domain = "grafana.srv-prod-1.ritter.family";
-              answer = home-lab.hosts.srv-prod-1.ip;
-            }
-            {
-              domain = "nextcloud.srv-prod-2.ritter.family";
-              answer = home-lab.hosts.srv-prod-2.ip;
-            }
-            {
-              domain = "collabora.srv-test-2.ritter.family";
-              answer = home-lab.hosts.srv-test-2.ip;
-            }
-            {
-              domain = "grafana.srv-test-1.ritter.family";
-              answer = home-lab.hosts.srv-test-1.ip;
-            }
-            {
-              domain = "nextcloud.srv-test-2.ritter.family";
-              answer = home-lab.hosts.srv-test-2.ip;
-            }
-            {
-              domain = "passwords.srv-prod-2.ritter.family";
-              answer = home-lab.hosts.srv-prod-2.ip;
-            }
-            {
-              domain = "minio.srv-prod-3.ritter.family";
-              answer = home-lab.hosts.srv-prod-3.ip;
-            }
-          ];
-        };
       };
     };
 
