@@ -52,6 +52,7 @@ in
 
       programs.gradle = {
         enable = true;
+        package = pkgs.gradle_9;
         settings = {
           "org.gradle.java.installations.paths" = lib.concatStringsSep "," (
             lib.map javaHomeForVersion allVersions
