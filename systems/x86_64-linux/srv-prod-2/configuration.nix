@@ -82,6 +82,7 @@
     # keep the most recent snapshot per <unit> for the last .. <unit>
     # e.g. for the last 8 weeks, we will keep the most recent snapshot of that week.
     let
+      bucket = "s3:https://minio.srv-prod-3.ritter.family/restic-backups";
       pruneOpts = [
         "--keep-daily 14"
         "--keep-weekly 8"
@@ -99,7 +100,7 @@
       git = {
         environmentFile = config.sops.templates."restic/git/secrets.env".path;
         paths = [ "/srv/git" ];
-        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/git";
+        repository = "${bucket}/git";
         initialize = true;
         inherit pruneOpts;
         inherit timerConfig;
@@ -110,7 +111,7 @@
           "/var/lib/calibre-web"
           "/var/lib/calibre-library"
         ];
-        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/calibre";
+        repository = "${bucket}/calibre";
         initialize = true;
         inherit pruneOpts;
         inherit timerConfig;
@@ -125,7 +126,7 @@
             "/var/lib/nextcloud/data"
             "/var/backups/nextcloud"
           ];
-          repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/nextcloud";
+          repository = "${bucket}/nextcloud";
           initialize = true;
           backupPrepareCommand = ''
             ${occ} maintenance:mode --on
@@ -144,7 +145,7 @@
           "/var/lib/bitwarden_rs"
           "/var/backups/vaultwarden"
         ];
-        repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
+        repository = "${bucket}/vaultwarden";
         initialize = true;
         backupPrepareCommand = ''
           systemctl stop vaultwarden
