@@ -22,14 +22,14 @@
         configurations = [
           {
             fqdn = "books.ritter.family";
-            target = "https://books.srv-prod-2.ritter.family";
+            target = "https://books.srv-prod-2-new.ritter.family";
             extraConfig = ''
               client_max_body_size 512M;
             '';
           }
           {
             fqdn = "collabora.ritter.family";
-            target = "https://collabora.srv-prod-2.ritter.family";
+            target = "https://collabora.srv-prod-2-new.ritter.family";
             proxyWebsockets = true;
           }
           {
@@ -57,7 +57,7 @@
           }
           {
             fqdn = "nextcloud.ritter.family";
-            target = "https://nextcloud.srv-prod-2.ritter.family";
+            target = "https://nextcloud.srv-prod-2-new.ritter.family";
             extraConfig = ''
               client_max_body_size 512M;
             '';
@@ -75,11 +75,11 @@
           }
           {
             fqdn = "passwords.ritter.family";
-            target = "https://passwords.srv-prod-2.ritter.family";
+            target = "https://passwords.srv-prod-2-new.ritter.family";
           }
           {
             fqdn = "pdf.ritter.family";
-            target = "https://pdf.srv-prod-2.ritter.family";
+            target = "https://pdf.srv-prod-2-new.ritter.family";
             extraConfig = ''
               client_max_body_size 100M;
             '';

@@ -74,13 +74,21 @@
     '';
   };
 
-  services.restic.restores =
+  services.restic.backups =
+    # keep the most recent snapshot per <unit> for the last .. <unit>
+    # e.g. for the last 8 weeks, we will keep the most recent snapshot of that week.
     let
       bucket = "s3:https://minio.srv-prod-3-new.ritter.family/restic-backups";
-      pg_restore = "${config.services.postgresql.package}/bin/pg_restore";
+      pruneOpts = [
+        "--keep-daily 14"
+        "--keep-weekly 8"
+        "--keep-monthly 12"
+        "--keep-yearly 5"
+      ];
+      pg_dump = "${config.services.postgresql.package}/bin/pg_dump";
       timerConfig = {
-        OnCalendar = "03:00";
-        RandomizedDelaySec = "30m";
+        OnCalendar = "00:00";
+        RandomizedDelaySec = "30mm";
         Persistent = true;
       };
     in
@@ -89,9 +97,10 @@
         environmentFile = config.sops.templates."restic/git/secrets.env".path;
         paths = [ "/srv/git" ];
         repository = "${bucket}/git";
+        initialize = true;
+        inherit pruneOpts;
         inherit timerConfig;
       };
-
       calibre = {
         environmentFile = config.sops.templates."restic/calibre/secrets.env".path;
         paths = [
@@ -99,10 +108,10 @@
           "/var/lib/calibre-library"
         ];
         repository = "${bucket}/calibre";
-        restorePostCommand = "systemctl restart calibre-web.service";
+        initialize = true;
+        inherit pruneOpts;
         inherit timerConfig;
       };
-
       nextcloud =
         let
           occ = lib.getExe config.services.nextcloud.occ;
@@ -114,12 +123,16 @@
             "/var/backups/nextcloud"
           ];
           repository = "${bucket}/nextcloud";
-          restorePrepareCommand = "${occ} maintenance:mode --on";
-          restorePostCommand = ''
-            ${lib.getExe pkgs.sudo} -u nextcloud ${pg_restore} --clean -d nextcloud /var/backups/nextcloud/nextcloud.dump
-            ${lib.getExe pkgs.sudo} chown -R nextcloud:nextcloud /var/lib/nextcloud
+          initialize = true;
+          backupPrepareCommand = ''
+            ${occ} maintenance:mode --on
+            ${lib.getExe pkgs.sudo} -u postgres ${pg_dump} --format=custom --file=/var/backups/nextcloud/nextcloud.dump nextcloud
+          '';
+          backupCleanupCommand = ''
+            rm /var/backups/nextcloud/nextcloud.dump
             ${occ} maintenance:mode --off
           '';
+          inherit pruneOpts;
           inherit timerConfig;
         };
       vaultwarden = {
@@ -129,11 +142,16 @@
           "/var/backups/vaultwarden"
         ];
         repository = "${bucket}/vaultwarden";
-        restorePrepareCommand = "systemctl stop vaultwarden";
-        restorePostCommand = ''
-          ${lib.getExe pkgs.sudo} -u vaultwarden ${pg_restore} --clean -d vaultwarden /var/backups/vaultwarden/vaultwarden.dump
+        initialize = true;
+        backupPrepareCommand = ''
+          systemctl stop vaultwarden
+          ${lib.getExe pkgs.sudo} -u postgres ${pg_dump} --format=custom --file=/var/backups/vaultwarden/vaultwarden.dump vaultwarden
+        '';
+        backupCleanupCommand = ''
+          rm /var/backups/vaultwarden/vaultwarden.dump
           systemctl restart vaultwarden
         '';
+        inherit pruneOpts;
         inherit timerConfig;
       };
     };
