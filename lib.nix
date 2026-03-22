@@ -36,10 +36,6 @@ let
         dns = "srv-eval-1.ritter.family";
         vm = true;
       };
-      srv-backup-1 = {
-        dns = "srv-backup-1.ritter.family";
-        vm = false;
-      };
       srv-offsite-1 = {
         dns = "srv-offsite-1.ritter.family";
         vm = false;

@@ -26,7 +26,6 @@ in
             "srv-test-1"
             "srv-test-2"
             "srv-eval-1"
-            "srv-backup-1"
           ];
         in
         [
