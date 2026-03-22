@@ -19,6 +19,7 @@
       git-server.enable = true;
       nextcloud = {
         enable = true;
+        stage = "production";
       };
       calibre-web.enable = true;
       stirling-pdf.enable = true;
