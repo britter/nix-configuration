@@ -90,18 +90,14 @@ let
           ];
         };
       configurationAttrs =
-        builder: arch:
+        arch:
         builtins.map (hostName: {
           name = hostName;
-          value = builder arch hostName;
+          value = nixosConfiguration arch hostName;
         }) (builtins.attrNames systems.${arch});
-      nixosConfigurations =
-        let
-          nixosConfigurationAttrs = aarch: configurationAttrs nixosConfiguration aarch;
-        in
-        builtins.listToAttrs (
-          nixosConfigurationAttrs "aarch64-linux" ++ nixosConfigurationAttrs "x86_64-linux"
-        );
+      nixosConfigurations = builtins.listToAttrs (
+        configurationAttrs "aarch64-linux" ++ configurationAttrs "x86_64-linux"
+      );
     in
     {
       inherit nixosConfigurations;
