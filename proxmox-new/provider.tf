@@ -4,7 +4,7 @@ terraform {
     bucket                      = "tofu-states"
     key                         = "home-lab/proxmox-new/terraform.tfstate"
     region                      = "eu-central-1"
-    endpoint                    = "https://minio.srv-prod-3-new.ritter.family"
+    endpoint                    = "https://minio.srv-prod-3.ritter.family"
     skip_credentials_validation = true
     skip_region_validation      = true
     skip_requesting_account_id  = true
