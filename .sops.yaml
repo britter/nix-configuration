@@ -1,13 +1,7 @@
 keys:
   - &framework-13 age14dnfyq56r7exkjx58gs4s8xlhn6sd05l3aufr540r374ca7mcf6qdv0yhw
-  - &srv-prod-1 age1wsytzmsk73z4253uc8e9050cjdgg9dvchy9m2dmj9tgml4rrsshqy9uku2
-  - &srv-prod-2 age1azlfwa6wlup8vc9vjqhn2nv8hnpphrg5f0chyhn8xq63tv54zyjsr8yng2
-  - &srv-prod-2-new age1auwa57jefln7sfelfx8l3sfacpwt3t2fxqch8643jyht7mtjwqzq8yxjzq
-  - &srv-prod-3 age1t80a620qtzjrhcx0ndeyu9uccyq8uxa3q30rv9uu3nz9d6mxggtqdgzmhx
-  - &srv-prod-3-new age1nhvr8nmagdwjmp488edhh5zm9relctnue5mvqwrxynkzydl0aqqshzvy7w
-  - &srv-test-1 age1gnt60tjm9k8v25a3cs8yhtrq5xnrgylvmxwyhkglq2c5lq0q2fcs4slgkx
-  - &srv-test-2 age1jafz4xf567lgtcqv7lwxl7np0gf332yedghdlxgcxd0lfqmtxd2qpg0p4x
-  - &srv-eval-1 age15vkuesucjf60x8dcfyre4aus4djyxamsk20ce2u7nrprml2j533qcsc7pd
+  - &srv-prod-2 age1auwa57jefln7sfelfx8l3sfacpwt3t2fxqch8643jyht7mtjwqzq8yxjzq
+  - &srv-prod-3 age1nhvr8nmagdwjmp488edhh5zm9relctnue5mvqwrxynkzydl0aqqshzvy7w
   - &srv-offsite-1 age1qy4nn0tr7mlkhwkc77vshnpuknsnvgu5y4jwfkmmazfd38acspkscslsc3
   - &directions age1tqwmx8ge4fxkj2l8sfam94eg52km2w3dqjgazjez46m4ywln7qls0unsdw
 creation_rules:
@@ -15,11 +9,6 @@ creation_rules:
     key_groups:
       - age:
           - *framework-13
-  - path_regex: systems/x86_64-linux/srv-prod-1/secrets\.yaml$
-    key_groups:
-      - age:
-          - *framework-13
-          - *srv-prod-1
   - path_regex: systems/x86_64-linux/srv-prod-2/secrets\.yaml$
     key_groups:
       - age:
@@ -29,7 +18,7 @@ creation_rules:
     key_groups:
       - age:
           - *framework-13
-          - *srv-prod-2-new
+          - *srv-prod-2
   - path_regex: systems/x86_64-linux/srv-prod-3/secrets\.yaml$
     key_groups:
       - age:
@@ -39,22 +28,7 @@ creation_rules:
     key_groups:
       - age:
           - *framework-13
-          - *srv-prod-3-new
-  - path_regex: systems/x86_64-linux/srv-test-1/secrets\.yaml$
-    key_groups:
-      - age:
-          - *framework-13
-          - *srv-test-1
-  - path_regex: systems/x86_64-linux/srv-test-2/secrets\.yaml$
-    key_groups:
-      - age:
-          - *framework-13
-          - *srv-test-2
-  - path_regex: systems/x86_64-linux/srv-eval-1/secrets\.yaml$
-    key_groups:
-      - age:
-          - *framework-13
-          - *srv-eval-1
+          - *srv-prod-3
   - path_regex: systems/x86_64-linux/srv-offsite-1/secrets\.yaml$
     key_groups:
       - age:
