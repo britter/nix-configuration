@@ -13,6 +13,7 @@
   my = {
     host = {
       role = "server";
+      name = "srv-prod-2";
     };
     modules = {
       proxmox-vm.enable = true;
@@ -23,7 +24,7 @@
       };
       calibre-web.enable = true;
       stirling-pdf.enable = true;
-      tailscale.enable = false;
+      tailscale.enable = true;
       vaultwarden.enable = true;
     };
   };

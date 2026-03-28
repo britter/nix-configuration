@@ -4,6 +4,7 @@
 {
   imports = [
     ../../../modules
+    ./disko-config.nix
   ];
 
   my = {
@@ -12,11 +13,6 @@
     };
     modules = {
       proxmox-vm.enable = true;
-      disko = {
-        enable = true;
-        bootDisk = "/dev/sda";
-        storageDisk = "/dev/sdb";
-      };
       minio.enable = true;
       tailscale.enable = true;
     };

@@ -10,10 +10,12 @@
   my = {
     host = {
       role = "server";
+      name = "srv-prod-3";
     };
     modules = {
       proxmox-vm.enable = true;
       minio.enable = true;
+      tailscale.enable = true;
     };
   };
 
