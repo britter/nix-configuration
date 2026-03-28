@@ -56,6 +56,7 @@ in
 
       signing = {
         signByDefault = true;
+        format = "openpgp";
         key = osUser.signingKey;
       };
 
