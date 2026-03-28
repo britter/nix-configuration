@@ -14,7 +14,7 @@
     modules = {
       proxmox-vm.enable = true;
       minio.enable = true;
-      tailscale.enable = true;
+      tailscale.enable = false;
     };
   };
 
