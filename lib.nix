@@ -1,39 +1,14 @@
 let
   home-lab = {
     hosts = {
-      srv-prod-1 = {
-        ip = "192.168.5.11";
-        dns = "srv-prod-1.ritter.family";
-        vm = true;
-      };
       srv-prod-2 = {
-        ip = "192.168.5.12";
+        ip = "192.168.30.12";
         dns = "srv-prod-2.ritter.family";
         vm = true;
       };
-      srv-prod-2-new = {
-        ip = "192.168.30.12";
-        dns = "srv-prod-2-new.ritter.family";
-        vm = true;
-      };
       srv-prod-3 = {
-        ip = "192.168.5.13";
+        ip = "192.168.30.13";
         dns = "srv-prod-3.ritter.family";
-        vm = true;
-      };
-      srv-test-1 = {
-        ip = "192.168.5.21";
-        dns = "srv-test-1.ritter.family";
-        vm = true;
-      };
-      srv-test-2 = {
-        ip = "192.168.5.22";
-        dns = "srv-test-2.ritter.family";
-        vm = true;
-      };
-      srv-eval-1 = {
-        ip = "192.168.5.31";
-        dns = "srv-eval-1.ritter.family";
         vm = true;
       };
       srv-offsite-1 = {
