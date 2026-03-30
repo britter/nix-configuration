@@ -14,17 +14,7 @@ creation_rules:
       - age:
           - *framework-13
           - *srv-prod-2
-  - path_regex: systems/x86_64-linux/srv-prod-2-new/secrets\.yaml$
-    key_groups:
-      - age:
-          - *framework-13
-          - *srv-prod-2
   - path_regex: systems/x86_64-linux/srv-prod-3/secrets\.yaml$
-    key_groups:
-      - age:
-          - *framework-13
-          - *srv-prod-3
-  - path_regex: systems/x86_64-linux/srv-prod-3-new/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
