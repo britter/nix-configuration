@@ -39,3 +39,10 @@ resource "unifi_dns_record" "srv_prod_3_wildcard" {
   value       = unifi_client.srv_prod_3_new.fixed_ip
   ttl         = 60
 }
+
+resource "unifi_dns_record" "true_nas" {
+  name        = "storage.ritter.family"
+  record_type = "A"
+  value       = unifi_client.true_nas.fixed_ip
+  ttl         = 60
+}
