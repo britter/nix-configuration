@@ -23,7 +23,7 @@
       };
       calibre-web.enable = true;
       stirling-pdf.enable = true;
-      tailscale.enable = false;
+      tailscale.enable = true;
       vaultwarden.enable = true;
     };
   };
