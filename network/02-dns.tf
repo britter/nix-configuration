@@ -40,6 +40,20 @@ resource "unifi_dns_record" "srv_prod_3_wildcard" {
   ttl         = 60
 }
 
+resource "unifi_dns_record" "srv_prod_4" {
+  name        = "srv-prod-4.ritter.family"
+  record_type = "A"
+  value       = unifi_client.srv_prod_4.fixed_ip
+  ttl         = 60
+}
+
+resource "unifi_dns_record" "srv_prod_4_wildcard" {
+  name        = "*.srv-prod-4.ritter.family"
+  record_type = "A"
+  value       = unifi_client.srv_prod_4.fixed_ip
+  ttl         = 60
+}
+
 resource "unifi_dns_record" "true_nas" {
   name        = "storage.ritter.family"
   record_type = "A"
