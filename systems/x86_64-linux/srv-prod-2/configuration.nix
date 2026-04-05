@@ -163,17 +163,6 @@
     device = "storage.ritter.family:/mnt/default-pool/nextcloud";
   };
 
-  systemd.services.move-nextcloud-data = {
-    requiredBy = [ "nginx.service" ];
-    before = [ "nginx.service" ];
-    unitConfig = {
-      RequiresMountsFor = "/srv/nextcloud-data";
-    };
-    serviceConfig = {
-      Type = "oneshot";
-    };
-    script = "${lib.getExe pkgs.sudo} -u nextcloud mv /var/lib/nextcloud/data/* /srv/nextcloud-data/";
-  };
   systemd.services.nginx = {
     unitConfig = {
       RequiresMountsFor = "/srv/nextcloud-data";
