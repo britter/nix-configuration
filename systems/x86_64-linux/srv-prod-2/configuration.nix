@@ -120,7 +120,7 @@
         {
           environmentFile = config.sops.templates."restic/nextcloud/secrets.env".path;
           paths = [
-            "/var/lib/nextcloud/data"
+            "/srv/nextcloud-data"
             "/var/backups/nextcloud"
           ];
           repository = "${bucket}/nextcloud";
@@ -161,6 +161,23 @@
   fileSystems."/srv/nextcloud-data" = {
     fsType = "nfs";
     device = "storage.ritter.family:/mnt/default-pool/nextcloud";
+  };
+
+  systemd.services.move-nextcloud-data = {
+    requiredBy = [ "nginx.service" ];
+    before = [ "nginx.service" ];
+    unitConfig = {
+      RequiresMountsFor = "/srv/nextcloud-data";
+    };
+    serviceConfig = {
+      Type = "oneshot";
+    };
+    script = "sudo -u nextcloud mv /var/lib/nextcloud/data/* /srv/nextcloud-data/";
+  };
+  systemd.services.nginx = {
+    unitConfig = {
+      RequiresMountsFor = "/srv/nextcloud-data";
+    };
   };
 
   # This value determines the NixOS release from which the default
