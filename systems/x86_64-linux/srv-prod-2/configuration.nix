@@ -79,7 +79,7 @@
     # keep the most recent snapshot per <unit> for the last .. <unit>
     # e.g. for the last 8 weeks, we will keep the most recent snapshot of that week.
     let
-      bucket = "s3:https://minio.srv-prod-3-new.ritter.family/restic-backups";
+      bucket = "s3:https://minio.srv-prod-3.ritter.family/restic-backups";
       pruneOpts = [
         "--keep-daily 14"
         "--keep-weekly 8"
