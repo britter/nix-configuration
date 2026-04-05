@@ -172,7 +172,7 @@
     serviceConfig = {
       Type = "oneshot";
     };
-    script = "${pkgs.sudo} -u nextcloud mv /var/lib/nextcloud/data/* /srv/nextcloud-data/";
+    script = "${lib.getExe pkgs.sudo} -u nextcloud mv /var/lib/nextcloud/data/* /srv/nextcloud-data/";
   };
   systemd.services.nginx = {
     unitConfig = {
