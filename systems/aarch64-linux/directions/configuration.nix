@@ -1,4 +1,5 @@
 {
+  pkgs,
   inputs,
   home-lab,
   ...
@@ -9,6 +10,13 @@
     ./hardware-configuration.nix
     inputs.nixos-hardware.nixosModules.raspberry-pi-4
   ];
+
+  # workaround for https://github.com/NixOS/nixos-hardware/commit/c8f766fd11c8b0a9832b6ca1819de74fbfee3d73
+  # the Raspberry Pi kernel is about to be removed from nixpkgs, so the aforementioned commit adds
+  # a custom derivation that builds it from scratch. Since nixos-hardware does not have a binary
+  # cache is causes a kernel rebuild on this machine, which takes very long.
+  # See also https://github.com/NixOS/nixos-hardware/issues/325#issuecomment-4199711155
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
 
   my = {
     host = {
