@@ -71,7 +71,8 @@
           }
           {
             fqdn = "photos.ritter.family";
-            target = "https://photos.srv-prod-3.ritter.family";
+            target = "https://photos.srv-prod-4.ritter.family";
+            proxyWebsockets = true;
             extraConfig = ''
               client_max_body_size 50000M;
               proxy_read_timeout   600s;
