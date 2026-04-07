@@ -70,6 +70,16 @@
             '';
           }
           {
+            fqdn = "photos.ritter.family";
+            target = "https://photos.srv-prod-3.ritter.family";
+            extraConfig = ''
+              client_max_body_size 50000M;
+              proxy_read_timeout   600s;
+              proxy_send_timeout   600s;
+              send_timeout         600s;
+            '';
+          }
+          {
             fqdn = "pve.ritter.family";
             target = "https://${home-lab.hypervisors.pve.ip}:8006";
           }

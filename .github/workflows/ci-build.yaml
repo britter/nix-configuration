@@ -13,7 +13,13 @@ jobs:
     strategy:
       matrix:
         configuration:
-          ["framework-13", "srv-prod-2", "srv-prod-3", "srv-offsite-1"]
+          [
+            "framework-13",
+            "srv-prod-2",
+            "srv-prod-3",
+            "srv-prod-4",
+            "srv-offsite-1",
+          ]
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main

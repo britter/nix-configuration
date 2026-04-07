@@ -21,6 +21,7 @@ in
     ./homepage
     ./https-proxy
     ./i18n
+    ./immich
     ./minio
     ./monitoring
     ./my-user
@@ -56,7 +57,6 @@ in
     }
     // lib.optionalAttrs (cfg.role == "server") {
       comin.enable = true;
-      monitoring.enable = false;
       sops.enable = true;
       ssh-access.enable = true;
     };
