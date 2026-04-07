@@ -18,7 +18,7 @@ in
     };
 
     my.modules.https-proxy = {
-      enable = false;
+      enable = true;
       configurations = [
         {
           fqdn = "photos.ritter.family";
