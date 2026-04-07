@@ -14,7 +14,7 @@ in
   config = lib.mkIf cfg.enable {
     services.immich = {
       enable = true;
-      settings.server.externalDomain = "photos.ritter.family";
+      settings.server.externalDomain = "https://photos.ritter.family";
     };
 
     my.modules.https-proxy = {
