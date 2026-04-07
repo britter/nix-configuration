@@ -14,7 +14,11 @@ in
   config = lib.mkIf cfg.enable {
     services.immich = {
       enable = true;
-      settings.server.externalDomain = "https://photos.ritter.family";
+      # see https://docs.immich.app/install/config-file
+      settings = {
+        server.externalDomain = "https://photos.ritter.family";
+        storageTemplate.enabled = true;
+      };
     };
 
     my.modules.https-proxy = {
