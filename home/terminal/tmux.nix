@@ -8,7 +8,6 @@ let
   cfg = config.my.home.terminal.tmux;
 in
 {
-  imports = [ ./tmuxinator.nix ];
   options.my.home.terminal.tmux = {
     enable = lib.mkEnableOption "tmux";
   };
