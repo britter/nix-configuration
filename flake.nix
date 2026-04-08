@@ -15,10 +15,10 @@
         terraform-provider-unifi-britter = pkgs.terraform-providers.mkProvider {
           owner = "britter";
           repo = "terraform-provider-unifi";
-          rev = "3d5dcbdab31fe0c132f42dc3d725fe8ab2d01403";
-          version = "0.41.25-britter.5";
-          hash = "sha256-+nwEArYRA/36TFKSpW2Qm01ipsXqjYA3mtVuQWqCLXw=";
-          vendorHash = "sha256-OVdhM8Zqnm1J8KducnkNkroBoSLER3fHfZBjyp7kBu8=";
+          rev = "ee80fd993d92382cfbb7ea2220c16f8934be5b80";
+          version = "0.41.25-britter.6";
+          hash = "sha256-fcO7D/gL065+X1fc37fpiTf+Ell0AePPO9moeutMthw=";
+          vendorHash = "sha256-m7CxgfuoO6SJ0Begke65BxaeBMmzbMkY4N6lEl46pZU=";
           homepage = "https://registry.terraform.io/providers/ubiquiti-community/unifi";
           provider-source-address = "registry.terraform.io/ubiquiti-community/unifi";
         };
