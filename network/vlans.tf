@@ -162,6 +162,7 @@ resource "unifi_network" "kvms" {
     }
   }
 }
+
 resource "unifi_network" "trusted" {
   name               = "Trusted"
   subnet             = "192.168.50.1/24"
@@ -184,6 +185,39 @@ resource "unifi_network" "trusted" {
     ntp_enabled         = false
     start               = "192.168.50.6"
     stop                = "192.168.50.254"
+    time_offset_enabled = false
+
+    boot = {
+      enabled = false
+      server  = ""
+    }
+
+    wins = {
+      enabled = false
+    }
+  }
+}
+
+resource "unifi_network" "guests" {
+  name               = "Guest"
+  subnet             = "192.168.60.1/24"
+  vlan               = 60
+  setting_preference = "manual"
+  auto_scale         = false
+  network_isolation  = true
+  multicast_dns      = false
+
+  dhcp_server = {
+    enabled           = true
+    conflict_checking = true
+    gateway_enabled   = false
+
+    dns_enabled = false
+
+    leasetime           = 86400
+    ntp_enabled         = false
+    start               = "192.168.60.6"
+    stop                = "192.168.60.254"
     time_offset_enabled = false
 
     boot = {
