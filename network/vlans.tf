@@ -230,3 +230,36 @@ resource "unifi_network" "guests" {
     }
   }
 }
+
+resource "unifi_network" "iot" {
+  name               = "IoT"
+  subnet             = "192.168.70.1/24"
+  vlan               = 70
+  setting_preference = "manual"
+  auto_scale         = false
+  network_isolation  = true
+  multicast_dns      = true
+
+  dhcp_server = {
+    enabled           = true
+    conflict_checking = true
+    gateway_enabled   = false
+
+    dns_enabled = false
+
+    leasetime           = 86400
+    ntp_enabled         = false
+    start               = "192.168.70.6"
+    stop                = "192.168.70.254"
+    time_offset_enabled = false
+
+    boot = {
+      enabled = false
+      server  = ""
+    }
+
+    wins = {
+      enabled = false
+    }
+  }
+}
