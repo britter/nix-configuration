@@ -130,6 +130,38 @@ resource "unifi_network" "servers" {
   }
 }
 
+resource "unifi_network" "kvms" {
+  name               = "KVMs"
+  subnet             = "192.168.40.1/24"
+  vlan               = 40
+  setting_preference = "manual"
+  auto_scale         = false
+  network_isolation  = true
+  internet_access    = false
+
+  dhcp_server = {
+    enabled           = true
+    conflict_checking = true
+    gateway_enabled   = false
+
+    dns_enabled = false
+
+    leasetime           = 86400
+    ntp_enabled         = false
+    start               = "192.168.40.6"
+    stop                = "192.168.40.254"
+    time_offset_enabled = false
+
+    boot = {
+      enabled = false
+      server  = ""
+    }
+
+    wins = {
+      enabled = false
+    }
+  }
+}
 resource "unifi_network" "trusted" {
   name               = "Trusted"
   subnet             = "192.168.50.1/24"
