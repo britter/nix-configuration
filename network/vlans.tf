@@ -30,6 +30,42 @@ resource "unifi_network" "default" {
   }
 }
 
+resource "unifi_network" "homelab" {
+  name               = "Homelab"
+  subnet             = "192.168.5.1/24"
+  vlan               = 5
+  setting_preference = "manual"
+  auto_scale         = true
+  network_isolation  = true
+  multicast_dns      = true
+
+  dhcp_server = {
+    enabled           = true
+    conflict_checking = true
+    gateway_enabled   = false
+
+    dns_enabled = false
+    dns_servers = [
+      unifi_client.directions.fixed_ip
+    ]
+
+    leasetime           = 86400
+    ntp_enabled         = false
+    start               = "192.168.5.6"
+    stop                = "192.168.5.254"
+    time_offset_enabled = false
+
+    boot = {
+      enabled = false
+      server  = ""
+    }
+
+    wins = {
+      enabled = false
+    }
+  }
+}
+
 resource "unifi_network" "management" {
   name               = "Management"
   subnet             = "192.168.10.1/24"
