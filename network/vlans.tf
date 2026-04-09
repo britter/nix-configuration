@@ -263,3 +263,37 @@ resource "unifi_network" "iot" {
     }
   }
 }
+
+resource "unifi_network" "not" {
+  name               = "NoT"
+  subnet             = "192.168.80.1/24"
+  vlan               = 80
+  setting_preference = "manual"
+  auto_scale         = false
+  network_isolation  = true
+  multicast_dns      = true
+  internet_access    = false
+
+  dhcp_server = {
+    enabled           = true
+    conflict_checking = true
+    gateway_enabled   = false
+
+    dns_enabled = false
+
+    leasetime           = 86400
+    ntp_enabled         = false
+    start               = "192.168.80.6"
+    stop                = "192.168.80.254"
+    time_offset_enabled = false
+
+    boot = {
+      enabled = false
+      server  = ""
+    }
+
+    wins = {
+      enabled = false
+    }
+  }
+}
