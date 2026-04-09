@@ -297,3 +297,14 @@ resource "unifi_network" "not" {
     }
   }
 }
+
+resource "unifi_network" "blackhole" {
+  name               = "Blackhole"
+  subnet             = "192.168.99.1/24"
+  vlan               = 99
+  setting_preference = "manual"
+  auto_scale         = false
+  network_isolation  = true
+  multicast_dns      = false
+  internet_access    = false
+}
