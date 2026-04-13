@@ -23,7 +23,7 @@
     fsType = "nfs";
     device = "storage.ritter.family:/mnt/default-pool/immich-media";
   };
-  systemd.services.immich = {
+  systemd.services.immich-server = {
     unitConfig = {
       RequiresMountsFor = "/srv/immich-media";
     };
