@@ -101,7 +101,8 @@ in
                   end,
                 }),
               }
-              null_ls.register(alloy_validate) end
+              null_ls.register(alloy_validate)
+            end
           '';
       };
     };
