@@ -61,7 +61,7 @@ in
         };
       };
       programs.nixvim.plugins.jdtls.settings.settings.java.configuration.runtimes = lib.map (v: {
-        name = "JavaSE-${v}";
+        name = if v == "8" then "JavaSE-1.8" else "JavaSE-${v}";
         path = javaHomeForVersion v;
       }) allVersions;
     };
