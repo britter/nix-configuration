@@ -64,6 +64,10 @@
             proxyWebsockets = true;
           }
           {
+            fqdn = "music.ritter.family";
+            target = "https://music.srv-prod-5.ritter.family";
+          }
+          {
             fqdn = "nextcloud.ritter.family";
             target = "https://nextcloud.srv-prod-2.ritter.family";
             extraConfig = ''

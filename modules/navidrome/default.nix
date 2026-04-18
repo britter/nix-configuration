@@ -14,14 +14,13 @@ in
   config = lib.mkIf cfg.enable {
     services.navidrome = {
       enable = true;
-      settings.MusicFolder = "/srv/navidrome-library";
     };
 
     my.modules.https-proxy = {
       enable = true;
       configurations = [
         {
-          fqdn = "music.ritter.family";
+          fqdn = "music.${config.my.host.name}.ritter.family";
           target = "http://localhost:4533";
         }
       ];

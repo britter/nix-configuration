@@ -13,9 +13,21 @@
     };
     modules = {
       proxmox-vm.enable = true;
+      navidrome.enable = true;
       tailscale.enable = true;
     };
   };
+
+  fileSystems."/srv/navidrome-library" = {
+    fsType = "nfs";
+    device = "storage.ritter.family:/mnt/default-pool/navidrome-library";
+  };
+  systemd.services.navidrome = {
+    unitConfig = {
+      RequiresMountsFor = "/srv/navidrome-library";
+    };
+  };
+  services.navidrome.settings.MusicFolder = "/srv/navidrome-library";
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
