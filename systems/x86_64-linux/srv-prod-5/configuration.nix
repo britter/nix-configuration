@@ -13,7 +13,7 @@
     };
     modules = {
       proxmox-vm.enable = true;
-      tailscale.enable = false;
+      tailscale.enable = true;
     };
   };
 
