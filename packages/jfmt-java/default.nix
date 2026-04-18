@@ -19,17 +19,10 @@ maven_4.buildMavenPackage {
     rev = "9870374e6cf6b8e5f2142eafee1b8b671797ee92";
     sha256 = "sha256-RJHYiW31oZp86IohPfoBbX7GSp6teuCTJgjZmQ9EzKQ=";
   };
-  mvnHash = "sha256-Oh8fvFx1uGd8tIHXeJ3Up0oVdlHEkvdoWVqUS1b40Ao=";
+  mvnHash = "sha256-FUK/CmtQdA5+G4EAlqFMImzZS3vLtd355qK9ALPZlYU=";
 
   mvnJdk = jdk25_headless;
-  # Build offline. Otherwise building fails because the fetchDepsDerivation
-  # references the main derivation store path.
-  buildOffline = true;
   doCheck = false;
-  manualMvnArtifacts = [
-    "org.apache.maven.surefire:surefire-junit-platform:3.5.4"
-    "org.junit.platform:junit-platform-launcher:6.0.1"
-  ];
   # disable spotless because the build is configured to run spotless apply in
   # process-resources and it tries to download the eclipse jdt formatter from
   # downloads.eclipse.org at runtime of the main derivation
@@ -52,6 +45,11 @@ maven_4.buildMavenPackage {
 
     mkdir -p $out/
     cp -r cli/target/jreleaser/assemble/jfmt/java-archive/work/jfmt-*/* $out/
+
+    # remove timestamped line from script
+    sed -i '/Generated with JReleaser/d' $out/bin/jfmt
+    # drop unneeded windows script
+    rm $out/bin/jfmt.bat
 
     wrapProgram $out/bin/jfmt \
       --set JAVA_HOME ${jdk25_headless}
