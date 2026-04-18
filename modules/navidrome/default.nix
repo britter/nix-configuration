@@ -14,6 +14,7 @@ in
   config = lib.mkIf cfg.enable {
     services.navidrome = {
       enable = true;
+      settings.EnableInsightsCollector = false;
     };
 
     my.modules.https-proxy = {
