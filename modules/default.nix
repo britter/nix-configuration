@@ -25,6 +25,7 @@ in
     ./minio
     ./monitoring
     ./my-user
+    ./navidrome
     ./networking
     ./nextcloud
     ./nix
