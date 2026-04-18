@@ -25,7 +25,7 @@ in
       enable = true;
       configurations = [
         {
-          fqdn = "photos.ritter.family";
+          fqdn = "photos.${config.my.host.name}.ritter.family";
           target = "http://localhost:2283";
           proxyWebsockets = true;
           extraConfig = ''
