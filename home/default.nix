@@ -3,6 +3,7 @@
   imports = [
     ./desktop
     ./java
+    ./rust
     ./terminal
   ];
   config = {
@@ -18,6 +19,7 @@
           21
         ];
       };
+      rust.enable = true;
       terminal.enable = true;
     };
     catppuccin = {

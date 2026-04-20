@@ -119,6 +119,7 @@ in
                 package = pkgs.prettier;
                 disableTsServerFormatter = true;
               };
+              rustfmt.enable = true;
             };
             diagnostics.actionlint.enable = true;
           };

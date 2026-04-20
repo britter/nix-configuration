@@ -13,6 +13,11 @@
           package = pkgs.kotlin-lsp;
         };
         nixd.enable = true;
+        rust_analyzer = {
+          enable = true;
+          installCargo = true;
+          installRustc = true;
+        };
         ts_ls.enable = true;
         zls.enable = true;
       };
