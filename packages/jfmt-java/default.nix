@@ -19,7 +19,7 @@ maven_4.buildMavenPackage {
     rev = "9870374e6cf6b8e5f2142eafee1b8b671797ee92";
     sha256 = "sha256-RJHYiW31oZp86IohPfoBbX7GSp6teuCTJgjZmQ9EzKQ=";
   };
-  mvnHash = "sha256-FUK/CmtQdA5+G4EAlqFMImzZS3vLtd355qK9ALPZlYU=";
+  mvnHash = "sha256-p1jZ5XrtBCnCasPRd+5jpmDXTFrppsQLP3rz3FsGI9A=";
 
   mvnJdk = jdk25_headless;
   doCheck = false;
@@ -28,10 +28,10 @@ maven_4.buildMavenPackage {
   # downloads.eclipse.org at runtime of the main derivation
   mvnParameters = lib.escapeShellArgs [
     "-Dspotless.skip=true"
-    "-Prelease"
     "-pl"
     "cli"
     "-am"
+    "dependency:copy-dependencies"
   ];
 
   nativeBuildInputs = [
@@ -43,16 +43,14 @@ maven_4.buildMavenPackage {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/
-    cp -r cli/target/jreleaser/assemble/jfmt/java-archive/work/jfmt-*/* $out/
+    mkdir -p $out/{bin,lib}
+    cp cli/target/jfmt-*.jar $out/lib
+    cp -r cli/target/dependency/* $out/lib
 
-    # remove timestamped line from script
-    sed -i '/Generated with JReleaser/d' $out/bin/jfmt
-    # drop unneeded windows script
-    rm $out/bin/jfmt.bat
-
-    wrapProgram $out/bin/jfmt \
-      --set JAVA_HOME ${jdk25_headless}
+    makeWrapper ${jdk25_headless}/bin/java $out/bin/jfmt \
+      --add-flags "-classpath '$out/lib/*'" \
+      --add-flags "--enable-preview" \
+      --add-flags "io.github.bmarwell.jfmt.JFmt"
 
     runHook postInstall
   '';
