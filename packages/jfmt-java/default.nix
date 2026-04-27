@@ -19,7 +19,8 @@ maven_4.buildMavenPackage {
     rev = "9870374e6cf6b8e5f2142eafee1b8b671797ee92";
     sha256 = "sha256-RJHYiW31oZp86IohPfoBbX7GSp6teuCTJgjZmQ9EzKQ=";
   };
-  mvnHash = "sha256-p1jZ5XrtBCnCasPRd+5jpmDXTFrppsQLP3rz3FsGI9A=";
+  mvnHash = "sha256-DmYrO+aeNeakiIl0jTqgaKDCIkbkTHDtVsk9xE3yegs=";
+  patches = [ ./0001-drop-JReleaser-from-build.patch ];
 
   mvnJdk = jdk25_headless;
   doCheck = false;

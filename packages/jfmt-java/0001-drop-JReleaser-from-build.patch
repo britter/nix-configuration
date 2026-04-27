@@ -1,0 +1,171 @@
+From 157a6e4e0106ba275e855e164c33d421800f4efd Mon Sep 17 00:00:00 2001
+From: Benedikt Ritter <beneritter@gmail.com>
+Date: Sun, 26 Apr 2026 17:26:35 +0200
+Subject: [PATCH] drop JReleaser from build
+
+---
+ cli/pom.xml | 114 ----------------------------------------------------
+ pom.xml     |  22 ----------
+ 2 files changed, 136 deletions(-)
+
+diff --git a/cli/pom.xml b/cli/pom.xml
+index 6aacc90..9f0aa72 100644
+--- a/cli/pom.xml
++++ b/cli/pom.xml
+@@ -212,120 +212,6 @@
+           </execution>
+         </executions>
+       </plugin>
+-
+-      <!-- JReleaser assemble plugin - creates JAR archive distribution.
+-           Bundles JAR with dependencies, docs, and completion scripts.
+-           Output: cli/target/jreleaser/assemble/jfmt/java-archive/
+-           See RELEASING.adoc for details.
+-      -->
+-      <plugin>
+-        <groupId>org.jreleaser</groupId>
+-        <artifactId>jreleaser-maven-plugin</artifactId>
+-        <executions>
+-          <execution>
+-            <id>assemble-archive</id>
+-            <goals>
+-              <goal>assemble</goal>
+-            </goals>
+-            <phase>package</phase>
+-            <configuration>
+-              <jreleaser>
+-                <project>
+-                  <links>
+-                    <homepage>https://github.com/bmarwell/jfmt</homepage>
+-                  </links>
+-                </project>
+-                <assemble>
+-                  <javaArchive>
+-                    <jfmt>
+-                      <active>ALWAYS</active>
+-                      <stereotype>DESKTOP</stereotype>
+-                      <formats>
+-                        <format>ZIP</format>
+-                        <format>TAR_GZ</format>
+-                      </formats>
+-                      <options>
+-                        <longFileMode>POSIX</longFileMode>
+-                        <bigNumberMode>POSIX</bigNumberMode>
+-                      </options>
+-                      <java>
+-                        <mainClass>${main.class}</mainClass>
+-                        <jvmOptions>
+-                          <universal>--enable-preview</universal>
+-                        </jvmOptions>
+-                      </java>
+-                      <mainJar>
+-                        <path>${project.build.directory}/${project.build.finalName}.jar</path>
+-                      </mainJar>
+-                      <fileSets>
+-                        <fileSet>
+-                          <input>${project.build.directory}/libs/</input>
+-                          <output>lib/</output>
+-                          <includes>
+-                            <include>*.jar</include>
+-                          </includes>
+-                        </fileSet>
+-                        <fileSet>
+-                          <input>${project.build.directory}/generated-sources/license</input>
+-                          <output>etc/</output>
+-                          <includes>
+-                            <include>*.txt</include>
+-                          </includes>
+-                        </fileSet>
+-                        <fileSet>
+-                          <input>${project.build.directory}</input>
+-                          <output>${completions.dir}</output>
+-                          <includes>
+-                            <include>${binary.name}_completion.sh</include>
+-                          </includes>
+-                        </fileSet>
+-                        <fileSet>
+-                          <input>${project.build.directory}/generated-docs/</input>
+-                          <output>./</output>
+-                        </fileSet>
+-                        <fileSet>
+-                          <input>${project.build.directory}/generated-picocli-docs/</input>
+-                          <output>./usr/share/doc/</output>
+-                        </fileSet>
+-                        <fileSet>
+-                          <input>${maven.multiModuleProjectDirectory}</input>
+-                          <output>./</output>
+-                          <includes>
+-                            <include>LICENSE.*</include>
+-                          </includes>
+-                        </fileSet>
+-                      </fileSets>
+-                    </jfmt>
+-                  </javaArchive>
+-                </assemble>
+-              </jreleaser>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
+-
+-      <plugin>
+-        <groupId>org.codehaus.mojo</groupId>
+-        <artifactId>build-helper-maven-plugin</artifactId>
+-        <executions>
+-          <execution>
+-            <id>attach-jreleaser-archive</id>
+-            <goals>
+-              <goal>attach-artifact</goal>
+-            </goals>
+-            <phase>package</phase>
+-            <configuration>
+-              <artifacts>
+-                <artifact>
+-                  <file>${project.build.directory}/jreleaser/assemble/${project.artifactId}/java-archive/${project.artifactId}-${project.version}.tar.gz</file>
+-                  <type>tar.gz</type>
+-                  <classifier>distribution</classifier>
+-                </artifact>
+-              </artifacts>
+-            </configuration>
+-          </execution>
+-        </executions>
+-      </plugin>
+     </plugins>
+   </build>
+ 
+diff --git a/pom.xml b/pom.xml
+index 21363e9..bb7dd84 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -363,28 +363,6 @@
+         </plugins>
+       </build>
+     </profile>
+-
+-    <!-- JReleaser release automation profile.
+-         Activated in CI workflows to create GitHub releases.
+-         - jreleaser:assemble creates distribution archives (in cli/pom.xml)
+-         - jreleaser:full-release uploads artifacts to GitHub
+-         See RELEASING.adoc for detailed documentation.
+-    -->
+-    <profile>
+-      <id>release</id>
+-      <build>
+-        <plugins>
+-          <plugin>
+-            <groupId>org.jreleaser</groupId>
+-            <artifactId>jreleaser-maven-plugin</artifactId>
+-            <inherited>false</inherited>
+-            <configuration>
+-              <configFile>${maven.multiModuleProjectDirectory}/jreleaser.yml</configFile>
+-            </configuration>
+-          </plugin>
+-        </plugins>
+-      </build>
+-    </profile>
+   </profiles>
+ 
+   <subprojects>
+-- 
+2.53.0
+
