@@ -14,7 +14,7 @@ in
     ./sway.nix
     ./swayidle.nix
     ./swaylock.nix
-    ./waybar.nix
+    ./noctalia.nix
   ];
   options.my.home.desktop.sway = {
     enable = lib.mkEnableOption "sway";
@@ -44,7 +44,7 @@ in
       mako.enable = true;
       swayidle.enable = true;
       swaylock.enable = true;
-      waybar.enable = true;
+      noctalia-shell.enable = true;
     };
   };
 }

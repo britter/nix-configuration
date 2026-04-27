@@ -6,7 +6,6 @@
 }:
 let
   cfg = config.my.home.desktop.sway;
-  rofi = lib.getExe config.programs.rofi.finalPackage;
   screenshotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
   capture-screenhot = pkgs.writeShellApplication {
     name = "capture-screenshot";
@@ -19,7 +18,6 @@ in
 {
   config = lib.mkIf cfg.enable {
     home.sessionVariables = {
-      WL_PRESENT_DMENU = "${rofi} -dmenu -p present";
       XDG_SCREENSHOTS_DIR = "${config.home.homeDirectory}/Pictures/Screenshots";
     };
     # make sure the target directory for grimshot exists
@@ -29,9 +27,10 @@ in
     wayland.windowManager.sway = {
       wrapperFeatures.gtk = true;
       config = {
+        startup = [ { command = "noctalia-shell"; } ];
+        menu = "noctalia-shell ipc call launcher toggle";
+        bars = [ { mode = "invisible"; } ];
         terminal = lib.getExe pkgs.ghostty;
-        menu = "${rofi} -show drun -show-icons -pid";
-        bars = [ { command = lib.getExe pkgs.waybar; } ];
         defaultWorkspace = "workspace number 1";
         fonts = {
           names = [
@@ -92,10 +91,6 @@ in
           };
         };
 
-        output = {
-          "*".bg = "${config.my.home.desktop.wallpapers.evening-sky} fill";
-        };
-
         modifier = "Mod4";
         keybindings =
           let
@@ -118,10 +113,6 @@ in
 
             # default is mod+Shift+q
             "${mod}+q" = "kill";
-
-            # Bring up ssh prompt using rofi
-            "${mod}+Shift+Return" =
-              "exec ${rofi} -show ssh -no-parse-known-hosts -terminal ${config.wayland.windowManager.sway.config.terminal}";
 
             # screenshot capturing
             "${mod}+x" = "exec ${lib.getExe capture-screenhot} output";
@@ -201,14 +192,6 @@ in
           {
             criteria.shell = "xwayland";
             command = "title_format \"%title :: %shell\"";
-          }
-          {
-            criteria.app_id = "pavucontrol";
-            command = "floating enable";
-          }
-          {
-            criteria.app_id = "pavucontrol";
-            command = "resize set 800 600";
           }
           {
             criteria.class = "Bitwarden";

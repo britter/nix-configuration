@@ -22,8 +22,11 @@ in
       text = "auth include login";
     };
 
-    # bluetooth needs to be enabled for bluetuith to work
+    # Settings required by noctalia shell
+    networking.networkmanager.enable = true;
     hardware.bluetooth.enable = true;
+    services.power-profiles-daemon.enable = true;
+    services.upower.enable = true;
 
     #xdg portal wlr is required for screensharing
     xdg.portal = {
