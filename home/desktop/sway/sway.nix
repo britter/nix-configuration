@@ -43,8 +43,8 @@ in
           background = "$base";
           focused = {
             background = "$base";
-            border = "$lavender";
-            childBorder = "$lavender";
+            border = "$red";
+            childBorder = "$red";
             text = "$text";
             indicator = "$rosewater";
           };
