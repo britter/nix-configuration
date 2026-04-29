@@ -148,16 +148,6 @@ in
               "Escape" = "mode default";
               "Return" = "mode default";
             };
-          "system:  [l]ock  [s]leep  [h]ibernate  [r]eboot  [p]oweroff  [e]xit" = {
-            l = ''mode "default"; exec ${config.programs.swaylock.package}/bin/swaylock'';
-            s = ''mode "default"; exec systemctl suspend'';
-            h = ''mode "default"; exec systemctl hibernate'';
-            r = ''mode "default"; exec systemctl reboot'';
-            p = ''mode "default"; exec systemctl poweroff'';
-            e = ''mode "default"; exit'';
-            Return = "mode default";
-            Escape = "mode default";
-          };
           present =
             let
               wl-present = "${pkgs.wl-mirror}/bin/wl-present";
