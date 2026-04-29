@@ -124,11 +124,11 @@ in
             "${mod}+p" = ''mode "present"'';
 
             # Fn functionality on F keys
-            "XF86AudioMute" = "exec ${pkgs.pamixer}/bin/pamixer -t";
-            "XF86AudioRaiseVolume" = "exec ${pkgs.pamixer}/bin/pamixer -i 5";
-            "XF86AudioLowerVolume" = "exec ${pkgs.pamixer}/bin/pamixer -d 5";
-            "XF86MonBrightnessUp" = "exec ${pkgs.brightnessctl}/bin/brightnessctl s +10%";
-            "XF86MonBrightnessDown" = "exec ${pkgs.brightnessctl}/bin/brightnessctl s 10%-";
+            "XF86AudioMute" = "exec noctalia-shell ipc call volume muteOutput";
+            "XF86AudioRaiseVolume" = "exec noctalia-shell ipc call volume increase";
+            "XF86AudioLowerVolume" = "exec noctalia-shell ipc call volume decrease";
+            "XF86MonBrightnessUp" = "exec noctalia-shell ipc call brightness increase";
+            "XF86MonBrightnessDown" = "exec noctalia-shell ipc call brightness decrease";
           };
         modes = {
           # redeclare resize mode in order not to override it
