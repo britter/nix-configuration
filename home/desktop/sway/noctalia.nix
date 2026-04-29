@@ -62,6 +62,7 @@ in
           };
         };
         appLauncher.terminalCommand = "${pkgs.ghostty} -e";
+        dock.enable = false;
         sessionMenu = {
           largeButtonsStyle = false;
           powerOptions = [
