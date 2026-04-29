@@ -120,7 +120,7 @@ in
             "${mod}+Ctrl+x" = "exec ${lib.getExe capture-screenhot} area";
 
             # Custom modes
-            "${mod}+Escape" = "noctalia-shell ipc call sessionMenu toggle";
+            "${mod}+Escape" = "exec noctalia-shell ipc call sessionMenu toggle";
             "${mod}+p" = ''mode "present"'';
 
             # Fn functionality on F keys
