@@ -13,9 +13,9 @@ let
 in
 {
   options.my.home.desktop.wallpapers = {
-    evening-sky = lib.mkOption {
+    clearday = lib.mkOption {
       type = lib.types.path;
-      default = "${catppuccin-wallpapers}/landscapes/evening-sky.png";
+      default = "${catppuccin-wallpapers}/landscapes/Clearday.jpg";
     };
   };
 }

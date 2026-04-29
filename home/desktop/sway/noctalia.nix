@@ -108,7 +108,7 @@ in
     };
     home.file.".cache/noctalia/wallpapers.json" = {
       text = builtins.toJSON {
-        defaultWallpaper = "${config.my.home.desktop.wallpapers.evening-sky}";
+        defaultWallpaper = "${config.my.home.desktop.wallpapers.clearday}";
       };
     };
   };
