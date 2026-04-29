@@ -25,13 +25,7 @@ in
           widgets = {
             left = [
               {
-                id = "Launcher";
-              }
-              {
                 id = "Workspace";
-              }
-              {
-                id = "ActiveWindow";
               }
               {
                 id = "MediaMini";
@@ -41,13 +35,13 @@ in
               {
                 id = "Clock";
               }
+              {
+                id = "NotificationHistory";
+              }
             ];
             right = [
               {
                 id = "Tray";
-              }
-              {
-                id = "NotificationHistory";
               }
               {
                 id = "SystemMonitor";
