@@ -20,7 +20,53 @@ in
     programs.noctalia-shell = {
       enable = true;
       settings = {
-        bar.outerCorners = false;
+        bar = {
+          outerCorners = false;
+          widgets = {
+            left = [
+              {
+                id = "Launcher";
+              }
+              {
+                id = "Workspace";
+              }
+              {
+                id = "ActiveWindow";
+              }
+              {
+                id = "MediaMini";
+              }
+            ];
+            center = [
+              {
+                id = "Clock";
+              }
+            ];
+            right = [
+              {
+                id = "Tray";
+              }
+              {
+                id = "NotificationHistory";
+              }
+              {
+                id = "SystemMonitor";
+              }
+              {
+                id = "Battery";
+              }
+              {
+                id = "Volume";
+              }
+              {
+                id = "Brightness";
+              }
+              {
+                id = "ControlCenter";
+              }
+            ];
+          };
+        };
         appLauncher.terminalCommand = "${pkgs.ghostty} -e";
         sessionMenu = {
           largeButtonsStyle = false;
