@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   ...
@@ -12,6 +13,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    environment.systemPackages = [ pkgs.pavucontrol ];
     services.pulseaudio.enable = false;
     # The PulseAudio server uses this to acquire realtime priority
     security.rtkit.enable = true;
