@@ -18,6 +18,10 @@
     };
   };
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "minio-2025-10-15T17-29-55Z"
+  ];
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
