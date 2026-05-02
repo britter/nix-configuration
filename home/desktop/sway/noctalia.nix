@@ -62,7 +62,10 @@ in
             ];
           };
         };
-        appLauncher.terminalCommand = "${pkgs.ghostty} -e";
+        appLauncher = {
+          terminalCommand = "${pkgs.ghostty} -e";
+          enableClipboardHistory = false;
+        };
         dock.enable = false;
         sessionMenu = {
           enableCountdown = false;
