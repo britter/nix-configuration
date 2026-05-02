@@ -28,6 +28,10 @@
     };
   };
 
+  nixpkgs.config.permittedInsecurePackages = [
+    "minio-2025-10-15T17-29-55Z"
+  ];
+
   sops.secrets."srv-prod-3/minio/access-key" = { };
   sops.secrets."srv-prod-3/minio/secret-key" = { };
   sops.templates."rclone.conf" = {
