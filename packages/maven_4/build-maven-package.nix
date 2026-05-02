@@ -112,9 +112,9 @@ let
               -o -name resolver-status.properties \
               -o -name _remote.repositories \) \
               -delete
-            # Remove Equo/p2 cache which contains timestamps and absolute paths
-            rm -rf $out/dev/equo/p2-data/metadata/connection
-            rm -rf $out/dev/equo/p2-data/queries
+
+            # Remove meta directory that keep changing between rebuilds
+            rm -rf $out/.m2/.meta
 
             runHook postInstall
           '';
