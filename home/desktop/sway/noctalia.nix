@@ -64,7 +64,7 @@ in
         };
         appLauncher = {
           terminalCommand = "${pkgs.ghostty} -e";
-          enableClipboardHistory = false;
+          enableClipboardHistory = true;
         };
         dock.enable = false;
         sessionMenu = {
