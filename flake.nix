@@ -101,8 +101,10 @@
             { pkgs, lib, ... }:
             {
               nixpkgs.overlays = [
-                (_self: _super: {
+                (_self: _super: rec {
                   gh-get = pkgs.callPackage ./packages/gh-get { };
+                  jfmt-java = pkgs.callPackage ./packages/jfmt-java { inherit maven_4; };
+                  maven_4 = pkgs.callPackage ./packages/maven_4 { };
                   kotlin-lsp = pkgs.callPackage ./packages/kotlin-lsp { };
                 })
               ];
