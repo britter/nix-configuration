@@ -64,7 +64,6 @@
             };
           };
           formatting = treefmtEval.config.build.check self;
-          packages = my-pkgs.jfmt-java.tests.version;
         };
         packages = import ./packages { inherit pkgs; };
         overlays = import ./overlays {

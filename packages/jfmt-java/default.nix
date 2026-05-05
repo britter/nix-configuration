@@ -3,8 +3,7 @@
   fetchFromGitHub,
   graalvmPackages,
   maven_4,
-  testers,
-  jfmt-java,
+  versionCheckHook,
 }:
 maven_4.buildMavenPackage {
   pname = "jfmt";
@@ -39,6 +38,8 @@ maven_4.buildMavenPackage {
   ];
 
   nativeBuildInputs = [ graalvmPackages.graalvm-ce-musl ];
+  nativeInstallCheckInputs = [ versionCheckHook ];
+  doInstallCheck = true;
 
   installPhase = ''
     runHook preInstall
@@ -49,13 +50,6 @@ maven_4.buildMavenPackage {
       -exec install -m755 {} $out/bin/jfmt \;
     runHook postInstall
   '';
-
-  passthru.tests = {
-    version = testers.testVersion {
-      package = jfmt-java;
-      command = "jfmt --version";
-    };
-  };
 
   meta = {
     description = "jfmt is an opinionated java source code formatter for the command line ";
