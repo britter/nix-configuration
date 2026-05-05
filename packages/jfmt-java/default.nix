@@ -1,8 +1,7 @@
 {
   lib,
   fetchFromGitHub,
-  jdk25_headless,
-  makeWrapper,
+  graalvmPackages,
   maven_4,
   testers,
   jfmt-java,
@@ -19,40 +18,35 @@ maven_4.buildMavenPackage {
     rev = "9870374e6cf6b8e5f2142eafee1b8b671797ee92";
     sha256 = "sha256-RJHYiW31oZp86IohPfoBbX7GSp6teuCTJgjZmQ9EzKQ=";
   };
-  mvnHash = "sha256-B2vj9JDT2UMIK23ozRDqVCRhIHgzUE1pFgrfMWtYT+Q=";
+  mvnHash = "sha256-R1xsCVoabyf51fuf2sz6RbB8OKUiCCwc5f0Crg17lVE=";
+
   patches = [ ./0001-drop-JReleaser-from-build.patch ];
 
-  mvnJdk = jdk25_headless;
+  # GraalVM CE with musl libc support; native-image is at $JAVA_HOME/bin/native-image
+  # and the wrapper provides musl-gcc and musl C library paths automatically.
+  mvnJdk = graalvmPackages.graalvm-ce-musl;
   doCheck = false;
-  # disable spotless because the build is configured to run spotless apply in
-  # process-resources and it tries to download the eclipse jdt formatter from
-  # downloads.eclipse.org at runtime of the main derivation
+  # -Pnative activates native-maven-plugin (runs native-image during package phase).
+  # The dist-linux profile auto-activates on Linux and adds --static --libc=musl,
+  # which works with graalvm-ce-musl's musl toolchain wrapper.
+  # Spotless is skipped to avoid downloading the Eclipse JDT formatter at build time.
   mvnParameters = lib.escapeShellArgs [
     "-Dspotless.skip=true"
+    "-Pnative"
     "-pl"
     "cli"
     "-am"
-    "dependency:copy-dependencies"
   ];
 
-  nativeBuildInputs = [
-    makeWrapper
-    # required by jfmt build to generate completion scripts using maven-exec-plugin
-    jdk25_headless
-  ];
+  nativeBuildInputs = [ graalvmPackages.graalvm-ce-musl ];
 
   installPhase = ''
     runHook preInstall
-
-    mkdir -p $out/{bin,lib}
-    cp cli/target/jfmt-*.jar $out/lib
-    cp -r cli/target/dependency/* $out/lib
-
-    makeWrapper ${jdk25_headless}/bin/java $out/bin/jfmt \
-      --add-flags "-classpath '$out/lib/*'" \
-      --add-flags "--enable-preview" \
-      --add-flags "io.github.bmarwell.jfmt.JFmt"
-
+    mkdir -p $out/bin
+    # The native-maven-plugin outputs the binary named after $${project.artifactId}-$${project.version}.
+    # Exclude JARs and ZIPs created by maven-assembly-plugin in the same directory.
+    find cli/target -maxdepth 1 -type f -perm /0111 -name 'jfmt*' \
+      -exec install -m755 {} $out/bin/jfmt \;
     runHook postInstall
   '';
 
@@ -68,5 +62,7 @@ maven_4.buildMavenPackage {
     homepage = "https://github.com/bmarwell/jfmt";
     license = lib.licenses.apsl20;
     maintainers = with lib.maintainers; [ britter ];
+    mainProgram = "jfmt";
+    platforms = lib.platforms.linux;
   };
 }
