@@ -1,0 +1,28 @@
+From 8d74fca386a6e2be5251d0416a6903a0a35c0e19 Mon Sep 17 00:00:00 2001
+From: Benedikt Ritter <beneritter@gmail.com>
+Date: Tue, 5 May 2026 10:16:32 +0200
+Subject: [PATCH] bump JReleaser to 1.24.0 and enable reproducible outputs
+
+---
+ pom.xml | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/pom.xml b/pom.xml
+index 0aca08f..9bff973 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -241,7 +241,10 @@
+         <plugin>
+           <groupId>org.jreleaser</groupId>
+           <artifactId>jreleaser-maven-plugin</artifactId>
+-          <version>1.21.0</version>
++          <version>1.24.0</version>
++          <configuration>
++            <reproducible>true</reproducible>
++          </configuration>
+         </plugin>
+ 
+         <plugin>
+-- 
+2.53.0
+

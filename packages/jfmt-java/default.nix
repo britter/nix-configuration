@@ -18,9 +18,9 @@ maven_4.buildMavenPackage {
     rev = "9870374e6cf6b8e5f2142eafee1b8b671797ee92";
     sha256 = "sha256-RJHYiW31oZp86IohPfoBbX7GSp6teuCTJgjZmQ9EzKQ=";
   };
-  mvnHash = "sha256-R1xsCVoabyf51fuf2sz6RbB8OKUiCCwc5f0Crg17lVE=";
+  mvnHash = "sha256-dS+HdpolMkHJjZtMDZGEO2UGYjUFwXdkA7Xa9GBWMtc=";
 
-  patches = [ ./0001-drop-JReleaser-from-build.patch ];
+  patches = [ ./0001-bump-JReleaser-to-1.24.0-and-enable-reproducible-outputs.patch ];
 
   # GraalVM CE with musl libc support; native-image is at $JAVA_HOME/bin/native-image
   # and the wrapper provides musl-gcc and musl C library paths automatically.
