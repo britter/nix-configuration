@@ -56,7 +56,14 @@
           local gradle_root = vim.fs.root(0, {'gradlew'})
           if gradle_root then
             vim.opt.makeprg = gradle_root .. '/gradlew testClasses --quiet'
-            vim.opt.errorformat = "%f:%l: error: %m,%-G%.%#"
+            vim.opt.errorformat = table.concat({
+              -- Java compiler errors
+              "%f:%l: error: %m",
+              -- Java compiler warnings (includes NullAway, other -Werror warnings)
+              "%f:%l: warning: %m",
+              -- Discard everything else
+              "%-G%.%#",
+            }, ",")
           end
 
           -- Maven
