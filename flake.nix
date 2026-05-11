@@ -50,7 +50,6 @@
       system:
       let
         pkgs = inputs.nixpkgs.legacyPackages.${system};
-        my-pkgs = self.outputs.packages.${system};
         treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
       in
       {
@@ -66,10 +65,6 @@
           formatting = treefmtEval.config.build.check self;
         };
         packages = import ./packages { inherit pkgs; };
-        overlays = import ./overlays {
-          inherit my-pkgs;
-          inherit (inputs) nur;
-        };
         devShells.default = pkgs.mkShell {
           inherit (self.checks.${system}.pre-commit-check) shellHook;
           buildInputs = self.checks.${system}.pre-commit-check.enabledPackages;
@@ -80,6 +75,9 @@
         };
       }
     )
+    // {
+      overlays.default = import ./overlays { inherit (inputs) nur; };
+    }
     // {
       templates = {
         minimalDevShell = {
@@ -96,24 +94,15 @@
           inputs.catppuccin.homeModules.catppuccin
           inputs.nixvim.homeModules.nixvim
           ./home/benedikt.nix
-          (
-            { pkgs, ... }:
-            {
-              nixpkgs.overlays = [
-                (_self: _super: rec {
-                  gh-get = pkgs.callPackage ./packages/gh-get { };
-                  jfmt-java = pkgs.callPackage ./packages/jfmt-java { inherit maven_4; };
-                  maven_4 = pkgs.callPackage ./packages/maven_4 { };
-                  kotlin-lsp = pkgs.callPackage ./packages/kotlin-lsp { };
-                })
-              ];
-              nixpkgs.config.allowUnfreePackages = [
-                "terraform"
-                "claude-code"
-              ];
-
-            }
-          )
+          (_: {
+            nixpkgs.overlays = [
+              inputs.self.overlays.default
+            ];
+            nixpkgs.config.allowUnfreePackages = [
+              "terraform"
+              "claude-code"
+            ];
+          })
         ];
 
         extraSpecialArgs = {

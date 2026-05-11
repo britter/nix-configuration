@@ -1,11 +1,7 @@
 {
-  config,
   inputs,
   ...
 }:
-let
-  inherit (config.my.host) system;
-in
 {
   config = {
     nix = {
@@ -23,6 +19,6 @@ in
       };
     };
 
-    nixpkgs.overlays = [ inputs.self.overlays.${system} ];
+    nixpkgs.overlays = [ inputs.self.overlays.default ];
   };
 }
