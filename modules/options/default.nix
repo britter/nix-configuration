@@ -41,9 +41,5 @@
         type = types.str;
       };
     };
-    modules.allowedUnfreePkgs = mkOption {
-      type = types.listOf types.str;
-      default = [ ];
-    };
   };
 }

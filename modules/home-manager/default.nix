@@ -27,7 +27,7 @@ in
         ];
       };
     };
-    my.modules.allowedUnfreePkgs = [
+    nixpkgs.config.allowUnfreePackages = [
       "obsidian"
     ];
   };

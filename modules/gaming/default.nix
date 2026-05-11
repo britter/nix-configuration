@@ -17,7 +17,7 @@ in
     # run games in an optimized micro compositor
     programs.steam.gamescopeSession.enable = true;
 
-    my.modules.allowedUnfreePkgs = [
+    nixpkgs.config.allowUnfreePackages = [
       "steam"
       "steam-original"
       "steam-run"

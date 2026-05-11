@@ -1,12 +1,10 @@
 {
   config,
-  lib,
   inputs,
   ...
 }:
 let
   inherit (config.my.host) system;
-  inherit (config.my.modules) allowedUnfreePkgs;
 in
 {
   config = {
@@ -25,9 +23,6 @@ in
       };
     };
 
-    nixpkgs = {
-      overlays = [ inputs.self.overlays.${system} ];
-      config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) allowedUnfreePkgs;
-    };
+    nixpkgs.overlays = [ inputs.self.overlays.${system} ];
   };
 }

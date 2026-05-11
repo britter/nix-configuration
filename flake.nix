@@ -97,7 +97,7 @@
           inputs.nixvim.homeModules.nixvim
           ./home/benedikt.nix
           (
-            { pkgs, lib, ... }:
+            { pkgs, ... }:
             {
               nixpkgs.overlays = [
                 (_self: _super: rec {
@@ -107,12 +107,10 @@
                   kotlin-lsp = pkgs.callPackage ./packages/kotlin-lsp { };
                 })
               ];
-              nixpkgs.config.allowUnfreePredicate =
-                pkg:
-                builtins.elem (lib.getName pkg) [
-                  "terraform"
-                  "claude-code"
-                ];
+              nixpkgs.config.allowUnfreePackages = [
+                "terraform"
+                "claude-code"
+              ];
 
             }
           )
