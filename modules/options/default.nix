@@ -1,6 +1,5 @@
 {
   lib,
-  inputs,
   system,
   hostName,
   ...
@@ -13,7 +12,10 @@
         default = hostName;
       };
       system = mkOption {
-        type = types.enum inputs.flake-utils.lib.allSystems;
+        type = types.enum [
+          "x86_64-linux"
+          "aarch64-linux"
+        ];
         default = system;
       };
       role = mkOption {
