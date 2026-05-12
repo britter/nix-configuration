@@ -12,6 +12,7 @@ in
     ./adguard
     ./calibre-web
     ./comin
+    ./dirty-frag-fix
     ./disko
     ./fonts
     ./gaming
