@@ -55,6 +55,15 @@
         ./modules/nix/overlays.nix
         ./modules/nix/templates.nix
         ./modules/nix/treefmt.nix
+
+        ./modules/hosts/framework-13.nix
+        ./modules/hosts/srv-prod-2.nix
+        ./modules/hosts/srv-prod-3.nix
+        ./modules/hosts/srv-prod-4.nix
+        ./modules/hosts/srv-prod-5.nix
+        ./modules/hosts/srv-offsite-1.nix
+        ./modules/hosts/minimal-server-iso.nix
+        ./modules/hosts/directions.nix
       ];
       flake =
         let
@@ -74,24 +83,9 @@
               };
               modules = [ ./systems/${system}/${hostName}/configuration.nix ];
             };
-
-          defineSystems =
-            let
-              systems = builtins.mapAttrs (k: _v: builtins.readDir ./systems/${k}) (builtins.readDir ./systems);
-              forArch =
-                arch:
-                builtins.listToAttrs (
-                  builtins.map (hostName: {
-                    name = hostName;
-                    value = mkNixos arch hostName;
-                  }) (builtins.attrNames systems.${arch})
-                );
-            in
-            forArch "x86_64-linux" // forArch "aarch64-linux";
         in
         {
-          lib = { inherit mkNixos defineSystems home-lab; };
-          nixosConfigurations = defineSystems;
+          lib = { inherit mkNixos home-lab; };
           homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
             pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
