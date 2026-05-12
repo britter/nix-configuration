@@ -80,43 +80,77 @@
             ];
           };
         };
-      flake = {
-        overlays.default = import ./overlays { inherit (inputs) nur; };
-        templates = {
-          minimalDevShell = {
-            path = ./templates/minimal-dev-shell;
-            description = "A flake with a minimal dev shell for all systems";
+      flake =
+        let
+          home-lab = import ./home-lab.nix;
+
+          mkNixos =
+            system: hostName:
+            inputs.nixpkgs.lib.nixosSystem {
+              inherit system;
+              specialArgs = {
+                inherit
+                  inputs
+                  system
+                  hostName
+                  home-lab
+                  ;
+              };
+              modules = [ ./systems/${system}/${hostName}/configuration.nix ];
+            };
+
+          defineSystems =
+            let
+              systems = builtins.mapAttrs (k: _v: builtins.readDir ./systems/${k}) (builtins.readDir ./systems);
+              forArch =
+                arch:
+                builtins.listToAttrs (
+                  builtins.map (hostName: {
+                    name = hostName;
+                    value = mkNixos arch hostName;
+                  }) (builtins.attrNames systems.${arch})
+                );
+            in
+            forArch "x86_64-linux" // forArch "aarch64-linux";
+        in
+        {
+          lib = { inherit mkNixos defineSystems home-lab; };
+          overlays.default = import ./overlays { inherit (inputs) nur; };
+          templates = {
+            minimalDevShell = {
+              path = ./templates/minimal-dev-shell;
+              description = "A flake with a minimal dev shell for all systems";
+            };
           };
-        };
-        homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
-          pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+          nixosConfigurations = defineSystems;
+          homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
+            pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
-          # Specify your home configuration modules here, for example,
-          # the path to your home.nix.
-          modules = [
-            inputs.catppuccin.homeModules.catppuccin
-            inputs.nixvim.homeModules.nixvim
-            ./home/benedikt.nix
-            (_: {
-              nixpkgs.overlays = [
-                inputs.self.overlays.default
-              ];
-              nixpkgs.config.allowUnfreePackages = [
-                "terraform"
-                "claude-code"
-              ];
-            })
-          ];
+            # Specify your home configuration modules here, for example,
+            # the path to your home.nix.
+            modules = [
+              inputs.catppuccin.homeModules.catppuccin
+              inputs.nixvim.homeModules.nixvim
+              ./home/benedikt.nix
+              (_: {
+                nixpkgs.overlays = [
+                  inputs.self.overlays.default
+                ];
+                nixpkgs.config.allowUnfreePackages = [
+                  "terraform"
+                  "claude-code"
+                ];
+              })
+            ];
 
-          extraSpecialArgs = {
-            osConfig.my.user = {
-              fullName = "Benedikt Ritter";
-              email = "benedikt.ritter@chainguard.dev";
-              signingKey = "EA363E64382563CF";
+            extraSpecialArgs = {
+              osConfig.my.user = {
+                fullName = "Benedikt Ritter";
+                email = "benedikt.ritter@chainguard.dev";
+                signingKey = "EA363E64382563CF";
+              };
             };
           };
         };
-      }
-      // (import ./lib.nix).defineSystems inputs;
     };
 }
