@@ -53,6 +53,7 @@
         ./modules/nix/packages.nix
         ./modules/nix/pre-commit.nix
         ./modules/nix/overlays.nix
+        ./modules/nix/templates.nix
         ./modules/nix/treefmt.nix
       ];
       flake =
@@ -90,12 +91,6 @@
         in
         {
           lib = { inherit mkNixos defineSystems home-lab; };
-          templates = {
-            minimalDevShell = {
-              path = ./templates/minimal-dev-shell;
-              description = "A flake with a minimal dev shell for all systems";
-            };
-          };
           nixosConfigurations = defineSystems;
           homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
             pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
