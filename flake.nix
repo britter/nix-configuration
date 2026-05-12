@@ -53,21 +53,8 @@
         ./modules/nix/packages.nix
         ./modules/nix/pre-commit.nix
         ./modules/nix/overlays.nix
+        ./modules/nix/treefmt.nix
       ];
-      perSystem =
-        {
-          pkgs,
-          ...
-        }:
-        let
-          treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-        in
-        {
-          formatter = treefmtEval.config.build.wrapper;
-          checks = {
-            formatting = treefmtEval.config.build.check inputs.self;
-          };
-        };
       flake =
         let
           home-lab = import ./home-lab.nix;
