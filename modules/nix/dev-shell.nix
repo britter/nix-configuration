@@ -1,10 +1,12 @@
-_: {
+{ inputs, ... }:
+{
+  imports = [ inputs.pre-commit-hooks.flakeModule ];
   perSystem =
-    { pkgs, self', ... }:
+    { config, pkgs, ... }:
     {
       devShells.default = pkgs.mkShell {
-        inherit (self'.checks.pre-commit-check) shellHook;
-        buildInputs = self'.checks.pre-commit-check.enabledPackages;
+        inherit (config.pre-commit) shellHook;
+        buildInputs = config.pre-commit.settings.enabledPackages;
         packages = with pkgs; [
           sops
           minio-client

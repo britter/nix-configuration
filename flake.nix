@@ -51,12 +51,12 @@
       imports = [
         ./modules/nix/dev-shell.nix
         ./modules/nix/packages.nix
+        ./modules/nix/pre-commit.nix
         ./modules/nix/overlays.nix
       ];
       perSystem =
         {
           pkgs,
-          system,
           ...
         }:
         let
@@ -65,13 +65,6 @@
         {
           formatter = treefmtEval.config.build.wrapper;
           checks = {
-            pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
-              src = ./.;
-              hooks = {
-                deadnix.enable = true;
-                nixfmt.enable = true;
-              };
-            };
             formatting = treefmtEval.config.build.check inputs.self;
           };
         };
