@@ -1,9 +1,8 @@
 {
-  my-pkgs,
   nur,
 }:
 final: prev:
-my-pkgs
+(import ../packages { pkgs = final; })
 // (nur.overlays.default final prev)
 // {
   calibre-web = prev.calibre-web.overrideAttrs (prev: {
