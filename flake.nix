@@ -48,38 +48,14 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      perSystem =
-        {
-          pkgs,
-          system,
-          self',
-          ...
-        }:
-        let
-          treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-        in
-        {
-          formatter = treefmtEval.config.build.wrapper;
-          checks = {
-            pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
-              src = ./.;
-              hooks = {
-                deadnix.enable = true;
-                nixfmt.enable = true;
-              };
-            };
-            formatting = treefmtEval.config.build.check inputs.self;
-          };
-          packages = import ./packages { inherit pkgs; };
-          devShells.default = pkgs.mkShell {
-            inherit (self'.checks.pre-commit-check) shellHook;
-            buildInputs = self'.checks.pre-commit-check.enabledPackages;
-            packages = with pkgs; [
-              sops
-              minio-client
-            ];
-          };
-        };
+      imports = [
+        ./modules/nix/dev-shell.nix
+        ./modules/nix/packages.nix
+        ./modules/nix/pre-commit.nix
+        ./modules/nix/overlays.nix
+        ./modules/nix/templates.nix
+        ./modules/nix/treefmt.nix
+      ];
       flake =
         let
           home-lab = import ./home-lab.nix;
@@ -115,13 +91,6 @@
         in
         {
           lib = { inherit mkNixos defineSystems home-lab; };
-          overlays.default = import ./overlays { inherit (inputs) nur; };
-          templates = {
-            minimalDevShell = {
-              path = ./templates/minimal-dev-shell;
-              description = "A flake with a minimal dev shell for all systems";
-            };
-          };
           nixosConfigurations = defineSystems;
           homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
             pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
