@@ -49,6 +49,7 @@
         "aarch64-linux"
       ];
       imports = [
+        ./modules/nix/dev-shell.nix
         ./modules/nix/packages.nix
         ./modules/nix/overlays.nix
       ];
@@ -56,7 +57,6 @@
         {
           pkgs,
           system,
-          self',
           ...
         }:
         let
@@ -73,14 +73,6 @@
               };
             };
             formatting = treefmtEval.config.build.check inputs.self;
-          };
-          devShells.default = pkgs.mkShell {
-            inherit (self'.checks.pre-commit-check) shellHook;
-            buildInputs = self'.checks.pre-commit-check.enabledPackages;
-            packages = with pkgs; [
-              sops
-              minio-client
-            ];
           };
         };
       flake =
