@@ -48,7 +48,10 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      imports = [ ./modules/nix/packages.nix ];
+      imports = [
+        ./modules/nix/packages.nix
+        ./modules/nix/overlays.nix
+      ];
       perSystem =
         {
           pkgs,
@@ -115,7 +118,6 @@
         in
         {
           lib = { inherit mkNixos defineSystems home-lab; };
-          overlays.default = import ./overlays { inherit (inputs) nur; };
           templates = {
             minimalDevShell = {
               path = ./templates/minimal-dev-shell;
