@@ -48,6 +48,7 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
+      imports = [ ./modules/nix/packages.nix ];
       perSystem =
         {
           pkgs,
@@ -70,7 +71,6 @@
             };
             formatting = treefmtEval.config.build.check inputs.self;
           };
-          packages = import ./packages { inherit pkgs; };
           devShells.default = pkgs.mkShell {
             inherit (self'.checks.pre-commit-check) shellHook;
             buildInputs = self'.checks.pre-commit-check.enabledPackages;
