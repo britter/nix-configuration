@@ -12,7 +12,7 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -42,77 +42,81 @@
   };
 
   outputs =
-    { self, ... }@inputs:
-    let
-      lib = import ./lib.nix;
-    in
-    inputs.flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = inputs.nixpkgs.legacyPackages.${system};
-        treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
-      in
-      {
-        formatter = treefmtEval.config.build.wrapper;
-        checks = {
-          pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
-            src = ./.;
-            hooks = {
-              deadnix.enable = true;
-              nixfmt.enable = true;
+    inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+      perSystem =
+        {
+          pkgs,
+          system,
+          self',
+          ...
+        }:
+        let
+          treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+        in
+        {
+          formatter = treefmtEval.config.build.wrapper;
+          checks = {
+            pre-commit-check = inputs.pre-commit-hooks.lib.${system}.run {
+              src = ./.;
+              hooks = {
+                deadnix.enable = true;
+                nixfmt.enable = true;
+              };
+            };
+            formatting = treefmtEval.config.build.check inputs.self;
+          };
+          packages = import ./packages { inherit pkgs; };
+          devShells.default = pkgs.mkShell {
+            inherit (self'.checks.pre-commit-check) shellHook;
+            buildInputs = self'.checks.pre-commit-check.enabledPackages;
+            packages = with pkgs; [
+              sops
+              minio-client
+            ];
+          };
+        };
+      flake = {
+        overlays.default = import ./overlays { inherit (inputs) nur; };
+        templates = {
+          minimalDevShell = {
+            path = ./templates/minimal-dev-shell;
+            description = "A flake with a minimal dev shell for all systems";
+          };
+        };
+        homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
+          pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+
+          # Specify your home configuration modules here, for example,
+          # the path to your home.nix.
+          modules = [
+            inputs.catppuccin.homeModules.catppuccin
+            inputs.nixvim.homeModules.nixvim
+            ./home/benedikt.nix
+            (_: {
+              nixpkgs.overlays = [
+                inputs.self.overlays.default
+              ];
+              nixpkgs.config.allowUnfreePackages = [
+                "terraform"
+                "claude-code"
+              ];
+            })
+          ];
+
+          extraSpecialArgs = {
+            osConfig.my.user = {
+              fullName = "Benedikt Ritter";
+              email = "benedikt.ritter@chainguard.dev";
+              signingKey = "EA363E64382563CF";
             };
           };
-          formatting = treefmtEval.config.build.check self;
-        };
-        packages = import ./packages { inherit pkgs; };
-        devShells.default = pkgs.mkShell {
-          inherit (self.checks.${system}.pre-commit-check) shellHook;
-          buildInputs = self.checks.${system}.pre-commit-check.enabledPackages;
-          packages = with pkgs; [
-            sops
-            minio-client
-          ];
         };
       }
-    )
-    // {
-      overlays.default = import ./overlays { inherit (inputs) nur; };
-    }
-    // {
-      templates = {
-        minimalDevShell = {
-          path = ./templates/minimal-dev-shell;
-          description = "A flake with a minimal dev shell for all systems";
-        };
-      };
-      homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
-        pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [
-          inputs.catppuccin.homeModules.catppuccin
-          inputs.nixvim.homeModules.nixvim
-          ./home/benedikt.nix
-          (_: {
-            nixpkgs.overlays = [
-              inputs.self.overlays.default
-            ];
-            nixpkgs.config.allowUnfreePackages = [
-              "terraform"
-              "claude-code"
-            ];
-          })
-        ];
-
-        extraSpecialArgs = {
-          osConfig.my.user = {
-            fullName = "Benedikt Ritter";
-            email = "benedikt.ritter@chainguard.dev";
-            signingKey = "EA363E64382563CF";
-          };
-        };
-      };
-    }
-    // lib.defineSystems inputs;
+      // (import ./lib.nix).defineSystems inputs;
+    };
 }
