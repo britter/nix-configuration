@@ -24,14 +24,7 @@ in
     desktop.intellij.enable = true;
     java = {
       enable = true;
-      version = 21;
-      additionalVersions = [
-        8
-        11
-        17
-        25
-      ];
-      linkToUserHome = true;
+      version = 25;
     };
     terminal = {
       enable = true;
