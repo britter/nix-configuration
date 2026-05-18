@@ -50,6 +50,7 @@
       ];
       imports = [
         ./modules/nix/dev-shell.nix
+        ./modules/nix/lib.nix
         ./modules/nix/packages.nix
         ./modules/nix/pre-commit.nix
         ./modules/nix/overlays.nix
@@ -65,55 +66,35 @@
         ./modules/hosts/minimal-server-iso.nix
         ./modules/hosts/directions.nix
       ];
-      flake =
-        let
-          home-lab = import ./home-lab.nix;
+      flake = {
+        homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
+          pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
-          mkNixos =
-            system: hostName:
-            inputs.nixpkgs.lib.nixosSystem {
-              inherit system;
-              specialArgs = {
-                inherit
-                  inputs
-                  system
-                  hostName
-                  home-lab
-                  ;
-              };
-              modules = [ ./systems/${system}/${hostName}/configuration.nix ];
-            };
-        in
-        {
-          lib = { inherit mkNixos home-lab; };
-          homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
-            pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+          # Specify your home configuration modules here, for example,
+          # the path to your home.nix.
+          modules = [
+            inputs.catppuccin.homeModules.catppuccin
+            inputs.nixvim.homeModules.nixvim
+            ./home/benedikt.nix
+            (_: {
+              nixpkgs.overlays = [
+                inputs.self.overlays.default
+              ];
+              nixpkgs.config.allowUnfreePackages = [
+                "terraform"
+                "claude-code"
+              ];
+            })
+          ];
 
-            # Specify your home configuration modules here, for example,
-            # the path to your home.nix.
-            modules = [
-              inputs.catppuccin.homeModules.catppuccin
-              inputs.nixvim.homeModules.nixvim
-              ./home/benedikt.nix
-              (_: {
-                nixpkgs.overlays = [
-                  inputs.self.overlays.default
-                ];
-                nixpkgs.config.allowUnfreePackages = [
-                  "terraform"
-                  "claude-code"
-                ];
-              })
-            ];
-
-            extraSpecialArgs = {
-              osConfig.my.user = {
-                fullName = "Benedikt Ritter";
-                email = "benedikt.ritter@chainguard.dev";
-                signingKey = "EA363E64382563CF";
-              };
+          extraSpecialArgs = {
+            osConfig.my.user = {
+              fullName = "Benedikt Ritter";
+              email = "benedikt.ritter@chainguard.dev";
+              signingKey = "EA363E64382563CF";
             };
           };
         };
+      };
     };
 }
