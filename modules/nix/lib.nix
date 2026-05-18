@@ -18,5 +18,14 @@
           "${toString inputs.self}/systems/${system}/${hostName}/configuration.nix"
         ];
       };
+    mkHomeManager =
+      system: name: extraSpecialArgs:
+      inputs.home-manager.lib.homeManagerConfiguration {
+        pkgs = inputs.nixpkgs.legacyPackages."${system}";
+        modules = [
+          inputs.self.modules.homeManager.${name}
+        ];
+        inherit extraSpecialArgs;
+      };
   };
 }

@@ -65,36 +65,9 @@
         ./modules/hosts/srv-offsite-1.nix
         ./modules/hosts/minimal-server-iso.nix
         ./modules/hosts/directions.nix
+        ./modules/hosts/thinkpad-x1-carbon.nix
+
+        ./modules/users/benedikt.nix
       ];
-      flake = {
-        homeConfigurations."benedikt" = inputs.home-manager.lib.homeManagerConfiguration {
-          pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-
-          # Specify your home configuration modules here, for example,
-          # the path to your home.nix.
-          modules = [
-            inputs.catppuccin.homeModules.catppuccin
-            inputs.nixvim.homeModules.nixvim
-            ./home/benedikt.nix
-            (_: {
-              nixpkgs.overlays = [
-                inputs.self.overlays.default
-              ];
-              nixpkgs.config.allowUnfreePackages = [
-                "terraform"
-                "claude-code"
-              ];
-            })
-          ];
-
-          extraSpecialArgs = {
-            osConfig.my.user = {
-              fullName = "Benedikt Ritter";
-              email = "benedikt.ritter@chainguard.dev";
-              signingKey = "EA363E64382563CF";
-            };
-          };
-        };
-      };
     };
 }
