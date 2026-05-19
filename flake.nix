@@ -17,6 +17,7 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    import-tree.url = "github:denful/import-tree";
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -48,26 +49,6 @@
         "x86_64-linux"
         "aarch64-linux"
       ];
-      imports = [
-        ./modules/nix/dev-shell.nix
-        ./modules/nix/lib.nix
-        ./modules/nix/packages.nix
-        ./modules/nix/pre-commit.nix
-        ./modules/nix/overlays.nix
-        ./modules/nix/templates.nix
-        ./modules/nix/treefmt.nix
-
-        ./modules/hosts/framework-13.nix
-        ./modules/hosts/srv-prod-2.nix
-        ./modules/hosts/srv-prod-3.nix
-        ./modules/hosts/srv-prod-4.nix
-        ./modules/hosts/srv-prod-5.nix
-        ./modules/hosts/srv-offsite-1.nix
-        ./modules/hosts/minimal-server-iso.nix
-        ./modules/hosts/directions.nix
-        ./modules/hosts/thinkpad-x1-carbon.nix
-
-        ./modules/users/benedikt.nix
-      ];
+      imports = [ (inputs.import-tree ./modules) ];
     };
 }
