@@ -7,7 +7,7 @@
   imports = [
     inputs.nixos-facter-modules.nixosModules.facter
     inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-    ../../../modules
+    ../../../_needs_migration/modules
   ];
 
   my = {

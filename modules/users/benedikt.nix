@@ -5,7 +5,7 @@
       inputs.catppuccin.homeModules.catppuccin
       inputs.nixvim.homeModules.nixvim
 
-      ../../home/benedikt.nix
+      ../../_needs_migration/home/benedikt.nix
     ];
 
     nixpkgs.overlays = [

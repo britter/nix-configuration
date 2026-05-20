@@ -6,7 +6,7 @@
 }:
 {
   imports = [
-    ../../../modules
+    ../../../_needs_migration/modules
     ./disko-config.nix
   ];
 

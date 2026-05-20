@@ -7,7 +7,7 @@
 }:
 {
   imports = [
-    ../../../modules
+    ../../../_needs_migration/modules
     inputs.nixos-facter-modules.nixosModules.facter
   ];
 

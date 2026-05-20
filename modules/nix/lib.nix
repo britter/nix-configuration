@@ -1,7 +1,7 @@
 { inputs, ... }:
 {
   flake.lib = rec {
-    home-lab = import ./home-lab.nix;
+    home-lab = import ../../home-lab.nix;
     mkNixos =
       system: hostName:
       inputs.nixpkgs.lib.nixosSystem {
