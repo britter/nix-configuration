@@ -4,16 +4,13 @@
   ...
 }:
 let
-  username = "benedikt";
+  username = "bene";
   fullName = "Benedikt Ritter";
-  email = "benedikt.ritter@chainguard.dev";
-  signingKey = "EA363E64382563CF";
+  email = "beneritter@gmail.com";
+  signingKey = "394546A47BB40E12";
 in
 {
-  flake.allowUnfreePackages = [
-    "terraform"
-    "claude-code"
-  ];
+  flake.allowUnfreePackages = [ "obsidian" ];
 
   flake.modules.homeManager.${username} =
     { lib, ... }:
@@ -22,12 +19,12 @@ in
         inputs.catppuccin.homeModules.catppuccin
         inputs.nixvim.homeModules.nixvim
 
-        ../../_needs_migration/home/benedikt.nix
+        ../../_needs_migration/home
       ];
 
       home.username = lib.mkDefault username;
       home.homeDirectory = lib.mkDefault "/home/${username}";
-      home.stateVersion = "24.11";
+      home.stateVersion = "23.05";
     };
 
   flake.homeConfigurations.${username} = config.flake.lib.mkHomeManager "x86_64-linux" username {

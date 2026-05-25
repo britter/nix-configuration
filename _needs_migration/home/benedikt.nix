@@ -14,10 +14,6 @@ in
     ./terminal
   ];
 
-  home.username = "benedikt";
-  home.homeDirectory = "/home/benedikt";
-  home.stateVersion = "24.11";
-
   programs.home-manager.enable = true;
 
   my.home = {

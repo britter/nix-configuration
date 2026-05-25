@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ config, inputs, ... }:
 {
   flake.lib = rec {
     home-lab = import ../../home-lab.nix;
@@ -21,11 +21,17 @@
     mkHomeManager =
       system: name: extraSpecialArgs:
       inputs.home-manager.lib.homeManagerConfiguration {
-        pkgs = inputs.nixpkgs.legacyPackages."${system}";
+        pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [ inputs.self.overlays.default ];
+          config.allowUnfreePackages = config.flake.allowUnfreePackages;
+        };
         modules = [
           inputs.self.modules.homeManager.${name}
         ];
-        inherit extraSpecialArgs;
+        extraSpecialArgs = extraSpecialArgs // {
+          inherit inputs home-lab;
+        };
       };
   };
 }
