@@ -20,5 +20,6 @@
     };
 
     nixpkgs.overlays = [ inputs.self.overlays.default ];
+    nixpkgs.config.allowUnfreePackages = inputs.self.allowUnfreePackages;
   };
 }

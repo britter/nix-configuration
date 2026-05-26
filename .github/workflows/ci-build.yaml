@@ -37,9 +37,16 @@ jobs:
   build-home-manager:
     name: Build standalone home-manager config
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        configuration:
+          [
+            "benedikt",
+            "bene",
+          ]
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - uses: DeterminateSystems/nix-installer-action@00199f951aeb9404028a6e4b95ad42546f73296a # main
-      - run: nix build .#homeConfigurations.benedikt.activationPackage
+      - run: nix build .#homeConfigurations.${{ matrix.configuration }}.activationPackage

@@ -19,16 +19,8 @@ in
       useGlobalPkgs = true;
       useUserPackages = true;
       users.${myUser.name} = {
-        home.stateVersion = "23.05";
-        imports = [
-          inputs.catppuccin.homeModules.catppuccin
-          inputs.nixvim.homeModules.nixvim
-          ../../home
-        ];
+        imports = [ inputs.self.modules.homeManager.${myUser.name} ];
       };
     };
-    nixpkgs.config.allowUnfreePackages = [
-      "obsidian"
-    ];
   };
 }
