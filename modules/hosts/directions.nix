@@ -1,4 +1,4 @@
 { config, ... }:
 {
-  flake.nixosConfigurations.directions = config.flake.lib.mkNixos "aarch64-linux" "directions";
+  flake.nixosConfigurations = config.flake.lib.mkNixosLegacy "aarch64-linux" "directions";
 }
