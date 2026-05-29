@@ -24,8 +24,7 @@ in
   config = lib.mkIf cfg.enable {
     programs.fish = {
       shellAliases = {
-        "v" =
-          ''nvim (${lib.getExe pkgs.fzf} --preview="${lib.getExe pkgs.bat} --style=numbers --color=always {}")'';
+        "v" = "nvim -c ':Telescope find_files'";
       };
     };
     home.sessionVariables = {
