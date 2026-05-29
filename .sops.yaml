@@ -7,7 +7,7 @@ keys:
   - &srv-offsite-1 age1qy4nn0tr7mlkhwkc77vshnpuknsnvgu5y4jwfkmmazfd38acspkscslsc3
   - &directions age1tqwmx8ge4fxkj2l8sfam94eg52km2w3dqjgazjez46m4ywln7qls0unsdw
 creation_rules:
-  - path_regex: systems/host-keys\.yaml$
+  - path_regex: modules/nix/dev-shell/host-keys\.yaml$
     key_groups:
       - age:
           - *framework-13

@@ -1,8 +1,3 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -i bash --pure
-#! nix-shell -p nixos-anywhere -p sops
-set -euo pipefail
-
 # Source (with modifications): https://github.com/nix-community/nixos-anywhere/blob/46dc28f4f89b747084c7dd6d273b1278142220ce/docs/howtos/secrets.md
 
 # Capture host to configure
@@ -18,7 +13,6 @@ fi
 
 host="$1"
 ip="$2"
-script_path="$(realpath "${BASH_SOURCE[0]}")"
 
 echo "Setting up $host via $ip..."
 
@@ -35,12 +29,12 @@ trap cleanup EXIT
 install -d -m755 "$temp/etc/ssh"
 
 # copy public ket to the temporary directory
-sops -- decrypt "$script_path/../../systems/host-keys.yaml" --extract "[\"$host\"][\"public-key\"]" --output "$temp/etc/ssh/ssh_host_ed25519_key.pub"
+sops -- decrypt "$HOST_KEYS_FILE" --extract "[\"$host\"][\"public-key\"]" --output "$temp/etc/ssh/ssh_host_ed25519_key.pub"
 # Set the correct permissions so sshd will accept the key
 chmod 644 "$temp/etc/ssh/ssh_host_ed25519_key.pub"
 
 # copy private ket to the temporary directory
-sops -- decrypt "$script_path/../../systems/host-keys.yaml" --extract "[\"$host\"][\"private-key\"]" --output "$temp/etc/ssh/ssh_host_ed25519_key"
+sops -- decrypt "$HOST_KEYS_FILE" --extract "[\"$host\"][\"private-key\"]" --output "$temp/etc/ssh/ssh_host_ed25519_key"
 # Set the correct permissions so sshd will accept the key
 chmod 600 "$temp/etc/ssh/ssh_host_ed25519_key"
 
