@@ -21,7 +21,6 @@ in
     ./home-manager
     ./homepage
     ./https-proxy
-    ./i18n
     ./immich
     ./minio
     ./monitoring
@@ -45,7 +44,6 @@ in
 
   config = {
     my.modules = {
-      i18n.enable = true;
       networking.enable = true;
     }
     // lib.optionalAttrs (cfg.role == "desktop") {
