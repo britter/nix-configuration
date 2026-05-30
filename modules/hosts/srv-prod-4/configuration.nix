@@ -3,6 +3,7 @@
   flake.modules.nixos.srv-prod-4 = {
     imports = [
       ../../../_needs_migration/modules
+      inputs.self.modules.nixos.system-base
       (inputs.self.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 

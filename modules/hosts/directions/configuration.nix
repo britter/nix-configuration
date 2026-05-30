@@ -11,6 +11,7 @@
         ../../../_needs_migration/modules
         inputs.self.modules.nixos.directions-hardware
         inputs.nixos-hardware.nixosModules.raspberry-pi-4
+        inputs.self.modules.nixos.system-base
         (inputs.self.factory.sops { secretsFile = ./secrets.yaml; })
       ];
 

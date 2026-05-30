@@ -40,7 +40,6 @@ in
     ./sway
     ./system-recovery
     ./tailscale
-    ./utilities
     ./vaultwarden
   ];
 

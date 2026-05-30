@@ -11,6 +11,7 @@
       imports = [
         ../../../_needs_migration/modules
         inputs.nixos-facter-modules.nixosModules.facter
+        inputs.self.modules.nixos.system-base
         (inputs.self.factory.sops { secretsFile = ./secrets.yaml; })
       ];
 
