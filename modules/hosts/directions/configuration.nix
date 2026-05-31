@@ -19,7 +19,9 @@
       # a custom derivation that builds it from scratch. Since nixos-hardware does not have a binary
       # cache is causes a kernel rebuild on this machine, which takes very long.
       # See also https://github.com/NixOS/nixos-hardware/issues/325#issuecomment-4199711155
-      boot.kernelPackages = pkgs.linuxKernel.packages.linux_rpi4;
+      # overrides the vendored Raspberry Pi kernel, that is configured by nixos-hardware with
+      # the mainline kernel
+      boot.kernelPackages = pkgs.linuxPackages;
 
       my = {
         host = {
