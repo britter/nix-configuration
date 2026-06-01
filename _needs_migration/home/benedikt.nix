@@ -65,6 +65,14 @@ in
           user.signingKey = "14907572088F4FA7";
         };
       }
+      {
+        condition = "gitdir:~/github/gradlex-org/";
+        contents = {
+          gpg.format = "openpgp";
+          user.email = "benedikt@gradlex.org";
+          user.signingKey = "6C9C4BE5D6A7FCCC";
+        };
+      }
     ];
     ignores = [
       ".claude/settings.local.json"
