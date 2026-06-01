@@ -7,20 +7,26 @@ on:
     branches: ["main"]
 
 jobs:
-  build-x86:
-    name: Build x86 systems
-    runs-on: ubuntu-latest
+  build-system:
+    name: Build system
+    runs-on: ${{ matrix.runner }}
     strategy:
       matrix:
-        configuration:
-          [
-            "framework-13",
-            "srv-prod-2",
-            "srv-prod-3",
-            "srv-prod-4",
-            "srv-prod-5",
-            "srv-offsite-1",
-          ]
+        include:
+          - configuration: framework-13
+            runner: ubuntu-latest
+          - configuration: srv-prod-2
+            runner: ubuntu-latest
+          - configuration: srv-prod-3
+            runner: ubuntu-latest
+          - configuration: srv-prod-4
+            runner: ubuntu-latest
+          - configuration: srv-prod-5
+            runner: ubuntu-latest
+          - configuration: srv-offsite-1
+            runner: ubuntu-latest
+          - configuration: directions
+            runner: ubuntu-24.04-arm
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
