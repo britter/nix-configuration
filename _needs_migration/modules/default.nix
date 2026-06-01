@@ -21,13 +21,11 @@ in
     ./home-manager
     ./homepage
     ./https-proxy
-    ./i18n
     ./immich
     ./minio
     ./monitoring
     ./my-user
     ./navidrome
-    ./networking
     ./nextcloud
     ./nix
     ./options
@@ -40,27 +38,23 @@ in
     ./sway
     ./system-recovery
     ./tailscale
-    ./utilities
     ./vaultwarden
   ];
 
   config = {
-    my.modules = {
-      i18n.enable = true;
-      networking.enable = true;
-    }
-    // lib.optionalAttrs (cfg.role == "desktop") {
-      fonts.enable = true;
-      gaming.enable = true;
-      my-user.enable = true;
-      sound.enable = true;
-      sway.enable = true;
-      system-recovery.enable = true;
-    }
-    // lib.optionalAttrs (cfg.role == "server") {
-      comin.enable = true;
-      sops.enable = true;
-      ssh-access.enable = true;
-    };
+    my.modules =
+      lib.optionalAttrs (cfg.role == "desktop") {
+        fonts.enable = true;
+        gaming.enable = true;
+        my-user.enable = true;
+        sound.enable = true;
+        sway.enable = true;
+        system-recovery.enable = true;
+      }
+      // lib.optionalAttrs (cfg.role == "server") {
+        comin.enable = true;
+        sops.enable = true;
+        ssh-access.enable = true;
+      };
   };
 }
