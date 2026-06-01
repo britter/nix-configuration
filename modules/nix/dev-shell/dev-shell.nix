@@ -1,4 +1,7 @@
-{ inputs, ... }:
+{ inputs, config, ... }:
+let
+  inherit (config.flake.lib) relativePath;
+in
 {
   imports = [ inputs.pre-commit-hooks.flakeModule ];
   perSystem =
@@ -17,6 +20,9 @@
               pkgs.gum
               pkgs.nixos-anywhere
               pkgs.sops
+              pkgs.openssh
+              pkgs.jq
+              pkgs.git
             ];
             runtimeEnv = {
               CONFIGURATIONS = lib.pipe inputs.self.nixosConfigurations [
@@ -24,7 +30,7 @@
                 (lib.filter (lib.hasPrefix "srv"))
                 (lib.concatStringsSep " ")
               ];
-              HOST_KEYS_FILE = ./host-keys.yaml;
+              HOST_KEYS_FILE = relativePath ./host-keys.yaml;
             };
             text = builtins.readFile ./setup-host.sh;
           };

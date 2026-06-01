@@ -7,6 +7,9 @@
 {
   flake.lib = rec {
     home-lab = import ../../home-lab.nix;
+    # Derive a flake-root-relative path string from a Nix path literal.
+    # Errors at eval time if the underlying file is missing.
+    relativePath = path: lib.removePrefix "${inputs.self}/" (toString path);
     mkNixos = system: hostName: {
       ${hostName} = inputs.nixpkgs.lib.nixosSystem {
         specialArgs = {
