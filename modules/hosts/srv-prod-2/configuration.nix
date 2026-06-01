@@ -1,10 +1,10 @@
-{ inputs, ... }:
+{ config, ... }:
 {
   flake.modules.nixos.srv-prod-2 = {
     imports = [
       ../../../_needs_migration/modules
-      inputs.self.modules.nixos.system-base
-      (inputs.self.factory.sops { secretsFile = ./secrets.yaml; })
+      config.flake.modules.nixos.system-base
+      (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
     my = {

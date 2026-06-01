@@ -1,11 +1,11 @@
-{ inputs, ... }:
+{ inputs, config, ... }:
 {
   flake.modules.nixos.srv-offsite-1 = {
     imports = [
       ../../../_needs_migration/modules
       inputs.nixos-facter-modules.nixosModules.facter
-      inputs.self.modules.nixos.system-base
-      (inputs.self.factory.sops { secretsFile = ./secrets.yaml; })
+      config.flake.modules.nixos.system-base
+      (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
     facter.reportPath = ./facter.json;

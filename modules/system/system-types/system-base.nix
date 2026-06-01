@@ -1,9 +1,9 @@
-{ inputs, ... }:
+{ config, ... }:
 {
   flake.modules.nixos.system-base =
     { pkgs, ... }:
     {
-      imports = [ inputs.self.modules.nixos.i18n ];
+      imports = [ config.flake.modules.nixos.i18n ];
 
       environment.systemPackages = with pkgs; [
         curl

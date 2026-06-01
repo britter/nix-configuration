@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, config, ... }:
 {
   flake.modules.nixos.directions =
     {
@@ -9,10 +9,10 @@
     {
       imports = [
         ../../../_needs_migration/modules
-        inputs.self.modules.nixos.directions-hardware
+        config.flake.modules.nixos.directions-hardware
         inputs.nixos-hardware.nixosModules.raspberry-pi-4
-        inputs.self.modules.nixos.system-base
-        (inputs.self.factory.sops { secretsFile = ./secrets.yaml; })
+        config.flake.modules.nixos.system-base
+        (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
       ];
 
       # workaround for https://github.com/NixOS/nixos-hardware/commit/c8f766fd11c8b0a9832b6ca1819de74fbfee3d73
