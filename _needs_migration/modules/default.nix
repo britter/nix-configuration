@@ -26,7 +26,6 @@ in
     ./monitoring
     ./my-user
     ./navidrome
-    ./networking
     ./nextcloud
     ./nix
     ./options
@@ -43,21 +42,19 @@ in
   ];
 
   config = {
-    my.modules = {
-      networking.enable = true;
-    }
-    // lib.optionalAttrs (cfg.role == "desktop") {
-      fonts.enable = true;
-      gaming.enable = true;
-      my-user.enable = true;
-      sound.enable = true;
-      sway.enable = true;
-      system-recovery.enable = true;
-    }
-    // lib.optionalAttrs (cfg.role == "server") {
-      comin.enable = true;
-      sops.enable = true;
-      ssh-access.enable = true;
-    };
+    my.modules =
+      lib.optionalAttrs (cfg.role == "desktop") {
+        fonts.enable = true;
+        gaming.enable = true;
+        my-user.enable = true;
+        sound.enable = true;
+        sway.enable = true;
+        system-recovery.enable = true;
+      }
+      // lib.optionalAttrs (cfg.role == "server") {
+        comin.enable = true;
+        sops.enable = true;
+        ssh-access.enable = true;
+      };
   };
 }

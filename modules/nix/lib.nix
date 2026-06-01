@@ -1,10 +1,14 @@
-{ config, inputs, ... }:
+{
+  config,
+  inputs,
+  lib,
+  ...
+}:
 {
   flake.lib = rec {
     home-lab = import ../../home-lab.nix;
     mkNixos = system: hostName: {
       ${hostName} = inputs.nixpkgs.lib.nixosSystem {
-        inherit system;
         specialArgs = {
           inherit
             inputs
@@ -15,6 +19,10 @@
         };
         modules = [
           inputs.self.modules.nixos.${hostName}
+          {
+            networking.hostName = hostName;
+            nixpkgs.hostPlatform = lib.mkDefault system;
+          }
         ];
       };
     };
