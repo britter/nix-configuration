@@ -12,7 +12,6 @@ in
     ./adguard
     ./calibre-web
     ./dirty-frag-fix
-    ./gaming
     ./git-server
     ./home-manager
     ./homepage
@@ -33,7 +32,6 @@ in
 
   config = {
     my.modules = lib.optionalAttrs (cfg.role == "desktop") {
-      gaming.enable = true;
       my-user.enable = true;
       sway.enable = true;
     };

@@ -10,6 +10,7 @@
         inputs.nixos-facter-modules.nixosModules.facter
         inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
         config.flake.modules.nixos.system-desktop
+        config.flake.modules.nixos.gaming
       ];
 
       my = {
