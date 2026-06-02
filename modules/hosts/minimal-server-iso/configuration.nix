@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, config, ... }:
 {
   flake.modules.nixos.minimal-server-iso =
     {
@@ -8,6 +8,8 @@
     {
       imports = [
         "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+        config.flake.modules.generic.systemConstants
+        config.flake.modules.nixos.ssh-access
       ];
 
       nix.settings.experimental-features = [
@@ -20,7 +22,5 @@
         git
       ];
 
-      systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
-      users.users.root.openssh.authorizedKeys.keyFiles = [ ./id_ed25519.pub ];
     };
 }

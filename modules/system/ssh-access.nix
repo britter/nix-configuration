@@ -1,5 +1,5 @@
 _: {
-  flake.modules.nixos.system-server =
+  flake.modules.nixos.ssh-access =
     { config, ... }:
     {
       users.users.root.openssh.authorizedKeys.keys = [ config.systemConstants.adminKey ];
