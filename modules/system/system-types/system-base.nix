@@ -4,6 +4,7 @@
     { pkgs, ... }:
     {
       imports = [
+        config.flake.modules.generic.admin-key
         config.flake.modules.generic.home-lab
         config.flake.modules.nixos.i18n
       ];

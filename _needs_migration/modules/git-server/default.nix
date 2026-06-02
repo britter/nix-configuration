@@ -19,9 +19,7 @@ in
       description = "git user";
       home = "/srv/git";
       shell = "${pkgs.git}/bin/git-shell";
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGsQc3GN4b8scuDR7PghdB+Eu4zUgSwgrgqplpNDR3Lq"
-      ];
+      openssh.authorizedKeys.keys = [ config.admin-key ];
       useDefaultShell = true;
     };
     users.groups.git = { };
