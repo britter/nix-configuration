@@ -1,18 +1,10 @@
 {
   lib,
-  system,
   ...
 }:
 {
   options.my = with lib; {
     host = {
-      system = mkOption {
-        type = types.enum [
-          "x86_64-linux"
-          "aarch64-linux"
-        ];
-        default = system;
-      };
       role = mkOption {
         type = types.enum [
           "desktop"

@@ -11,12 +11,7 @@
     relativePath = path: lib.removePrefix "${inputs.self}/" (toString path);
     mkNixos = system: hostName: {
       ${hostName} = inputs.nixpkgs.lib.nixosSystem {
-        specialArgs = {
-          inherit
-            inputs
-            system
-            ;
-        };
+        specialArgs = { inherit inputs; };
         modules = [
           inputs.self.modules.nixos.${hostName}
           {
