@@ -4,11 +4,11 @@
     imports = [
       ../../../_needs_migration/modules
       config.flake.modules.nixos.system-server
+      config.flake.modules.nixos.proxmox-vm
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
     my.modules = {
-      proxmox-vm.enable = true;
       navidrome.enable = true;
       tailscale.enable = true;
     };

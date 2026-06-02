@@ -25,7 +25,6 @@ in
     ./nextcloud
     ./nix
     ./options
-    ./proxmox-vm
     ./restic-restore
     ./sound
     ./stirling-pdf
