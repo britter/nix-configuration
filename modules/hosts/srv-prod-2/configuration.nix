@@ -3,26 +3,21 @@
   flake.modules.nixos.srv-prod-2 = {
     imports = [
       ../../../_needs_migration/modules
-      config.flake.modules.nixos.system-base
+      config.flake.modules.nixos.system-server
+      config.flake.modules.nixos.proxmox-vm
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
-    my = {
-      host = {
-        role = "server";
+    my.modules = {
+      git-server.enable = true;
+      nextcloud = {
+        enable = true;
+        stage = "production";
       };
-      modules = {
-        proxmox-vm.enable = true;
-        git-server.enable = true;
-        nextcloud = {
-          enable = true;
-          stage = "production";
-        };
-        calibre-web.enable = true;
-        stirling-pdf.enable = true;
-        tailscale.enable = true;
-        vaultwarden.enable = true;
-      };
+      calibre-web.enable = true;
+      stirling-pdf.enable = true;
+      tailscale.enable = true;
+      vaultwarden.enable = true;
     };
 
     boot.supportedFilesystems = [ "nfs" ];

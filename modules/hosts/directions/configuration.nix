@@ -7,7 +7,7 @@
         ../../../_needs_migration/modules
         config.flake.modules.nixos.directions-hardware
         inputs.nixos-hardware.nixosModules.raspberry-pi-4
-        config.flake.modules.nixos.system-base
+        config.flake.modules.nixos.system-server
         (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
       ];
 
@@ -20,15 +20,10 @@
       # the mainline kernel
       boot.kernelPackages = pkgs.linuxPackages;
 
-      my = {
-        host = {
-          role = "server";
-        };
-        modules = {
-          adguard.enable = true;
-          homepage.enable = true;
-          tailscale.enable = true;
-        };
+      my.modules = {
+        adguard.enable = true;
+        homepage.enable = true;
+        tailscale.enable = true;
       };
 
       boot.loader = {

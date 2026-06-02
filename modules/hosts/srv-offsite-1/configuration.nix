@@ -4,7 +4,7 @@
     imports = [
       ../../../_needs_migration/modules
       inputs.nixos-facter-modules.nixosModules.facter
-      config.flake.modules.nixos.system-base
+      config.flake.modules.nixos.system-server
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
@@ -12,12 +12,9 @@
     # see https://github.com/numtide/nixos-facter-modules/issues/62
     facter.detected.dhcp.enable = false;
 
-    my = {
-      host.role = "server";
-      modules = {
-        minio.enable = true;
-        tailscale.enable = true;
-      };
+    my.modules = {
+      minio.enable = true;
+      tailscale.enable = true;
     };
 
     nixpkgs.config.permittedInsecurePackages = [

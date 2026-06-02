@@ -4,8 +4,8 @@
     { pkgs, ... }:
     {
       imports = [
+        config.flake.modules.generic.systemConstants
         config.flake.modules.generic.home-lab
-        config.flake.modules.nixos.i18n
       ];
 
       environment.systemPackages = with pkgs; [

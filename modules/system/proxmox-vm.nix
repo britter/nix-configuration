@@ -1,17 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}:
-let
-  cfg = config.my.modules.proxmox-vm;
-in
-{
-  options.my.modules.proxmox-vm = {
-    enable = lib.mkEnableOption "proxmox-vm";
-  };
-
-  config = lib.mkIf cfg.enable {
+_: {
+  flake.modules.nixos.proxmox-vm = {
     boot.initrd.availableKernelModules = [
       "ata_piix"
       "uhci_hcd"
