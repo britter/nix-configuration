@@ -2,7 +2,6 @@
   config,
   lib,
   inputs,
-  home-lab,
   ...
 }:
 let
@@ -15,7 +14,7 @@ in
   };
   config = lib.mkIf cfg.enable {
     home-manager = {
-      extraSpecialArgs = { inherit inputs home-lab; };
+      extraSpecialArgs = { inherit inputs; };
       useGlobalPkgs = true;
       useUserPackages = true;
       users.${myUser.name} = {

@@ -5,8 +5,7 @@
   ...
 }:
 {
-  flake.lib = rec {
-    home-lab = import ../../home-lab.nix;
+  flake.lib = {
     # Derive a flake-root-relative path string from a Nix path literal.
     # Errors at eval time if the underlying file is missing.
     relativePath = path: lib.removePrefix "${inputs.self}/" (toString path);
@@ -17,7 +16,6 @@
             inputs
             system
             hostName
-            home-lab
             ;
         };
         modules = [
@@ -41,7 +39,7 @@
           inputs.self.modules.homeManager.${name}
         ];
         extraSpecialArgs = extraSpecialArgs // {
-          inherit inputs home-lab;
+          inherit inputs;
         };
       };
   };

@@ -3,7 +3,10 @@
   flake.modules.nixos.system-base =
     { pkgs, ... }:
     {
-      imports = [ config.flake.modules.nixos.i18n ];
+      imports = [
+        config.flake.modules.generic.home-lab
+        config.flake.modules.nixos.i18n
+      ];
 
       environment.systemPackages = with pkgs; [
         curl
