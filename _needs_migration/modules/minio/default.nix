@@ -27,7 +27,7 @@ in
       rootCredentialsFile = config.sops.templates."minio-root-credentials".path;
     };
     systemd.services.minio.environment = {
-      MINIO_BROWSER_REDIRECT_URL = "https://minio.${config.my.host.name}.ritter.family/console/";
+      MINIO_BROWSER_REDIRECT_URL = "https://minio.${config.networking.hostName}.ritter.family/console/";
     };
     networking.firewall.allowedTCPPorts = [
       80
@@ -36,8 +36,8 @@ in
     services.nginx = {
       enable = true;
       recommendedProxySettings = true;
-      virtualHosts."minio.${config.my.host.name}.ritter.family" = {
-        useACMEHost = "minio.${config.my.host.name}.ritter.family";
+      virtualHosts."minio.${config.networking.hostName}.ritter.family" = {
+        useACMEHost = "minio.${config.networking.hostName}.ritter.family";
         forceSSL = true;
         extraConfig = ''
           # Allow special characters in headers
@@ -69,6 +69,6 @@ in
       };
     };
     my.modules.acme.enable = true;
-    security.acme.certs."minio.${config.my.host.name}.ritter.family" = { };
+    security.acme.certs."minio.${config.networking.hostName}.ritter.family" = { };
   };
 }

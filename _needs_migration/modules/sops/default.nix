@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.my.modules.sops;
-  defaultSopsPath = "${toString inputs.self}/systems/${config.my.host.system}/${config.my.host.name}/secrets.yaml";
+  defaultSopsPath = "${toString inputs.self}/systems/${config.my.host.system}/${config.networking.hostName}/secrets.yaml";
 in
 {
   imports = [

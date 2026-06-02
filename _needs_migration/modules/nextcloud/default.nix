@@ -40,7 +40,7 @@ in
     services.nextcloud = {
       enable = true;
       package = pkgs.nextcloud32;
-      hostName = "nextcloud.${config.my.host.name}.ritter.family";
+      hostName = "nextcloud.${config.networking.hostName}.ritter.family";
       https = true;
       config = {
         adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
@@ -88,14 +88,14 @@ in
       extraAppsEnable = true;
     };
 
-    services.nginx.virtualHosts."nextcloud.${config.my.host.name}.ritter.family" = {
+    services.nginx.virtualHosts."nextcloud.${config.networking.hostName}.ritter.family" = {
       serverAliases = [ cfg.publicDomainName ];
-      useACMEHost = "nextcloud.${config.my.host.name}.ritter.family";
+      useACMEHost = "nextcloud.${config.networking.hostName}.ritter.family";
       forceSSL = true;
     };
 
     my.modules.acme.enable = true;
-    security.acme.certs."nextcloud.${config.my.host.name}.ritter.family" = { };
+    security.acme.certs."nextcloud.${config.networking.hostName}.ritter.family" = { };
 
     networking = {
       firewall = {

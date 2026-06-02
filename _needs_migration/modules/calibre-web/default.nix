@@ -34,7 +34,7 @@ in
       my.modules.https-proxy = {
         configurations = [
           {
-            fqdn = "books.${config.my.host.name}.ritter.family";
+            fqdn = "books.${config.networking.hostName}.ritter.family";
             aliases = [ "books.ritter.family" ];
             target = "http://localhost:8083";
             extraConfig = ''

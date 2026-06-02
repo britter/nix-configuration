@@ -15,7 +15,6 @@
           inherit
             inputs
             system
-            hostName
             ;
         };
         modules = [

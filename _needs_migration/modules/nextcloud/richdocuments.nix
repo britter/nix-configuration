@@ -29,7 +29,7 @@
             ports = [ "9980:9980" ];
             environment = {
               extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
-              domain = "nextcloud.${config.my.host.name}.ritter.family";
+              domain = "nextcloud.${config.networking.hostName}.ritter.family";
             };
             extraOptions = [ "--cap-add=MKNOD" ];
           };
@@ -38,7 +38,7 @@
 
       systemd.services.nginx =
         let
-          homelabCfg = config.home-lab.hosts.${config.my.host.name};
+          homelabCfg = config.home-lab.hosts.${config.networking.hostName};
           occ = "${config.services.nextcloud.occ}/bin/nextcloud-occ";
           postStart = pkgs.writeShellScriptBin "nextcloud-declarative-config" ''
             set -euo pipefail
@@ -57,7 +57,7 @@
         enable = true;
         configurations = [
           {
-            fqdn = "collabora.${config.my.host.name}.ritter.family";
+            fqdn = "collabora.${config.networking.hostName}.ritter.family";
             aliases = [ publicDomainName ];
             target = "http://localhost:9980";
             proxyWebsockets = true;
