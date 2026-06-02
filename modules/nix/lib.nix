@@ -22,7 +22,7 @@
       };
     };
     mkHomeManager =
-      system: name: extraSpecialArgs:
+      system: name:
       inputs.home-manager.lib.homeManagerConfiguration {
         pkgs = import inputs.nixpkgs {
           inherit system;
@@ -32,9 +32,7 @@
         modules = [
           inputs.self.modules.homeManager.${name}
         ];
-        extraSpecialArgs = extraSpecialArgs // {
-          inherit inputs;
-        };
+        extraSpecialArgs = { inherit inputs; };
       };
   };
 }

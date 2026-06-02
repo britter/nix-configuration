@@ -20,6 +20,7 @@ in
     {
       imports = [
         config.flake.modules.generic.home-lab
+        config.flake.modules.homeManager.user-identity
         inputs.catppuccin.homeModules.catppuccin
         inputs.nixvim.homeModules.nixvim
 
@@ -29,11 +30,11 @@ in
       home.username = lib.mkDefault username;
       home.homeDirectory = lib.mkDefault "/home/${username}";
       home.stateVersion = "24.11";
+
+      user = {
+        inherit fullName email signingKey;
+      };
     };
 
-  flake.homeConfigurations.${username} = config.flake.lib.mkHomeManager "x86_64-linux" username {
-    osConfig.my.user = {
-      inherit fullName email signingKey;
-    };
-  };
+  flake.homeConfigurations.${username} = config.flake.lib.mkHomeManager "x86_64-linux" username;
 }
