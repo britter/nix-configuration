@@ -2,7 +2,7 @@ _: {
   flake.modules.nixos.system-server =
     { config, ... }:
     {
-      users.users.root.openssh.authorizedKeys.keys = [ config.admin-key ];
+      users.users.root.openssh.authorizedKeys.keys = [ config.systemConstants.adminKey ];
 
       services.openssh = {
         enable = true;

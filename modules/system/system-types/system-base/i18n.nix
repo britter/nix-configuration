@@ -1,5 +1,5 @@
 _: {
-  flake.modules.nixos.i18n =
+  flake.modules.nixos.system-base =
     let
       extraLocale = "de_DE.UTF-8";
     in
