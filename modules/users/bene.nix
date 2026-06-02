@@ -16,6 +16,7 @@ in
     { lib, ... }:
     {
       imports = [
+        config.flake.modules.generic.home-lab
         inputs.catppuccin.homeModules.catppuccin
         inputs.nixvim.homeModules.nixvim
 

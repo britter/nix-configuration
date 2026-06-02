@@ -2,7 +2,6 @@
   config,
   lib,
   pkgs,
-  home-lab,
   ...
 }:
 {
@@ -30,7 +29,7 @@
             ports = [ "9980:9980" ];
             environment = {
               extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
-              domain = "nextcloud.${config.my.host.name}.ritter.family";
+              domain = "nextcloud.${config.networking.hostName}.ritter.family";
             };
             extraOptions = [ "--cap-add=MKNOD" ];
           };
@@ -39,13 +38,13 @@
 
       systemd.services.nginx =
         let
-          homelabCfg = home-lab.hosts.${config.my.host.name};
+          homelabCfg = config.home-lab.hosts.${config.networking.hostName};
           occ = "${config.services.nextcloud.occ}/bin/nextcloud-occ";
           postStart = pkgs.writeShellScriptBin "nextcloud-declarative-config" ''
             set -euo pipefail
             CONTAINER_IP=`${pkgs.docker}/bin/docker container inspect -f '{{ .NetworkSettings.Networks.bridge.IPAddress }}' collabora-code`
             ${occ} config:app:set --value "https://${publicDomainName}" richdocuments wopi_url
-            ${occ} config:app:set --value "$CONTAINER_IP:9980,${home-lab.hosts.directions.ip},${homelabCfg.ip},100.94.107.46" richdocuments wopi_allowlist
+            ${occ} config:app:set --value "$CONTAINER_IP:9980,${config.home-lab.hosts.directions.ip},${homelabCfg.ip},100.94.107.46" richdocuments wopi_allowlist
           '';
         in
         {
@@ -58,7 +57,7 @@
         enable = true;
         configurations = [
           {
-            fqdn = "collabora.${config.my.host.name}.ritter.family";
+            fqdn = "collabora.${config.networking.hostName}.ritter.family";
             aliases = [ publicDomainName ];
             target = "http://localhost:9980";
             proxyWebsockets = true;

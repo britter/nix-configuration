@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  home-lab,
   ...
 }:
 let
@@ -35,7 +34,7 @@ in
         };
         clients = [
           {
-            url = "http://${home-lab.hosts.srv-prod-1.ip}:3100/loki/api/v1/push";
+            url = "http://${config.home-lab.hosts.srv-prod-1.ip}:3100/loki/api/v1/push";
           }
         ];
         scrape_configs = [
@@ -45,7 +44,7 @@ in
               max_age = "12h";
               labels = {
                 job = "systemd-journal";
-                host = config.my.host.name;
+                host = config.networking.hostName;
               };
             };
             relabel_configs = [

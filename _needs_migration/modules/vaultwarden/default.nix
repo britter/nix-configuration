@@ -65,7 +65,7 @@ in
         in
         [
           {
-            fqdn = "passwords.${config.my.host.name}.ritter.family";
+            fqdn = "passwords.${config.networking.hostName}.ritter.family";
             aliases = [ publicDomainName ];
             target = "http://localhost:8222";
           }

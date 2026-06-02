@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  home-lab,
   ...
 }:
 let
@@ -33,7 +32,7 @@ in
               };
             };
           };
-          myHosts = lib.mapAttrsToList mkHost home-lab.hosts;
+          myHosts = lib.mapAttrsToList mkHost config.home-lab.hosts;
         in
         lib.mkMerge (
           myHosts
@@ -44,7 +43,7 @@ in
                 identitiesOnly = true;
               };
               "git.ritter.family" = {
-                hostname = home-lab.hosts.srv-prod-2.ip;
+                hostname = config.home-lab.hosts.srv-prod-2.ip;
                 identityFile = privateKey;
                 user = "git";
               };

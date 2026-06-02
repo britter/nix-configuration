@@ -26,7 +26,7 @@ in
       enable = true;
       settings = {
         server = {
-          domain = "grafana.${config.my.host.name}.ritter.family";
+          domain = "grafana.${config.networking.hostName}.ritter.family";
         };
         security.secret_key = "SW2YcwTIb9zpOOhoPsMm";
       };
@@ -66,7 +66,7 @@ in
       enable = true;
       configurations = [
         {
-          fqdn = "grafana.${config.my.host.name}.ritter.family";
+          fqdn = "grafana.${config.networking.hostName}.ritter.family";
           aliases = [ "grafana.ritter.family" ];
           target = "http://localhost:3000";
           proxyWebsockets = true;

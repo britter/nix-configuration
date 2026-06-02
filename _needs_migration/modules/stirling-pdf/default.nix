@@ -37,7 +37,7 @@ in
       my.modules.https-proxy = {
         configurations = [
           {
-            fqdn = "pdf.${config.my.host.name}.ritter.family";
+            fqdn = "pdf.${config.networking.hostName}.ritter.family";
             aliases = [ "pdf.ritter.family" ];
             target = "http://localhost:8090";
             extraConfig = ''

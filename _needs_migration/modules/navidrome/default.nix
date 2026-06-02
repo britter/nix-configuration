@@ -21,7 +21,7 @@ in
       enable = true;
       configurations = [
         {
-          fqdn = "music.${config.my.host.name}.ritter.family";
+          fqdn = "music.${config.networking.hostName}.ritter.family";
           target = "http://localhost:4533";
         }
       ];

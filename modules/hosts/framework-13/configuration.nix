@@ -9,7 +9,6 @@
       imports = [
         inputs.nixos-facter-modules.nixosModules.facter
         inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-        ../../../_needs_migration/modules
         config.flake.modules.nixos.system-desktop
       ];
 

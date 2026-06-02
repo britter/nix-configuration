@@ -30,7 +30,6 @@ in
     ./options
     ./proxmox-vm
     ./restic-restore
-    ./sops
     ./sound
     ./ssh-access
     ./stirling-pdf
@@ -52,7 +51,6 @@ in
       }
       // lib.optionalAttrs (cfg.role == "server") {
         comin.enable = true;
-        sops.enable = true;
         ssh-access.enable = true;
       };
   };
