@@ -13,7 +13,6 @@ in
     ./calibre-web
     ./comin
     ./dirty-frag-fix
-    ./disko
     ./fonts
     ./gaming
     ./git-server

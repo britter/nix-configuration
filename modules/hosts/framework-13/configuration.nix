@@ -18,13 +18,6 @@
           role = "desktop";
         };
         user.signingKey = "394546A47BB40E12";
-        modules = {
-          disko = {
-            enable = true;
-            bootDisk = "/dev/nvme0n1";
-            swapSize = "64GB";
-          };
-        };
       };
 
       boot.kernelPackages = pkgs.linuxPackages_latest;
