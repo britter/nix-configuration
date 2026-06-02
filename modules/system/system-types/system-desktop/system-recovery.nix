@@ -1,17 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}:
-let
-  cfg = config.my.modules.system-recovery;
-in
-{
-  options.my.modules.system-recovery = {
-    enable = lib.mkEnableOption "system-recovery";
-  };
-
-  config = lib.mkIf cfg.enable {
+_: {
+  flake.modules.nixos.system-desktop = {
     # Enable Magic SysRq for recovery in emergency situations
     # see https://wiki.nixos.org/wiki/Linux_kernel#Enable_SysRq
     # In short press Alt + SysRq (Print Screen) and then while holding Alt: R E I S U B
