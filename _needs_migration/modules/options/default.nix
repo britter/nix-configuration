@@ -10,6 +10,7 @@
           "desktop"
           "server"
         ];
+        default = "server";
         description = "The role this machine has";
       };
     };

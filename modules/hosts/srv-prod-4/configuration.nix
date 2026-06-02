@@ -3,19 +3,14 @@
   flake.modules.nixos.srv-prod-4 = {
     imports = [
       ../../../_needs_migration/modules
-      config.flake.modules.nixos.system-base
+      config.flake.modules.nixos.system-server
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
-    my = {
-      host = {
-        role = "server";
-      };
-      modules = {
-        proxmox-vm.enable = true;
-        immich.enable = true;
-        tailscale.enable = true;
-      };
+    my.modules = {
+      proxmox-vm.enable = true;
+      immich.enable = true;
+      tailscale.enable = true;
     };
 
     boot.supportedFilesystems = [ "nfs" ];

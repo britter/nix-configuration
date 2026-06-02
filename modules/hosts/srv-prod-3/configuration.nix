@@ -3,17 +3,14 @@
   flake.modules.nixos.srv-prod-3 = {
     imports = [
       ../../../_needs_migration/modules
-      config.flake.modules.nixos.system-base
+      config.flake.modules.nixos.system-server
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
-    my = {
-      host.role = "server";
-      modules = {
-        proxmox-vm.enable = true;
-        minio.enable = true;
-        tailscale.enable = true;
-      };
+    my.modules = {
+      proxmox-vm.enable = true;
+      minio.enable = true;
+      tailscale.enable = true;
     };
 
     nixpkgs.config.permittedInsecurePackages = [
