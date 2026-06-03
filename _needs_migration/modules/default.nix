@@ -13,12 +13,10 @@ in
     ./calibre-web
     ./dirty-frag-fix
     ./git-server
-    ./home-manager
     ./homepage
     ./https-proxy
     ./immich
     ./minio
-    ./my-user
     ./navidrome
     ./nextcloud
     ./nix
@@ -32,7 +30,6 @@ in
 
   config = {
     my.modules = lib.optionalAttrs (cfg.role == "desktop") {
-      my-user.enable = true;
       sway.enable = true;
     };
   };

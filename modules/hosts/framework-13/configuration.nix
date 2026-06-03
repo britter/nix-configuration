@@ -9,16 +9,12 @@
       imports = [
         inputs.nixos-facter-modules.nixosModules.facter
         inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
+        config.flake.modules.nixos.bene
         config.flake.modules.nixos.system-desktop
         config.flake.modules.nixos.gaming
       ];
 
-      my = {
-        host = {
-          role = "desktop";
-        };
-        user.signingKey = "394546A47BB40E12";
-      };
+      my.host.role = "desktop";
 
       boot.kernelPackages = pkgs.linuxPackages_latest;
 

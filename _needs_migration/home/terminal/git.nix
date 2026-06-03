@@ -2,12 +2,10 @@
   config,
   lib,
   pkgs,
-  osConfig,
   ...
 }:
 let
   cfg = config.my.home.terminal.git;
-  osUser = osConfig.my.user;
 in
 {
   options.my.home.terminal.git = {
@@ -25,8 +23,8 @@ in
       enable = true;
 
       settings = {
-        user.name = osUser.fullName;
-        user.email = osUser.email;
+        user.name = config.user.fullName;
+        user.email = config.user.email;
 
         init.defaultBranch = "main";
         push.autoSetupRemote = "true";
@@ -57,7 +55,7 @@ in
       signing = {
         signByDefault = true;
         format = "openpgp";
-        key = osUser.signingKey;
+        key = config.user.signingKey;
       };
 
       includes = lib.mkIf cfg.addIncludes [
