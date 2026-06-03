@@ -1,10 +1,10 @@
 { config, ... }:
 {
   flake.modules.nixos.srv-prod-4 = {
-    imports = [
+    imports = with config.flake.modules.nixos; [
       ../../../_needs_migration/modules
-      config.flake.modules.nixos.system-server
-      config.flake.modules.nixos.proxmox-vm
+      system-server
+      proxmox-vm
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
