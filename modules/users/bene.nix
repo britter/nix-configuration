@@ -7,6 +7,11 @@ let
   username = "bene";
   fullName = "Benedikt Ritter";
   email = "beneritter@gmail.com";
+  # signingKey defaults to bene's standalone-HM (starlabs) key. The
+  # framework-13 host overrides this via bene-on-framework-13.nix because
+  # signing keys are per-machine.
+  # FIXME: replace with the actual starlabs key once generated; currently
+  # reuses bene's framework-13 key as a placeholder.
   signingKey = "394546A47BB40E12";
 in
 {
@@ -44,15 +49,23 @@ in
         inputs.catppuccin.homeModules.catppuccin
         inputs.nixvim.homeModules.nixvim
 
-        ../../_needs_migration/home
+        ../../_needs_migration/home/terminal
       ];
 
       home.username = lib.mkDefault username;
       home.homeDirectory = lib.mkDefault "/home/${username}";
       home.stateVersion = "23.05";
 
+      catppuccin = {
+        enable = true;
+        flavor = "macchiato";
+      };
+
+      my.home.terminal.enable = true;
+
       user = {
-        inherit fullName email signingKey;
+        inherit fullName email;
+        signingKey = lib.mkDefault signingKey;
       };
     };
 
