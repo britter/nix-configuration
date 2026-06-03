@@ -11,9 +11,8 @@
     relativePath = path: lib.removePrefix "${inputs.self}/" (toString path);
     mkNixos = system: name: {
       ${name} = inputs.nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs; };
         modules = [
-          inputs.self.modules.nixos.${name}
+          config.flake.modules.nixos.${name}
           {
             networking.hostName = name;
             nixpkgs.hostPlatform = lib.mkDefault system;
@@ -25,13 +24,12 @@
       ${name} = inputs.home-manager.lib.homeManagerConfiguration {
         pkgs = import inputs.nixpkgs {
           inherit system;
-          overlays = [ inputs.self.overlays.default ];
+          overlays = [ config.flake.overlays.default ];
           config.allowUnfreePackages = config.flake.allowUnfreePackages;
         };
         modules = [
-          inputs.self.modules.homeManager.${name}
+          config.flake.modules.homeManager.${name}
         ];
-        extraSpecialArgs = { inherit inputs; };
       };
     };
   };

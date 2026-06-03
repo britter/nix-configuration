@@ -1,6 +1,7 @@
 { inputs, config, ... }:
 let
   inherit (config.flake.lib) relativePath;
+  inherit (config.flake) nixosConfigurations;
 in
 {
   imports = [ inputs.pre-commit-hooks.flakeModule ];
@@ -25,7 +26,7 @@ in
               pkgs.git
             ];
             runtimeEnv = {
-              CONFIGURATIONS = lib.pipe inputs.self.nixosConfigurations [
+              CONFIGURATIONS = lib.pipe nixosConfigurations [
                 lib.attrNames
                 (lib.filter (lib.hasPrefix "srv"))
                 (lib.concatStringsSep " ")

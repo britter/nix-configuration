@@ -1,9 +1,6 @@
+{ config, ... }:
 {
-  inputs,
-  ...
-}:
-{
-  config = {
+  flake.modules.nixos.system-base = {
     nix = {
       gc = {
         automatic = true;
@@ -19,7 +16,7 @@
       };
     };
 
-    nixpkgs.overlays = [ inputs.self.overlays.default ];
-    nixpkgs.config.allowUnfreePackages = inputs.self.allowUnfreePackages;
+    nixpkgs.overlays = [ config.flake.overlays.default ];
+    nixpkgs.config.allowUnfreePackages = config.flake.allowUnfreePackages;
   };
 }
