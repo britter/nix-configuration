@@ -11,7 +11,6 @@
     ./minio
     ./navidrome
     ./nextcloud
-    ./nix
     ./restic-restore
     ./stirling-pdf
     ./tailscale

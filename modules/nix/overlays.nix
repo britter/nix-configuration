@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ config, inputs, ... }:
 {
   flake.overlays = {
     local-pkgs = final: _prev: import ../../packages { pkgs = final; };
@@ -17,8 +17,8 @@
     };
 
     default = inputs.nixpkgs.lib.composeManyExtensions [
-      inputs.self.overlays.local-pkgs
-      inputs.self.overlays.fixes
+      config.flake.overlays.local-pkgs
+      config.flake.overlays.fixes
       inputs.nur.overlays.default
     ];
   };

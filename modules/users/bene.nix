@@ -29,7 +29,6 @@ in
       programs.fish.enable = true;
 
       home-manager = {
-        extraSpecialArgs = { inherit inputs; };
         useGlobalPkgs = true;
         useUserPackages = true;
         users.${username}.imports = [ config.flake.modules.homeManager.${username} ];
