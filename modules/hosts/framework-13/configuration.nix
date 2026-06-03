@@ -8,11 +8,9 @@
     {
       imports = with config.flake.modules.nixos; [
         system-desktop
-        bene
+        bene-on-framework-13
         gaming
       ];
-
-      my.host.role = "desktop";
 
       boot.kernelPackages = pkgs.linuxPackages_latest;
 

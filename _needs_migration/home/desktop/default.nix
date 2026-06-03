@@ -13,9 +13,7 @@ in
     ./calibre
     ./intellij
     ./ghostty
-    ./sway
     ./syncthing
-    ./wallpapers
   ];
 
   options.my.home.desktop = {
@@ -42,23 +40,11 @@ in
       librewolf.profiles.default.enable = false;
     };
 
-    xdg = {
-      mime.enable = true;
-      mimeApps = {
-        enable = true;
-        defaultApplications = {
-          "application/pdf" = [ "org.gnome.Evince.desktop" ];
-          "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
-        };
-      };
-    };
-
     my.home.desktop = {
       browser.enable = true;
       calibre.enable = true;
       ghostty.enable = true;
       intellij.enable = true;
-      sway.enable = true;
       syncthing.enable = true;
     };
 
