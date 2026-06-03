@@ -1,16 +1,11 @@
-{ inputs, config, ... }:
+{ config, ... }:
 {
   flake.modules.nixos.srv-offsite-1 = {
     imports = [
       ../../../_needs_migration/modules
-      inputs.nixos-facter-modules.nixosModules.facter
       config.flake.modules.nixos.system-server
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
-
-    facter.reportPath = ./facter.json;
-    # see https://github.com/numtide/nixos-facter-modules/issues/62
-    facter.detected.dhcp.enable = false;
 
     my.modules = {
       minio.enable = true;

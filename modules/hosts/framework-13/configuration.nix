@@ -1,4 +1,4 @@
-{ inputs, config, ... }:
+{ config, ... }:
 {
   flake.modules.nixos.framework-13 =
     {
@@ -6,21 +6,15 @@
       ...
     }:
     {
-      imports = [
-        inputs.nixos-facter-modules.nixosModules.facter
-        inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
-        config.flake.modules.nixos.bene
-        config.flake.modules.nixos.system-desktop
-        config.flake.modules.nixos.gaming
+      imports = with config.flake.modules.nixos; [
+        system-desktop
+        bene
+        gaming
       ];
 
       my.host.role = "desktop";
 
       boot.kernelPackages = pkgs.linuxPackages_latest;
-
-      facter.reportPath = ./facter.json;
-      # see https://github.com/numtide/nixos-facter-modules/issues/62
-      facter.detected.dhcp.enable = false;
 
       services.fwupd.enable = true;
 
