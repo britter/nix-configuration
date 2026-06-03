@@ -57,5 +57,5 @@ in
       };
     };
 
-  flake.homeConfigurations.${username} = config.flake.lib.mkHomeManager "x86_64-linux" username;
+  flake.homeConfigurations = config.flake.lib.mkHomeManager "x86_64-linux" username;
 }

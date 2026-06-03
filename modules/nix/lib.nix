@@ -9,21 +9,20 @@
     # Derive a flake-root-relative path string from a Nix path literal.
     # Errors at eval time if the underlying file is missing.
     relativePath = path: lib.removePrefix "${inputs.self}/" (toString path);
-    mkNixos = system: hostName: {
-      ${hostName} = inputs.nixpkgs.lib.nixosSystem {
+    mkNixos = system: name: {
+      ${name} = inputs.nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; };
         modules = [
-          inputs.self.modules.nixos.${hostName}
+          inputs.self.modules.nixos.${name}
           {
-            networking.hostName = hostName;
+            networking.hostName = name;
             nixpkgs.hostPlatform = lib.mkDefault system;
           }
         ];
       };
     };
-    mkHomeManager =
-      system: name:
-      inputs.home-manager.lib.homeManagerConfiguration {
+    mkHomeManager = system: name: {
+      ${name} = inputs.home-manager.lib.homeManagerConfiguration {
         pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = [ inputs.self.overlays.default ];
@@ -34,5 +33,6 @@
         ];
         extraSpecialArgs = { inherit inputs; };
       };
+    };
   };
 }
