@@ -9,9 +9,29 @@
       ];
 
       home-manager.users.bene = {
-        imports = with config.flake.modules.homeManager; [
-          sway
+        imports = [
+          config.flake.modules.homeManager.sway
+          ../../../_needs_migration/home/desktop
+          ../../../_needs_migration/home/java
+          ../../../_needs_migration/home/rust
         ];
+
+        my.home = {
+          desktop.enable = true;
+          java = {
+            enable = true;
+            version = 25;
+            additionalVersions = [
+              8
+              11
+              17
+              21
+            ];
+          };
+          rust.enable = true;
+        };
+
+        user.signingKey = "394546A47BB40E12";
 
         services.kanshi = {
           enable = true;
