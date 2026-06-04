@@ -4,7 +4,6 @@
     ./adguard
     ./calibre-web
     ./dirty-frag-fix
-    ./git-server
     ./homepage
     ./https-proxy
     ./immich
