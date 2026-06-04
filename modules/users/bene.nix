@@ -10,9 +10,7 @@ let
   # signingKey defaults to bene's standalone-HM (starlabs) key. The
   # framework-13 host overrides this via bene-on-framework-13.nix because
   # signing keys are per-machine.
-  # FIXME: replace with the actual starlabs key once generated; currently
-  # reuses bene's framework-13 key as a placeholder.
-  signingKey = "394546A47BB40E12";
+  signingKey = "1232C0894CC635B5";
 in
 {
   flake.allowUnfreePackages = [ "obsidian" ];
