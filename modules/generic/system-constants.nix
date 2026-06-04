@@ -11,7 +11,10 @@ _: {
         '';
       };
       config.systemConstants = {
-        adminKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGsQc3GN4b8scuDR7PghdB+Eu4zUgSwgrgqplpNDR3Lq";
+        adminKeys = {
+          framework-13 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGsQc3GN4b8scuDR7PghdB+Eu4zUgSwgrgqplpNDR3Lq";
+          starlite = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2+ifShP1n5ZV8Q/VKXvpdKAJycgQ0kgkiz7YOPmKec";
+        };
         configRepo = "https://github.com/britter/nix-configuration.git";
       };
     };

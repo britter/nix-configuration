@@ -1,8 +1,8 @@
 _: {
   flake.modules.nixos.ssh-access =
-    { config, ... }:
+    { config, lib, ... }:
     {
-      users.users.root.openssh.authorizedKeys.keys = [ config.systemConstants.adminKey ];
+      users.users.root.openssh.authorizedKeys.keys = lib.attrValues config.systemConstants.adminKeys;
 
       services.openssh = {
         enable = true;
