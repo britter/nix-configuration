@@ -8,11 +8,6 @@
         sway
       ];
 
-      # fix for Bitwarden client requiring deprecated electron version
-      nixpkgs.config.permittedInsecurePackages = [
-        "electron-39.8.10"
-      ];
-
       home-manager.users.bene = {
         imports = [
           config.flake.modules.homeManager.sway
