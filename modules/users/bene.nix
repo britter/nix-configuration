@@ -41,23 +41,18 @@ in
   flake.modules.homeManager.${username} =
     { lib, ... }:
     {
-      imports = [
+      imports = with config.flake.modules.homeManager; [
         config.flake.modules.generic.home-lab
-        config.flake.modules.homeManager.user-identity
-        inputs.catppuccin.homeModules.catppuccin
-        inputs.nixvim.homeModules.nixvim
+        user-identity
+        catppuccin
 
+        inputs.nixvim.homeModules.nixvim
         ../../_needs_migration/home/terminal
       ];
 
       home.username = lib.mkDefault username;
       home.homeDirectory = lib.mkDefault "/home/${username}";
       home.stateVersion = "23.05";
-
-      catppuccin = {
-        enable = true;
-        flavor = "macchiato";
-      };
 
       my.home.terminal.enable = true;
 

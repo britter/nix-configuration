@@ -18,12 +18,12 @@ in
   flake.modules.homeManager.${username} =
     { lib, ... }:
     {
-      imports = [
+      imports = with config.flake.modules.homeManager; [
         config.flake.modules.generic.home-lab
-        config.flake.modules.homeManager.user-identity
-        inputs.catppuccin.homeModules.catppuccin
-        inputs.nixvim.homeModules.nixvim
+        user-identity
+        catppucin
 
+        inputs.nixvim.homeModules.nixvim
         ../../_needs_migration/home/benedikt.nix
       ];
 
