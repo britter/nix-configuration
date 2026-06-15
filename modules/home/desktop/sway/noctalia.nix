@@ -14,7 +14,6 @@
 
       programs.noctalia = {
         enable = true;
-        package = pkgs.noctalia-shell;
         settings = {
           bar = {
             outerCorners = false;
