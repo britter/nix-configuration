@@ -14,6 +14,11 @@
 
       boot.kernelPackages = pkgs.linuxPackages_latest;
 
+      # fix for bitwarden using outdated electron dependencies
+      nixpkgs.config.permittedInsecurePackages = [
+        "electron-39.8.10"
+      ];
+
       services.fwupd.enable = true;
 
       services.printing.enable = true;
