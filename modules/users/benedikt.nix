@@ -21,7 +21,7 @@ in
       imports = with config.flake.modules.homeManager; [
         config.flake.modules.generic.home-lab
         user-identity
-        catppucin
+        catppuccin
 
         inputs.nixvim.homeModules.nixvim
         ../../_needs_migration/home/benedikt.nix
