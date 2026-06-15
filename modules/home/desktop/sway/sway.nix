@@ -55,7 +55,7 @@ in
     }:
     let
       screenshotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
-      noctalia = lib.getExe config.programs.noctalia.package;
+      noctaliaExe = lib.getExe config.programs.noctalia.package;
       capture-screenhot = pkgs.writeShellApplication {
         name = "capture-screenshot";
         runtimeInputs = [ pkgs.sway-contrib.grimshot ];
@@ -84,8 +84,8 @@ in
         enable = true;
         wrapperFeatures.gtk = true;
         config = {
-          startup = [ { command = noctalia; } ];
-          menu = "${noctalia} ipc call launcher toggle";
+          startup = [ { command = noctaliaExe; } ];
+          menu = "${noctaliaExe} ipc call launcher toggle";
           bars = [ { mode = "invisible"; } ];
           terminal = lib.getExe pkgs.ghostty;
           defaultWorkspace = "workspace number 1";
@@ -177,15 +177,15 @@ in
               "${mod}+Ctrl+x" = "exec ${lib.getExe capture-screenhot} area";
 
               # Custom modes
-              "${mod}+Escape" = "exec ${noctalia} ipc call sessionMenu toggle";
+              "${mod}+Escape" = "exec ${noctaliaExe} ipc call sessionMenu toggle";
               "${mod}+p" = ''mode "present"'';
 
               # Fn functionality on F keys
-              "XF86AudioMute" = "exec ${noctalia} ipc call volume muteOutput";
-              "XF86AudioRaiseVolume" = "exec ${noctalia} ipc call volume increase";
-              "XF86AudioLowerVolume" = "exec ${noctalia} ipc call volume decrease";
-              "XF86MonBrightnessUp" = "exec ${noctalia} ipc call brightness increase";
-              "XF86MonBrightnessDown" = "exec ${noctalia} ipc call brightness decrease";
+              "XF86AudioMute" = "exec ${noctaliaExe} ipc call volume muteOutput";
+              "XF86AudioRaiseVolume" = "exec ${noctaliaExe} ipc call volume increase";
+              "XF86AudioLowerVolume" = "exec ${noctaliaExe} ipc call volume decrease";
+              "XF86MonBrightnessUp" = "exec ${noctaliaExe} ipc call brightness increase";
+              "XF86MonBrightnessDown" = "exec ${noctaliaExe} ipc call brightness decrease";
             };
           modes = {
             # redeclare resize mode in order not to override it
