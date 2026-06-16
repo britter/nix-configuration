@@ -92,29 +92,29 @@ _: {
             inherit pruneOpts;
             inherit timerConfig;
           };
-          # nextcloud =
-          #   let
-          #     occ = lib.getExe config.services.nextcloud.occ;
-          #   in
-          #   {
-          #     environmentFile = config.sops.templates."restic/nextcloud/secrets.env".path;
-          #     paths = [
-          #       "/srv/nextcloud-data"
-          #       "/var/backups/nextcloud"
-          #     ];
-          #     repository = "${bucket}/nextcloud";
-          #     initialize = true;
-          #     backupPrepareCommand = ''
-          #       ${occ} maintenance:mode --on
-          #       ${lib.getExe pkgs.sudo} -u postgres ${pg_dump} --format=custom --file=/var/backups/nextcloud/nextcloud.dump nextcloud
-          #     '';
-          #     backupCleanupCommand = ''
-          #       rm /var/backups/nextcloud/nextcloud.dump
-          #       ${occ} maintenance:mode --off
-          #     '';
-          #     inherit pruneOpts;
-          #     inherit timerConfig;
-          #   };
+          nextcloud =
+            let
+              occ = lib.getExe config.services.nextcloud.occ;
+            in
+            {
+              environmentFile = config.sops.templates."restic/nextcloud/secrets.env".path;
+              paths = [
+                "/srv/nextcloud-data"
+                "/var/backups/nextcloud"
+              ];
+              repository = "${bucket}/nextcloud";
+              initialize = true;
+              backupPrepareCommand = ''
+                ${occ} maintenance:mode --on
+                ${lib.getExe pkgs.sudo} -u postgres ${pg_dump} --format=custom --file=/var/backups/nextcloud/nextcloud.dump nextcloud
+              '';
+              backupCleanupCommand = ''
+                rm /var/backups/nextcloud/nextcloud.dump
+                ${occ} maintenance:mode --off
+              '';
+              inherit pruneOpts;
+              inherit timerConfig;
+            };
           vaultwarden = {
             environmentFile = config.sops.templates."restic/vaultwarden/secrets.env".path;
             paths = [
