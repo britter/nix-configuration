@@ -28,13 +28,8 @@ in
           useTextGreeter = true;
           settings = {
             default_session = {
-              command = ''
-                ${lib.getExe pkgs.tuigreet} \
-                  --remember \
-                  --time \
-                  --asterisks \
-                  --cmd ${lib.getExe pkgs.sway}
-              '';
+              # put on a single line to work around https://github.com/NixOS/nixpkgs/issues/527565
+              command = "${lib.getExe pkgs.tuigreet} --remember --time --asterisks --cmd ${lib.getExe pkgs.sway}";
             };
           };
         };
