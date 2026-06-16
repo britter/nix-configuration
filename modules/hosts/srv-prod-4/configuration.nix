@@ -5,12 +5,12 @@
       ../../../_needs_migration/modules
       system-server
       proxmox-vm
+      tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
     my.modules = {
       immich.enable = true;
-      tailscale.enable = true;
     };
 
     boot.supportedFilesystems = [ "nfs" ];

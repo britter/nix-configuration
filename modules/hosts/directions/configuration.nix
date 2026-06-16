@@ -4,13 +4,14 @@
     imports = [
       ../../../_needs_migration/modules
       config.flake.modules.nixos.system-server
+      config.flake.modules.nixos.https-proxy
+      config.flake.modules.nixos.adguard
+      config.flake.modules.nixos.tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
     my.modules = {
-      adguard.enable = true;
       homepage.enable = true;
-      tailscale.enable = true;
     };
 
     boot.loader = {

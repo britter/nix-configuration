@@ -4,12 +4,12 @@
     imports = [
       ../../../_needs_migration/modules
       config.flake.modules.nixos.system-server
+      config.flake.modules.nixos.tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
     my.modules = {
       minio.enable = true;
-      tailscale.enable = true;
     };
 
     nixpkgs.config.permittedInsecurePackages = [
