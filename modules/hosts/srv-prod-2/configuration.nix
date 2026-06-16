@@ -11,7 +11,7 @@
 
     my.modules = {
       nextcloud = {
-        enable = false;
+        enable = true;
         stage = "production";
       };
       calibre-web.enable = true;
