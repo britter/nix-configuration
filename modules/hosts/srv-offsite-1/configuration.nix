@@ -1,10 +1,10 @@
 { config, ... }:
 {
   flake.modules.nixos.srv-offsite-1 = {
-    imports = [
+    imports = with config.flake.modules.nixos; [
       ../../../_needs_migration/modules
-      config.flake.modules.nixos.system-server
-      config.flake.modules.nixos.tailscale
+      system-server
+      tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 

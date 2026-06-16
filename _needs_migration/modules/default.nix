@@ -1,7 +1,6 @@
 {
   imports = [
     ./acme
-    ./adguard
     ./calibre-web
     ./dirty-frag-fix
     ./homepage
@@ -12,7 +11,6 @@
     ./nextcloud
     ./restic-restore
     ./stirling-pdf
-    ./tailscale
     ./vaultwarden
   ];
 }

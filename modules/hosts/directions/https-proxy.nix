@@ -1,7 +1,13 @@
-_: {
+{ config, ... }:
+let
+  httpsProxyModule = config.flake.modules.nixos.https-proxy;
+in
+{
   flake.modules.nixos.directions =
     { config, ... }:
     {
+      imports = [ httpsProxyModule ];
+
       services.https-proxy = {
         enable = true;
         configurations = [
