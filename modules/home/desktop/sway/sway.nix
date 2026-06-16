@@ -55,7 +55,7 @@ in
     }:
     let
       screenshotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
-      ns = lib.getExe config.programs.noctalia.package;
+      ns = lib.getExe config.programs.noctalia-shell.package;
       nsipc = "${ns} ipc call";
       capture-screenhot = pkgs.writeShellApplication {
         name = "capture-screenshot";

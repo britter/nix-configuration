@@ -12,8 +12,9 @@
     {
       imports = [ inputs.noctalia.homeModules.default ];
 
-      programs.noctalia = {
+      programs.noctalia-shell = {
         enable = true;
+        package = pkgs.noctalia-shell;
         settings = {
           bar = {
             outerCorners = false;
