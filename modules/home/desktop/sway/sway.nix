@@ -28,13 +28,8 @@ in
           useTextGreeter = true;
           settings = {
             default_session = {
-              command = ''
-                ${lib.getExe pkgs.tuigreet} \
-                  --remember \
-                  --time \
-                  --asterisks \
-                  --cmd ${lib.getExe pkgs.sway}
-              '';
+              # put on a single line to work around https://github.com/NixOS/nixpkgs/issues/527565
+              command = "${lib.getExe pkgs.tuigreet} --remember --time --asterisks --cmd ${lib.getExe pkgs.sway}";
             };
           };
         };
@@ -55,6 +50,8 @@ in
     }:
     let
       screenshotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
+      ns = lib.getExe config.programs.noctalia-shell.package;
+      nsipc = "${ns} ipc call";
       capture-screenhot = pkgs.writeShellApplication {
         name = "capture-screenshot";
         runtimeInputs = [ pkgs.sway-contrib.grimshot ];
@@ -83,8 +80,8 @@ in
         enable = true;
         wrapperFeatures.gtk = true;
         config = {
-          startup = [ { command = "noctalia-shell"; } ];
-          menu = "noctalia-shell ipc call launcher toggle";
+          startup = [ { command = ns; } ];
+          menu = "${nsipc} launcher toggle";
           bars = [ { mode = "invisible"; } ];
           terminal = lib.getExe pkgs.ghostty;
           defaultWorkspace = "workspace number 1";
@@ -176,15 +173,15 @@ in
               "${mod}+Ctrl+x" = "exec ${lib.getExe capture-screenhot} area";
 
               # Custom modes
-              "${mod}+Escape" = "exec noctalia-shell ipc call sessionMenu toggle";
+              "${mod}+Escape" = "exec ${nsipc} sessionMenu toggle";
               "${mod}+p" = ''mode "present"'';
 
               # Fn functionality on F keys
-              "XF86AudioMute" = "exec noctalia-shell ipc call volume muteOutput";
-              "XF86AudioRaiseVolume" = "exec noctalia-shell ipc call volume increase";
-              "XF86AudioLowerVolume" = "exec noctalia-shell ipc call volume decrease";
-              "XF86MonBrightnessUp" = "exec noctalia-shell ipc call brightness increase";
-              "XF86MonBrightnessDown" = "exec noctalia-shell ipc call brightness decrease";
+              "XF86AudioMute" = "exec ${nsipc} volume muteOutput";
+              "XF86AudioRaiseVolume" = "exec ${nsipc} volume increase";
+              "XF86AudioLowerVolume" = "exec ${nsipc} volume decrease";
+              "XF86MonBrightnessUp" = "exec ${nsipc} brightness increase";
+              "XF86MonBrightnessDown" = "exec ${nsipc} brightness decrease";
             };
           modes = {
             # redeclare resize mode in order not to override it
