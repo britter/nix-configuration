@@ -63,6 +63,20 @@ _: {
                 icon = "calibre-web.svg";
               };
             }
+            {
+              "Immich" = {
+                description = "Photo and video management";
+                href = "https://photos.ritter.family/";
+                icon = "immich.svg";
+              };
+            }
+            {
+              "Navidrome" = {
+                description = "Music collection streaming server";
+                href = "https://music.ritter.family/";
+                icon = "navidrome.svg";
+              };
+            }
           ];
         }
         {
