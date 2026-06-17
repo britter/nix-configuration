@@ -1,13 +1,7 @@
-{ config, ... }:
-let
-  httpsProxyModule = config.flake.modules.nixos.https-proxy;
-in
-{
+_: {
   flake.modules.nixos.homepage =
     { ... }:
     {
-      imports = [ httpsProxyModule ];
-
       services.homepage-dashboard = {
         enable = true;
         settings = {

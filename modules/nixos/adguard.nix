@@ -1,13 +1,7 @@
-{ config, ... }:
-let
-  httpsProxyModule = config.flake.modules.nixos.https-proxy;
-in
-{
+_: {
   flake.modules.nixos.adguard =
     { config, ... }:
     {
-      imports = [ httpsProxyModule ];
-
       networking.firewall = {
         allowedUDPPorts = [ config.services.adguardhome.settings.dns.port ];
         allowedTCPPorts = [ config.services.adguardhome.settings.dns.port ];

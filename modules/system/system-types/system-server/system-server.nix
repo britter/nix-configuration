@@ -4,6 +4,7 @@
     imports = [
       config.flake.modules.nixos.system-base
       config.flake.modules.nixos.ssh-access
+      config.flake.modules.nixos.https-proxy
     ];
   };
 }
