@@ -1,6 +1,6 @@
 _: {
   flake.modules.nixos.homepage =
-    { ... }:
+    _:
     {
       services.homepage-dashboard = {
         enable = true;
