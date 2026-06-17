@@ -2,28 +2,11 @@
 {
   flake.modules.nixos.srv-prod-4 = {
     imports = with config.flake.modules.nixos; [
-      ../../../_needs_migration/modules
       system-server
       proxmox-vm
       tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
-
-    my.modules = {
-      immich.enable = true;
-    };
-
-    boot.supportedFilesystems = [ "nfs" ];
-    fileSystems."/srv/immich-media" = {
-      fsType = "nfs";
-      device = "storage.ritter.family:/mnt/default-pool/immich-media";
-    };
-    systemd.services.immich-server = {
-      unitConfig = {
-        RequiresMountsFor = "/srv/immich-media";
-      };
-    };
-    services.immich.mediaLocation = "/srv/immich-media";
 
     # This value determines the NixOS release from which the default
     # settings for stateful data, like file locations and database versions
