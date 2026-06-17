@@ -1,10 +1,10 @@
 { config, ... }:
 {
   flake.modules.nixos.system-server = {
-    imports = [
-      config.flake.modules.nixos.system-base
-      config.flake.modules.nixos.ssh-access
-      config.flake.modules.nixos.https-proxy
+    imports = with config.flake.modules.nixos; [
+      system-base
+      ssh-access
+      https-proxy
     ];
   };
 }
