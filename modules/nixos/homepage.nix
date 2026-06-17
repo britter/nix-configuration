@@ -131,6 +131,13 @@ _: {
                 icon = "grafana.svg";
               };
             }
+            {
+              "Uptime Kuma" = {
+                description = "Service uptime monitoring";
+                href = "https://status.ritter.family/";
+                icon = "uptime-kuma.svg";
+              };
+            }
           ];
         }
       ];

@@ -6,6 +6,7 @@
       adguard
       homepage
       tailscale
+      uptime-kuma
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
