@@ -1,17 +1,13 @@
 { config, ... }:
 {
   flake.modules.nixos.directions = {
-    imports = [
-      ../../../_needs_migration/modules
-      config.flake.modules.nixos.system-server
+    imports = with config.flake.modules.nixos; [
+      system-server
+      adguard
+      homepage
+      tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
-
-    my.modules = {
-      adguard.enable = true;
-      homepage.enable = true;
-      tailscale.enable = true;
-    };
 
     boot.loader = {
       grub.enable = false;

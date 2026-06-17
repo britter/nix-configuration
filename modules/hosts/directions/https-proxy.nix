@@ -2,7 +2,7 @@ _: {
   flake.modules.nixos.directions =
     { config, ... }:
     {
-      my.modules.https-proxy = {
+      services.https-proxy = {
         enable = true;
         configurations = [
           {

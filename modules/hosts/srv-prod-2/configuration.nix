@@ -6,6 +6,7 @@
       system-server
       proxmox-vm
       git-server
+      tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
@@ -16,7 +17,6 @@
       };
       calibre-web.enable = true;
       stirling-pdf.enable = true;
-      tailscale.enable = true;
       vaultwarden.enable = true;
     };
 

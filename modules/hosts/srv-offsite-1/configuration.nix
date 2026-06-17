@@ -1,15 +1,15 @@
 { config, ... }:
 {
   flake.modules.nixos.srv-offsite-1 = {
-    imports = [
+    imports = with config.flake.modules.nixos; [
       ../../../_needs_migration/modules
-      config.flake.modules.nixos.system-server
+      system-server
+      tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
     my.modules = {
       minio.enable = true;
-      tailscale.enable = true;
     };
 
     nixpkgs.config.permittedInsecurePackages = [
