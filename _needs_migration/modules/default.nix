@@ -7,7 +7,6 @@
     ./https-proxy
     ./immich
     ./minio
-    ./navidrome
     ./nextcloud
     ./restic-restore
     ./stirling-pdf
