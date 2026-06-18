@@ -1,6 +1,7 @@
 { config, ... }:
 let
   inherit (config.flake.modules.nixos) vaultwarden;
+  restic = import ./_restic-constants.nix;
 in
 {
   flake.modules.nixos.srv-prod-2 =
@@ -38,7 +39,7 @@ in
             "/var/lib/bitwarden_rs"
             "/var/backups/vaultwarden"
           ];
-          repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/vaultwarden";
+          repository = "${restic.bucket}/vaultwarden";
           initialize = true;
           backupPrepareCommand = ''
             systemctl stop vaultwarden
@@ -48,17 +49,7 @@ in
             rm /var/backups/vaultwarden/vaultwarden.dump
             systemctl restart vaultwarden
           '';
-          pruneOpts = [
-            "--keep-daily 14"
-            "--keep-weekly 8"
-            "--keep-monthly 12"
-            "--keep-yearly 5"
-          ];
-          timerConfig = {
-            OnCalendar = "00:00";
-            RandomizedDelaySec = "30mm";
-            Persistent = true;
-          };
+          inherit (restic) pruneOpts timerConfig;
         };
     };
 }

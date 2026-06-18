@@ -1,6 +1,7 @@
 { config, ... }:
 let
   inherit (config.flake.modules.nixos) nextcloud;
+  restic = import ./_restic-constants.nix;
 in
 {
   flake.modules.nixos.srv-prod-2 =
@@ -52,7 +53,7 @@ in
             "/srv/nextcloud-data"
             "/var/backups/nextcloud"
           ];
-          repository = "s3:https://minio.srv-prod-3.ritter.family/restic-backups/nextcloud";
+          repository = "${restic.bucket}/nextcloud";
           initialize = true;
           backupPrepareCommand = ''
             ${occ} maintenance:mode --on
@@ -62,17 +63,7 @@ in
             rm /var/backups/nextcloud/nextcloud.dump
             ${occ} maintenance:mode --off
           '';
-          pruneOpts = [
-            "--keep-daily 14"
-            "--keep-weekly 8"
-            "--keep-monthly 12"
-            "--keep-yearly 5"
-          ];
-          timerConfig = {
-            OnCalendar = "00:00";
-            RandomizedDelaySec = "30mm";
-            Persistent = true;
-          };
+          inherit (restic) pruneOpts timerConfig;
         };
     };
 }
