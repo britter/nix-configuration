@@ -5,6 +5,8 @@
       ../../../_needs_migration/modules
       system-server
       tailscale
+      minio-sync-on-srv-offsite-1
+      weekly-update-window-on-srv-offsite-1
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 

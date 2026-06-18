@@ -1,5 +1,5 @@
 _: {
-  flake.modules.nixos.srv-offsite-1 =
+  flake.modules.nixos.minio-sync-on-srv-offsite-1 =
     {
       pkgs,
       lib,

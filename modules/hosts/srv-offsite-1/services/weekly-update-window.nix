@@ -6,7 +6,7 @@ _: {
   # to fetch config changes, eval config, and update the system, resulting in no updates being applied
   # during nightly sync wake ups.
   # https://github.com/nlewo/comin/issues/104
-  flake.modules.nixos.srv-offsite-1 =
+  flake.modules.nixos.weekly-update-window-on-srv-offsite-1 =
     { pkgs, ... }:
     {
       systemd.timers.weekly-update-wakeup = {
