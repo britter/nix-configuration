@@ -1,25 +1,13 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  cfg = config.my.modules.stirling-pdf;
-in
-{
-  options.my.modules.stirling-pdf = {
-    enable = lib.mkEnableOption "stirling-pdf";
-  };
-
-  config =
+_: {
+  flake.modules.nixos.stirling-pdf =
+    { config, pkgs, ... }:
     let
       deu-traineddata = pkgs.fetchurl {
         url = "https://github.com/tesseract-ocr/tessdata/raw/refs/heads/main/deu.traineddata";
         hash = "sha256-iWs7SVZQOrnaoQKF2zMIgbLXS3DYibeSYsxTS57GmaQ=";
       };
     in
-    lib.mkIf cfg.enable {
+    {
       services.stirling-pdf = {
         enable = true;
         environment = {
@@ -34,7 +22,8 @@ in
         "L+ /usr/share/tessdata/deu.traineddata - - - - ${deu-traineddata}"
       ];
 
-      my.modules.https-proxy = {
+      services.https-proxy = {
+        enable = true;
         configurations = [
           {
             fqdn = "pdf.${config.networking.hostName}.ritter.family";

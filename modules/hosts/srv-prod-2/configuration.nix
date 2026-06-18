@@ -6,12 +6,12 @@
       system-server
       proxmox-vm
       git-server
+      stirling-pdf
       tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
     my.modules = {
-      stirling-pdf.enable = true;
       vaultwarden.enable = true;
     };
 

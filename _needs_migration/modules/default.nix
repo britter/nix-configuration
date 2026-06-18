@@ -5,7 +5,6 @@
     ./homepage
     ./https-proxy
     ./minio
-    ./stirling-pdf
     ./vaultwarden
   ];
 }
