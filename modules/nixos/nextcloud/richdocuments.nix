@@ -1,27 +1,20 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-{
-  config =
+_: {
+  flake.modules.nixos.nextcloud =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
-      publicDomainName =
-        if config.my.modules.nextcloud.stage == "production" then
-          "collabora.ritter.family"
-        else
-          "collabora-test.ritter.family";
+      publicDomainName = "collabora.ritter.family";
     in
     lib.mkIf config.services.nextcloud.enable {
-      # See https://collabora-online-for-nextcloud.readthedocs.io/en/latest/install/
-      services.nextcloud = {
-        extraApps = {
-          inherit (config.services.nextcloud.package.packages.apps) richdocuments;
-        };
+      services.nextcloud.extraApps = {
+        inherit (config.services.nextcloud.package.packages.apps) richdocuments;
       };
 
-      virtualisation.oci-containers = lib.mkIf config.services.nextcloud.enable {
+      virtualisation.oci-containers = {
         backend = "docker";
         containers = {
           collabora-code = {
@@ -39,7 +32,7 @@
       systemd.services.nginx =
         let
           homelabCfg = config.home-lab.hosts.${config.networking.hostName};
-          occ = "${config.services.nextcloud.occ}/bin/nextcloud-occ";
+          occ = lib.getExe config.services.nextcloud.occ;
           postStart = pkgs.writeShellScriptBin "nextcloud-declarative-config" ''
             set -euo pipefail
             CONTAINER_IP=`${pkgs.docker}/bin/docker container inspect -f '{{ .NetworkSettings.Networks.bridge.IPAddress }}' collabora-code`
@@ -53,16 +46,13 @@
           serviceConfig.ExecStartPost = "+${postStart}/bin/nextcloud-declarative-config";
         };
 
-      my.modules.https-proxy = {
-        enable = true;
-        configurations = [
-          {
-            fqdn = "collabora.${config.networking.hostName}.ritter.family";
-            aliases = [ publicDomainName ];
-            target = "http://localhost:9980";
-            proxyWebsockets = true;
-          }
-        ];
-      };
+      services.https-proxy.configurations = [
+        {
+          fqdn = "collabora.${config.networking.hostName}.ritter.family";
+          aliases = [ publicDomainName ];
+          target = "http://localhost:9980";
+          proxyWebsockets = true;
+        }
+      ];
     };
 }

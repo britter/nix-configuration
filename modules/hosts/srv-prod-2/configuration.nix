@@ -11,27 +11,10 @@
     ];
 
     my.modules = {
-      nextcloud = {
-        enable = true;
-        stage = "production";
-      };
       calibre-web.enable = true;
       stirling-pdf.enable = true;
       vaultwarden.enable = true;
     };
-
-    boot.supportedFilesystems = [ "nfs" ];
-    fileSystems."/srv/nextcloud-data" = {
-      fsType = "nfs";
-      device = "storage.ritter.family:/mnt/default-pool/nextcloud";
-    };
-
-    systemd.services.nginx = {
-      unitConfig = {
-        RequiresMountsFor = "/srv/nextcloud-data";
-      };
-    };
-    services.nextcloud.settings.datadirectory = "/srv/nextcloud-data";
 
     system.stateVersion = "23.11";
   };

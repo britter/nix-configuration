@@ -10,7 +10,6 @@ _: {
       systemd.tmpfiles.rules = [
         "d /var/backups 0777 root root"
         "d /var/backups/vaultwarden 0755 postgres postgres"
-        "d /var/backups/nextcloud 0755 postgres postgres"
       ];
 
       sops.secrets."restic/calibre/repository-password" = { };
@@ -31,16 +30,6 @@ _: {
           AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/git/minio-access-key-id"}
           AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/git/minio-secret-access-key"}
           RESTIC_PASSWORD=${config.sops.placeholder."restic/git/repository-password"}
-        '';
-      };
-      sops.secrets."restic/nextcloud/repository-password" = { };
-      sops.secrets."restic/nextcloud/minio-access-key-id" = { };
-      sops.secrets."restic/nextcloud/minio-secret-access-key" = { };
-      sops.templates."restic/nextcloud/secrets.env" = {
-        content = ''
-          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/nextcloud/minio-access-key-id"}
-          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/nextcloud/minio-secret-access-key"}
-          RESTIC_PASSWORD=${config.sops.placeholder."restic/nextcloud/repository-password"}
         '';
       };
       sops.secrets."restic/vaultwarden/repository-password" = { };
@@ -92,29 +81,6 @@ _: {
             inherit pruneOpts;
             inherit timerConfig;
           };
-          nextcloud =
-            let
-              occ = lib.getExe config.services.nextcloud.occ;
-            in
-            {
-              environmentFile = config.sops.templates."restic/nextcloud/secrets.env".path;
-              paths = [
-                "/srv/nextcloud-data"
-                "/var/backups/nextcloud"
-              ];
-              repository = "${bucket}/nextcloud";
-              initialize = true;
-              backupPrepareCommand = ''
-                ${occ} maintenance:mode --on
-                ${lib.getExe pkgs.sudo} -u postgres ${pg_dump} --format=custom --file=/var/backups/nextcloud/nextcloud.dump nextcloud
-              '';
-              backupCleanupCommand = ''
-                rm /var/backups/nextcloud/nextcloud.dump
-                ${occ} maintenance:mode --off
-              '';
-              inherit pruneOpts;
-              inherit timerConfig;
-            };
           vaultwarden = {
             environmentFile = config.sops.templates."restic/vaultwarden/secrets.env".path;
             paths = [

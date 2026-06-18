@@ -54,22 +54,13 @@ in
     };
     my.modules.https-proxy = {
       enable = true;
-      configurations =
-        let
-          # TODO pull the stage parameter up to the host level
-          publicDomainName =
-            if config.my.modules.nextcloud.stage == "production" then
-              "passwords.ritter.family"
-            else
-              "passwords-test.ritter.family";
-        in
-        [
-          {
-            fqdn = "passwords.${config.networking.hostName}.ritter.family";
-            aliases = [ publicDomainName ];
-            target = "http://localhost:8222";
-          }
-        ];
+      configurations = [
+        {
+          fqdn = "passwords.${config.networking.hostName}.ritter.family";
+          aliases = [ "passwords.ritter.family" ];
+          target = "http://localhost:8222";
+        }
+      ];
     };
   };
 }
