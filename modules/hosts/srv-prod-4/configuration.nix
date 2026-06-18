@@ -5,6 +5,7 @@
       system-server
       proxmox-vm
       tailscale
+      immich-on-srv-prod-4
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 

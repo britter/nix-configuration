@@ -1,6 +1,6 @@
 { config, ... }:
 {
-  flake.modules.nixos.srv-prod-4 = {
+  flake.modules.nixos.immich-on-srv-prod-4 = {
     imports = with config.flake.modules.nixos; [
       immich
     ];
