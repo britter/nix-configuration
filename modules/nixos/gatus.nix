@@ -2,11 +2,8 @@ _: {
   flake.modules.nixos.gatus =
     { config, ... }:
     {
-      sops.secrets."gatus/environment" = { };
-
       services.gatus = {
         enable = true;
-        environmentFile = config.sops.secrets."gatus/environment".path;
         settings = {
           web.port = 8888;
           endpoints = [
