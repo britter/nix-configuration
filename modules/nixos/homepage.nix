@@ -131,6 +131,13 @@ _: {
                 icon = "grafana.svg";
               };
             }
+            {
+              "Gatus" = {
+                description = "Service status monitoring";
+                href = "https://status.ritter.family/";
+                icon = "gatus.svg";
+              };
+            }
           ];
         }
       ];

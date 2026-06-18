@@ -4,6 +4,7 @@
     imports = with config.flake.modules.nixos; [
       system-server
       adguard
+      gatus
       homepage
       tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
