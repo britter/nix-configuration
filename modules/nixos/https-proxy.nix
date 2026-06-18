@@ -13,7 +13,8 @@ _: {
             default = [ ];
           };
           target = lib.mkOption {
-            type = lib.types.str;
+            type = lib.types.nullOr lib.types.str;
+            default = null;
           };
           proxyWebsockets = lib.mkOption {
             type = lib.types.bool;
@@ -50,6 +51,8 @@ _: {
                 serverAliases = conf.aliases;
                 useACMEHost = conf.fqdn;
                 forceSSL = true;
+              }
+              // lib.optionalAttrs (conf.target != null) {
                 locations."/" = {
                   inherit (conf) proxyWebsockets;
                   recommendedProxySettings = true;

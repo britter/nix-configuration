@@ -6,7 +6,6 @@
     ./homepage
     ./https-proxy
     ./minio
-    ./nextcloud
     ./stirling-pdf
     ./vaultwarden
   ];
