@@ -7,7 +7,6 @@
     ./https-proxy
     ./minio
     ./nextcloud
-    ./restic-restore
     ./stirling-pdf
     ./vaultwarden
   ];
