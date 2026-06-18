@@ -11,7 +11,6 @@
     ];
 
     my.modules = {
-      calibre-web.enable = true;
       stirling-pdf.enable = true;
       vaultwarden.enable = true;
     };

@@ -1,21 +1,10 @@
-{
-  config,
-  lib,
-  ...
-}:
-let
-  cfg = config.my.modules.calibre-web;
-in
-{
-  options.my.modules.calibre-web = {
-    enable = lib.mkEnableOption "calibre-web";
-  };
-
-  config =
+_: {
+  flake.modules.nixos.calibre-web =
+    { config, ... }:
     let
       calibreLibraryPath = "/var/lib/calibre-library";
     in
-    lib.mkIf cfg.enable {
+    {
       services.calibre-web = {
         enable = true;
         listen.ip = "0.0.0.0";
@@ -31,7 +20,8 @@ in
         "d ${calibreLibraryPath} 0755 calibre-web calibre-web"
       ];
 
-      my.modules.https-proxy = {
+      services.https-proxy = {
+        enable = true;
         configurations = [
           {
             fqdn = "books.${config.networking.hostName}.ritter.family";

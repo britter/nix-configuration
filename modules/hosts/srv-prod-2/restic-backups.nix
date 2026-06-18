@@ -12,16 +12,6 @@ _: {
         "d /var/backups/vaultwarden 0755 postgres postgres"
       ];
 
-      sops.secrets."restic/calibre/repository-password" = { };
-      sops.secrets."restic/calibre/minio-access-key-id" = { };
-      sops.secrets."restic/calibre/minio-secret-access-key" = { };
-      sops.templates."restic/calibre/secrets.env" = {
-        content = ''
-          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/calibre/minio-access-key-id"}
-          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/calibre/minio-secret-access-key"}
-          RESTIC_PASSWORD=${config.sops.placeholder."restic/calibre/repository-password"}
-        '';
-      };
       sops.secrets."restic/git/repository-password" = { };
       sops.secrets."restic/git/minio-access-key-id" = { };
       sops.secrets."restic/git/minio-secret-access-key" = { };
@@ -66,17 +56,6 @@ _: {
             environmentFile = config.sops.templates."restic/git/secrets.env".path;
             paths = [ "/srv/git" ];
             repository = "${bucket}/git";
-            initialize = true;
-            inherit pruneOpts;
-            inherit timerConfig;
-          };
-          calibre = {
-            environmentFile = config.sops.templates."restic/calibre/secrets.env".path;
-            paths = [
-              "/var/lib/calibre-web"
-              "/var/lib/calibre-library"
-            ];
-            repository = "${bucket}/calibre";
             initialize = true;
             inherit pruneOpts;
             inherit timerConfig;
