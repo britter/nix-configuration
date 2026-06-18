@@ -7,13 +7,9 @@
       gatus
       homepage
       tailscale
+      https-proxy-on-directions
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
-
-    boot.loader = {
-      grub.enable = false;
-      generic-extlinux-compatible.enable = true;
-    };
 
     # This value determines the NixOS release from which the default
     # settings for stateful data, like file locations and database versions

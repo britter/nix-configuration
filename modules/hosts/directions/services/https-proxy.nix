@@ -1,5 +1,5 @@
 _: {
-  flake.modules.nixos.directions =
+  flake.modules.nixos.https-proxy-on-directions =
     { config, ... }:
     {
       services.https-proxy = {
