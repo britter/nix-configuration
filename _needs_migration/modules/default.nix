@@ -5,6 +5,5 @@
     ./homepage
     ./https-proxy
     ./minio
-    ./vaultwarden
   ];
 }
