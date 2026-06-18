@@ -1,7 +1,13 @@
-_: {
+{ config, ... }:
+let
+  inherit (config.flake.modules.nixos) git-server;
+in
+{
   flake.modules.nixos.srv-prod-2 =
     { config, ... }:
     {
+      imports = [ git-server ];
+
       systemd.tmpfiles.rules = [
         "d /var/backups 0777 root root"
       ];

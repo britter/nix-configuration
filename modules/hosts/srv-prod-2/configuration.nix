@@ -4,7 +4,6 @@
     imports = with config.flake.modules.nixos; [
       system-server
       proxmox-vm
-      git-server
       stirling-pdf
       tailscale
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
