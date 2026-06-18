@@ -1,6 +1,6 @@
 { config, ... }:
 {
-  flake.modules.nixos.srv-prod-5 = {
+  flake.modules.nixos.navidrome-on-srv-prod-5 = {
     imports = with config.flake.modules.nixos; [
       navidrome
     ];
