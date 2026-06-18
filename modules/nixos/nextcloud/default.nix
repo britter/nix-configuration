@@ -61,9 +61,6 @@ _: {
           {
             fqdn = "nextcloud.${config.networking.hostName}.ritter.family";
             aliases = [ "nextcloud.ritter.family" ];
-            extraConfig = ''
-              client_max_body_size 512M;
-            '';
           }
         ];
       };
