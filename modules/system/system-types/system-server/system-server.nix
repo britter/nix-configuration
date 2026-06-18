@@ -5,6 +5,7 @@
       system-base
       ssh-access
       https-proxy
+      restic-restore
     ];
   };
 }
