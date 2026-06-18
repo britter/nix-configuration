@@ -4,7 +4,7 @@ let
   restic = import ./_restic-constants.nix;
 in
 {
-  flake.modules.nixos.srv-prod-2 =
+  flake.modules.nixos.git-server-on-srv-prod-2 =
     { config, ... }:
     {
       imports = [ git-server ];

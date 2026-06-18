@@ -6,6 +6,10 @@
       proxmox-vm
       stirling-pdf
       tailscale
+      calibre-web-on-srv-prod-2
+      git-server-on-srv-prod-2
+      nextcloud-on-srv-prod-2
+      vaultwarden-on-srv-prod-2
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 

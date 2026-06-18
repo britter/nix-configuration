@@ -4,7 +4,7 @@ let
   restic = import ./_restic-constants.nix;
 in
 {
-  flake.modules.nixos.srv-prod-2 =
+  flake.modules.nixos.nextcloud-on-srv-prod-2 =
     {
       config,
       lib,
