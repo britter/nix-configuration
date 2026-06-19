@@ -45,6 +45,7 @@ in
         config.flake.modules.generic.home-lab
         user-identity
         catppuccin
+        fish
         terminal-essentials
         tmux
         tools
