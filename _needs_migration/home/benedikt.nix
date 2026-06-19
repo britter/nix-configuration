@@ -46,35 +46,6 @@ in
       };
     };
   };
-  programs.git = {
-    settings = {
-      gpg.x509.program = "${pkgs.gitsign}/bin/gitsign";
-      gpg.format = "x509";
-      gitsign.connectorID = "https://accounts.google.com";
-    };
-    includes = [
-      {
-        condition = "gitdir:~/github/britter/";
-        contents = {
-          gpg.format = "openpgp";
-          user.email = "beneritter@gmail.com";
-          user.signingKey = "14907572088F4FA7";
-        };
-      }
-      {
-        condition = "gitdir:~/github/gradlex-org/";
-        contents = {
-          gpg.format = "openpgp";
-          user.email = "benedikt@gradlex.org";
-          user.signingKey = "6C9C4BE5D6A7FCCC";
-        };
-      }
-    ];
-    ignores = [
-      ".claude/settings.local.json"
-    ];
-  };
-
   systemd.user.tmpfiles.rules = [
     "d ${npmGlobalDir} 0700 ${config.home.username} - -"
   ];
@@ -88,40 +59,6 @@ in
     ${pkgs.nodejs}/bin/npm config set prefix ${npmGlobalDir}
   '';
 
-  home.sessionVariables = {
-    GITSIGN_CREDENTIAL_CACHE = "${config.home.homeDirectory}/.cache/sigstore/gitsign/cache.sock";
-  };
-  systemd.user = {
-    enable = true;
-    services = {
-      gitsign-credential-cache = {
-        Unit = {
-          Description = "GitSign credential cache";
-        };
-        Service = {
-          Type = "simple";
-          ExecStart = "${pkgs.gitsign}/bin/gitsign-credential-cache";
-        };
-        Install = {
-          WantedBy = [ "default.target" ];
-        };
-      };
-    };
-    sockets = {
-      gitsign-credential-cache = {
-        Unit = {
-          Description = "GitSign credential cache socket";
-        };
-        Socket = {
-          ListenStream = "%C/sigstore/gitsign/cache.sock";
-          DirectoryMode = "0700";
-        };
-        Install = {
-          WantedBy = [ "default.target" ];
-        };
-      };
-    };
-  };
   home.packages = with pkgs; [
     argo-workflows
     cosign

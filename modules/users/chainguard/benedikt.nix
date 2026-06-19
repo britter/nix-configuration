@@ -6,8 +6,8 @@
 let
   username = "benedikt";
   fullName = "Benedikt Ritter";
-  email = "benedikt.ritter@chainguard.dev";
-  signingKey = "EA363E64382563CF";
+  email = "beneritter@gmail.com";
+  signingKey = "14907572088F4FA7";
 in
 {
   flake.allowUnfreePackages = [
@@ -20,10 +20,11 @@ in
     {
       imports = with config.flake.modules.homeManager; [
         user-base
+        git-chainguard
         intellij
 
         inputs.nixvim.homeModules.nixvim
-        ../../_needs_migration/home/benedikt.nix
+        ../../../_needs_migration/home/benedikt.nix
       ];
 
       home.username = lib.mkDefault username;
