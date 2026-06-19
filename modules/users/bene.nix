@@ -47,6 +47,7 @@ in
         catppuccin
         terminal-essentials
         tmux
+        tools
 
         inputs.nixvim.homeModules.nixvim
         ../../_needs_migration/home/terminal

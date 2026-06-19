@@ -1,17 +1,6 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  cfg = config.my.home.terminal.tools;
-in
-{
-  options.my.home.terminal.tools = {
-    enable = lib.mkEnableOption "tools";
-  };
-  config =
+_: {
+  flake.modules.homeManager.tools =
+    { pkgs, ... }:
     let
       pdf-fax = pkgs.writeShellApplication {
         name = "pdf-fax";
@@ -48,7 +37,7 @@ in
         '';
       };
     in
-    lib.mkIf cfg.enable {
+    {
       home.packages = with pkgs; [
         caligula # tui for disk imaging
         captive-portal
