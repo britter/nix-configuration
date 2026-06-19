@@ -42,15 +42,8 @@ in
     { lib, ... }:
     {
       imports = with config.flake.modules.homeManager; [
-        config.flake.modules.generic.home-lab
-        user-identity
-        catppuccin
-        fish
-        gpg
+        user-base
         ssh
-        terminal-essentials
-        tmux
-        tools
 
         inputs.nixvim.homeModules.nixvim
         ../../_needs_migration/home/terminal
