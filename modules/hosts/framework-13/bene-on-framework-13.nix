@@ -12,6 +12,7 @@
         imports = with config.flake.modules.homeManager; [
           sway
           calibre
+          desktop-essentials
           ghostty
           intellij
           librewolf
