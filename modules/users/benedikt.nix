@@ -22,6 +22,7 @@ in
         config.flake.modules.generic.home-lab
         user-identity
         catppuccin
+        terminal-essentials
 
         inputs.nixvim.homeModules.nixvim
         ../../_needs_migration/home/benedikt.nix
