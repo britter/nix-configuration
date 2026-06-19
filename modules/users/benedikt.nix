@@ -23,6 +23,7 @@ in
         user-identity
         catppuccin
         terminal-essentials
+        tmux
 
         inputs.nixvim.homeModules.nixvim
         ../../_needs_migration/home/benedikt.nix

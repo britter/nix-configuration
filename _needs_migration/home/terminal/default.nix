@@ -13,7 +13,6 @@ in
     ./gpg
     ./nvim
     ./ssh.nix
-    ./tmux.nix
     ./tools.nix
   ];
   options.my.home.terminal = {
@@ -26,7 +25,6 @@ in
       gpg.enable = lib.mkDefault true;
       nvim.enable = true;
       ssh.enable = lib.mkDefault true;
-      tmux.enable = true;
       tools.enable = true;
     };
   };
