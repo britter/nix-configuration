@@ -42,6 +42,24 @@
 
         user.signingKey = "394546A47BB40E12";
 
+        programs.git.includes = [
+          {
+            condition = "gitdir:~/github/gradlex-org/";
+            contents.user.signingKey = "757DE51A2FD1489D";
+          }
+          {
+            condition = "gitdir:~/github/apache/";
+            contents.user.signingKey = "9DAADC1C9FCC82D0";
+          }
+          {
+            condition = "gitdir:~/clients/";
+            contents = {
+              user.email = "benedikt.ritter@proton.me";
+              user.signingKey = "F9190A44AEFC562C";
+            };
+          }
+        ];
+
         services.kanshi = {
           enable = true;
           settings =
