@@ -1,6 +1,5 @@
 {
   imports = [
-    ./acme
     ./https-proxy
   ];
 }
