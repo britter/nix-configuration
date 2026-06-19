@@ -11,6 +11,7 @@
       home-manager.users.bene = {
         imports = with config.flake.modules.homeManager; [
           sway
+          calibre
           ghostty
           intellij
           syncthing

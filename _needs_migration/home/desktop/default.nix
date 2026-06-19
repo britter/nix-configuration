@@ -10,7 +10,6 @@ in
 {
   imports = [
     ./browser
-    ./calibre
   ];
 
   options.my.home.desktop = {
@@ -39,7 +38,6 @@ in
 
     my.home.desktop = {
       browser.enable = true;
-      calibre.enable = true;
     };
 
     # this requires security.polkit.enable and services.gnome.gnome-keyring.enable in the host config
