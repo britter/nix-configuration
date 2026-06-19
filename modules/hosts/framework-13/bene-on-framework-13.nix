@@ -18,6 +18,7 @@
           ghostty
           intellij
           librewolf
+          obsidian
           syncthing
           ../../../_needs_migration/home/desktop
           ../../../_needs_migration/home/java

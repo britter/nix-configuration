@@ -13,8 +13,6 @@ let
   signingKey = "1232C0894CC635B5";
 in
 {
-  flake.allowUnfreePackages = [ "obsidian" ];
-
   flake.modules.nixos.${username} =
     { pkgs, ... }:
     {
