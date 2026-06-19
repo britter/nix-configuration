@@ -12,6 +12,7 @@
         imports = with config.flake.modules.homeManager; [
           sway
           ghostty
+          intellij
           syncthing
           ../../../_needs_migration/home/desktop
           ../../../_needs_migration/home/java

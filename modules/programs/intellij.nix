@@ -1,18 +1,6 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  cfg = config.my.home.desktop.intellij;
-in
-{
-  options.my.home.desktop.intellij = {
-    enable = lib.mkEnableOption "intellij";
-  };
-
-  config =
+_: {
+  flake.modules.homeManager.intellij =
+    { lib, pkgs, ... }:
     let
       idea = pkgs.jetbrains.idea-oss;
       ideaStartScript = pkgs.writeShellApplication {
@@ -23,7 +11,7 @@ in
         '';
       };
     in
-    lib.mkIf cfg.enable {
+    {
       home.packages = [
         idea
         ideaStartScript

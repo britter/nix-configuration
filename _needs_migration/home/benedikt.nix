@@ -9,7 +9,6 @@ let
 in
 {
   imports = [
-    ./desktop/intellij
     ./java
     ./terminal
   ];
@@ -17,7 +16,6 @@ in
   programs.home-manager.enable = true;
 
   my.home = {
-    desktop.intellij.enable = true;
     java = {
       enable = true;
       version = 25;

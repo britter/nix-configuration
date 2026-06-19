@@ -20,6 +20,7 @@ in
     {
       imports = with config.flake.modules.homeManager; [
         user-base
+        intellij
 
         inputs.nixvim.homeModules.nixvim
         ../../_needs_migration/home/benedikt.nix

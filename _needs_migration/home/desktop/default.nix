@@ -11,7 +11,6 @@ in
   imports = [
     ./browser
     ./calibre
-    ./intellij
   ];
 
   options.my.home.desktop = {
@@ -41,7 +40,6 @@ in
     my.home.desktop = {
       browser.enable = true;
       calibre.enable = true;
-      intellij.enable = true;
     };
 
     # this requires security.polkit.enable and services.gnome.gnome-keyring.enable in the host config
