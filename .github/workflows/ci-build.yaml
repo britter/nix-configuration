@@ -31,14 +31,14 @@ jobs:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-      - uses: DeterminateSystems/nix-installer-action@75b0c90b355186240b58c409b99c688ae4acf83e # main
+      - uses: DeterminateSystems/nix-installer-action@a7ad9c4f0c65208097f4d34f3cfa1913b80cce5c # main
       - run: nix build .#nixosConfigurations.${{ matrix.configuration }}.config.system.build.toplevel
   build-iso:
     name: Build ISOs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-      - uses: DeterminateSystems/nix-installer-action@75b0c90b355186240b58c409b99c688ae4acf83e # main
+      - uses: DeterminateSystems/nix-installer-action@a7ad9c4f0c65208097f4d34f3cfa1913b80cce5c # main
       - run: nix build .#nixosConfigurations.minimal-server-iso.config.system.build.isoImage
   build-home-manager:
     name: Build standalone home-manager config
@@ -54,5 +54,5 @@ jobs:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
-      - uses: DeterminateSystems/nix-installer-action@75b0c90b355186240b58c409b99c688ae4acf83e # main
+      - uses: DeterminateSystems/nix-installer-action@a7ad9c4f0c65208097f4d34f3cfa1913b80cce5c # main
       - run: nix build .#homeConfigurations.${{ matrix.configuration }}.activationPackage
