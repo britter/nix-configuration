@@ -11,6 +11,7 @@
       home-manager.users.bene = {
         imports = with config.flake.modules.homeManager; [
           sway
+          ghostty
           syncthing
           ../../../_needs_migration/home/desktop
           ../../../_needs_migration/home/java

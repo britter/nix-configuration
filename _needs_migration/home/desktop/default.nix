@@ -12,7 +12,6 @@ in
     ./browser
     ./calibre
     ./intellij
-    ./ghostty
   ];
 
   options.my.home.desktop = {
@@ -42,7 +41,6 @@ in
     my.home.desktop = {
       browser.enable = true;
       calibre.enable = true;
-      ghostty.enable = true;
       intellij.enable = true;
     };
 

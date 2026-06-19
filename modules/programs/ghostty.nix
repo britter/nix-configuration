@@ -1,17 +1,5 @@
-{
-  config,
-  lib,
-  ...
-}:
-let
-  cfg = config.my.home.desktop.ghostty;
-in
-{
-  options.my.home.desktop.ghostty = {
-    enable = lib.mkEnableOption "ghostty";
-  };
-
-  config = lib.mkIf cfg.enable {
+_: {
+  flake.modules.homeManager.ghostty = {
     programs.ghostty = {
       enable = true;
       enableFishIntegration = true;
