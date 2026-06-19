@@ -22,7 +22,6 @@ in
     };
     terminal = {
       enable = true;
-      git.addIncludes = false;
     };
   };
 

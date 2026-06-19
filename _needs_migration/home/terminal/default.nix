@@ -8,7 +8,6 @@ let
 in
 {
   imports = [
-    ./git.nix
     ./nvim
   ];
   options.my.home.terminal = {
@@ -16,7 +15,6 @@ in
   };
   config = lib.mkIf cfg.enable {
     my.home.terminal = {
-      git.enable = lib.mkDefault true;
       nvim.enable = true;
     };
   };

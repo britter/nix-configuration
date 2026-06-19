@@ -8,6 +8,7 @@
       terminal-essentials
       tmux
       gpg
+      git
       tools
       catppuccin
     ];
