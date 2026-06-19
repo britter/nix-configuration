@@ -13,7 +13,7 @@ resource "unifi_network" "default" {
       unifi_client.directions.fixed_ip
     ]
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.1.6"
     stop                = "192.168.1.254"
@@ -21,7 +21,6 @@ resource "unifi_network" "default" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
@@ -49,7 +48,7 @@ resource "unifi_network" "homelab" {
       unifi_client.directions.fixed_ip
     ]
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.5.6"
     stop                = "192.168.5.254"
@@ -57,7 +56,6 @@ resource "unifi_network" "homelab" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
@@ -82,7 +80,7 @@ resource "unifi_network" "management" {
 
     dns_enabled = false
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.10.6"
     stop                = "192.168.10.254"
@@ -90,7 +88,6 @@ resource "unifi_network" "management" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
@@ -114,7 +111,7 @@ resource "unifi_network" "smart_home" {
 
     dns_enabled = false
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.20.6"
     stop                = "192.168.20.254"
@@ -122,7 +119,6 @@ resource "unifi_network" "smart_home" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
@@ -149,7 +145,7 @@ resource "unifi_network" "servers" {
       unifi_client.directions.fixed_ip
     ]
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.30.6"
     stop                = "192.168.30.254"
@@ -157,7 +153,6 @@ resource "unifi_network" "servers" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
@@ -182,7 +177,7 @@ resource "unifi_network" "kvms" {
 
     dns_enabled = false
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.40.6"
     stop                = "192.168.40.254"
@@ -190,7 +185,6 @@ resource "unifi_network" "kvms" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
@@ -217,7 +211,7 @@ resource "unifi_network" "trusted" {
       unifi_client.directions.fixed_ip
     ]
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.50.6"
     stop                = "192.168.50.254"
@@ -225,7 +219,6 @@ resource "unifi_network" "trusted" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
@@ -250,7 +243,7 @@ resource "unifi_network" "guests" {
 
     dns_enabled = false
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.60.6"
     stop                = "192.168.60.254"
@@ -258,7 +251,6 @@ resource "unifi_network" "guests" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
@@ -283,7 +275,7 @@ resource "unifi_network" "iot" {
 
     dns_enabled = false
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.70.6"
     stop                = "192.168.70.254"
@@ -291,7 +283,6 @@ resource "unifi_network" "iot" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
@@ -317,7 +308,7 @@ resource "unifi_network" "not" {
 
     dns_enabled = false
 
-    leasetime           = 86400
+    leasetime           = "24h"
     ntp_enabled         = false
     start               = "192.168.80.6"
     stop                = "192.168.80.254"
@@ -325,7 +316,6 @@ resource "unifi_network" "not" {
 
     boot = {
       enabled = false
-      server  = ""
     }
 
     wins = {
