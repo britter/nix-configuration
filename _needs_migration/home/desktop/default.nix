@@ -13,7 +13,6 @@ in
     ./calibre
     ./intellij
     ./ghostty
-    ./syncthing
   ];
 
   options.my.home.desktop = {
@@ -45,7 +44,6 @@ in
       calibre.enable = true;
       ghostty.enable = true;
       intellij.enable = true;
-      syncthing.enable = true;
     };
 
     # this requires security.polkit.enable and services.gnome.gnome-keyring.enable in the host config

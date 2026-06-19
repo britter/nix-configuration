@@ -9,8 +9,9 @@
       ];
 
       home-manager.users.bene = {
-        imports = [
-          config.flake.modules.homeManager.sway
+        imports = with config.flake.modules.homeManager; [
+          sway
+          syncthing
           ../../../_needs_migration/home/desktop
           ../../../_needs_migration/home/java
           ../../../_needs_migration/home/rust
