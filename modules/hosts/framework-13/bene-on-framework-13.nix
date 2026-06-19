@@ -5,12 +5,14 @@
     {
       imports = with config.flake.modules.nixos; [
         bene
+        bitwarden
         sway
       ];
 
       home-manager.users.bene = {
         imports = with config.flake.modules.homeManager; [
           sway
+          bitwarden
           calibre
           desktop-essentials
           ghostty
