@@ -8,9 +8,7 @@ let
   cfg = config.my.home.desktop;
 in
 {
-  imports = [
-    ./browser
-  ];
+  imports = [ ];
 
   options.my.home.desktop = {
     enable = lib.mkEnableOption "desktop";
@@ -34,10 +32,6 @@ in
         accent = "dark";
       };
       librewolf.profiles.default.enable = false;
-    };
-
-    my.home.desktop = {
-      browser.enable = true;
     };
 
     # this requires security.polkit.enable and services.gnome.gnome-keyring.enable in the host config

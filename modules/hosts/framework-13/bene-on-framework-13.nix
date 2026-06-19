@@ -14,6 +14,7 @@
           calibre
           ghostty
           intellij
+          librewolf
           syncthing
           ../../../_needs_migration/home/desktop
           ../../../_needs_migration/home/java
