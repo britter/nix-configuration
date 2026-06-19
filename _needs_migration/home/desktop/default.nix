@@ -21,9 +21,5 @@ in
       };
       librewolf.profiles.default.enable = false;
     };
-
-    # this requires security.polkit.enable and services.gnome.gnome-keyring.enable in the host config
-    # in order to store the authentication data across reboots.
-    services.nextcloud-client.enable = true;
   };
 }

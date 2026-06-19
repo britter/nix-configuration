@@ -6,6 +6,7 @@
       imports = with config.flake.modules.nixos; [
         bene
         bitwarden
+        nextcloud-client
         sway
       ];
 
@@ -18,6 +19,7 @@
           ghostty
           intellij
           librewolf
+          nextcloud-client
           obsidian
           syncthing
           ../../../_needs_migration/home/desktop

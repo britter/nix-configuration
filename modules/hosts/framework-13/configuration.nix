@@ -29,9 +29,6 @@
         extraSetFlags = [ "--accept-dns=false" ];
       };
 
-      services.gnome.gnome-keyring.enable = true;
-      security.polkit.enable = true;
-
       virtualisation.podman = {
         enable = true;
         dockerCompat = true;
