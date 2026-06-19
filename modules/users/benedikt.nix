@@ -23,6 +23,7 @@ in
         user-identity
         catppuccin
         fish
+        gpg
         terminal-essentials
         tmux
         tools

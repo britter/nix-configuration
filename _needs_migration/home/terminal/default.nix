@@ -9,7 +9,6 @@ in
 {
   imports = [
     ./git.nix
-    ./gpg
     ./nvim
   ];
   options.my.home.terminal = {
@@ -18,7 +17,6 @@ in
   config = lib.mkIf cfg.enable {
     my.home.terminal = {
       git.enable = lib.mkDefault true;
-      gpg.enable = lib.mkDefault true;
       nvim.enable = true;
     };
   };

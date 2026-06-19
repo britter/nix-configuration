@@ -46,6 +46,7 @@ in
         user-identity
         catppuccin
         fish
+        gpg
         ssh
         terminal-essentials
         tmux
