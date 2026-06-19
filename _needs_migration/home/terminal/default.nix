@@ -11,7 +11,6 @@ in
     ./git.nix
     ./gpg
     ./nvim
-    ./ssh.nix
   ];
   options.my.home.terminal = {
     enable = lib.mkEnableOption "terminal";
@@ -21,7 +20,6 @@ in
       git.enable = lib.mkDefault true;
       gpg.enable = lib.mkDefault true;
       nvim.enable = true;
-      ssh.enable = lib.mkDefault true;
     };
   };
 }

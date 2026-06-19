@@ -25,7 +25,6 @@ in
     terminal = {
       enable = true;
       git.addIncludes = false;
-      ssh.enable = false;
     };
   };
 
