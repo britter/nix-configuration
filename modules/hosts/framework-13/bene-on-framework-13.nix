@@ -23,7 +23,6 @@
           obsidian
           syncthing
           java
-          ../../../_needs_migration/home/rust
         ];
 
         java = {
@@ -34,10 +33,6 @@
             17
             21
           ];
-        };
-
-        my.home = {
-          rust.enable = true;
         };
 
         user.signingKey = "394546A47BB40E12";
@@ -59,6 +54,8 @@
             };
           }
         ];
+
+        programs.cargo.enable = true;
 
         services.kanshi = {
           enable = true;

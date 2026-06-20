@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   programs.nixvim = {
     plugins.telescope.enable = true;
@@ -14,7 +14,7 @@
         };
         nixd.enable = true;
         rust_analyzer = {
-          enable = true;
+          enable = config.programs.cargo.enable;
           installCargo = true;
           installRustc = true;
           installRustfmt = true;
