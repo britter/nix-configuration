@@ -1,8 +1,4 @@
-{
-  inputs,
-  config,
-  ...
-}:
+{ config, ... }:
 let
   username = "benedikt";
   fullName = "Benedikt Ritter";
@@ -23,10 +19,8 @@ in
         git-chainguard
         intellij
         java
+        nvim
         chainguard-development-tools
-
-        inputs.nixvim.homeModules.nixvim
-        ../../../_needs_migration/home/benedikt.nix
       ];
 
       home.username = lib.mkDefault username;

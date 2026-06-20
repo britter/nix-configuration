@@ -11,6 +11,12 @@ in
       "${config.home.homeDirectory}/go/bin"
     ];
 
+    programs.nixvim = {
+      plugins = {
+        none-ls.sources.formatting.google_java_format.enable = true;
+      };
+    };
+
     home.packages = with pkgs; [
       argo-workflows
       cosign

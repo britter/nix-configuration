@@ -42,16 +42,12 @@ in
       imports = with config.flake.modules.homeManager; [
         user-base
         ssh-home-lab
-
-        inputs.nixvim.homeModules.nixvim
-        ../../_needs_migration/home/terminal
+        nvim
       ];
 
       home.username = lib.mkDefault username;
       home.homeDirectory = lib.mkDefault "/home/${username}";
       home.stateVersion = "23.05";
-
-      my.home.terminal.enable = true;
 
       user = {
         inherit fullName email;
