@@ -14,5 +14,6 @@
       java-config
       catppuccin
     ];
+    programs.home-manager.enable = true;
   };
 }

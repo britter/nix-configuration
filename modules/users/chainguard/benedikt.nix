@@ -23,6 +23,7 @@ in
         git-chainguard
         intellij
         java
+        chainguard-development-tools
 
         inputs.nixvim.homeModules.nixvim
         ../../../_needs_migration/home/benedikt.nix
