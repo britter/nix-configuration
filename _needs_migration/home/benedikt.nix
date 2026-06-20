@@ -9,17 +9,12 @@ let
 in
 {
   imports = [
-    ./java
     ./terminal
   ];
 
   programs.home-manager.enable = true;
 
   my.home = {
-    java = {
-      enable = true;
-      version = 25;
-    };
     terminal = {
       enable = true;
     };

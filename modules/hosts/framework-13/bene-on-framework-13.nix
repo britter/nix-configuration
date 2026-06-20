@@ -22,21 +22,21 @@
           nextcloud-client
           obsidian
           syncthing
-          ../../../_needs_migration/home/java
+          java
           ../../../_needs_migration/home/rust
         ];
 
+        java = {
+          version = 25;
+          additionalVersions = [
+            8
+            11
+            17
+            21
+          ];
+        };
+
         my.home = {
-          java = {
-            enable = true;
-            version = 25;
-            additionalVersions = [
-              8
-              11
-              17
-              21
-            ];
-          };
           rust.enable = true;
         };
 

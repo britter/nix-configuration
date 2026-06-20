@@ -10,6 +10,7 @@
       gpg
       git
       tools
+      java-config
       catppuccin
     ];
   };

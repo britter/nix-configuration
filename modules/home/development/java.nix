@@ -1,46 +1,27 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-let
-  cfg = config.my.home.java;
-in
-{
-  options.my.home.java = {
-    enable = lib.mkEnableOption "java";
-    version = lib.mkOption {
-      type = lib.types.int;
-      default = "21";
-    };
-    additionalVersions = lib.mkOption {
-      type = lib.types.listOf lib.types.int;
-      default = [ ];
-    };
-    linkToUserHome = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-    };
-  };
-
-  config =
+_: {
+  flake.modules.homeManager.java =
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
-      allVersions = lib.map toString (cfg.additionalVersions ++ [ cfg.version ]);
+      allVersions = lib.map toString (config.java.additionalVersions ++ [ config.java.version ]);
       jdkPackageForVersion = version: pkgs."jdk${version}";
       javaHomeForVersion = version: (jdkPackageForVersion version).home;
     in
-    lib.mkIf cfg.enable {
+    {
       home.sessionVariables = lib.mapAttrs' (name: value: lib.nameValuePair ("JDK_" + name) value) (
         lib.genAttrs allVersions javaHomeForVersion
       );
 
       programs.java = {
         enable = true;
-        package = pkgs."jdk${toString cfg.version}";
+        package = pkgs."jdk${toString config.java.version}";
       };
 
-      systemd.user.tmpfiles.rules = lib.mkIf cfg.linkToUserHome (
+      systemd.user.tmpfiles.rules = lib.mkIf config.java.linkToUserHome (
         lib.map (
           v:
           let
@@ -65,4 +46,5 @@ in
         path = javaHomeForVersion v;
       }) allVersions;
     };
+
 }

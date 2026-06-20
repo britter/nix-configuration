@@ -22,6 +22,7 @@ in
         user-base
         git-chainguard
         intellij
+        java
 
         inputs.nixvim.homeModules.nixvim
         ../../../_needs_migration/home/benedikt.nix
@@ -34,6 +35,7 @@ in
       user = {
         inherit fullName email signingKey;
       };
+      java.version = 25;
     };
 
   flake.homeConfigurations = config.flake.lib.mkHomeManager "x86_64-linux" username;
