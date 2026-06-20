@@ -41,7 +41,7 @@ in
     {
       imports = with config.flake.modules.homeManager; [
         user-base
-        ssh
+        ssh-home-lab
 
         inputs.nixvim.homeModules.nixvim
         ../../_needs_migration/home/terminal

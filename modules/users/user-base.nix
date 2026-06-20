@@ -10,6 +10,7 @@
       gpg
       git
       tools
+      ssh
       java-config
       catppuccin
     ];
