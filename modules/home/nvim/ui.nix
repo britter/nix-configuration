@@ -1,20 +1,6 @@
 _: {
   flake.modules.homeManager.nvim = {
     programs.nixvim = {
-      colorschemes.catppuccin = {
-        enable = true;
-        settings = {
-          flavour = "macchiato";
-          term_colors = true;
-          integrations = {
-            treesitter = true;
-            gitsigns = true;
-            native_lsp.enabled = true;
-            neotree = true;
-          };
-        };
-      };
-
       opts = {
         number = true;
         relativenumber = true;
@@ -46,25 +32,8 @@ _: {
             show_end = false;
           };
         };
-        neo-tree.enable = true;
-        oil = {
-          enable = true;
-          settings.skip_confirm_for_simple_edits = true;
-        };
         web-devicons.enable = true;
       };
-      keymaps = [
-        {
-          action = "<cmd>Neotree filesystem reveal toggle left<CR>";
-          key = "<C-n>";
-          mode = [ "n" ];
-        }
-        {
-          action = "<cmd>Oil<CR>";
-          key = "-";
-          mode = [ "n" ];
-        }
-      ];
     };
   };
 }
