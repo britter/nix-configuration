@@ -25,16 +25,6 @@
         clipboard.providers.wl-copy.enable = true;
         # Add this to plugins below once switching to 24.11
         globals.mapleader = " ";
-        filetype.extension = {
-          log = "log";
-        };
-        files = {
-          "ftplugin/log.lua" = {
-            opts = {
-              wrap = false;
-            };
-          };
-        };
         keymaps = [
           {
             action = "<ESC>";
