@@ -26,23 +26,6 @@
         clipboard.providers.wl-copy.enable = true;
         # Add this to plugins below once switching to 24.11
         globals.mapleader = " ";
-        opts = {
-          # Set tab width to 4 spaces (instead of 8)
-          tabstop = 4;
-          # Set how many spaces will be inserted when tab is pressed
-          softtabstop = 2;
-          showtabline = 2;
-          expandtab = true;
-
-          # Enable auto indenting and set it to spaces
-          smartindent = true;
-          shiftwidth = 2;
-
-          # Enable smart indenting (see https://stackoverflow.com/questions/1204149/smart-wrap-in-vim)
-          breakindent = true;
-
-          swapfile = false;
-        };
         filetype.extension = {
           log = "log";
         };
@@ -55,23 +38,12 @@
         };
         keymaps = [
           {
-            action = "<cmd>split<CR>";
-            key = ''<leader>"'';
-            mode = [ "n" ];
-          }
-          {
-            action = "<cmd>vsplit<CR>";
-            key = "<leader>%";
-            mode = [ "n" ];
-          }
-          {
             action = "<ESC>";
             key = "jj";
             mode = [ "i" ];
           }
         ];
         plugins = {
-          nvim-surround.enable = true;
           none-ls = {
             enable = true;
             sources = {
@@ -91,7 +63,6 @@
               diagnostics.actionlint.enable = true;
             };
           };
-          sleuth.enable = true;
           treesitter = {
             enable = true;
             settings = {
