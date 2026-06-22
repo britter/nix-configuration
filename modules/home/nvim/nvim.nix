@@ -3,7 +3,6 @@
     {
       config,
       lib,
-      pkgs,
       ...
     }:
     {
@@ -43,34 +42,6 @@
             mode = [ "i" ];
           }
         ];
-        plugins = {
-          none-ls = {
-            enable = true;
-            sources = {
-              formatting = {
-                gofmt.enable = true;
-                nixfmt = {
-                  enable = true;
-                  package = pkgs.nixfmt;
-                };
-                prettier = {
-                  enable = true;
-                  # should be removed once https://github.com/nix-community/nixvim/pull/4234 has been merged
-                  package = pkgs.prettier;
-                  disableTsServerFormatter = true;
-                };
-              };
-              diagnostics.actionlint.enable = true;
-            };
-          };
-          treesitter = {
-            enable = true;
-            settings = {
-              indent.enable = true;
-              highlight.enable = true;
-            };
-          };
-        };
       };
     };
 }
