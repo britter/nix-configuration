@@ -3,7 +3,6 @@ _: {
     { config, pkgs, ... }:
     {
       programs.nixvim = {
-        plugins.telescope.enable = true;
         plugins.lsp = {
           enable = true;
           inlayHints = true;
