@@ -24,15 +24,18 @@ _: {
 
       home.sessionVariables.GITSIGN_CREDENTIAL_CACHE = "${config.home.homeDirectory}/.cache/sigstore/gitsign/cache.sock";
 
+      # Socket-activated: only the .socket is enabled. systemd binds cache.sock at
+      # boot and starts the daemon on first connect, passing the listener via
+      # LISTEN_FDS. The --systemd-socket-activation flag is required for the
+      # daemon to use that listener instead of creating (and clobbering) its own.
       systemd.user = {
         enable = true;
         services.gitsign-credential-cache = {
           Unit.Description = "GitSign credential cache";
           Service = {
             Type = "simple";
-            ExecStart = "${pkgs.gitsign}/bin/gitsign-credential-cache";
+            ExecStart = "${pkgs.gitsign}/bin/gitsign-credential-cache --systemd-socket-activation";
           };
-          Install.WantedBy = [ "default.target" ];
         };
         sockets.gitsign-credential-cache = {
           Unit.Description = "GitSign credential cache socket";
