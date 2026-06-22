@@ -3,7 +3,7 @@ _: {
     options.java = {
       version = lib.mkOption {
         type = lib.types.int;
-        default = "21";
+        default = 25;
       };
       additionalVersions = lib.mkOption {
         type = lib.types.listOf lib.types.int;
