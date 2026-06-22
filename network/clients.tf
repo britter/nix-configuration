@@ -16,6 +16,12 @@ resource "unifi_client" "homeassistant" {
   fixed_ip = "192.168.20.234"
 }
 
+resource "unifi_client" "srv_prod_1" {
+  name     = "srv-prod-1"
+  mac      = "bc:24:11:9f:9a:3c"
+  fixed_ip = "192.168.30.11"
+}
+
 resource "unifi_client" "srv_prod_2_new" {
   name     = "srv-prod-2"
   mac      = "bc:24:11:82:d1:0d"

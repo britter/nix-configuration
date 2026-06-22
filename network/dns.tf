@@ -12,6 +12,20 @@ resource "unifi_dns_record" "directions_wildcard" {
   ttl         = "1h"
 }
 
+resource "unifi_dns_record" "srv_prod_1" {
+  name        = "srv-prod-1.ritter.family"
+  record_type = "A"
+  value       = unifi_client.srv_prod_1.fixed_ip
+  ttl         = "1h"
+}
+
+resource "unifi_dns_record" "srv_prod_1_wildcard" {
+  name        = "*.srv-prod-1.ritter.family"
+  record_type = "A"
+  value       = unifi_client.srv_prod_1.fixed_ip
+  ttl         = "1h"
+}
+
 resource "unifi_dns_record" "srv_prod_2" {
   name        = "srv-prod-2.ritter.family"
   record_type = "A"
