@@ -12,7 +12,7 @@ _: {
         }
         # chainguard scoped gitsign x509
         {
-          condition = "gitdir:~/github/chainguard/";
+          condition = "gitdir:~/github/chainguard-dev/";
           contents = {
             user.email = "benedikt.ritter@chainguard.dev";
             gpg.format = "x509";
