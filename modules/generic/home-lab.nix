@@ -9,6 +9,11 @@ _: {
 
       config.home-lab = {
         hosts = {
+          srv-prod-1 = {
+            ip = "192.168.30.11";
+            dns = "srv-prod-1.ritter.family";
+            vm = true;
+          };
           srv-prod-2 = {
             ip = "192.168.30.12";
             dns = "srv-prod-2.ritter.family";

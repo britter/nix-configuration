@@ -1,5 +1,6 @@
 keys:
   - &framework-13 age14dnfyq56r7exkjx58gs4s8xlhn6sd05l3aufr540r374ca7mcf6qdv0yhw
+  - &srv-prod-1 age1ch7v7lwn3sq0u60a80z4y69fcdw49l64sedw8gh72afc0wcujqmscftpdn
   - &srv-prod-2 age1auwa57jefln7sfelfx8l3sfacpwt3t2fxqch8643jyht7mtjwqzq8yxjzq
   - &srv-prod-3 age1nhvr8nmagdwjmp488edhh5zm9relctnue5mvqwrxynkzydl0aqqshzvy7w
   - &srv-prod-4 age1yyf88xrxwjj83a8kapuxkvsf8pmu4qasaul5ttjkzve4evx8dq0swl89gy
@@ -11,6 +12,11 @@ creation_rules:
     key_groups:
       - age:
           - *framework-13
+  - path_regex: modules/hosts/srv-prod-1/secrets\.yaml$
+    key_groups:
+      - age:
+          - *framework-13
+          - *srv-prod-1
   - path_regex: modules/hosts/srv-prod-2/secrets\.yaml$
     key_groups:
       - age:
