@@ -142,9 +142,38 @@ _: {
         environmentFiles = lib.mkOption {
           type = lib.types.listOf lib.types.path;
           default = [ ];
+          example = [ "/run/secrets/romm.env" ];
           description = ''
-            systemd EnvironmentFile= entries. Use this for secrets such as
-            ROMM_AUTH_SECRET_KEY, DB_PASSWD, and metadata-source API keys.
+            systemd EnvironmentFile= entries.
+
+            ROMM refuses to start unless `ROMM_AUTH_SECRET_KEY` is set.
+            It is the instance secret used to sign session cookies, CSRF
+            tokens, and JWTs, and must be stable across restarts (rotating
+            it silently logs every user out). It is unrelated to the
+            admin user's password; the admin account is created via the
+            setup wizard on first boot.
+
+            Generate a 32-byte hex value with:
+
+            ```
+            nix run nixpkgs#openssl -- rand -hex 32
+            ```
+
+            and ship it to the unit via sops-nix, agenix, or any file
+            outside the Nix store. The file's contents should look like:
+
+            ```
+            ROMM_AUTH_SECRET_KEY=2f1c4b6e8d3a5f7e9c2b4d6f8a0c1e3d5f7a9b2c4d6e8f0a1b3c5d7e9f1a3b5c
+            ```
+
+            Optional but common entries in the same file:
+
+            - `DB_PASSWD` — required when `database.createLocally = false`
+              (skipped when the local MariaDB path uses unix_socket auth).
+            - Metadata-source API keys: `IGDB_CLIENT_ID`,
+              `IGDB_CLIENT_SECRET`, `MOBYGAMES_API_KEY`,
+              `SCREENSCRAPER_USER`, `SCREENSCRAPER_PASSWORD`,
+              `STEAMGRIDDB_API_KEY`, `RETROACHIEVEMENTS_API_KEY`.
           '';
         };
 
@@ -237,7 +266,7 @@ _: {
       config = lib.mkIf cfg.enable {
         users.users.${cfg.user} = lib.mkIf (cfg.user == "romm") {
           isSystemUser = true;
-          group = cfg.group;
+          inherit (cfg) group;
           home = cfg.stateDir;
         };
         users.groups.${cfg.group} = lib.mkIf (cfg.group == "romm") { };
