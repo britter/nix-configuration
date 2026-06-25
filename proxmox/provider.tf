@@ -2,7 +2,7 @@ terraform {
   required_version = ">= 0.13.0"
   backend "s3" {
     bucket                      = "tofu-states"
-    key                         = "home-lab/proxmox-new/terraform.tfstate"
+    key                         = "home-lab/proxmox/terraform.tfstate"
     region                      = "eu-central-1"
     endpoint                    = "https://minio.srv-prod-3.ritter.family"
     skip_credentials_validation = true
