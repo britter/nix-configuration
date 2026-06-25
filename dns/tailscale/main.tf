@@ -4,6 +4,7 @@ variable "tailnet" {
 
 locals {
   devices = [
+    "srv-prod-1",
     "srv-prod-2",
     "srv-prod-3",
     "srv-prod-4",
