@@ -77,6 +77,13 @@ _: {
                 icon = "navidrome.svg";
               };
             }
+            {
+              "ROMM" = {
+                description = "Self-hosted ROM manager and player";
+                href = "https://roms.ritter.family/";
+                icon = "romm.svg";
+              };
+            }
           ];
         }
         {
