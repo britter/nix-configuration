@@ -4,6 +4,7 @@
     imports = with config.flake.modules.nixos; [
       system-server
       adguard
+      beszel-agent
       gatus
       homepage
       tailscale

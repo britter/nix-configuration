@@ -5,6 +5,7 @@
       system-server
       proxmox-vm
       tailscale
+      beszel-agent
       navidrome-on-srv-prod-5
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];

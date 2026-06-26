@@ -6,6 +6,11 @@ _: {
         enable = true;
         configurations = [
           {
+            fqdn = "beszel.ritter.family";
+            target = "https://beszel.srv-prod-1.ritter.family";
+            proxyWebsockets = true;
+          }
+          {
             fqdn = "books.ritter.family";
             target = "https://books.srv-prod-2.ritter.family";
             extraConfig = ''

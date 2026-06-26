@@ -68,7 +68,7 @@ _: {
         security.acme = {
           acceptTerms = true;
           defaults = {
-            email = "beneritter@gmail.com";
+            email = config.systemConstants.adminEmail;
             dnsProvider = "cloudflare";
             dnsPropagationCheck = true;
             credentialFiles = {
