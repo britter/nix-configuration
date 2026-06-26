@@ -65,6 +65,15 @@ _: {
                 "[STATUS] == 200"
               ];
             }
+            {
+              name = "ROMM";
+              url = "https://roms.ritter.family/api/heartbeat";
+              interval = "5m";
+              conditions = [
+                "[STATUS] == 200"
+                "[BODY].VERSION != null"
+              ];
+            }
           ];
         };
       };

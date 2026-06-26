@@ -29,6 +29,8 @@ jobs:
             runner: ubuntu-latest
           - configuration: directions
             runner: ubuntu-24.04-arm
+          - configuration: test-vm
+            runner: ubuntu-latest
     steps:
       - name: Free disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # main

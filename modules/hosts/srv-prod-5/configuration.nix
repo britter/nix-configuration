@@ -6,6 +6,7 @@
       proxmox-vm
       tailscale
       navidrome-on-srv-prod-5
+      romm-on-srv-prod-5
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 

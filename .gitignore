@@ -1,4 +1,5 @@
 result
+test-vm.qcov2
 
 # auto generated config file by git-hooks.nix
 .pre-commit-config.yaml

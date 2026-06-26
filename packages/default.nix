@@ -6,4 +6,5 @@ rec {
   jfmt-java = callPackage ./jfmt-java { inherit maven_4; };
   kotlin-lsp = callPackage ./kotlin-lsp { };
   maven_4 = callPackage ./maven_4 { };
+  romm = callPackage ./romm { };
 }
