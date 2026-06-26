@@ -65,6 +65,14 @@ _: {
                 "[STATUS] == 200"
               ];
             }
+            {
+              name = "Beszel";
+              url = "https://beszel.ritter.family/api/health";
+              interval = "5m";
+              conditions = [
+                "[STATUS] == 200"
+              ];
+            }
           ];
         };
       };

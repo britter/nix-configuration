@@ -132,10 +132,10 @@ _: {
         {
           "Monitoring" = [
             {
-              "Grafana" = {
-                description = "Grafana Dashboards";
-                href = "https://grafana.ritter.family/";
-                icon = "grafana.svg";
+              "Beszel" = {
+                description = "Lightweight server monitoring";
+                href = "https://beszel.ritter.family/";
+                icon = "beszel.svg";
               };
             }
             {

@@ -6,6 +6,7 @@
       proxmox-vm
       stirling-pdf
       tailscale
+      beszel-agent
       calibre-web-on-srv-prod-2
       git-server-on-srv-prod-2
       nextcloud-on-srv-prod-2
