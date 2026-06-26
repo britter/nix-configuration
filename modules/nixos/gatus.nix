@@ -57,6 +57,14 @@ _: {
                 "[STATUS] == 200"
               ];
             }
+            {
+              name = "Minio";
+              url = "https://minio.srv-prod-3.ritter.family/minio/health/live";
+              interval = "5m";
+              conditions = [
+                "[STATUS] == 200"
+              ];
+            }
           ];
         };
       };

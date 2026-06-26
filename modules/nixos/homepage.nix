@@ -120,6 +120,13 @@ _: {
                 icon = "fritzbox.svg";
               };
             }
+            {
+              "Minio" = {
+                description = "S3-compatible object storage";
+                href = "https://minio.srv-prod-3.ritter.family/console/";
+                icon = "minio.svg";
+              };
+            }
           ];
         }
         {
