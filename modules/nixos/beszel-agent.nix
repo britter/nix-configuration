@@ -1,5 +1,8 @@
 _: {
-  flake.modules.nixos.beszel-agent = _: {
+  flake.modules.nixos.beszel-agent = { config, ... }: {
+    sops.secrets."beszel/token" = {
+      owner = "beszel-agent";
+    };
     services.beszel.agent = {
       enable = true;
       openFirewall = true;
@@ -9,6 +12,7 @@ _: {
         # Bezel Hub's SSH public key, which is stored in /var/lib/beszel-hub/id_ed25519.pub.
         # For Beszel on srv-prod-1, the value is stored in modules/hosts/srv-prod-1/secrets.yaml
         KEY = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDM4/5m4XKP1a+BT7nVqmo4NaHJIk26rS+NbemzQw6y5 bene@framework-13";
+        TOKEN_FILE = config.sops.secrets."beszel/token".path;
       };
     };
   };
