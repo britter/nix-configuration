@@ -29,21 +29,26 @@ _: {
         };
       };
 
-      systemd.services.nginx =
+      systemd.services.nextcloud-richdocuments-config =
         let
           homelabCfg = config.home-lab.hosts.${config.networking.hostName};
           occ = lib.getExe config.services.nextcloud.occ;
-          postStart = pkgs.writeShellScriptBin "nextcloud-declarative-config" ''
+          deps = [
+            "docker-collabora-code.service"
+            "nextcloud-setup.service"
+          ];
+        in
+        {
+          after = deps;
+          requires = deps;
+          wantedBy = [ "multi-user.target" ];
+          script = ''
             set -euo pipefail
             CONTAINER_IP=`${pkgs.docker}/bin/docker container inspect -f '{{ .NetworkSettings.Networks.bridge.IPAddress }}' collabora-code`
             ${occ} config:app:set --value "https://${publicDomainName}" richdocuments wopi_url
             ${occ} config:app:set --value "$CONTAINER_IP:9980,${config.home-lab.hosts.directions.ip},${homelabCfg.ip},100.94.107.46" richdocuments wopi_allowlist
           '';
-        in
-        {
-          after = [ "docker-collabora-code.service" ];
-          requires = [ "docker-collabora-code.service" ];
-          serviceConfig.ExecStartPost = "+${postStart}/bin/nextcloud-declarative-config";
+          serviceConfig.Type = "oneshot";
         };
 
       services.https-proxy.configurations = [
