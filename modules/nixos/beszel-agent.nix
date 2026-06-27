@@ -4,6 +4,7 @@ _: {
       enable = true;
       openFirewall = true;
       environment = {
+        HUB_URL = "https://beszel.ritter.family";
         PORT = "45876";
         # Bezel Hub's SSH public key, which is stored in /var/lib/beszel-hub/id_ed25519.pub.
         # For Beszel on srv-prod-1, the value is stored in modules/hosts/srv-prod-1/secrets.yaml
