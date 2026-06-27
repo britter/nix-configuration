@@ -22,7 +22,6 @@ _: {
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
-                "[BODY] == ."
               ];
             }
             {
