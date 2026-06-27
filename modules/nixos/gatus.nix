@@ -17,6 +17,15 @@ _: {
               ];
             }
             {
+              name = "Vaultwarden";
+              url = "https://passwords.ritter.family/alive";
+              interval = "5m";
+              conditions = [
+                "[STATUS] == 200"
+                "[BODY] == ."
+              ];
+            }
+            {
               name = "Immich";
               url = "https://photos.ritter.family/api/server/ping";
               interval = "5m";
