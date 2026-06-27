@@ -42,7 +42,7 @@ _: {
         "id_ed25519:${config.sops.secrets."beszel/hub-private-key".path}"
       ];
       systemd.services.beszel-hub.preStart = ''
-        install -m 600 "$CREDENTIALS_DIRECTORY/id_ed25519" "$STATE_DIRECTORY/id_ed25519"
+        install -m 600 "$CREDENTIALS_DIRECTORY/id_ed25519" "$STATE_DIRECTORY/beszel_data/id_ed25519"
         install -m 644 ${configYml} "$STATE_DIRECTORY/config.yml"
       '';
 
