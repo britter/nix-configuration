@@ -9,6 +9,7 @@ locals {
     "srv-prod-3",
     "srv-prod-4",
     "srv-prod-5",
+    "srv-prod-6",
     "srv-offsite-1",
     "directions"
   ]
