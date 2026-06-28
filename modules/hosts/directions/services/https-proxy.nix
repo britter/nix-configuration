@@ -89,6 +89,11 @@ _: {
               client_max_body_size 100M;
             '';
           }
+          {
+            fqdn = "unifi.ritter.family";
+            target = "https://192.168.1.1";
+            proxyWebsockets = true;
+          }
         ];
       };
     };
