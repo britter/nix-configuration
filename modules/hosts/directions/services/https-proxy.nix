@@ -23,11 +23,6 @@ _: {
             proxyWebsockets = true;
           }
           {
-            fqdn = "collabora-test.ritter.family";
-            target = "https://collabora.srv-test-2.ritter.family";
-            proxyWebsockets = true;
-          }
-          {
             fqdn = "fritz-box.ritter.family";
             target = "https://${config.home-lab.devices.fritz-box.ip}";
           }
@@ -52,13 +47,6 @@ _: {
           {
             fqdn = "nextcloud.ritter.family";
             target = "https://nextcloud.srv-prod-2.ritter.family";
-            extraConfig = ''
-              client_max_body_size 512M;
-            '';
-          }
-          {
-            fqdn = "nextcloud-test.ritter.family";
-            target = "https://nextcloud.srv-test-2.ritter.family";
             extraConfig = ''
               client_max_body_size 512M;
             '';
