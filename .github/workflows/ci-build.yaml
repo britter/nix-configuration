@@ -25,6 +25,8 @@ jobs:
             runner: ubuntu-latest
           - configuration: srv-prod-5
             runner: ubuntu-latest
+          - configuration: srv-prod-6
+            runner: ubuntu-latest
           - configuration: srv-offsite-1
             runner: ubuntu-latest
           - configuration: directions
