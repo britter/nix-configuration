@@ -77,6 +77,11 @@ _: {
           {
             fqdn = "pve.ritter.family";
             target = "https://${config.home-lab.hypervisors.pve.ip}:8006";
+            extraConfig = ''
+              # Avoid buffering issues with the Proxmox task log stream
+              proxy_buffering off;
+              proxy_read_timeout 3600s; 
+            '';
           }
           {
             fqdn = "passwords.ritter.family";
