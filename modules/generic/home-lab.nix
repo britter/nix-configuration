@@ -34,6 +34,11 @@ _: {
             dns = "srv-prod-5.ritter.family";
             vm = true;
           };
+          srv-prod-6 = {
+            ip = "192.168.30.16";
+            dns = "srv-prod-6.ritter.family";
+            vm = true;
+          };
           srv-offsite-1 = {
             dns = "srv-offsite-1.ritter.family";
             vm = false;
