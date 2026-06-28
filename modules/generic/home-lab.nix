@@ -56,7 +56,7 @@ _: {
         };
         hypervisors = {
           pve = {
-            ip = "192.168.5.10";
+            ip = "192.168.10.10";
             dns = "pve.ritter.family";
             vm = false;
           };
