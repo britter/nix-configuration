@@ -46,6 +46,12 @@ resource "unifi_client" "srv_prod_5" {
   fixed_ip = "192.168.30.15"
 }
 
+resource "unifi_client" "srv_prod_6" {
+  name     = "srv-prod-6"
+  mac      = "bc:24:11:3b:29:ac"
+  fixed_ip = "192.168.30.16"
+}
+
 resource "unifi_client" "true_nas" {
   name     = "TrueNAS"
   mac      = "00:d0:b4:02:55:db"

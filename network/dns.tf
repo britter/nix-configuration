@@ -81,6 +81,21 @@ resource "unifi_dns_record" "srv_prod_5_wildcard" {
   value       = unifi_client.srv_prod_5.fixed_ip
   ttl         = "1h"
 }
+
+resource "unifi_dns_record" "srv_prod_6" {
+  name        = "srv-prod-6.ritter.family"
+  record_type = "A"
+  value       = unifi_client.srv_prod_6.fixed_ip
+  ttl         = "1h"
+}
+
+resource "unifi_dns_record" "srv_prod_6_wildcard" {
+  name        = "*.srv-prod-6.ritter.family"
+  record_type = "A"
+  value       = unifi_client.srv_prod_6.fixed_ip
+  ttl         = "1h"
+}
+
 resource "unifi_dns_record" "true_nas" {
   name        = "storage.ritter.family"
   record_type = "A"
