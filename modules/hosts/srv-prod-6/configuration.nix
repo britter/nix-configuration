@@ -7,6 +7,7 @@
       tailscale
       beszel-agent
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
+      (config.flake.factory.github-runners { count = 4; })
     ];
 
     system.stateVersion = "26.05";
