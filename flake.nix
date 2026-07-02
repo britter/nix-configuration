@@ -12,6 +12,7 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        unifly = pkgs.callPackage ./packages/unifly.nix { };
       in
       {
         devShell = pkgs.mkShell {
@@ -20,6 +21,7 @@
             minio-client
             opentofu
             sops
+            unifly
           ];
         };
       }
