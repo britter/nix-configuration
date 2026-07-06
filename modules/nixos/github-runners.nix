@@ -11,6 +11,10 @@ _: {
         group = "github-runners";
         mode = "0440";
       };
+      sops.secrets."github-runners/age-key" = {
+        group = "github-runners";
+        mode = "0440";
+      };
 
       # Allow members of the github-runners group to use the nix daemon
       nix.settings.trusted-users = [ "@github-runners" ];
@@ -29,6 +33,9 @@ _: {
             ];
             serviceOverrides = {
               SupplementaryGroups = [ "github-runners" ];
+              Environment = [
+                "SOPS_AGE_KEY_FILE=${config.sops.secrets."github-runners/age-key".path}"
+              ];
             };
           };
         }) (lib.range 1 count)
