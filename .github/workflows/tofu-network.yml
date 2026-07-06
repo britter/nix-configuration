@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - network/**
+      - .github/workflows/tofu-network.yaml
+      - .github/workflows/_tofu.yaml
       - .sops.yaml
       - .envrc
       - flake.nix
@@ -13,6 +15,8 @@ on:
   pull_request:
     paths:
       - network/**
+      - .github/workflows/tofu-network.yaml
+      - .github/workflows/_tofu.yaml
       - .sops.yaml
       - .envrc
       - flake.nix
