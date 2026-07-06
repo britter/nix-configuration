@@ -35,19 +35,24 @@ jobs:
 
       - name: OpenTofu Validate
         id: validate
-        run: tofu validate -no-color
+        run: |
+          tofu validate -no-color 2>&1 | tee validate-output.txt
+          echo "stdout<<EOF" >> $GITHUB_OUTPUT
+          cat validate-output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: OpenTofu Plan
         id: plan
         if: github.event_name == 'pull_request'
-        run: tofu plan -no-color
+        run: |
+          tofu plan -no-color 2>&1 | tee plan-output.txt
+          echo "stdout<<EOF" >> $GITHUB_OUTPUT
+          cat plan-output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         continue-on-error: true
 
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         if: github.event_name == 'pull_request'
-        env:
-          PLAN: ${{ steps.plan.outputs.stdout }}
-          ERROR: ${{ steps.plan.outputs.stderr }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -59,6 +64,20 @@ jobs:
             const botComment = comments.find(comment => {
               return comment.user.type === 'Bot' && comment.body.includes('OpenTofu (${{ inputs.working-directory }})')
             })
+
+            const plan = `${{ steps.plan.outputs.stdout }}`;
+            const noChanges = plan.includes('No changes. Your infrastructure matches the configuration.');
+
+            const planSection = noChanges
+              ? `#### Plan 📖 ✅ No changes`
+              : `#### Plan 📖\`${{ steps.plan.outcome }}\`
+            <details><summary>Show Plan</summary>
+
+            \`\`\`
+            ${plan}
+            \`\`\`
+
+            </details>`;
 
             const output = `#### OpenTofu (${{ inputs.working-directory }}) 🏗️
             #### Format 🖌\`${{ steps.fmt.outcome }}\`
@@ -72,16 +91,7 @@ jobs:
 
             </details>
 
-            #### Plan 📖\`${{ steps.plan.outcome }}\`
-
-            <details><summary>Show Plan</summary>
-
-            \`\`\`\n
-            ${process.env.PLAN}
-            ${process.env.ERROR}
-            \`\`\`
-
-            </details>
+            ${planSection}
 
             *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Directory: \`${{ inputs.working-directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
