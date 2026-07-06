@@ -4,7 +4,6 @@ _: {
     {
       config,
       lib,
-      pkgs,
       ...
     }:
     {
@@ -52,7 +51,6 @@ _: {
               "nixos"
               "x86_64"
             ];
-            extraPackages = [ pkgs.opentofu ];
             serviceOverrides = {
               SupplementaryGroups = [ "github-runners" ];
               EnvironmentFile = [ config.sops.templates.state-backend-secrets.path ];
