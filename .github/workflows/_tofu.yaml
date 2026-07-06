@@ -18,7 +18,7 @@ jobs:
     timeout-minutes: 10
     defaults:
       run:
-        shell: nix develop $GITHUB_WORKSPACE --command bash {0}
+        shell: nix develop ../ --command bash {0}
         working-directory: ${{ inputs.working-directory }}
 
     steps:
