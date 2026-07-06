@@ -9,7 +9,7 @@ module "tailscale" {
 
 module "cloudflare" {
   source             = "./cloudflare"
-  cloudflare_zone_id = var.cloudflare_zone_id
+  cloudflare_zone_id = data.sops_file.secrets.data["cloudflare_zone_id"]
   host_ips           = module.tailscale.device_ips
 }
 

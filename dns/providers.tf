@@ -18,28 +18,26 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "~> 4.0"
     }
+    sops = {
+      source  = "carlpett/sops"
+      version = "1.4.1"
+    }
   }
 }
 
-## Tailscale ##
-variable "tailscale_api_token" {
-  type = string
+provider "sops" {}
+
+data "sops_file" "secrets" {
+  source_file = "secrets.json"
 }
 
+## Tailscale ##
 provider "tailscale" {
-  api_key = var.tailscale_api_token
+  api_key = data.sops_file.secrets.data["tailscale_api_token"]
   tailnet = local.tailnet
 }
 
 ## Cloudflare ##
-variable "cloudflare_api_token" {
-  type = string
-}
-
-variable "cloudflare_zone_id" {
-  type = string
-}
-
 provider "cloudflare" {
-  api_token = var.cloudflare_api_token
+  api_token = data.sops_file.secrets.data["cloudflare_api_token"]
 }

@@ -14,24 +14,22 @@ terraform {
       source  = "ubiquiti-community/unifi"
       version = "0.54.1"
     }
+    sops = {
+      source  = "carlpett/sops"
+      version = "1.4.1"
+    }
   }
 }
 
-variable "unifi_username" {
-  type = string
-}
+provider "sops" {}
 
-variable "unifi_password" {
-  type = string
-}
-
-variable "unifi_api_url" {
-  type = string
+data "sops_file" "secrets" {
+  source_file = "secrets.json"
 }
 
 provider "unifi" {
-  username       = var.unifi_username
-  password       = var.unifi_password
-  api_url        = var.unifi_api_url
+  username       = data.sops_file.secrets.data["unifi_username"]
+  password       = data.sops_file.secrets.data["unifi_password"]
+  api_url        = data.sops_file.secrets.data["unifi_api_url"]
   allow_insecure = true
 }

@@ -14,14 +14,24 @@ terraform {
       source  = "aminueza/minio"
       version = "3.18.0"
     }
+    sops = {
+      source  = "carlpett/sops"
+      version = "1.4.1"
+    }
   }
+}
+
+provider "sops" {}
+
+data "sops_file" "secrets" {
+  source_file = "secrets.json"
 }
 
 module "srv-prod-3" {
   source        = "./minio"
   endpoint      = "minio.srv-prod-3.ritter.family"
-  root_user     = var.srv_prod_3_root_user
-  root_password = var.srv_prod_3_root_password
+  root_user     = data.sops_file.secrets.data["srv_prod_3_root_user"]
+  root_password = data.sops_file.secrets.data["srv_prod_3_root_password"]
 }
 
 output "srv_prod_3_state_bucket_domain_name" {
