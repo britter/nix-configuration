@@ -1,0 +1,80 @@
+{
+  "id": "696a2e6a8ea6ae4ba05cd68a",
+  "name": "Allow HTTP from Trusted"
+}
+{
+  "id": "696a2ebe8ea6ae4ba05cd68d",
+  "name": "Allow HTTPS from Trusted"
+}
+{
+  "id": "696a2f048ea6ae4ba05cd690",
+  "name": "Allow DNS from Trusted to Homelab"
+}
+{
+  "id": "696a2f468ea6ae4ba05cd693",
+  "name": "Allow DNS-TLS from Trusted to Homelab"
+}
+{
+  "id": "696a2faf8ea6ae4ba05cd6b3",
+  "name": "Allow SSH from Trusted"
+}
+{
+  "id": "696bb70c8ea6ae4ba05cfee9",
+  "name": "Allow pinging from Trusted"
+}
+{
+  "id": "696be1fd8ea6ae4ba05d0365",
+  "name": "Allow Traffic from Trusted to PVE on 8006"
+}
+{
+  "id": "696be5398ea6ae4ba05d03d2",
+  "name": "Allow UDP from Trusted to KVMs"
+}
+{
+  "id": "696ea0ac8ea6ae4ba05d4ed7",
+  "name": "Allow Traffic from Trusted to Home Assistant"
+}
+{
+  "id": "69763804e999852897739f04",
+  "name": "Allow Home Assistant to Control Yeelights in NoT"
+}
+{
+  "id": "69766e61e99985289773a6af",
+  "name": "Allow Poxying of Home Assistant"
+}
+{
+  "id": "697e1d69e999852897748720",
+  "name": "Allow PVE Management from Trusted"
+}
+{
+  "id": "69863cd4e999852897757f4b",
+  "name": "Allow HTTPS from Servers to Homelab"
+}
+{
+  "id": "6987139ee999852897759de1",
+  "name": "Allow Servers to access DNS in Homelab"
+}
+{
+  "id": "698713d2e999852897759de4",
+  "name": "Allow Servers to access DNS-TLS in Homelab"
+}
+{
+  "id": "698b399be999852897762106",
+  "name": "Allow Trusted to Print"
+}
+{
+  "id": "69bfe2d5b84e03db685a8bc7",
+  "name": "Allow HTTP form Homelab to servers"
+}
+{
+  "id": "69bfe30fb84e03db685a8bca",
+  "name": "Allow HTTPS from Homelab to servers"
+}
+{
+  "id": "69c82444b84e03db685b7fc9",
+  "name": "Allow NFS mount from Servers to Management"
+}
+{
+  "id": "6a40ff6245682d57c09a27f1",
+  "name": "Allow PVE proxying via directions"
+}
