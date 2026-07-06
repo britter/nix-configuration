@@ -1,0 +1,26 @@
+name: OpenTofu Proxmox
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - proxmox/**
+      - .sops.yaml
+      - .envrc
+      - flake.nix
+      - flake.lock
+      - secrets.json
+  pull_request:
+    paths:
+      - proxmox/**
+      - .sops.yaml
+      - .envrc
+      - flake.nix
+      - flake.lock
+      - secrets.json
+
+jobs:
+  tofu:
+    uses: ./.github/workflows/_tofu.yaml
+    with:
+      working-directory: proxmox

@@ -1,0 +1,26 @@
+name: OpenTofu DNS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - dns/**
+      - .sops.yaml
+      - .envrc
+      - flake.nix
+      - flake.lock
+      - secrets.json
+  pull_request:
+    paths:
+      - dns/**
+      - .sops.yaml
+      - .envrc
+      - flake.nix
+      - flake.lock
+      - secrets.json
+
+jobs:
+  tofu:
+    uses: ./.github/workflows/_tofu.yaml
+    with:
+      working-directory: dns
