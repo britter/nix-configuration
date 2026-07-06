@@ -36,6 +36,7 @@ jobs:
       - name: OpenTofu Validate
         id: validate
         run: |
+          set -o pipefail
           tofu validate -no-color 2>&1 | tee validate-output.txt
           echo "stdout<<EOF" >> $GITHUB_OUTPUT
           cat validate-output.txt >> $GITHUB_OUTPUT
@@ -45,6 +46,7 @@ jobs:
         id: plan
         if: github.event_name == 'pull_request'
         run: |
+          set -o pipefail
           tofu plan -no-color 2>&1 | tee plan-output.txt
           echo "stdout<<EOF" >> $GITHUB_OUTPUT
           cat plan-output.txt >> $GITHUB_OUTPUT
