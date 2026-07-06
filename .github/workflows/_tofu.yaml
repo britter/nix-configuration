@@ -37,18 +37,22 @@ jobs:
         id: validate
         run: |
           tofu validate -no-color 2>&1 | tee validate-output.txt
+          exit_code=${PIPESTATUS[0]}
           echo "stdout<<EOF" >> $GITHUB_OUTPUT
           cat validate-output.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          exit $exit_code
 
       - name: OpenTofu Plan
         id: plan
         if: github.event_name == 'pull_request'
         run: |
           tofu plan -no-color 2>&1 | tee plan-output.txt
+          exit_code=${PIPESTATUS[0]}
           echo "stdout<<EOF" >> $GITHUB_OUTPUT
           cat plan-output.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          exit $exit_code
         continue-on-error: true
 
       - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
