@@ -28,3 +28,7 @@ jobs:
     uses: ./.github/workflows/_tofu.yaml
     with:
       working-directory: proxmox
+    secrets: inherit
+    concurrency:
+      group: tofu_latch_proxmox
+      cancel-in-progress: false

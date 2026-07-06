@@ -28,3 +28,7 @@ jobs:
     uses: ./.github/workflows/_tofu.yaml
     with:
       working-directory: network
+    secrets: inherit
+    concurrency:
+      group: tofu_latch_network
+      cancel-in-progress: false

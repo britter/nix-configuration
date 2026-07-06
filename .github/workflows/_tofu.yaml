@@ -20,8 +20,6 @@ jobs:
       run:
         shell: nix develop $GITHUB_WORKSPACE --command bash {0}
         working-directory: ${{ inputs.working-directory }}
-    concurrency:
-      group: tofu_latch_${{ inputs.working-directory }}
 
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
