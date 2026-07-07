@@ -5,7 +5,7 @@
       system-server
       proxmox-vm
       stirling-pdf
-      tailscale
+      tailscale-server
       beszel-agent
       calibre-web-on-srv-prod-2
       git-server-on-srv-prod-2
