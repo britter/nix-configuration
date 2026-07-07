@@ -80,6 +80,17 @@ _: {
           ];
         }
         {
+          "Development" = [
+            {
+              "Forgejo" = {
+                description = "Git hosting and collaboration";
+                href = "https://git.ritter.family/";
+                icon = "forgejo.svg";
+              };
+            }
+          ];
+        }
+        {
           "Smart Home" = [
             {
               "Home Assistant" = {
