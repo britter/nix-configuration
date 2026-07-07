@@ -1,9 +1,7 @@
 { pkgs, ... }:
-with pkgs;
-rec {
-  gh-get = callPackage ./gh-get { };
-  groovy-language-server = callPackage ./groovy-language-server { };
-  jfmt-java = callPackage ./jfmt-java { inherit maven_4; };
-  kotlin-lsp = callPackage ./kotlin-lsp { };
-  maven_4 = callPackage ./maven_4 { };
+{
+  gh-get = pkgs.callPackage ./gh-get { };
+  groovy-language-server = pkgs.callPackage ./groovy-language-server { };
+  jfmt-java = pkgs.callPackage ./jfmt-java { };
+  kotlin-lsp = pkgs.callPackage ./kotlin-lsp { };
 }
