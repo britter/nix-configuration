@@ -27,6 +27,13 @@ _: {
             target = "https://${config.home-lab.devices.fritz-box.ip}";
           }
           {
+            fqdn = "git.ritter.family";
+            target = "https://git.srv-prod-6.ritter.family";
+            extraConfig = ''
+              client_max_body_size 512M;
+            '';
+          }
+          {
             fqdn = "grafana.ritter.family";
             target = "https://grafana.srv-prod-1.ritter.family";
           }

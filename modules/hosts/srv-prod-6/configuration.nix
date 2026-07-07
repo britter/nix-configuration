@@ -6,6 +6,7 @@
       proxmox-vm
       tailscale
       beszel-agent
+      forgejo-on-srv-prod-6
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
       (config.flake.factory.github-runners { count = 4; })
     ];
