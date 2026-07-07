@@ -4,7 +4,7 @@
     imports = with config.flake.modules.nixos; [
       system-server
       proxmox-vm
-      tailscale
+      tailscale-server
       beszel-agent
       navidrome-on-srv-prod-5
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })

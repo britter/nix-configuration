@@ -7,7 +7,7 @@
       beszel-agent
       gatus
       homepage
-      tailscale
+      tailscale-server
       https-proxy-on-directions
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
