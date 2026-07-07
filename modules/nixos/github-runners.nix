@@ -6,6 +6,9 @@ _: {
       lib,
       ...
     }:
+    let
+      workDirFor = num: "/var/lib/github-runners/nixos-runner-${toString num}";
+    in
     {
       # github-runners are created with dynamic users.
       # setup a supplementary group to grant read access to
@@ -39,11 +42,25 @@ _: {
       # Allow members of the github-runners group to use the nix daemon
       nix.settings.trusted-users = [ "@github-runners" ];
 
+      # The runners use a disk-backed workDir (see below). The module binds this
+      # path into the service namespace but does not create it, so it must exist
+      # beforehand. Runners run as DynamicUser (runtime UID) but are members of
+      # the github-runners group, so group-owned + 0770 lets them write & clean.
+      systemd.tmpfiles.rules = map (num: "d ${workDirFor num} 0770 root github-runners - -") (
+        lib.range 1 count
+      );
+
       services.github-runners = builtins.listToAttrs (
         map (num: {
           name = "nixos-runner-${toString num}";
           value = {
             enable = true;
+            # Default workDir is the systemd RuntimeDirectory under /run (tmpfs),
+            # which is RAM-backed and small — builds fill it up. Use disk instead.
+            workDir = workDirFor num;
+            # Changing workDir triggers a new registration; without replace the
+            # re-registration under the same name fails.
+            replace = true;
             url = "https://github.com/britter/home-lab";
             tokenType = "access";
             tokenFile = config.sops.secrets."github-runners/pat".path;
