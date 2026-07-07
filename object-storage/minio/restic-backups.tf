@@ -8,7 +8,7 @@ output "restic_bucket_domain_name" {
 
 variable "restic_backups" {
   type    = list(string)
-  default = ["git", "nextcloud", "vaultwarden", "calibre"]
+  default = ["git", "nextcloud", "vaultwarden", "calibre", "forgejo"]
 }
 
 module "restic_users" {
