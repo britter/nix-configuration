@@ -67,10 +67,17 @@ _: {
             ];
             serviceOverrides = {
               # CacheDirectory for the workDir above. systemd creates it on disk
-              # under /var/cache and chowns it to the dynamic user each start, so
-              # $HOME (= workDir) is owned by the runner and stays writable under
-              # ProtectSystem=strict.
+              # under /var/cache and, under DynamicUser, chowns it to the runner's
+              # dynamic user each start, so $HOME (= workDir) is owned by the runner
+              # and stays writable under ProtectSystem=strict.
               CacheDirectory = [ (cacheSubdir num) ];
+              # A managed *Directory already implies its own BindPaths=; the module
+              # adds a second BindPaths=[workDir] for custom workDirs, which collides
+              # with that and shadows the chowned dir with a root-owned mount (ln in
+              # setup-work-dirs then fails with EACCES). systemd docs also say not to
+              # combine BindPaths= with DynamicUser=. Clear it so CacheDirectory owns
+              # the dir outright, mirroring the default RuntimeDirectory code path.
+              BindPaths = lib.mkForce [ ];
               SupplementaryGroups = [ "github-runners" ];
               EnvironmentFile = [ config.sops.templates.state-backend-secrets.path ];
               Environment = [
