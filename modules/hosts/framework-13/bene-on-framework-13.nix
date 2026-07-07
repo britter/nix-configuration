@@ -23,6 +23,7 @@
           obsidian
           syncthing
           java
+          zoom
         ];
 
         java = {
