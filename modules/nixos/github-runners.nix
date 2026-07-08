@@ -12,51 +12,49 @@ _: {
       workDirFor = num: "/var/cache/${cacheSubdir num}";
     in
     {
-      # github-runners are created with dynamic users.
-      # setup a supplementary group to grant read access to
-      # the PAT for generating a registration token.
-      users.groups.github-runners = { };
-      sops.secrets."github-runners/pat" = {
-        group = "github-runners";
-        mode = "0440";
+      # The runners share a static system user (see `user`/`group` below). A
+      # static user is required because a disk-backed workDir under DynamicUser
+      # lands in /var/{lib,cache}/private with a symlink, and actions/checkout v6
+      # writes git credentials via `includeIf.gitdir:<workDir>`; git resolves that
+      # symlink, the condition never matches, and checkout fails with "could not
+      # read Username". See https://github.com/actions/checkout/issues/2393.
+      users.users.github-runner = {
+        isSystemUser = true;
+        group = "github-runner";
       };
-      sops.secrets."github-runners/age-key" = {
-        group = "github-runners";
-        mode = "0440";
-      };
-      sops.secrets."github-runners/aws-access-key-id" = {
-        group = "github-runners";
-        mode = "0440";
-      };
-      sops.secrets."github-runners/aws-secret-access-key" = {
-        group = "github-runners";
-        mode = "0440";
-      };
+      users.groups.github-runner = { };
+      sops.secrets."github-runners/pat".owner = "github-runner";
+      sops.secrets."github-runners/age-key".owner = "github-runner";
+      sops.secrets."github-runners/aws-access-key-id".owner = "github-runner";
+      sops.secrets."github-runners/aws-secret-access-key".owner = "github-runner";
       sops.templates."state-backend-secrets" = {
-        owner = "root";
-        group = "github-runners";
-        mode = "0440";
+        owner = "github-runner";
         content = ''
           AWS_ACCESS_KEY_ID=${config.sops.placeholder."github-runners/aws-access-key-id"}
           AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."github-runners/aws-secret-access-key"}
         '';
       };
-      # Allow members of the github-runners group to use the nix daemon
-      nix.settings.trusted-users = [ "@github-runners" ];
+      # Allow the runner user to use the nix daemon
+      nix.settings.trusted-users = [ "github-runner" ];
 
       services.github-runners = builtins.listToAttrs (
         map (num: {
           name = "nixos-runner-${toString num}";
           value = {
             enable = true;
+            # Run as a static user (disables DynamicUser). Required so the
+            # disk-backed workDir below is a real path, not a /var/cache/private
+            # symlink — see the users.users.github-runner comment above.
+            user = "github-runner";
+            group = "github-runner";
             # Default workDir is the systemd RuntimeDirectory under /run (tmpfs),
             # which is RAM-backed and small — builds fill it up. Use a disk-backed
             # CacheDirectory instead (see serviceOverrides), which systemd creates
-            # and chowns to the runner's dynamic user on every start. It's a
-            # reconstructable checkout (wiped each start), so cache, not state.
+            # and chowns to the runner user each start. It's a reconstructable
+            # checkout (wiped each start), so cache, not state.
             workDir = workDirFor num;
-            # Changing workDir triggers a new registration; without replace the
-            # re-registration under the same name fails.
+            # Changing workDir/user triggers a new registration; without replace
+            # the re-registration under the same name fails.
             replace = true;
             url = "https://github.com/britter/home-lab";
             tokenType = "access";
@@ -66,19 +64,15 @@ _: {
               "x86_64"
             ];
             serviceOverrides = {
-              # CacheDirectory for the workDir above. systemd creates it on disk
-              # under /var/cache and, under DynamicUser, chowns it to the runner's
-              # dynamic user each start, so $HOME (= workDir) is owned by the runner
-              # and stays writable under ProtectSystem=strict.
+              # CacheDirectory for the workDir above. With a static user systemd
+              # creates it as a real dir at /var/cache/github-runners/<name>
+              # (no /private symlink), chowned to the runner user, writable under
+              # ProtectSystem=strict.
               CacheDirectory = [ (cacheSubdir num) ];
-              # A managed *Directory already implies its own BindPaths=; the module
-              # adds a second BindPaths=[workDir] for custom workDirs, which collides
-              # with that and shadows the chowned dir with a root-owned mount (ln in
-              # setup-work-dirs then fails with EACCES). systemd docs also say not to
-              # combine BindPaths= with DynamicUser=. Clear it so CacheDirectory owns
-              # the dir outright, mirroring the default RuntimeDirectory code path.
+              # CacheDirectory already implies its own BindPaths=; the module adds
+              # a second, redundant BindPaths=[workDir] for custom workDirs. Clear
+              # it so CacheDirectory manages the dir outright.
               BindPaths = lib.mkForce [ ];
-              SupplementaryGroups = [ "github-runners" ];
               EnvironmentFile = [ config.sops.templates.state-backend-secrets.path ];
               Environment = [
                 "SOPS_AGE_KEY_FILE=${config.sops.secrets."github-runners/age-key".path}"
