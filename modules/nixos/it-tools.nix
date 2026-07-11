@@ -7,7 +7,15 @@ _: {
     {
       services.https-proxy = {
         enable = true;
-        configurations = [ { inherit fqdn; } ]; # target null → TLS vhost only
+        # alias so the edge proxy's preserved Host header (tools.ritter.family)
+        # matches here; without it the request falls through to the default vhost
+        # (forgejo) since srv-prod-6 hosts more than one vhost. target null → TLS vhost only.
+        configurations = [
+          {
+            inherit fqdn;
+            aliases = [ "tools.ritter.family" ];
+          }
+        ];
       };
 
       services.nginx.virtualHosts.${fqdn} = {
