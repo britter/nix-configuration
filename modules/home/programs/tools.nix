@@ -49,7 +49,7 @@ _: {
         jq
         mob # smooth git handover
         pdf-fax
-        pwgen
+        motus
         tokei # count lines of code
         tealdeer # better man pages
         serve_dir
