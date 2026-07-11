@@ -98,6 +98,14 @@ _: {
                 "[STATUS] == 200"
               ];
             }
+            {
+              name = "Paperless";
+              url = "https://documents.ritter.family/accounts/login/";
+              interval = "5m";
+              conditions = [
+                "[STATUS] == 200"
+              ];
+            }
           ];
         };
       };
