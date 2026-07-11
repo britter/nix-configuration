@@ -90,6 +90,10 @@ _: {
             '';
           }
           {
+            fqdn = "tools.ritter.family";
+            target = "https://tools.srv-prod-6.ritter.family";
+          }
+          {
             fqdn = "unifi.ritter.family";
             target = "https://192.168.1.1";
             proxyWebsockets = true;
