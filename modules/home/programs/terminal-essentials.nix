@@ -1,7 +1,12 @@
-_: {
+{ config, ... }: {
+
   flake.modules.homeManager.terminal-essentials =
     { pkgs, ... }:
     {
+      imports = with config.flake.modules.homeManager; [
+        direnv
+      ];
+
       programs.bat = {
         enable = true;
         config.map-syntax = [ "*.tofu:Terraform" ];
@@ -10,16 +15,6 @@ _: {
       programs.btop.enable = true;
       # required for catppuccin theming of btop
       xdg.enable = true;
-
-      programs.direnv = {
-        enable = true;
-        nix-direnv.enable = true;
-        config.whitelist.prefix = [
-          "~/github/britter"
-          "~/github/gradlex-org"
-        ];
-      };
-      programs.git.ignores = [ ".direnv" ];
 
       programs.fzf = {
         enable = true;
