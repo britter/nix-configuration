@@ -52,6 +52,13 @@ _: {
                 icon = "vaultwarden.svg";
               };
             }
+            {
+              "Paperless" = {
+                description = "Document management system";
+                href = "https://documents.ritter.family/";
+                icon = "paperless-ngx.svg";
+              };
+            }
           ];
         }
         {

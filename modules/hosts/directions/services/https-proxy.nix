@@ -23,6 +23,13 @@ _: {
             proxyWebsockets = true;
           }
           {
+            fqdn = "documents.ritter.family";
+            target = "https://documents.srv-prod-2.ritter.family";
+            extraConfig = ''
+              client_max_body_size 100M;
+            '';
+          }
+          {
             fqdn = "fritz-box.ritter.family";
             target = "https://${config.home-lab.devices.fritz-box.ip}";
           }
