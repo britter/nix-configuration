@@ -88,6 +88,13 @@ _: {
                 icon = "forgejo.svg";
               };
             }
+            {
+              "IT Tools" = {
+                description = "Collection of handy online tools for developers";
+                href = "https://tools.ritter.family/";
+                icon = "it-tools.svg";
+              };
+            }
           ];
         }
         {

@@ -90,6 +90,14 @@ _: {
                 "[BODY].status == pass"
               ];
             }
+            {
+              name = "IT Tools";
+              url = "https://tools.ritter.family";
+              interval = "5m";
+              conditions = [
+                "[STATUS] == 200"
+              ];
+            }
           ];
         };
       };
