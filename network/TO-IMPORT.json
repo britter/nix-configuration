@@ -1,8 +1,4 @@
 {
-  "id": "696a2e6a8ea6ae4ba05cd68a",
-  "name": "Allow HTTP from Trusted"
-}
-{
   "id": "696a2ebe8ea6ae4ba05cd68d",
   "name": "Allow HTTPS from Trusted"
 }
