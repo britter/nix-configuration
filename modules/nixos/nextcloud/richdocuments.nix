@@ -3,7 +3,6 @@ _: {
     {
       config,
       lib,
-      pkgs,
       ...
     }:
     let
@@ -14,18 +13,22 @@ _: {
         inherit (config.services.nextcloud.package.packages.apps) richdocuments;
       };
 
-      virtualisation.oci-containers = {
-        backend = "docker";
-        containers = {
-          collabora-code = {
-            image = "collabora/code:25.04.6.2.1";
-            ports = [ "9980:9980" ];
-            environment = {
-              extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
-              domain = "nextcloud.${config.networking.hostName}.ritter.family";
-            };
-            extraOptions = [ "--cap-add=MKNOD" ];
+      services.collabora-online = {
+        enable = true;
+        port = 9980; # default; kept explicit to match the https-proxy target
+        settings = {
+          ssl.enable = false; # nginx terminates TLS
+          ssl.termination = true;
+          net.listen = "loopback";
+          net.post_allow.host = [
+            "127.0.0.1"
+            "::1"
+          ];
+          storage.wopi = {
+            "@allow" = true;
+            host = [ "nextcloud.ritter.family" ]; # WOPISrc host coolwsd will accept
           };
+          server_name = publicDomainName; # avoids reverse-proxy redirect loops
         };
       };
 
@@ -34,7 +37,7 @@ _: {
           homelabCfg = config.home-lab.hosts.${config.networking.hostName};
           occ = lib.getExe config.services.nextcloud.occ;
           deps = [
-            "docker-collabora-code.service"
+            "coolwsd.service"
             "nextcloud-setup.service"
           ];
         in
@@ -44,9 +47,8 @@ _: {
           wantedBy = [ "multi-user.target" ];
           script = ''
             set -euo pipefail
-            CONTAINER_IP=`${pkgs.docker}/bin/docker container inspect -f '{{ .NetworkSettings.Networks.bridge.IPAddress }}' collabora-code`
             ${occ} config:app:set --value "https://${publicDomainName}" richdocuments wopi_url
-            ${occ} config:app:set --value "$CONTAINER_IP:9980,${config.home-lab.hosts.directions.ip},${homelabCfg.ip},100.94.107.46" richdocuments wopi_allowlist
+            ${occ} config:app:set --value "127.0.0.1,::1,${config.home-lab.hosts.directions.ip},${homelabCfg.ip}" richdocuments wopi_allowlist
           '';
           serviceConfig.Type = "oneshot";
         };
