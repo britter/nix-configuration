@@ -23,9 +23,7 @@ _: {
             fqdn = "documents.${config.networking.hostName}.ritter.family";
             aliases = [ "documents.ritter.family" ];
             target = "http://localhost:28981";
-            extraConfig = ''
-              client_max_body_size 100M;
-            '';
+            maxBodySize = "100M";
           }
         ];
       };

@@ -27,9 +27,7 @@ _: {
             fqdn = "books.${config.networking.hostName}.ritter.family";
             aliases = [ "books.ritter.family" ];
             target = "http://localhost:8083";
-            extraConfig = ''
-              client_max_body_size 100M;
-            '';
+            maxBodySize = "100M";
           }
         ];
       };
