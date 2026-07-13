@@ -1,5 +1,7 @@
-_: {
+{ inputs, ... }: {
   flake.modules.homeManager.direnv = {
+
+    imports = [ inputs.direnv-instant.homeModules.direnv-instant ];
 
     programs.direnv = {
       enable = true;
@@ -10,6 +12,7 @@ _: {
         "~/codeberg.org/britter"
       ];
     };
+    programs.direnv-instant.enable = true;
     programs.git.ignores = [ ".direnv" ];
 
   };
