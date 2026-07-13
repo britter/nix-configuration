@@ -10,8 +10,7 @@
       };
     in
     {
-      home.file.".cache/noctalia/wallpapers.json".text = builtins.toJSON {
-        defaultWallpaper = "${catppuccin-wallpapers}/landscapes/Clearday.jpg";
-      };
+      programs.noctalia.settings.wallpaper.default.path =
+        "${catppuccin-wallpapers}/landscapes/Clearday.jpg";
     };
 }

@@ -28,10 +28,9 @@
       url = "github:nix-community/nixvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell/legacy-v4";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    # No `nixpkgs.follows`: overriding noctalia's inputs changes the derivation
+    # hash and misses their binary cache (https://noctalia.cachix.org).
+    noctalia.url = "github:noctalia-dev/noctalia";
     nur.url = "github:nix-community/NUR";
     pre-commit-hooks = {
       url = "github:cachix/git-hooks.nix";

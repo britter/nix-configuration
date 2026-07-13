@@ -5,6 +5,14 @@
     hardware.bluetooth.enable = true;
     services.power-profiles-daemon.enable = true;
     services.upower.enable = true;
+
+    # Pull noctalia from its binary cache instead of compiling it.
+    nix.settings = {
+      extra-substituters = [ "https://noctalia.cachix.org" ];
+      extra-trusted-public-keys = [
+        "noctalia.cachix.org-1:pCOR47nnMEo5thcxNDtzWpOxNFQsBRglJzxWPp3dkU4="
+      ];
+    };
   };
 
   flake.modules.homeManager.noctalia =
@@ -12,77 +20,62 @@
     {
       imports = [ inputs.noctalia.homeModules.default ];
 
-      programs.noctalia-shell = {
+      programs.noctalia = {
         enable = true;
-        package = pkgs.noctalia-shell;
+        # The v5 home module registers no overlay, so pkgs.noctalia is absent;
+        # take the package straight from the flake input.
+        package = inputs.noctalia.packages.${pkgs.system}.default;
         settings = {
-          bar = {
-            outerCorners = false;
-            widgets = {
-              left = [
-                { id = "Workspace"; }
-                { id = "MediaMini"; }
-              ];
-              center = [
-                { id = "Clock"; }
-                { id = "NotificationHistory"; }
-              ];
-              right = [
-                { id = "Tray"; }
-                { id = "SystemMonitor"; }
-                { id = "Battery"; }
-                { id = "Volume"; }
-                { id = "Brightness"; }
-                { id = "ControlCenter"; }
-              ];
-            };
+          theme = {
+            source = "builtin";
+            builtin = "Catppuccin";
           };
-          appLauncher = {
-            terminalCommand = "${pkgs.ghostty} -e";
-            enableClipboardHistory = true;
-          };
-          dock.enable = false;
-          sessionMenu = {
-            enableCountdown = false;
-            largeButtonsStyle = false;
-            powerOptions = [
-              {
-                action = "lock";
-                enabled = true;
-                keybind = "l";
-              }
-              {
-                action = "suspend";
-                enabled = true;
-                keybind = "s";
-              }
-              {
-                action = "hibernate";
-                enabled = true;
-                keybind = "h";
-              }
-              {
-                action = "reboot";
-                enabled = true;
-                keybind = "r";
-              }
-              {
-                action = "logout";
-                enabled = true;
-                keybind = "e";
-              }
-              {
-                action = "shutdown";
-                enabled = true;
-                keybind = "p";
-              }
-              {
-                action = "rebootToUefi";
-                enabled = false;
-                keybind = "7";
-              }
+          bar.main = {
+            start = [
+              "workspaces"
+              "media"
+            ];
+            center = [
+              "clock"
+              "notifications"
+            ];
+            end = [
+              "tray"
+              "sysmon"
+              "battery"
+              "volume"
+              "brightness"
+              "control-center"
             ];
           };
+          dock.enabled = false;
+          shell.session.actions = [
+            {
+              action = "lock";
+              enabled = true;
+              shortcut = "l";
+            }
+            {
+              action = "suspend";
+              enabled = true;
+              shortcut = "s";
+            }
+            {
+              action = "reboot";
+              enabled = true;
+              shortcut = "r";
+            }
+            {
+              action = "logout";
+              enabled = true;
+              shortcut = "e";
+            }
+            {
+              action = "shutdown";
+              enabled = true;
+              shortcut = "p";
+            }
+          ];
         };
       };
     };

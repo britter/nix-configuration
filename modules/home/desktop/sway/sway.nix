@@ -50,8 +50,8 @@ in
     }:
     let
       screenshotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
-      ns = lib.getExe config.programs.noctalia-shell.package;
-      nsipc = "${ns} ipc call";
+      ns = lib.getExe config.programs.noctalia.package;
+      nsipc = "${ns} msg";
       capture-screenhot = pkgs.writeShellApplication {
         name = "capture-screenshot";
         runtimeInputs = [ pkgs.sway-contrib.grimshot ];
@@ -81,7 +81,7 @@ in
         wrapperFeatures.gtk = true;
         config = {
           startup = [ { command = ns; } ];
-          menu = "${nsipc} launcher toggle";
+          menu = "${nsipc} panel-toggle launcher";
           bars = [ { mode = "invisible"; } ];
           terminal = lib.getExe pkgs.ghostty;
           defaultWorkspace = "workspace number 1";
@@ -173,15 +173,15 @@ in
               "${mod}+Ctrl+x" = "exec ${lib.getExe capture-screenhot} area";
 
               # Custom modes
-              "${mod}+Escape" = "exec ${nsipc} sessionMenu toggle";
+              "${mod}+Escape" = "exec ${nsipc} panel-toggle session";
               "${mod}+p" = ''mode "present"'';
 
               # Fn functionality on F keys
-              "XF86AudioMute" = "exec ${nsipc} volume muteOutput";
-              "XF86AudioRaiseVolume" = "exec ${nsipc} volume increase";
-              "XF86AudioLowerVolume" = "exec ${nsipc} volume decrease";
-              "XF86MonBrightnessUp" = "exec ${nsipc} brightness increase";
-              "XF86MonBrightnessDown" = "exec ${nsipc} brightness decrease";
+              "XF86AudioMute" = "exec ${nsipc} volume-mute";
+              "XF86AudioRaiseVolume" = "exec ${nsipc} volume-up";
+              "XF86AudioLowerVolume" = "exec ${nsipc} volume-down";
+              "XF86MonBrightnessUp" = "exec ${nsipc} brightness-up";
+              "XF86MonBrightnessDown" = "exec ${nsipc} brightness-down";
             };
           modes = {
             # redeclare resize mode in order not to override it
