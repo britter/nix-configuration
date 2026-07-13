@@ -37,9 +37,7 @@ _: {
             fqdn = "git.${config.networking.hostName}.ritter.family";
             aliases = [ "git.ritter.family" ];
             target = "http://localhost:3000";
-            extraConfig = ''
-              client_max_body_size 512M;
-            '';
+            maxBodySize = "512M";
           }
         ];
       };

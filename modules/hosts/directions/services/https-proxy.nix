@@ -13,9 +13,7 @@ _: {
           {
             fqdn = "books.ritter.family";
             target = "https://books.srv-prod-2.ritter.family";
-            extraConfig = ''
-              client_max_body_size 512M;
-            '';
+            maxBodySize = "512M";
           }
           {
             fqdn = "collabora.ritter.family";
@@ -25,9 +23,7 @@ _: {
           {
             fqdn = "documents.ritter.family";
             target = "https://documents.srv-prod-2.ritter.family";
-            extraConfig = ''
-              client_max_body_size 100M;
-            '';
+            maxBodySize = "100M";
           }
           {
             fqdn = "fritz-box.ritter.family";
@@ -36,9 +32,7 @@ _: {
           {
             fqdn = "git.ritter.family";
             target = "https://git.srv-prod-6.ritter.family";
-            extraConfig = ''
-              client_max_body_size 512M;
-            '';
+            maxBodySize = "512M";
           }
           {
             fqdn = "grafana.ritter.family";
@@ -61,29 +55,21 @@ _: {
           {
             fqdn = "nextcloud.ritter.family";
             target = "https://nextcloud.srv-prod-2.ritter.family";
-            extraConfig = ''
-              client_max_body_size 512M;
-            '';
+            maxBodySize = "512M";
           }
           {
             fqdn = "photos.ritter.family";
             target = "https://photos.srv-prod-4.ritter.family";
             proxyWebsockets = true;
-            extraConfig = ''
-              client_max_body_size 50000M;
-              proxy_read_timeout   600s;
-              proxy_send_timeout   600s;
-              send_timeout         600s;
-            '';
+            maxBodySize = "50000M";
+            proxyTimeout = "600s";
           }
           {
             fqdn = "pve.ritter.family";
             target = "https://${config.home-lab.hypervisors.pve.ip}:8006";
-            extraConfig = ''
-              # Avoid buffering issues with the Proxmox task log stream
-              proxy_buffering off;
-              proxy_read_timeout 3600s; 
-            '';
+            # Avoid buffering issues with the Proxmox task log stream
+            buffering = false;
+            proxyTimeout = "3600s";
           }
           {
             fqdn = "passwords.ritter.family";

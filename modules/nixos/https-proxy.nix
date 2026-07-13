@@ -20,6 +20,21 @@ _: {
             type = lib.types.bool;
             default = false;
           };
+          maxBodySize = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = ''client_max_body_size value, e.g. "512M" or "0" for unlimited.'';
+          };
+          proxyTimeout = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = ''Sets proxy_read_timeout, proxy_send_timeout and send_timeout, e.g. "600s".'';
+          };
+          buffering = lib.mkOption {
+            type = lib.types.bool;
+            default = true;
+            description = "When false, disables proxy_buffering (for streaming backends).";
+          };
           extraConfig = lib.mkOption {
             type = lib.types.lines;
             default = "";
@@ -47,7 +62,16 @@ _: {
           let
             makeHost = conf: {
               ${conf.fqdn} = {
-                inherit (conf) extraConfig;
+                extraConfig = lib.concatStrings [
+                  (lib.optionalString (conf.maxBodySize != null) "client_max_body_size ${conf.maxBodySize};\n")
+                  (lib.optionalString (conf.proxyTimeout != null) ''
+                    proxy_read_timeout ${conf.proxyTimeout};
+                    proxy_send_timeout ${conf.proxyTimeout};
+                    send_timeout ${conf.proxyTimeout};
+                  '')
+                  (lib.optionalString (!conf.buffering) "proxy_buffering off;\n")
+                  conf.extraConfig
+                ];
                 serverAliases = conf.aliases;
                 useACMEHost = conf.fqdn;
                 forceSSL = true;

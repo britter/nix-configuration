@@ -35,14 +35,12 @@ _: {
             inherit fqdn;
             target = "http://localhost:9000";
             proxyWebsockets = true;
+            # Allow any size file to be uploaded.
+            maxBodySize = "0";
+            buffering = false;
             extraConfig = ''
               # Allow special characters in headers
               ignore_invalid_headers off;
-              # Allow any size file to be uploaded.
-              # Set to a value such as 1000m; to restrict file size to a specific value
-              client_max_body_size 0;
-              # Disable buffering
-              proxy_buffering off;
               proxy_request_buffering off;
               proxy_connect_timeout 300;
               chunked_transfer_encoding off;
