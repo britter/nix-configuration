@@ -42,6 +42,8 @@ _: {
         nvim-surround.enable = true;
         sleuth.enable = true;
       };
+      # Auto-sourced at startup because it lands in nvim's plugin/ dir
+      extraFiles."plugin/unescape.lua".source = ./lua/unescape.lua;
       keymaps = [
         {
           action = "<cmd>split<CR>";
