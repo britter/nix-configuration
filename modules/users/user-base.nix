@@ -5,6 +5,7 @@
       config.flake.modules.generic.home-lab
       user-identity
       fish
+      starship
       terminal-essentials
       tmux
       gpg

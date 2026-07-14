@@ -7,8 +7,6 @@ _: {
         tokei # count lines of code
       ];
 
-      programs.starship.enable = true; # prompt framework
-
       programs.fish = {
         enable = true;
 
