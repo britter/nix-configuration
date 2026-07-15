@@ -1,6 +1,14 @@
 {
   flake.modules.homeManager.sway =
-    { config, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
+    let
+      lockCmd = "${lib.getExe config.programs.noctalia-shell.package} ipc call lockScreen lock";
+    in
     {
       services.swayidle = {
         enable = true;
@@ -11,14 +19,14 @@
           }
           {
             timeout = 300;
-            command = "${config.programs.swaylock.package}/bin/swaylock";
+            command = lockCmd;
           }
           {
             timeout = 600;
             command = "${pkgs.systemd}/bin/systemctl suspend";
           }
         ];
-        events.before-sleep = "${config.programs.swaylock.package}/bin/swaylock";
+        events.before-sleep = lockCmd;
       };
     };
 }

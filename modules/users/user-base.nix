@@ -3,6 +3,7 @@
   flake.modules.homeManager.user-base = {
     imports = with config.flake.modules.homeManager; [
       config.flake.modules.generic.home-lab
+      config.flake.modules.generic.systemConstants
       user-identity
       fish
       terminal-essentials

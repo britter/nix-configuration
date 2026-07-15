@@ -1,6 +1,6 @@
 _: {
   flake.modules.generic.systemConstants =
-    { lib, ... }:
+    { lib, pkgs, ... }:
     {
       options.systemConstants = lib.mkOption {
         type = lib.types.attrsOf lib.types.unspecified;
@@ -17,6 +17,9 @@ _: {
           starlite = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2+ifShP1n5ZV8Q/VKXvpdKAJycgQ0kgkiz7YOPmKec";
         };
         configRepo = "https://github.com/britter/nix-configuration.git";
+        # Lazily evaluated: only forced by desktop consumers (greeter/noctalia),
+        # so server hosts never build the wallpaper.
+        wallpaper = "${pkgs.wallpapers}/landscapes/Clearday.jpg";
       };
     };
 }
