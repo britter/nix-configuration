@@ -4,15 +4,12 @@ let
 in
 {
   flake.modules.nixos.sway =
-    { lib, pkgs, ... }:
+    { ... }:
     {
       imports = with outer.flake.modules.nixos; [
         noctalia
+        regreet
       ];
-
-      # puts systemd init logs on tty1
-      # so that tuigreet and systemd logs don't clobber each other
-      boot.kernelParams = [ "console=tty1" ];
 
       # xdg portal wlr is required for screensharing
       xdg.portal = {
@@ -22,17 +19,6 @@ in
       };
 
       services = {
-        greetd = {
-          enable = true;
-          useTextGreeter = true;
-          settings = {
-            default_session = {
-              # put on a single line to work around https://github.com/NixOS/nixpkgs/issues/527565
-              command = "${lib.getExe pkgs.tuigreet} --remember --time --asterisks --cmd ${lib.getExe pkgs.sway}";
-            };
-          };
-        };
-
         # Required for automatically mounting USB devices
         devmon.enable = true;
         gvfs.enable = true;
