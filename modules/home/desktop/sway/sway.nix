@@ -8,7 +8,6 @@ in
     {
       imports = with outer.flake.modules.nixos; [
         noctalia
-        swaylock
       ];
 
       # puts systemd init logs on tty1
@@ -63,7 +62,6 @@ in
     {
       imports = with outer.flake.modules.homeManager; [
         noctalia
-        swaylock
         desktop-apps
       ];
 

@@ -33,6 +33,8 @@
                 { id = "Battery"; }
                 { id = "Volume"; }
                 { id = "Brightness"; }
+                { id = "KeepAwake"; }
+                { id = "NightLight"; }
                 { id = "ControlCenter"; }
               ];
             };
@@ -42,6 +44,14 @@
             enableClipboardHistory = true;
           };
           dock.enable = false;
+          nightLight = {
+            enabled = true;
+            autoSchedule = false; # flip to true only once a location is configured
+            nightTemp = "4000";
+            dayTemp = "6500";
+            manualSunrise = "06:30";
+            manualSunset = "20:00";
+          };
           sessionMenu = {
             enableCountdown = false;
             largeButtonsStyle = false;
