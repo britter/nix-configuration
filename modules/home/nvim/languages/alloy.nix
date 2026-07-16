@@ -20,6 +20,19 @@ _: {
             });
         meta.homepage = "https://github.com/mattsre/tree-sitter-alloy";
       };
+      none-ls-extras = pkgs.vimUtils.buildVimPlugin {
+        pname = "none-ls-extras.nvim";
+        version = "0-unstable-2026-07-15";
+        src = pkgs.fetchFromGitHub {
+          owner = "nvimtools";
+          repo = "none-ls-extras.nvim";
+          rev = "27681d797a26f1b4d6119296df42f5204c88a2dc";
+          hash = "sha256-GZLT8X1eLeSkiV5EN1nOkCQg5nwNATURi/KMj90i40I=";
+        };
+        # modules require null-ls at runtime, so they can't be imported
+        # standalone during the require check
+        doCheck = false;
+      };
     in
     {
       programs.nixvim = {
@@ -52,64 +65,24 @@ _: {
               ''
                 do
                   local null_ls = require("null-ls")
-                  local helpers = require("null-ls.helpers")
-
-                  local alloy_fmt = {
-                    method = null_ls.methods.FORMATTING,
-                    filetypes = { "alloy" },
-                    name = "alloy-fmt",
-                    generator = helpers.formatter_factory({
-                      command = "${pkgs.grafana-alloy}/bin/alloy",
-                      args = { "fmt" },
-                      to_stdin = true,
-                    }),
-                  }
-                  null_ls.register(alloy_fmt)
-
-                  local pattern = [[^([%w]+):%s*(.-):(%d+):(%d+):%s*(.*)$]]
-                  local alloy_validate = {
-                    method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-                    filetypes = { "alloy" },
-                    name = "alloy-validate",
-                    generator = helpers.generator_factory({
-                      command = "${pkgs.grafana-alloy}/bin/alloy",
-                      args = { "validate", "$FILENAME" },
-                      format = "line",
-                      to_stdin = false,
-                      from_stderr = true,
-                      on_output = function(line, params)
-                        -- Only match the diagnostic header line. Ignore all others.
-                        local severity, filename, lnum, col, msg =
-                          line:match(pattern)
-
-                        if not severity then
-                            return nil
-                        end
-
-                        local sevmap = {
-                          Error   = helpers.diagnostics.severities.error,
-                          Warning = helpers.diagnostics.severities.warning,
-                        }
-
-                        return {
-                          row      = tonumber(lnum),
-                          col      = tonumber(col),
-                          end_col  = tonumber(col) + 1, -- mark single char
-                          source   = "alloy",
-                          message  = msg,
-                          severity = sevmap[severity] or helpers.diagnostics.severities.error,
-                          filename = filename,
-                        }
-                      end,
-                    }),
-                  }
-                  null_ls.register(alloy_validate)
+                  -- alloy fmt + validate now come from none-ls-extras.nvim
+                  -- (nvimtools/none-ls-extras.nvim#45). `.with` pins the binary
+                  -- so it doesn't have to be on nvim's PATH.
+                  null_ls.register(require("none-ls.formatting.alloy").with({
+                    command = "${pkgs.grafana-alloy}/bin/alloy",
+                  }))
+                  null_ls.register(require("none-ls.diagnostics.alloy").with({
+                    command = "${pkgs.grafana-alloy}/bin/alloy",
+                  }))
                 end
               '';
           };
         };
 
-        extraPlugins = [ treesitter-alloy-grammar ];
+        extraPlugins = [
+          treesitter-alloy-grammar
+          none-ls-extras
+        ];
       };
     };
 }
