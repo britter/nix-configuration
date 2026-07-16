@@ -17,6 +17,13 @@ _: {
                 # should be removed once https://github.com/nix-community/nixvim/pull/4234 has been merged
                 package = pkgs.prettier;
                 disableTsServerFormatter = true;
+                settings = {
+                  disabled_filetypes = [
+                    "yaml"
+                    "markdown"
+                    "markdown.mdx"
+                  ];
+                };
               };
             };
             diagnostics.actionlint.enable = true;
