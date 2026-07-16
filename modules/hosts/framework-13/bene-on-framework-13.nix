@@ -14,6 +14,7 @@
       home-manager.users.bene = {
         imports = with config.flake.modules.homeManager; [
           sway
+          ai-agent
           bitwarden
           calibre
           desktop-essentials
