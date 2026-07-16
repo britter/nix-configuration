@@ -7,6 +7,7 @@
       enable = true;
       nix-direnv.enable = true;
       config.whitelist.prefix = [
+        "~/britter.dev"
         "~/github/britter"
         "~/github/gradlex-org"
         "~/codeberg.org/britter"
