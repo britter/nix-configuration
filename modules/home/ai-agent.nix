@@ -25,7 +25,21 @@
 
       programs.opencode = {
         enable = true;
-        settings.plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
+        settings = {
+          plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
+
+          # A primary agent (cycle to it with Tab) that asks before mutations,
+          # like Claude Code's default. The built-in build agent is left as-is.
+          agent.careful = {
+            mode = "primary";
+            permission = {
+              edit = "ask";
+              bash = "ask";
+              webfetch = "ask";
+              external_directory = "ask";
+            };
+          };
+        };
       };
     };
 }
