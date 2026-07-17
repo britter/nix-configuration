@@ -20,19 +20,6 @@ _: {
             });
         meta.homepage = "https://github.com/mattsre/tree-sitter-alloy";
       };
-      none-ls-extras = pkgs.vimUtils.buildVimPlugin {
-        pname = "none-ls-extras.nvim";
-        version = "0-unstable-2026-07-15";
-        src = pkgs.fetchFromGitHub {
-          owner = "nvimtools";
-          repo = "none-ls-extras.nvim";
-          rev = "27681d797a26f1b4d6119296df42f5204c88a2dc";
-          hash = "sha256-GZLT8X1eLeSkiV5EN1nOkCQg5nwNATURi/KMj90i40I=";
-        };
-        # modules require null-ls at runtime, so they can't be imported
-        # standalone during the require check
-        doCheck = false;
-      };
     in
     {
       programs.nixvim = {
@@ -81,7 +68,6 @@ _: {
 
         extraPlugins = [
           treesitter-alloy-grammar
-          none-ls-extras
         ];
       };
     };
