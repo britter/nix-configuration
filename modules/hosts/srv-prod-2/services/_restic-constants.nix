@@ -8,7 +8,7 @@
   ];
   timerConfig = {
     OnCalendar = "00:00";
-    RandomizedDelaySec = "30mm";
+    RandomizedDelaySec = "30m";
     Persistent = true;
   };
 }
