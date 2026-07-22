@@ -38,6 +38,22 @@
             --set GH_TELEMETRY false
         '';
       });
+      # Workaround for https://github.com/NixOS/nixpkgs/pull/540779
+      # by backporting https://github.com/NixOS/nixpkgs/pull/540742
+      # Remove once 540742 lands on nixos-unstable
+      python3Packages = prev.python3Packages.overrideScope (
+        _pyFinal: pyPrev: {
+          patool = pyPrev.patool.override {
+            file = prev.file.overrideAttrs {
+              postPatch = ''
+                substituteInPlace src/landlock.c --replace-fail \
+                  "LANDLOCK_ACCESS_FS_READ_FILE | LANDLOCK_ACCESS_FS_READ_DIR" \
+                  "LANDLOCK_ACCESS_FS_READ_FILE | LANDLOCK_ACCESS_FS_READ_DIR | LANDLOCK_ACCESS_FS_EXECUTE"
+              '';
+            };
+          };
+        }
+      );
     };
 
     default = inputs.nixpkgs.lib.composeManyExtensions [
