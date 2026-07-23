@@ -1,6 +1,11 @@
 {
   flake.modules.homeManager.ai-agent =
-    { config, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     let
       nono-packs = pkgs.fetchFromGitHub {
         owner = "nolabs-ai";
@@ -54,6 +59,7 @@
 
       programs.opencode = {
         enable = true;
+        enableMcpIntegration = true;
         settings = {
           plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
 
@@ -73,6 +79,17 @@
               webfetch = "ask";
               external_directory = "ask";
             };
+          };
+        };
+      };
+      programs.mcp = {
+        enable = true;
+        servers.grafana = {
+          command = lib.getExe pkgs.mcp-grafana;
+          env = {
+            GRAFANA_URL = "https://testlens.grafana.net";
+            # service account token has to be exported manually before use
+            GRAFANA_SERVICE_ACCOUNT_TOKEN = "{env:GRAFANA_SERVICE_ACCOUNT_TOKEN}";
           };
         };
       };
