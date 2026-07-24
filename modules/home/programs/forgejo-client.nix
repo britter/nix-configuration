@@ -10,6 +10,7 @@ _: {
     { pkgs, ... }:
 
     {
+      home.packages = [ pkgs.forgejo-cli ];
       # HTTPS auth for the self-hosted Forgejo (git.ritter.family). Scoped by
       # URL so it never touches the SSH-based GitHub/chainguard remotes.
       programs.git.settings.credential = {
