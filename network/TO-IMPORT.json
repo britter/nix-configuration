@@ -11,10 +11,6 @@
   "name": "Allow SSH from Trusted"
 }
 {
-  "id": "696bb70c8ea6ae4ba05cfee9",
-  "name": "Allow pinging from Trusted"
-}
-{
   "id": "696be1fd8ea6ae4ba05d0365",
   "name": "Allow Traffic from Trusted to PVE on 8006"
 }
