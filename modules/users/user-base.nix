@@ -10,7 +10,6 @@
       gpg
       git
       tools
-      nono
       ssh
       java-config
       catppuccin
