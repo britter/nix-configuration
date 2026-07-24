@@ -39,6 +39,7 @@ _: {
     in
     {
       home.packages = with pkgs; [
+        clipmd
         caligula # tui for disk imaging
         captive-portal
         curl
