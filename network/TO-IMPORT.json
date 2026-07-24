@@ -1,8 +1,4 @@
 {
-  "id": "696a2f468ea6ae4ba05cd693",
-  "name": "Allow DNS-TLS from Trusted to Homelab"
-}
-{
   "id": "696a2faf8ea6ae4ba05cd6b3",
   "name": "Allow SSH from Trusted"
 }
