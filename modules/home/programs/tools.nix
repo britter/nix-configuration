@@ -49,6 +49,7 @@ _: {
         httpie
         jq
         mob # smooth git handover
+        nixpkgs-pr
         pdf-fax
         motus
         tokei # count lines of code
