@@ -24,6 +24,34 @@ resource "unifi_firewall_policy" "trusted_to_homelab_networks_ping" {
   }
 }
 
+resource "unifi_firewall_policy" "trusted_to_homelab_networks_https" {
+  name                 = "Allow HTTPS from Trusted"
+  action               = "ALLOW"
+  protocol             = "all"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids     = [unifi_network.trusted.id]
+  }
+
+  destination = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids = [
+      unifi_network.homelab.id,
+      unifi_network.servers.id,
+      unifi_network.kvms.id,
+      unifi_network.management.id
+    ]
+    port              = "443"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
