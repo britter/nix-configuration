@@ -43,3 +43,4 @@ terraform.rc
 
 # Credentials file
 credentials.env
+.pre-commit-config.yaml
