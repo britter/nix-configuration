@@ -1,8 +1,4 @@
 {
-  "id": "69c82444b84e03db685b7fc9",
-  "name": "Allow NFS mount from Servers to Management"
-}
-{
   "id": "6a40ff6245682d57c09a27f1",
   "name": "Allow PVE proxying via directions"
 }
