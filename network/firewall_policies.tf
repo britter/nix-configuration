@@ -126,6 +126,29 @@ resource "unifi_firewall_policy" "trusted_to_networks_ssh" {
   }
 }
 
+resource "unifi_firewall_policy" "trusted_to_pve_8006" {
+  name                 = "Allow Traffic from Trusted to PVE on 8006"
+  action               = "ALLOW"
+  protocol             = "all"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids     = [unifi_network.trusted.id]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "IP"
+    ips                = ["192.168.5.10"]
+    port               = "8006"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
