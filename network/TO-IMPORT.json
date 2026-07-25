@@ -1,8 +1,4 @@
 {
-  "id": "69bfe30fb84e03db685a8bca",
-  "name": "Allow HTTPS from Homelab to servers"
-}
-{
   "id": "69c82444b84e03db685b7fc9",
   "name": "Allow NFS mount from Servers to Management"
 }
