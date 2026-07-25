@@ -1,8 +1,4 @@
 {
-  "id": "696be5398ea6ae4ba05d03d2",
-  "name": "Allow UDP from Trusted to KVMs"
-}
-{
   "id": "696ea0ac8ea6ae4ba05d4ed7",
   "name": "Allow Traffic from Trusted to Home Assistant"
 }

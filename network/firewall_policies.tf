@@ -149,6 +149,30 @@ resource "unifi_firewall_policy" "trusted_to_pve_8006" {
   }
 }
 
+resource "unifi_firewall_policy" "trusted_to_kvms_udp" {
+  name                 = "Allow UDP from Trusted to KVMs"
+  action               = "ALLOW"
+  protocol             = "udp"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+  description          = "Required for JetKVM's WebRTC video streaming."
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids     = [unifi_network.trusted.id]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "NETWORK"
+    network_ids        = [unifi_network.kvms.id]
+    port               = "1024-65535"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
