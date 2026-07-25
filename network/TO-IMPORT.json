@@ -1,8 +1,4 @@
 {
-  "id": "6987139ee999852897759de1",
-  "name": "Allow Servers to access DNS in Homelab"
-}
-{
   "id": "698713d2e999852897759de4",
   "name": "Allow Servers to access DNS-TLS in Homelab"
 }
