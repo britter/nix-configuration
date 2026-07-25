@@ -221,6 +221,33 @@ resource "unifi_firewall_policy" "home_assistant_to_yeelights" {
   }
 }
 
+resource "unifi_firewall_policy" "homelab_servers_to_home_assistant" {
+  name                 = "Allow Poxying of Home Assistant"
+  action               = "ALLOW"
+  protocol             = "all"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+  description          = "Default port for HA web UI is 8123"
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids = [
+      unifi_network.homelab.id,
+      unifi_network.servers.id
+    ]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "NETWORK"
+    network_ids        = [unifi_network.smart_home.id]
+    port               = "8123"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
