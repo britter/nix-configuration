@@ -434,6 +434,29 @@ resource "unifi_firewall_policy" "servers_to_management_nfs" {
   }
 }
 
+resource "unifi_firewall_policy" "directions_to_pve_proxy" {
+  name                 = "Allow PVE proxying via directions"
+  action               = "ALLOW"
+  protocol             = "tcp"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "CLIENT"
+    client_macs     = [unifi_client.directions.mac]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "IP"
+    ips                = ["192.168.10.10"]
+    port               = "8006"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
