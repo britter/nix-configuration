@@ -47,7 +47,7 @@ resource "unifi_firewall_policy" "trusted_to_homelab_networks_https" {
       unifi_network.kvms.id,
       unifi_network.management.id
     ]
-    port              = "443"
+    port               = "443"
     port_matching_type = "SPECIFIC"
   }
 }
@@ -67,10 +67,10 @@ resource "unifi_firewall_policy" "trusted_to_homelab_dns" {
   }
 
   destination = {
-    zone_id         = data.unifi_firewall_zone.internal.id
-    matching_target = "NETWORK"
-    network_ids     = [unifi_network.homelab.id]
-    port              = "53"
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "NETWORK"
+    network_ids        = [unifi_network.homelab.id]
+    port               = "53"
     port_matching_type = "SPECIFIC"
   }
 }
@@ -90,10 +90,10 @@ resource "unifi_firewall_policy" "trusted_to_homelab_dns_tls" {
   }
 
   destination = {
-    zone_id           = data.unifi_firewall_zone.internal.id
-    matching_target   = "NETWORK"
-    network_ids       = [unifi_network.homelab.id]
-    port              = "853"
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "NETWORK"
+    network_ids        = [unifi_network.homelab.id]
+    port               = "853"
     port_matching_type = "SPECIFIC"
   }
 }
@@ -113,15 +113,15 @@ resource "unifi_firewall_policy" "trusted_to_networks_ssh" {
   }
 
   destination = {
-    zone_id           = data.unifi_firewall_zone.internal.id
-    matching_target   = "NETWORK"
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
     network_ids = [
       unifi_network.homelab.id,
       unifi_network.management.id,
       unifi_network.smart_home.id,
       unifi_network.servers.id
     ]
-    port              = "22"
+    port               = "22"
     port_matching_type = "SPECIFIC"
   }
 }
