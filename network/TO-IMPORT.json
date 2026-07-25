@@ -1,8 +1,4 @@
 {
-  "id": "69bfe2d5b84e03db685a8bc7",
-  "name": "Allow HTTP form Homelab to servers"
-}
-{
   "id": "69bfe30fb84e03db685a8bca",
   "name": "Allow HTTPS from Homelab to servers"
 }
