@@ -197,6 +197,30 @@ resource "unifi_firewall_policy" "trusted_to_home_assistant" {
   }
 }
 
+resource "unifi_firewall_policy" "home_assistant_to_yeelights" {
+  name                 = "Allow Home Assistant to Control Yeelights in NoT"
+  action               = "ALLOW"
+  protocol             = "all"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+  description          = "Allow TCP on port 55443"
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids     = [unifi_network.smart_home.id]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "NETWORK"
+    network_ids        = [unifi_network.not.id]
+    port               = "55443"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
