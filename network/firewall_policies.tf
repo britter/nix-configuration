@@ -341,6 +341,30 @@ resource "unifi_firewall_policy" "servers_to_homelab_dns_tls" {
   }
 }
 
+resource "unifi_firewall_policy" "trusted_to_not_print" {
+  name                 = "Allow Trusted to Print"
+  action               = "ALLOW"
+  protocol             = "tcp_udp"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+  description          = "Allows Port 9100 and 631 which is required for printing on HP Printers"
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids     = [unifi_network.trusted.id]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "NETWORK"
+    network_ids        = [unifi_network.not.id]
+    port               = "631,9100"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
