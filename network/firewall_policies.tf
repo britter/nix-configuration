@@ -318,6 +318,29 @@ resource "unifi_firewall_policy" "servers_to_homelab_dns" {
   }
 }
 
+resource "unifi_firewall_policy" "servers_to_homelab_dns_tls" {
+  name                 = "Allow Servers to access DNS-TLS in Homelab"
+  action               = "ALLOW"
+  protocol             = "all"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids     = [unifi_network.servers.id]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "NETWORK"
+    network_ids        = [unifi_network.homelab.id]
+    port               = "853"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
