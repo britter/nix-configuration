@@ -248,6 +248,29 @@ resource "unifi_firewall_policy" "homelab_servers_to_home_assistant" {
   }
 }
 
+resource "unifi_firewall_policy" "trusted_to_management_pve" {
+  name                 = "Allow PVE Management from Trusted"
+  action               = "ALLOW"
+  protocol             = "all"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids     = [unifi_network.trusted.id]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "NETWORK"
+    network_ids        = [unifi_network.management.id]
+    port               = "8006"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"

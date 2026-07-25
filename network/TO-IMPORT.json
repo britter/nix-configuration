@@ -1,8 +1,4 @@
 {
-  "id": "697e1d69e999852897748720",
-  "name": "Allow PVE Management from Trusted"
-}
-{
   "id": "69863cd4e999852897757f4b",
   "name": "Allow HTTPS from Servers to Homelab"
 }
