@@ -5,21 +5,17 @@
   maven_4,
   versionCheckHook,
 }:
-maven_4.buildMavenPackage {
+maven_4.buildMavenPackage (finalAttrs: {
   pname = "jfmt";
-  version = "0.1.0-rc1";
+  version = "0.2.0";
 
   src = fetchFromGitHub {
     owner = "bmarwell";
     repo = "jfmt";
-    # tag v0.1.0-rc1 points to a different commit than this commit which is on branch release/0.1.0-rc1 but not on main
-    # this commit changes the version from 0.1.0-SNAPSHOT to 0.1.0-rc1, which indicates this is the release commit.
-    rev = "9870374e6cf6b8e5f2142eafee1b8b671797ee92";
-    sha256 = "sha256-RJHYiW31oZp86IohPfoBbX7GSp6teuCTJgjZmQ9EzKQ=";
+    tag = "v${finalAttrs.version}";
+    sha256 = "sha256-wynVkOUFS8MMBp+Go7VUA3j4xsb1UJDeNR2PAmkZAYA=";
   };
-  mvnHash = "sha256-dS+HdpolMkHJjZtMDZGEO2UGYjUFwXdkA7Xa9GBWMtc=";
-
-  patches = [ ./0001-bump-JReleaser-to-1.24.0-and-enable-reproducible-outputs.patch ];
+  mvnHash = "sha256-WFtzqFlFQzaC8UViNfSe3mFndriX3ATBM1s+4qtNeGk=";
 
   # GraalVM CE with musl libc support; native-image is at $JAVA_HOME/bin/native-image
   # and the wrapper provides musl-gcc and musl C library paths automatically.
@@ -30,6 +26,7 @@ maven_4.buildMavenPackage {
   # which works with graalvm-ce-musl's musl toolchain wrapper.
   # Spotless is skipped to avoid downloading the Eclipse JDT formatter at build time.
   mvnParameters = lib.escapeShellArgs [
+    "-Djreleaser.reproducible=true"
     "-Dspotless.skip=true"
     "-Pnative"
     "-pl"
@@ -47,7 +44,7 @@ maven_4.buildMavenPackage {
     # The native-maven-plugin outputs the binary named after $${project.artifactId}-$${project.version}.
     # Exclude JARs and ZIPs created by maven-assembly-plugin in the same directory.
     find cli/target -maxdepth 1 -type f -perm /0111 -name 'jfmt*' \
-      -exec install -m755 {} $out/bin/jfmt \;
+    -exec install -m755 {} $out/bin/jfmt \;
     runHook postInstall
   '';
 
@@ -59,4 +56,4 @@ maven_4.buildMavenPackage {
     mainProgram = "jfmt";
     platforms = lib.platforms.linux;
   };
-}
+})
