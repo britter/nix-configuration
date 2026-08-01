@@ -50,6 +50,7 @@ _: {
             deck
             news
             notes
+            pantry
             ;
         };
         extraAppsEnable = true;
