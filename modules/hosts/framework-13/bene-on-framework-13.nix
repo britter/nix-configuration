@@ -5,7 +5,6 @@
     {
       imports = with config.flake.modules.nixos; [
         bene
-        bitwarden
         forgejo-client
         nextcloud-client
         sway

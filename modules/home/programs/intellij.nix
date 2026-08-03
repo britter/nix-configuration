@@ -1,4 +1,6 @@
 _: {
+  flake.permittedInsecurePackages = [ "idea-oss-2025.3.4" ];
+
   flake.modules.homeManager.intellij =
     { lib, pkgs, ... }:
     let
