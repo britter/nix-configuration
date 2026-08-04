@@ -55,6 +55,7 @@ _: {
         tokei # count lines of code
         tealdeer # better man pages
         serve_dir
+        sd # sed replacement
         unzip
         wget
         yq-go

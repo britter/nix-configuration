@@ -17,6 +17,15 @@
       };
       # Single source of truth on disk; each harness references it in its own
       # idiom (opencode's `instructions`, Claude's CLAUDE.md `@import`).
+      scriptingContext = pkgs.writeText "scripting.md" ''
+        # Scripting
+
+        For anything beyond a trivial one-liner, write a Python script instead
+        of a bash one-liner. Python is not installed on this host; run a script
+        with `nix run nixpkgs#python3 -- script.py [args...]`. If the script
+        needs a library, run it in a shell that provides it, e.g.
+        `nix shell nixpkgs#python3 nixpkgs#python3Packages.requests -c python3 script.py`.
+      '';
       hostContext = pkgs.writeText "host.md" ''
         # Host environment
 
@@ -32,7 +41,25 @@
         that repo, not in imperative commands like `nix profile install` or
         hand-edited config files.
       '';
+      # Important CLI tools installed on this host (see modules/home/programs/tools.nix).
+      toolsContext = pkgs.writeText "tools.md" ''
+        # CLI tools
+
+        Prefer these installed tools over generic alternatives:
+
+        - `gh` for GitHub access (issues, PRs, releases, gists)
+        - `jq` for JSON parsing and formatting
+        - `httpie` for making HTTP requests (`http --follow https://...`)
+        - `yq` for YAML/JSON/TOML conversion
+        - `fd` as a fast `find` replacement
+        - `eza` as an `ls` replacement
+        - `ripgrep` for recursive text search
+        - `tokei` for counting lines of code
+        - `sd` for simple find/replace on files (`sd -i 'old' 'new' src/**/*.rs`)
+      '';
       hostPath = "${config.xdg.configHome}/agents/host.md";
+      scriptingPath = "${config.xdg.configHome}/agents/scripting.md";
+      toolsPath = "${config.xdg.configHome}/agents/tools.md";
 
       preferences = pkgs.writeText "preferences.md" ''
         # Working preferences
@@ -57,6 +84,8 @@
           # opencode's native way to pull in external context.
           instructions = [
             hostPath
+            scriptingPath
+            toolsPath
             preferencesPath
           ];
 
@@ -87,9 +116,13 @@
 
       # Context files on disk, plus Claude Code's native references to them.
       xdg.configFile."agents/host.md".source = hostContext;
+      xdg.configFile."agents/scripting.md".source = scriptingContext;
+      xdg.configFile."agents/tools.md".source = toolsContext;
       xdg.configFile."agents/preferences.md".source = preferences;
       home.file.".claude/CLAUDE.md".text = ''
         @${hostPath}
+        @${scriptingPath}
+        @${toolsPath}
         @${preferencesPath}
       '';
     };
