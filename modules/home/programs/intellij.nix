@@ -1,12 +1,12 @@
 _: {
-  flake.permittedInsecurePackages = [ "idea-oss-2025.3.4" ];
+  flake.allowUnfreePackages = [ "idea" ];
 
   flake.modules.homeManager.intellij =
     { lib, pkgs, ... }:
     let
-      idea = pkgs.jetbrains.idea-oss;
+      idea = pkgs.jetbrains.idea;
       ideaStartScript = pkgs.writeShellApplication {
-        name = "idea";
+        name = "start-idea";
         text = ''
           DIR=''${1:-$(pwd)}
           nohup ${lib.getExe idea} "$DIR" > /dev/null 2>&1 &
