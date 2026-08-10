@@ -1,4 +1,6 @@
 _: {
+  flake.permittedInsecurePackages = [ "minio-2025-10-15T17-29-55Z" ];
+
   flake.modules.nixos.minio =
     { config, ... }:
     let
@@ -14,10 +16,6 @@ _: {
           MINIO_ROOT_PASSWORD=${config.sops.placeholder."minio/root-password"}
         '';
       };
-
-      nixpkgs.config.permittedInsecurePackages = [
-        "minio-2025-10-15T17-29-55Z"
-      ];
 
       services.minio = {
         enable = true;

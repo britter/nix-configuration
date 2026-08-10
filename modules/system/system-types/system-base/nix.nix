@@ -18,5 +18,6 @@
 
     nixpkgs.overlays = [ config.flake.overlays.default ];
     nixpkgs.config.allowUnfreePackages = config.flake.allowUnfreePackages;
+    nixpkgs.config.permittedInsecurePackages = config.flake.permittedInsecurePackages;
   };
 }

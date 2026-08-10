@@ -26,6 +26,7 @@
           inherit system;
           overlays = [ config.flake.overlays.default ];
           config.allowUnfreePackages = config.flake.allowUnfreePackages;
+          config.permittedInsecurePackages = config.flake.permittedInsecurePackages;
         };
         modules = [
           config.flake.modules.homeManager.${name}
