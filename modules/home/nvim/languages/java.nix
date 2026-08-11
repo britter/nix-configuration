@@ -13,6 +13,7 @@ _: {
     in
     {
       programs.nixvim = {
+        filetype.extension.pom = "xml";
         plugins = {
           jdtls = {
             enable = true;
