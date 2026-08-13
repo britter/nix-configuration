@@ -2,6 +2,10 @@ _: {
   flake.modules.homeManager.librewolf =
     { pkgs, ... }:
     {
+      # librewolf's catppuccin theme is applied via the explicit profile
+      # config below rather than through catppuccin's auto-styling.
+      catppuccin.librewolf.profiles.bene.enable = false;
+
       programs.librewolf = {
         enable = true;
         settings = {
