@@ -110,7 +110,10 @@
                 { id = "Battery"; }
                 { id = "Volume"; }
                 { id = "Brightness"; }
-                { id = "ControlCenter"; }
+                {
+                  id = "ControlCenter";
+                  customIconPath = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
+                }
               ];
             };
           };
