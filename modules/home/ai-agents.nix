@@ -71,12 +71,62 @@
           preserved.
       '';
       preferencesPath = "${config.xdg.configHome}/agents/preferences.md";
+
+      # Same palette source catppuccin/nix uses internally, so herdr's colors
+      # track the flavor configured in modules/home/catppuccin.nix.
+      palette =
+        (lib.importJSON "${config.catppuccin.sources.palette}/palette.json")
+        .${config.catppuccin.flavor}.colors;
     in
     {
       home.packages = [
         pkgs.nono
-        pkgs.herdr
       ];
+
+      programs.herdr = {
+        enable = true;
+        settings = {
+          # config.toml is a read-only store symlink, so herdr cannot persist an
+          # onboarding choice — opt out explicitly.
+          onboarding = false;
+
+          theme = {
+            # herdr's built-in "catppuccin" is mocha; the token overrides below
+            # turn it into the flavor configured repo-wide (macchiato).
+            name = "catppuccin";
+            custom = {
+              panel_bg = palette.base.hex;
+              surface_dim = palette.mantle.hex;
+              surface0 = palette.surface0.hex;
+              surface1 = palette.surface1.hex;
+              overlay0 = palette.overlay0.hex;
+              overlay1 = palette.overlay1.hex;
+              subtext0 = palette.subtext0.hex;
+              accent = palette.${config.catppuccin.accent}.hex;
+              mauve = palette.mauve.hex;
+              green = palette.green.hex;
+              yellow = palette.yellow.hex;
+              red = palette.red.hex;
+              peach = palette.peach.hex;
+            };
+          };
+
+          # tmux parity — only the bindings that differ from herdr's defaults.
+          # Defaults already matching tmux: prefix+c new tab, prefix+n/p tab
+          # cycling, prefix+1..9, prefix+x close pane, prefix+z zoom,
+          # prefix+hjkl pane focus, prefix+r resize mode.
+          keys = {
+            prefix = "ctrl+b";
+            detach = "prefix+d";
+            split_vertical = "prefix+%";
+            split_horizontal = "prefix+\"";
+            copy_mode = "prefix+[";
+            close_tab = "prefix+&";
+            rename_tab = "prefix+,";
+            last_pane = "prefix+;";
+          };
+        };
+      };
 
       programs.hunk = {
         enable = true;
