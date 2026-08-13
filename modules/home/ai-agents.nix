@@ -130,6 +130,7 @@
 
       programs.hunk = {
         enable = true;
+        enableGitIntegration = true;
         enableClaudeIntegration = true;
         enableOpenCodeIntegration = true;
         settings.theme = "catppuccin-macchiato";

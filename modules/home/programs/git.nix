@@ -61,15 +61,6 @@ _: {
         ];
       };
 
-      programs.delta = {
-        enable = true;
-        enableGitIntegration = true;
-        options = {
-          side-by-side = true;
-          line-numbers = true;
-        };
-      };
-
       programs.lazygit = {
         enable = true;
         # Config reference: https://github.com/jesseduffield/lazygit/blob/master/docs/Config.md
