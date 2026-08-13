@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.ai-agent =
+  flake.modules.homeManager.ai-agents =
     {
       config,
       lib,
