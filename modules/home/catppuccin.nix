@@ -1,19 +1,24 @@
 { inputs, ... }:
 {
-  flake.modules.homeManager.catppuccin = {
-    imports = [
-      inputs.catppuccin.homeModules.catppuccin
-    ];
+  flake.modules.homeManager.catppuccin =
+    { pkgs, ... }:
+    {
+      imports = [
+        inputs.catppuccin.homeModules.catppuccin
+      ];
 
-    catppuccin = {
-      autoEnable = true;
-      enable = true;
-      flavor = "macchiato";
-
-      cursors = {
+      catppuccin = {
+        autoEnable = true;
         enable = true;
-        accent = "dark";
+        flavor = "macchiato";
+      };
+
+      home.pointerCursor = {
+        enable = true;
+        package = pkgs.adwaita-icon-theme;
+        name = "Adwaita";
+        size = 32;
+        gtk.enable = true;
       };
     };
-  };
 }
