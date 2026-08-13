@@ -90,6 +90,8 @@
           # onboarding choice — opt out explicitly.
           onboarding = false;
 
+          ui.sound.enabled = false;
+
           theme = {
             # herdr's built-in "catppuccin" is mocha; the token overrides below
             # turn it into the flavor configured repo-wide (macchiato).
