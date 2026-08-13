@@ -1,0 +1,43 @@
+Hey <name>,
+
+Lately I've been working on https://testlens.app, a new GitHub app, with the following capabilities:
+
+✅ Reports test failures as PR comments
+✅ Allows temporarily muting known flaky tests for fast reruns
+✅ Provides a dashboard of the most flaky tests as a GitHub issue
+
+It's free for user accounts and open source organizations. We have already onboarded quite a few popular open source projects such as JUnit, Spock, Apache Grails, Apache Groovy, and Netty.
+
+It's now generally available and we're looking for more early adopters and feedback!
+
+TL;DR If this sounds at all interesting to you, please head over to GitHub Marketplace (https://github.com/marketplace/testlens-app) and install the app, even if just for your personal account.
+
+Every install gets us closer to the 100 installs threshold imposed by GitHub Marketplace that would allow us to offer TestLens to commercial projects. 😉
+
+If you have any questions, reach out to us via team@testlens.app!
+
+Cheers,
+Benedikt
+
+---
+
+Hey <name>,
+
+Ich habe in den letzten Monaten mit zwei Freunden was gebaut: https://testlens.app. Es ist eine GitHub App mit den folgenden Features:
+
+✅ Test Failures werden direkt im PR als Kommentar angezeigt
+✅ Möglichkeit Flaky Tests zeitweise zu muten
+✅ Test Dashboard gibt eine Übersicht über alle Flaky Tests
+
+TestLens ist gratis für GitHub User accounts und Open Source Organisationen.
+Wir haben auch bereits ein paar namenhafte Open Source Projekte unter unseren ersten Nutzern: JUnit, Spock Framework, Apache Grails, Apache Groovy und Netty.
+
+Würde mich riesing freuen, wenn du es dir mal anschauen würdest.
+Geh dazu einfach in den GitHub Marketplace (https://github.com/marketplace/testlens-app) und installiere die App.
+
+Unser aktuelles Ziel ist es 100 Installs zu bekommen, da wir TestLens erst danach an kommerzielle Projekte vertreiben können. 😉
+
+Falls du Fragen hast, meld dich einfach hier oder per Mail an team@testlens.app!
+
+Bis dann!
+Benedikt

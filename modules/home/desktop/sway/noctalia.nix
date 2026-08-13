@@ -110,8 +110,6 @@
                 { id = "Battery"; }
                 { id = "Volume"; }
                 { id = "Brightness"; }
-                { id = "KeepAwake"; }
-                { id = "NightLight"; }
                 { id = "ControlCenter"; }
               ];
             };
