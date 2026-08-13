@@ -20,6 +20,7 @@ in
         intellij
         java
         nvim
+        ai-agents
         chainguard-development-tools
       ];
 
