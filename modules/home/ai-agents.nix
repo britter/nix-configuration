@@ -76,8 +76,14 @@
       home.packages = [
         pkgs.nono
         pkgs.herdr
-        pkgs.hunk
       ];
+
+      programs.hunk = {
+        enable = true;
+        enableClaudeIntegration = true;
+        enableOpenCodeIntegration = true;
+        settings.theme = "catppuccin-macchiato";
+      };
 
       programs.opencode = {
         enable = true;

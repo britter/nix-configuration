@@ -21,6 +21,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hunk = {
+      url = "github:modem-dev/hunk";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     import-tree.url = "github:denful/import-tree";
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";

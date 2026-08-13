@@ -9,6 +9,7 @@
       tmux
       gpg
       git
+      hunk
       tools
       ssh
       java-config
