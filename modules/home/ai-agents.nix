@@ -124,9 +124,36 @@
             close_tab = "prefix+&";
             rename_tab = "prefix+,";
             last_pane = "prefix+;";
+
+            # Seamless ctrl+hjkl between nvim splits and herdr panes, the way
+            # vim-tmux-navigator does it under tmux. herdr has no conditional
+            # binding, so the plugin's helper decides per keystroke whether to
+            # forward the chord into nvim or move pane focus.
+            command =
+              lib.mapAttrsToList
+                (key: direction: {
+                  inherit key;
+                  type = "plugin_action";
+                  command = "herdr-splits.nav-${direction}";
+                })
+                {
+                  "ctrl+h" = "left";
+                  "ctrl+j" = "down";
+                  "ctrl+k" = "up";
+                  "ctrl+l" = "right";
+                };
           };
         };
       };
+
+      # herdr's plugin registry is a derived cache of the parsed manifest, not
+      # config, so it can't be generated declaratively. `plugin link` resolves
+      # the path to the store, hence re-linking on every switch: that is what
+      # keeps the registry pointing at the current build. A running herdr may
+      # need a restart to pick up a freshly linked plugin.
+      home.activation.herdrSplitsPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        run ${lib.getExe pkgs.herdr} plugin link ${pkgs.herdr-splits-nvim} || true
+      '';
 
       programs.hunk = {
         enable = true;
