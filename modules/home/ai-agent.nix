@@ -73,7 +73,11 @@
       preferencesPath = "${config.xdg.configHome}/agents/preferences.md";
     in
     {
-      home.packages = [ pkgs.nono ];
+      home.packages = [
+        pkgs.nono
+        pkgs.herdr
+        pkgs.hunk
+      ];
 
       programs.opencode = {
         enable = true;
