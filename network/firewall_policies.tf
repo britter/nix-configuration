@@ -126,29 +126,6 @@ resource "unifi_firewall_policy" "trusted_to_networks_ssh" {
   }
 }
 
-resource "unifi_firewall_policy" "trusted_to_pve_8006" {
-  name                 = "Allow Traffic from Trusted to PVE on 8006"
-  action               = "ALLOW"
-  protocol             = "all"
-  ip_version           = "BOTH"
-  logging              = false
-  create_allow_respond = true
-
-  source = {
-    zone_id         = data.unifi_firewall_zone.internal.id
-    matching_target = "NETWORK"
-    network_ids     = [unifi_network.trusted.id]
-  }
-
-  destination = {
-    zone_id            = data.unifi_firewall_zone.internal.id
-    matching_target    = "IP"
-    ips                = ["192.168.5.10"]
-    port               = "8006"
-    port_matching_type = "SPECIFIC"
-  }
-}
-
 resource "unifi_firewall_policy" "trusted_to_kvms_udp" {
   name                 = "Allow UDP from Trusted to KVMs"
   action               = "ALLOW"
@@ -434,8 +411,8 @@ resource "unifi_firewall_policy" "servers_to_management_nfs" {
   }
 }
 
-resource "unifi_firewall_policy" "directions_to_pve_proxy" {
-  name                 = "Allow PVE proxying via directions"
+resource "unifi_firewall_policy" "directions_to_pve" {
+  name                 = "Allow HTTPS from directions to PVE"
   action               = "ALLOW"
   protocol             = "tcp"
   ip_version           = "BOTH"
@@ -451,8 +428,31 @@ resource "unifi_firewall_policy" "directions_to_pve_proxy" {
   destination = {
     zone_id            = data.unifi_firewall_zone.internal.id
     matching_target    = "IP"
-    ips                = ["192.168.10.10"]
+    ips                = [unifi_client.pve.fixed_ip]
     port               = "8006"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
+resource "unifi_firewall_policy" "directions_to_truenas" {
+  name                 = "Allow HTTP/HTTPS from directions to TrueNAS"
+  action               = "ALLOW"
+  protocol             = "tcp"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "CLIENT"
+    client_macs     = [unifi_client.directions.mac]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "IP"
+    ips                = [unifi_client.true_nas.fixed_ip]
+    port               = "80,443"
     port_matching_type = "SPECIFIC"
   }
 }
