@@ -46,19 +46,20 @@ _: {
                 if vim.uv.fs_stat(config_file) then
                   table.insert(args, "--config-file")
                   table.insert(args, config_file)
-                end
 
-                local jfmt = {
-                method = null_ls.methods.FORMATTING,
-                filetypes = { "java" },
-                name = "jfmt",
-                generator = helpers.formatter_factory({
-                command = "${pkgs.jfmt-java}/bin/jfmt",
-                    to_temp_file = true,
-                    args = args,
-                  }),
-                }
-                null_ls.register(jfmt)
+                  local jfmt = {
+                    method = null_ls.methods.FORMATTING,
+                    filetypes = { "java" },
+                    name = "jfmt",
+                    generator = helpers.formatter_factory({
+                      command = "${pkgs.jfmt-java}/bin/jfmt",
+                      to_temp_file = true,
+                      args = args,
+                    }),
+                  }
+
+                  null_ls.register(jfmt)
+                end
               end
             '';
         };
