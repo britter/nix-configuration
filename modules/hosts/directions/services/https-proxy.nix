@@ -87,6 +87,10 @@ _: {
             target = "https://tools.srv-prod-6.ritter.family";
           }
           {
+            fqdn = "truenas.ritter.family";
+            target = "https://192.168.10.20";
+          }
+          {
             fqdn = "unifi.ritter.family";
             target = "https://192.168.1.1";
             proxyWebsockets = true;
