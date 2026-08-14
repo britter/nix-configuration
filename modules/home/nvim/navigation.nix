@@ -6,7 +6,7 @@ _: {
         plugins.tmux-navigator.enable = true;
 
         # herdr's counterpart to tmux-navigator. The herdr side (keybindings and
-        # plugin registration) lives in modules/home/ai-agents.nix.
+        # plugin registration) lives in modules/home/programs/herdr.nix.
         extraPlugins = [ pkgs.herdr-splits-nvim ];
         extraConfigLuaPost = ''
           -- Inside herdr, take over ctrl+hjkl from vim-tmux-navigator. Nested

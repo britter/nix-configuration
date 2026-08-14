@@ -7,6 +7,7 @@
       fish
       terminal-essentials
       tmux
+      herdr
       gpg
       git
       hunk
