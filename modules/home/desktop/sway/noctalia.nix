@@ -122,6 +122,7 @@
             enableClipboardHistory = true;
           };
           dock.enable = false;
+          location.firstDayOfWeek = 1;
           nightLight = {
             enabled = true;
             autoSchedule = false; # flip to true only once a location is configured
