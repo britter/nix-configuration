@@ -71,6 +71,23 @@
           preserved.
       '';
       preferencesPath = "${config.xdg.configHome}/agents/preferences.md";
+
+      # https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1 — plain
+      # markdown, so we pin the raw revision and prepend skill frontmatter.
+      avoidAiTropes = pkgs.linkFarm "avoid-ai-tropes-skill" {
+        "SKILL.md" = pkgs.concatText "SKILL.md" [
+          (pkgs.writeText "frontmatter.md" ''
+            ---
+            name: avoid-ai-tropes
+            description: Catalogue of AI writing tells — magic adverbs, "delve", em-dash overuse, "it's not X, it's Y", rule-of-three padding. Use when writing or editing prose a human will read: docs, READMEs, PR descriptions, commit messages, blog posts, emails.
+            ---
+          '')
+          (pkgs.fetchurl {
+            url = "https://gist.githubusercontent.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1/raw/bfe72673726cdd541b69463ed7129942f4bc19c8/tropes.md";
+            hash = "sha256-BReDfbp6AkON/YSIVe2ULIxpuTyHplDyId94RplkXcg=";
+          })
+        ];
+      };
     in
     {
       programs.hunk = {
@@ -125,6 +142,8 @@
       xdg.configFile."agents/scripting.md".source = scriptingContext;
       xdg.configFile."agents/tools.md".source = toolsContext;
       xdg.configFile."agents/preferences.md".source = preferences;
+      xdg.configFile."opencode/skills/avoid-ai-tropes".source = avoidAiTropes;
+      home.file.".claude/skills/avoid-ai-tropes".source = avoidAiTropes;
       home.file.".claude/CLAUDE.md".text = ''
         @${hostPath}
         @${scriptingPath}
