@@ -11,6 +11,7 @@
         autoEnable = true;
         enable = true;
         flavor = "macchiato";
+        accent = "sky";
       };
 
       home.pointerCursor = {
