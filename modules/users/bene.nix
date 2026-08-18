@@ -11,6 +11,7 @@ let
   # framework-13 host overrides this via bene-on-framework-13.nix because
   # signing keys are per-machine.
   signingKey = "1232C0894CC635B5";
+  avatar = ./avatar.png;
 in
 {
   flake.modules.nixos.${username} =
@@ -48,6 +49,7 @@ in
       home.username = lib.mkDefault username;
       home.homeDirectory = lib.mkDefault "/home/${username}";
       home.stateVersion = "23.05";
+      home.file.".face".source = avatar;
 
       user = {
         inherit fullName email;
