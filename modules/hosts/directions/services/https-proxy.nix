@@ -89,6 +89,7 @@ _: {
           {
             fqdn = "truenas.ritter.family";
             target = "https://192.168.10.20";
+            proxyWebsockets = true;
           }
           {
             fqdn = "unifi.ritter.family";
