@@ -125,7 +125,7 @@
       # keeps the registry pointing at the current build. A running herdr may
       # need a restart to pick up a freshly linked plugin.
       home.activation.herdrSplitsPlugin = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        run ${lib.getExe pkgs.herdr} plugin link ${pkgs.herdr-splits-nvim} || true
+        run ${lib.getExe pkgs.herdr} plugin link ${pkgs.vimPlugins.herdr-splits-nvim} || true
       '';
     };
 }

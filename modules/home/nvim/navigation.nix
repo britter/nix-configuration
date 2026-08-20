@@ -7,7 +7,7 @@ _: {
 
         # herdr's counterpart to tmux-navigator. The herdr side (keybindings and
         # plugin registration) lives in modules/home/programs/herdr.nix.
-        extraPlugins = [ pkgs.herdr-splits-nvim ];
+        extraPlugins = [ pkgs.vimPlugins.herdr-splits-nvim ];
         extraConfigLuaPost = ''
           -- Inside herdr, take over ctrl+hjkl from vim-tmux-navigator. Nested
           -- tmux keeps them: HERDR_ENV is inherited into a tmux pane, but there
