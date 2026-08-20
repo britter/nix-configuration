@@ -14,6 +14,10 @@ _: {
     {
       programs.nixvim = {
         filetype.extension.pom = "xml";
+        # <leader>t jumps between a source file and its test. Covers Kotlin and
+        # Groovy too, since they share the Maven/Gradle layout.
+        # Auto-sourced at startup because it lands in nvim's plugin/ dir
+        extraFiles."plugin/jvm-alternate.lua".source = ./java/jvm-alternate.lua;
         plugins = {
           jdtls = {
             enable = true;
@@ -98,5 +102,18 @@ _: {
         ".settings/"
         ".factorypath"
       ];
+    };
+
+  # Picked up by `nix flake check`, which CI already runs. `-u NONE` keeps the
+  # test honest: it exercises the plugin file, not the nixvim config around it.
+  perSystem =
+    { lib, pkgs, ... }:
+    {
+      checks.nvim-jvm-alternate = pkgs.runCommand "nvim-jvm-alternate-test" { } ''
+        export HOME=$TMPDIR
+        ${lib.getExe pkgs.neovim-unwrapped} --headless -u NONE \
+          -l ${./java/jvm-alternate-test.lua} ${./java/jvm-alternate.lua}
+        touch $out
+      '';
     };
 }
