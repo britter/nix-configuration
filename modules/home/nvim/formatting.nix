@@ -16,8 +16,6 @@ _: {
                 };
                 prettier = {
                   enable = true;
-                  # should be removed once https://github.com/nix-community/nixvim/pull/4234 has been merged
-                  package = pkgs.prettier;
                   disableTsServerFormatter = true;
                   settings = {
                     disabled_filetypes = [
