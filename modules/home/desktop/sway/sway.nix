@@ -4,7 +4,7 @@ let
 in
 {
   flake.modules.nixos.sway =
-    { lib, pkgs, ... }:
+    { pkgs, ... }:
     {
       imports = with outer.flake.modules.nixos; [
         noctalia
@@ -22,15 +22,17 @@ in
       };
 
       services = {
-        greetd = {
-          enable = true;
-          useTextGreeter = true;
-          settings = {
-            default_session = {
-              # put on a single line to work around https://github.com/NixOS/nixpkgs/issues/527565
-              command = "${lib.getExe pkgs.tuigreet} --remember --time --asterisks --cmd ${lib.getExe pkgs.sway}";
-            };
+        displayManager = {
+          autoLogin = {
+            enable = true;
+            user = "bene";
           };
+          sddm = {
+            enable = true;
+            wayland.enable = true;
+          };
+          sessionPackages = [ pkgs.sway ];
+          defaultSession = "sway";
         };
 
         # Required for automatically mounting USB devices

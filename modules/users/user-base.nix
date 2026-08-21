@@ -14,7 +14,7 @@
       tools
       ssh
       java-config
-      catppuccin
+      theme
     ];
     programs.home-manager.enable = true;
   };
