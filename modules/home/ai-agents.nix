@@ -131,10 +131,43 @@
           command = lib.getExe pkgs.mcp-grafana;
           env = {
             GRAFANA_URL = "https://testlens.grafana.net";
-            # service account token has to be exported manually before use
+            # fetch with the setup-grafana-mcp fish function below
             GRAFANA_SERVICE_ACCOUNT_TOKEN = "{env:GRAFANA_SERVICE_ACCOUNT_TOKEN}";
           };
         };
+      };
+
+      # Exports the token for servers.grafana above. A fish function (not a
+      # script) so the export reaches the calling shell; start opencode from
+      # that shell so the MCP server sees the token. Fish-specific because a
+      # plain script can't mutate the parent environment. `rbw` is referenced
+      # by store path so this works even without the bitwarden module; its
+      # agent handles unlocking, no session env var involved.
+      programs.fish.functions.setup-grafana-mcp = {
+        description = "Export GRAFANA_SERVICE_ACCOUNT_TOKEN from Bitwarden";
+        body = ''
+          set -l item "Grafana MCP Service Account Token"
+          set -l rbw ${lib.getExe pkgs.rbw}
+          if set -q GRAFANA_SERVICE_ACCOUNT_TOKEN
+            echo "GRAFANA_SERVICE_ACCOUNT_TOKEN already set"
+            return 0
+          end
+          $rbw sync >/dev/null; or echo "rbw sync failed, using cached vault" >&2
+          set -l token ($rbw get $item)
+          if not set -q token[1]
+            # never logged in on this machine — log in and retry once
+            $rbw login
+            and set token ($rbw get $item)
+          end
+          if not set -q token[1]
+            echo "could not get '$item' from Bitwarden" >&2
+            return 1
+          end
+          # -gx, not -x: plain -x inside a function scopes the var locally
+          # and it vanishes when the function returns
+          set -gx GRAFANA_SERVICE_ACCOUNT_TOKEN $token
+          echo "GRAFANA_SERVICE_ACCOUNT_TOKEN exported from '$item'"
+        '';
       };
 
       # Context files on disk, plus Claude Code's native references to them.
