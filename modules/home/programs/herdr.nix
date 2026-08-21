@@ -69,7 +69,7 @@
             next_workspace = "prefix+shift+n";
             previous_workspace = "prefix+shift+p";
             switch_workspace = "prefix+shift+1..9";
-            rename_workspace = "prefix+shift+comma";
+            rename_workspace = "prefix+<";
             close_workspace = "prefix+shift+x";
             # prefix+shift+p is herdr's default rename_pane; workspace nav wins.
             rename_pane = "";
