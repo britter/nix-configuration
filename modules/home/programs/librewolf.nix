@@ -10,6 +10,8 @@ _: {
         enable = true;
         settings = {
           "privacy.sanitize.sanitizeOnShutdown" = false;
+          "browser.startup.page" = 1;
+          "browser.startup.homepage" = "https://home.ritter.family/";
         };
         # see https://mozilla.github.io/policy-templates/
         policies = {
