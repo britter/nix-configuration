@@ -103,5 +103,12 @@ Notable inputs from flake.nix and how they show up:
   (https://github.com/numtide/treefmt-nix,
   https://github.com/cachix/git-hooks.nix)
 
-The inputs block in flake.nix sits inside `# keep-sorted start/end`
-markers; keep new inputs alphabetically sorted within it.
+The inputs block in flake.nix is kept alphabetically sorted by
+`# keep-sorted` markers; keep new inputs sorted within it.
+
+## Verifying changes
+
+After making any change, run `nix flake check` and fix every issue it
+reports before considering the work done. This evaluates all hosts,
+home-manager configurations, packages, and the treefmt formatting check;
+it is the closest thing this repo has to a test suite.
