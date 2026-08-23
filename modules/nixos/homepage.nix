@@ -22,7 +22,7 @@ _: {
         }
         {
           search = {
-            provider = "duckduckgo";
+            provider = "kagi";
             target = "_blank";
           };
         }
