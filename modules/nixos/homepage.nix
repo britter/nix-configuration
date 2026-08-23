@@ -22,7 +22,10 @@ _: {
         }
         {
           search = {
-            provider = "kagi";
+            provider = "custom";
+            url = "https://kagi.com/search?q=";
+            suggestionUrl = "https://kagi.com/api/autosuggest?q=";
+            showSearchSuggestions = true;
             target = "_blank";
           };
         }
