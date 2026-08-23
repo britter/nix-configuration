@@ -177,6 +177,14 @@
       xdg.configFile."agents/preferences.md".source = preferences;
       xdg.configFile."opencode/skills/avoid-ai-tropes".source = avoidAiTropes;
       home.file.".claude/skills/avoid-ai-tropes".source = avoidAiTropes;
+
+      # Skills from this repo. opencode keys skills off the frontmatter name,
+      # so the dotted <role>.<lang> dirs are fine there; Claude Code's
+      # documented naming rule is kebab-case only and may skip them.
+      xdg.configFile."opencode/skills/language-tutor.rust".source = ./skills/language-tutor.rust;
+      home.file.".claude/skills/language-tutor.rust".source = ./skills/language-tutor.rust;
+      xdg.configFile."opencode/skills/language-expert.nix".source = ./skills/language-expert.nix;
+      home.file.".claude/skills/language-expert.nix".source = ./skills/language-expert.nix;
       home.file.".claude/CLAUDE.md".text = ''
         @${hostPath}
         @${scriptingPath}
