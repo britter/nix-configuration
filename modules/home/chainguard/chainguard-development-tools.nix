@@ -11,6 +11,8 @@ in
       "${config.home.homeDirectory}/go/bin"
     ];
 
+    programs.claude-code.enable = true;
+
     programs.nixvim = {
       plugins = {
         none-ls.sources.formatting.google_java_format.enable = true;

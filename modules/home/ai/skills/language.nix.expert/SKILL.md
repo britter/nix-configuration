@@ -1,5 +1,5 @@
 ---
-name: language-expert.nix
+name: language.nix.expert
 description: Working rules for editing a Nix flake repository such as ~/github/britter/nix-configuration, including where to look up options and functions. Use whenever creating, renaming, moving, or deleting files there, when nix eval/build/nixos-rebuild behaves confusingly after a structural change, or when looking up NixOS/Home Manager options or nixpkgs lib functions. Core rule stage new files with git add immediately, or evaluation will not see them.
 ---
 # Editing the Nix Configuration

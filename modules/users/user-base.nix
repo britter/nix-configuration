@@ -4,6 +4,7 @@
     imports = with config.flake.modules.homeManager; [
       config.flake.modules.generic.home-lab
       user-identity
+      ai-skills
       fish
       terminal-essentials
       tmux
