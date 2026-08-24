@@ -457,6 +457,29 @@ resource "unifi_firewall_policy" "directions_to_truenas" {
   }
 }
 
+resource "unifi_firewall_policy" "management_to_servers_beszel" {
+  name                 = "Allow Beszel agents from Management to Servers"
+  action               = "ALLOW"
+  protocol             = "tcp"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "NETWORK"
+    network_ids     = [unifi_network.management.id]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "NETWORK"
+    network_ids        = [unifi_network.servers.id]
+    port               = "8090"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
