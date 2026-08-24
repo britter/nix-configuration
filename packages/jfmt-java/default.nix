@@ -15,7 +15,24 @@ maven_4.buildMavenPackage (finalAttrs: {
     tag = "v${finalAttrs.version}";
     sha256 = "sha256-wynVkOUFS8MMBp+Go7VUA3j4xsb1UJDeNR2PAmkZAYA=";
   };
-  mvnHash = "sha256-WFtzqFlFQzaC8UViNfSe3mFndriX3ATBM1s+4qtNeGk=";
+  mvnHash = "sha256-FrY1HUjqTRgfi/HA7ujrEdoydSS+cibI+iYCdOjDJM8=";
+
+  # picocli-codegen 4.7.7 registers VersionProvider's methods and constructors but not
+  # its @Spec field, and GraalVM >= 25.2 turns unregistered field access into a fatal
+  # MissingReflectionRegistrationError, so the binary dies on startup. Register it here.
+  # Reported upstream as https://github.com/bmarwell/jfmt/issues/260; drop this once fixed.
+  postPatch = ''
+    cat > cli/src/main/resources/META-INF/native-image/io.github.bmarwell.jfmt/jfmt/reachability-metadata.json <<EOF
+    {
+      "reflection": [
+        {
+          "type": "io.github.bmarwell.jfmt.VersionProvider",
+          "fields": [{ "name": "commandSpec" }]
+        }
+      ]
+    }
+    EOF
+  '';
 
   # GraalVM CE with musl libc support; native-image is at $JAVA_HOME/bin/native-image
   # and the wrapper provides musl-gcc and musl C library paths automatically.
