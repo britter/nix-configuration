@@ -15,7 +15,7 @@ maven_4.buildMavenPackage (finalAttrs: {
     tag = "v${finalAttrs.version}";
     sha256 = "sha256-wynVkOUFS8MMBp+Go7VUA3j4xsb1UJDeNR2PAmkZAYA=";
   };
-  mvnHash = "sha256-WFtzqFlFQzaC8UViNfSe3mFndriX3ATBM1s+4qtNeGk=";
+  mvnHash = "sha256-FrY1HUjqTRgfi/HA7ujrEdoydSS+cibI+iYCdOjDJM8=";
 
   # GraalVM CE with musl libc support; native-image is at $JAVA_HOME/bin/native-image
   # and the wrapper provides musl-gcc and musl C library paths automatically.
