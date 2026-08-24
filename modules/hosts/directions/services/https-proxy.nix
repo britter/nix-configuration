@@ -67,6 +67,8 @@ _: {
           {
             fqdn = "pve.ritter.family";
             target = "https://${config.home-lab.hypervisors.pve.ip}:8006";
+            # Required for the xterm.js and noVNC consoles
+            proxyWebsockets = true;
             # Avoid buffering issues with the Proxmox task log stream
             buffering = false;
             proxyTimeout = "3600s";
