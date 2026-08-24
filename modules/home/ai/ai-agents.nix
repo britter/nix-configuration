@@ -7,8 +7,9 @@
       ...
     }:
     let
-      # Zero-dependency opencode plugin; resolves its hooks/ and skills/
-      # relative to the .mjs, so we can run it straight from the pinned source.
+      # The same checkout is a plugin for both harnesses: opencode loads the
+      # .mjs, Claude Code the repo root as a personal plugin. Both resolve
+      # hooks/ and skills/ relative to it, so the pinned source works as-is.
       ponytail = pkgs.fetchFromGitHub {
         owner = "DietrichGebert";
         repo = "ponytail";
@@ -71,35 +72,23 @@
           preserved.
       '';
       preferencesPath = "${config.xdg.configHome}/agents/preferences.md";
-
-      # https://gist.github.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1 — plain
-      # markdown, so we pin the raw revision and prepend skill frontmatter.
-      avoidAiTropes = pkgs.linkFarm "avoid-ai-tropes-skill" {
-        "SKILL.md" = pkgs.concatText "SKILL.md" [
-          (pkgs.writeText "frontmatter.md" ''
-            ---
-            name: avoid-ai-tropes
-            description: Catalogue of AI writing tells — magic adverbs, "delve", em-dash overuse, "it's not X, it's Y", rule-of-three padding. Use when writing or editing prose a human will read: docs, READMEs, PR descriptions, commit messages, blog posts, emails.
-            ---
-          '')
-          (pkgs.fetchurl {
-            url = "https://gist.githubusercontent.com/ossa-ma/f3baa9d25154c33095e22272c631f5a1/raw/bfe72673726cdd541b69463ed7129942f4bc19c8/tropes.md";
-            hash = "sha256-BReDfbp6AkON/YSIVe2ULIxpuTyHplDyId94RplkXcg=";
-          })
-        ];
-      };
     in
     {
+      # Which harness is actually enabled is decided per user/host; this module
+      # only carries the shared configuration for both.
+      skills.language.nix.expert.enable = true;
+      skills.language.rust.tutor.enable = true;
+      skills.writing.avoid-ai-tropes.enable = true;
+
       programs.hunk = {
         enable = true;
         enableGitIntegration = true;
-        enableClaudeIntegration = true;
-        enableOpenCodeIntegration = true;
+        enableClaudeIntegration = config.programs.claude-code.enable;
+        enableOpenCodeIntegration = config.programs.opencode.enable;
         settings.theme = "catppuccin-macchiato";
       };
 
       programs.opencode = {
-        enable = true;
         enableMcpIntegration = true;
         settings = {
           plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
@@ -175,21 +164,30 @@
       xdg.configFile."agents/scripting.md".source = scriptingContext;
       xdg.configFile."agents/tools.md".source = toolsContext;
       xdg.configFile."agents/preferences.md".source = preferences;
-      xdg.configFile."opencode/skills/avoid-ai-tropes".source = avoidAiTropes;
-      home.file.".claude/skills/avoid-ai-tropes".source = avoidAiTropes;
 
-      # Skills from this repo. opencode keys skills off the frontmatter name,
-      # so the dotted <role>.<lang> dirs are fine there; Claude Code's
-      # documented naming rule is kebab-case only and may skip them.
-      xdg.configFile."opencode/skills/language-tutor.rust".source = ./skills/language-tutor.rust;
-      home.file.".claude/skills/language-tutor.rust".source = ./skills/language-tutor.rust;
-      xdg.configFile."opencode/skills/language-expert.nix".source = ./skills/language-expert.nix;
-      home.file.".claude/skills/language-expert.nix".source = ./skills/language-expert.nix;
-      home.file.".claude/CLAUDE.md".text = ''
-        @${hostPath}
-        @${scriptingPath}
-        @${toolsPath}
-        @${preferencesPath}
-      '';
+      programs.claude-code = {
+        enableMcpIntegration = true;
+        plugins.ponytail = ponytail;
+
+        # Claude Code rewrites settings.json at runtime, so anything toggled
+        # from within a session (/config, /model) has to be declared here to
+        # survive; the file is a read-only store symlink once home-manager
+        # owns it.
+        settings = {
+          statusLine = {
+            type = "command";
+            command = "${ponytail}/hooks/ponytail-statusline.sh";
+          };
+          alwaysThinkingEnabled = true;
+          effortLevel = "medium";
+          enabledPlugins."gopls-lsp@claude-plugins-official" = true;
+        };
+        context = ''
+          @${hostPath}
+          @${scriptingPath}
+          @${toolsPath}
+          @${preferencesPath}
+        '';
+      };
     };
 }

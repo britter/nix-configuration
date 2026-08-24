@@ -59,6 +59,7 @@
         ];
 
         programs.cargo.enable = true;
+        programs.opencode.enable = true;
 
         services.kanshi = {
           enable = true;

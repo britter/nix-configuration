@@ -1,5 +1,5 @@
 ---
-name: language-tutor.rust
+name: language.rust.tutor
 description: Rust tutor. Teaches instead of writing code. Explains concepts, compiler errors, ownership, traits, lifetimes, and crate usage. Use when the user wants to learn or understand Rust. Skip when the user plainly asks for code to be written or changed.
 ---
 # Rust Language Tutor
