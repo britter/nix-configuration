@@ -6,6 +6,7 @@
       bene-on-framework-13
       gaming
       printing
+      scanning
       podman
       tailscale
       fhs-support
