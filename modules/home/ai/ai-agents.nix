@@ -76,8 +76,9 @@
     {
       # Which harness is actually enabled is decided per user/host; this module
       # only carries the shared configuration for both.
-      skills.language.nix.expert.enable = true;
-      skills.language.rust.tutor.enable = true;
+      skills.programming.tutor.enable = true;
+      skills.programming.nix.expert.enable = true;
+      skills.programming.rust.tutor.enable = true;
       skills.writing.avoid-ai-tropes.enable = true;
 
       programs.hunk = {

@@ -31,13 +31,17 @@ _: {
           source = avoidAiTropes;
           cfg = config.skills.writing.avoid-ai-tropes;
         };
-        "language.nix.expert" = {
-          source = ./skills/language.nix.expert;
-          cfg = config.skills.language.nix.expert;
+        "programming.tutor" = {
+          source = ./skills/programming/tutor;
+          cfg = config.skills.programming.tutor;
         };
-        "language.rust.tutor" = {
-          source = ./skills/language.rust.tutor;
-          cfg = config.skills.language.rust.tutor;
+        "programming.nix.expert" = {
+          source = ./skills/programming/nix/expert;
+          cfg = config.skills.programming.nix.expert;
+        };
+        "programming.rust.tutor" = {
+          source = ./skills/programming/rust/tutor;
+          cfg = config.skills.programming.rust.tutor;
         };
       };
 
@@ -65,9 +69,10 @@ _: {
     in
     {
       options.skills = {
-        language = {
-          nix.expert = mkSkillOptions "language.nix.expert";
-          rust.tutor = mkSkillOptions "language.rust.tutor";
+        programming = {
+          tutor = mkSkillOptions "programming.tutor";
+          nix.expert = mkSkillOptions "programming.nix.expert";
+          rust.tutor = mkSkillOptions "programming.rust.tutor";
         };
         writing.avoid-ai-tropes = mkSkillOptions "writing.avoid-ai-tropes";
       };
