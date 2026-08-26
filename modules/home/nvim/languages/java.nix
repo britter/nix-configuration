@@ -81,6 +81,8 @@ _: {
                   "%f:%l: error: %m",
                   -- Java compiler warnings (includes NullAway, other -Werror warnings)
                   "%f:%l: warning: %m",
+                  -- Gradle Kotlin DSL script compilation errors
+                  "e: file://%f:%l:%c: %m",
                   -- Discard everything else
                   "%-G%.%#",
                 }, ",")
