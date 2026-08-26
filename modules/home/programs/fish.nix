@@ -29,6 +29,10 @@ _: {
           set -x LANG en_US.utf-8
           set -x GPG_TTY (tty)
         '';
+
+        functions = {
+          nixsize = "du -h (readlink -f (which $argv[1]))";
+        };
       };
     };
 }
