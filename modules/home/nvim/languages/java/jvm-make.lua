@@ -14,13 +14,28 @@
 local M = {}
 
 -- Only recognised lines become entries, so the quickfix list stays jumpable.
+-- Patterns are tried in order, so the specific ones come before the general
+-- ones and the catch-all discard comes last. Modelled on tfnico/vim-gradle.
 local gradle_errorformat = table.concat({
-    -- Java compiler errors
-    "%f:%l: error: %m",
-    -- Java compiler warnings (includes NullAway, other -Werror warnings)
-    "%f:%l: warning: %m",
-    -- Gradle Kotlin DSL script compilation errors
-    "e: file://%f:%l:%c: %m",
+    -- javac errors and warnings (the latter includes NullAway and anything else
+    -- promoted by -Werror). javac follows each one with the offending source
+    -- line and a caret; %p^ reads the column off that caret and ends the entry,
+    -- and %-C swallows the source echo plus any "symbol:"/"location:" notes.
+    "%E%f:%l: error: %m",
+    "%W%f:%l: warning: %m",
+    "%-Z%p^",
+    "%-C%.%#",
+    -- kotlinc, as of Kotlin 1.9, reports positions as a file:// URI. The message
+    -- is separated from the column by a colon in the Gradle Kotlin DSL and by a
+    -- space elsewhere, so both are listed. %t picks up e/w/i.
+    "%t: file://%f:%l:%c: %m",
+    "%t: file://%f:%l:%c %m",
+    -- kotlinc before 1.9, still what Gradle plugins on older versions print.
+    "%t: %f: (%l\\, %c): %m",
+    -- Groovy build script compilation failures, which name the file in quotes:
+    --   build file '/p/build.gradle': 12: unexpected token: } @ line 12, column 1.
+    "%E%.%#'%f': %\\d%\\+: %m @ line %l\\, column %c.",
+    "%E%f: %\\d%\\+: %m @ line %l\\, column %c.",
     -- Discard everything else
     "%-G%.%#",
 }, ",")
