@@ -44,6 +44,15 @@ _: {
       };
       # Auto-sourced at startup because it lands in nvim's plugin/ dir
       extraFiles."plugin/unescape.lua".source = ./lua/unescape.lua;
+      # Open the quickfix window after :make/:grep, but only if there are
+      # entries. cwindow closes it again when a rerun comes back clean.
+      autoCmd = [
+        {
+          event = [ "QuickFixCmdPost" ];
+          pattern = [ "[^l]*" ];
+          command = "cwindow";
+        }
+      ];
       keymaps = [
         {
           action = "<cmd>split<CR>";

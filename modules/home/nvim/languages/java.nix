@@ -70,12 +70,14 @@ _: {
         extraConfigLua =
           # lua
           ''
-            -- set up makeprg and errorformat for Gradle and Maven
+            -- set up makeprg and errorformat for Gradle and Maven.
+            -- $* is where :make's arguments land, so `:make test` runs
+            -- `./gradlew --quiet test`, mirroring nvim's built-in cargo compiler.
             do
               -- Gradle
               local gradle_root = vim.fs.root(0, {'gradlew'})
               if gradle_root then
-                vim.opt.makeprg = gradle_root .. '/gradlew testClasses --quiet'
+                vim.opt.makeprg = gradle_root .. '/gradlew --quiet $*'
                 vim.opt.errorformat = table.concat({
                   -- Java compiler errors
                   "%f:%l: error: %m",
@@ -91,7 +93,7 @@ _: {
               -- Maven
               local maven_root = vim.fs.root(0, {'mvnw'})
               if maven_root then
-                vim.opt.makeprg = maven_root .. '/mvnw compile --batch-mode --quiet'
+                vim.opt.makeprg = maven_root .. '/mvnw --batch-mode --quiet $*'
                 vim.opt.errorformat = "%f:[%l\\,%c] %m,%-G%.%#"
               end
             end
