@@ -18,6 +18,9 @@ _: {
         # Groovy too, since they share the Maven/Gradle layout.
         # Auto-sourced at startup because it lands in nvim's plugin/ dir
         extraFiles."plugin/jvm-alternate.lua".source = ./java/jvm-alternate.lua;
+        # `:make <task/goal>` for Gradle and Maven, set per buffer.
+        # Auto-sourced at startup because it lands in nvim's plugin/ dir
+        extraFiles."plugin/jvm-make.lua".source = ./java/jvm-make.lua;
         plugins = {
           jdtls = {
             enable = true;
@@ -67,37 +70,6 @@ _: {
               end
             '';
         };
-        extraConfigLua =
-          # lua
-          ''
-            -- set up makeprg and errorformat for Gradle and Maven.
-            -- $* is where :make's arguments land, so `:make test` runs
-            -- `./gradlew --quiet test`, mirroring nvim's built-in cargo compiler.
-            do
-              -- Gradle
-              local gradle_root = vim.fs.root(0, {'gradlew'})
-              if gradle_root then
-                vim.opt.makeprg = gradle_root .. '/gradlew --quiet $*'
-                vim.opt.errorformat = table.concat({
-                  -- Java compiler errors
-                  "%f:%l: error: %m",
-                  -- Java compiler warnings (includes NullAway, other -Werror warnings)
-                  "%f:%l: warning: %m",
-                  -- Gradle Kotlin DSL script compilation errors
-                  "e: file://%f:%l:%c: %m",
-                  -- Discard everything else
-                  "%-G%.%#",
-                }, ",")
-              end
-
-              -- Maven
-              local maven_root = vim.fs.root(0, {'mvnw'})
-              if maven_root then
-                vim.opt.makeprg = maven_root .. '/mvnw --batch-mode --quiet $*'
-                vim.opt.errorformat = "%f:[%l\\,%c] %m,%-G%.%#"
-              end
-            end
-          '';
       };
       programs.git.ignores = [
         "bin/"
@@ -117,6 +89,12 @@ _: {
         export HOME=$TMPDIR
         ${lib.getExe pkgs.neovim-unwrapped} --headless -u NONE \
           -l ${./java/jvm-alternate-test.lua} ${./java/jvm-alternate.lua}
+        touch $out
+      '';
+      checks.nvim-jvm-make = pkgs.runCommand "nvim-jvm-make-test" { } ''
+        export HOME=$TMPDIR
+        ${lib.getExe pkgs.neovim-unwrapped} --headless -u NONE \
+          -l ${./java/jvm-make-test.lua} ${./java/jvm-make.lua}
         touch $out
       '';
     };
