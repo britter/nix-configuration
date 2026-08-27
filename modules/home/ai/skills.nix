@@ -26,56 +26,72 @@ _: {
 
       # Attribute name == skill directory name == name in the frontmatter, for
       # every harness that discovers skills by directory.
-      skills = {
-        "writing.avoid-ai-tropes" = {
-          source = avoidAiTropes;
-          cfg = config.skills.writing.avoid-ai-tropes;
-        };
-        "programming.tutor" = {
-          source = ./skills/programming/tutor;
-          cfg = config.skills.programming.tutor;
-        };
-        "programming.nix.expert" = {
-          source = ./skills/programming/nix/expert;
-          cfg = config.skills.programming.nix.expert;
-        };
-        "programming.rust.tutor" = {
-          source = ./skills/programming/rust/tutor;
-          cfg = config.skills.programming.rust.tutor;
-        };
+      sources = {
+        "programming.tutor" = ./skills/programming/tutor;
+        "programming.java.expert" = ./skills/programming/java/expert;
+        "programming.java.gradle.expert" = ./skills/programming/java/gradle/expert;
+        "programming.java.maven.expert" = ./skills/programming/java/maven/expert;
+        "programming.nix.expert" = ./skills/programming/nix/expert;
+        "programming.nix.tutor" = ./skills/programming/nix/tutor;
+        "programming.rust.tutor" = ./skills/programming/rust/tutor;
+        "writing.avoid-ai-tropes" = avoidAiTropes;
       };
 
-      mkSkillOptions = name: {
-        enable = lib.mkEnableOption "the ${name} skill";
+      # One enable flag per group, because the skills within a group reference
+      # each other: a language's expert skill delegates to its build tool
+      # skills, and a language tutor is written as an addition to the general
+      # one. A group therefore also lists the skills it builds on. Group names
+      # become the option path under `skills`.
+      groups = {
+        "programming.java" = [
+          "programming.java.expert"
+          "programming.java.gradle.expert"
+          "programming.java.maven.expert"
+        ];
+        "programming.nix" = [
+          "programming.tutor"
+          "programming.nix.expert"
+          "programming.nix.tutor"
+        ];
+        "programming.rust" = [
+          "programming.tutor"
+          "programming.rust.tutor"
+        ];
+        "writing.avoid-ai-tropes" = [ "writing.avoid-ai-tropes" ];
+      };
+
+      mkGroupOptions = name: {
+        enable = lib.mkEnableOption "the ${name} skills";
         opencode.enable = lib.mkOption {
           type = lib.types.bool;
           default = config.programs.opencode.enable;
           defaultText = lib.literalExpression "config.programs.opencode.enable";
-          description = "Whether to install the ${name} skill for opencode.";
+          description = "Whether to install the ${name} skills for opencode.";
         };
         claude.enable = lib.mkOption {
           type = lib.types.bool;
           default = config.programs.claude-code.enable;
           defaultText = lib.literalExpression "config.programs.claude-code.enable";
-          description = "Whether to install the ${name} skill for Claude Code.";
+          description = "Whether to install the ${name} skills for Claude Code.";
         };
       };
 
+      cfgFor = name: lib.getAttrFromPath (lib.splitString "." name) config.skills;
+
       sourcesFor =
         harness:
-        lib.mapAttrs (_: skill: skill.source) (
-          lib.filterAttrs (_: skill: skill.cfg.enable && skill.cfg.${harness}.enable) skills
-        );
+        lib.getAttrs (lib.concatLists (
+          lib.mapAttrsToList (
+            name: members: if (cfgFor name).enable && (cfgFor name).${harness}.enable then members else [ ]
+          ) groups
+        )) sources;
     in
     {
-      options.skills = {
-        programming = {
-          tutor = mkSkillOptions "programming.tutor";
-          nix.expert = mkSkillOptions "programming.nix.expert";
-          rust.tutor = mkSkillOptions "programming.rust.tutor";
-        };
-        writing.avoid-ai-tropes = mkSkillOptions "writing.avoid-ai-tropes";
-      };
+      options.skills = lib.foldl' lib.recursiveUpdate { } (
+        lib.mapAttrsToList (
+          name: _: lib.setAttrByPath (lib.splitString "." name) (mkGroupOptions name)
+        ) groups
+      );
 
       # Both harness modules only act on these when they are enabled, so no
       # extra guard is needed here.
