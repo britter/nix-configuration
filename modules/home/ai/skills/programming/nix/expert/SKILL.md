@@ -1,6 +1,13 @@
 ---
-name: language.nix.expert
-description: Working rules for editing a Nix flake repository such as ~/github/britter/nix-configuration, including where to look up options and functions. Use whenever creating, renaming, moving, or deleting files there, when nix eval/build/nixos-rebuild behaves confusingly after a structural change, or when looking up NixOS/Home Manager options or nixpkgs lib functions. Core rule stage new files with git add immediately, or evaluation will not see them.
+name: programming.nix.expert
+description: |
+  Working rules for editing a Nix flake repository such as
+  ~/github/britter/nix-configuration, including where to look up options and
+  functions. Use whenever creating, renaming, moving, or deleting files there,
+  when nix eval/build/nixos-rebuild behaves confusingly after a structural
+  change, or when looking up NixOS/Home Manager options or nixpkgs lib
+  functions. Core rule: stage new files with `git add` immediately, or
+  evaluation will not see them.
 ---
 # Editing the Nix Configuration
 
@@ -26,8 +33,8 @@ fine in one command and fail in the next.
 Option and function names from memory are usually wrong. Use these sources:
 
 - Functions (builtins and nixpkgs lib): fetch
-  https://noogle.dev/api/v1/data once per session (about 4 MB) and cache it,
-  e.g. in /tmp/opencode/noogle-data.json. Entries are
+  https://noogle.dev/api/v1/data once per session (about 4 MB) and cache it
+  in a scratch file for the rest of the session. Entries are
   `{ meta: { title, path, aliases, signature, ... }, content }` with titles
   like "lib.mapAttrs" or "builtins.baseNameOf". Find candidates with jq:
   `jq '.data[] | select(.meta.title == "lib.mapAttrs")'`, or match loosely on
