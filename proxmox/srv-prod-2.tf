@@ -7,10 +7,10 @@ resource "proxmox_vm_qemu" "srv_prod_2" {
   tags        = "nixos;linux;production"
 
   cpu {
-    cores   = 2
+    cores   = 4
     sockets = 1
   }
-  memory = 4096
+  memory = 6144
 
   agent                  = 1
   define_connection_info = false
