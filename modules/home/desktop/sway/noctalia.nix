@@ -1,5 +1,4 @@
-{ inputs, ... }:
-{
+_: {
   flake.modules.nixos.noctalia = {
     networking.networkmanager.enable = true;
     hardware.bluetooth.enable = true;
@@ -78,97 +77,78 @@
       schemeName = "Catppuccin ${lib.toSentenceCase config.catppuccin.flavor}";
     in
     {
-      imports = [ inputs.noctalia.homeModules.default ];
-
-      xdg.configFile."noctalia/colorschemes/${schemeName}/${schemeName}.json".text = builtins.toJSON {
+      xdg.configFile."noctalia/palettes/${schemeName}.json".text = builtins.toJSON {
         dark = variant config.catppuccin.flavor;
         light = variant "latte";
       };
 
-      programs.noctalia-shell = {
+      programs.noctalia = {
         enable = true;
-        package = pkgs.noctalia-shell;
         settings = {
-          colorSchemes = {
-            useWallpaperColors = false;
-            predefinedScheme = schemeName;
+          # Doesn't seem to work
+          theme = {
+            source = "custom";
+            custom_palette = schemeName;
           };
-          bar = {
-            outerCorners = false;
-            widgets = {
-              left = [
-                { id = "Workspace"; }
-                { id = "MediaMini"; }
-              ];
-              center = [
-                { id = "Clock"; }
-                { id = "NotificationHistory"; }
-              ];
-              right = [
-                { id = "Tray"; }
-                { id = "SystemMonitor"; }
-                { id = "Battery"; }
-                { id = "Volume"; }
-                { id = "Brightness"; }
-                {
-                  id = "ControlCenter";
-                  customIconPath = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
-                }
-              ];
-            };
+          bar.default = {
+            start = [
+              "workspaces"
+              "media"
+            ];
+            center = [
+              "clock"
+              "notifications"
+            ];
+            end = [
+              "tray"
+              "systmon"
+              "battery"
+              "volume"
+              "brightness"
+              "control-center"
+            ];
           };
-          appLauncher = {
-            terminalCommand = "${pkgs.ghostty} -e";
-            enableClipboardHistory = true;
+          widget = {
+            battery.show_label = false;
+            volume.show_label = false;
+            brightness.show_label = false;
+            media.hide_when_no_media = true;
+            control-center.custom_image = "${pkgs.nixos-icons}/share/icons/hicolor/scalable/apps/nix-snowflake-white.svg";
           };
-          dock.enable = false;
-          location.firstDayOfWeek = 1;
-          nightLight = {
-            enabled = true;
-            autoSchedule = false; # flip to true only once a location is configured
-            nightTemp = "4000";
-            dayTemp = "6500";
-            manualSunrise = "06:30";
-            manualSunset = "20:00";
-          };
-          sessionMenu = {
-            enableCountdown = false;
-            largeButtonsStyle = false;
-            powerOptions = [
+          # appLauncher = {
+          #   terminalCommand = "${pkgs.ghostty} -e";
+          #   enableClipboardHistory = true;
+          # };
+          location.auto_locate = true;
+          shell.session = {
+            grid_columns = 1;
+            actions = [
               {
                 action = "lock";
-                enabled = true;
-                keybind = "l";
+                shortcut = "l";
               }
               {
                 action = "suspend";
-                enabled = true;
-                keybind = "s";
+                shortcut = "s";
               }
               {
-                action = "hibernate";
-                enabled = true;
-                keybind = "h";
+                action = "command";
+                label = "Hibernate";
+                glyph = "zz";
+                command = "systemctl hibernate";
+                shortcut = "h";
               }
               {
                 action = "reboot";
-                enabled = true;
-                keybind = "r";
+                shortcut = "r";
               }
               {
                 action = "logout";
-                enabled = true;
-                keybind = "e";
+                shortcut = "e";
               }
               {
                 action = "shutdown";
-                enabled = true;
-                keybind = "p";
-              }
-              {
-                action = "rebootToUefi";
-                enabled = false;
-                keybind = "7";
+                shortcut = "p";
               }
             ];
           };

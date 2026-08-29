@@ -7,7 +7,7 @@
       ...
     }:
     let
-      lockCmd = "${lib.getExe config.programs.noctalia-shell.package} ipc call lockScreen lock";
+      lockCmd = "${lib.getExe config.programs.noctalia.package} msg session lock";
     in
     {
       services.swayidle = {
