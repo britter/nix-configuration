@@ -91,10 +91,7 @@ for i, w in ipairs(want) do
     local e = qf[i]
     -- %E/%W report an upper-case type, %t whatever the compiler printed.
     local got = { vim.fn.bufname(e.bufnr), e.lnum, e.col, e.type:lower(), vim.trim(e.text) }
-    assert(
-        vim.deep_equal(got, w),
-        ("entry %d\n  got:  %s\n  want: %s"):format(i, vim.inspect(got), vim.inspect(w))
-    )
+    assert(vim.deep_equal(got, w), ("entry %d\n  got:  %s\n  want: %s"):format(i, vim.inspect(got), vim.inspect(w)))
 end
 
 print("all ok")
