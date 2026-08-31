@@ -47,6 +47,12 @@
           };
         }
       );
+      # backport of https://github.com/NixOS/nixpkgs/pull/557809
+      stirling-pdf = prev.stirling-pdf.overrideAttrs (prev: {
+        patches = prev.patches ++ [
+          ./skip-tests-with-expired-certs.patch
+        ];
+      });
     };
 
     default = inputs.nixpkgs.lib.composeManyExtensions [
