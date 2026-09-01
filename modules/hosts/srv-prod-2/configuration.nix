@@ -4,7 +4,7 @@
     imports = with config.flake.modules.nixos; [
       system-server
       proxmox-vm
-      stirling-pdf
+      # stirling-pdf
       tailscale-server
       beszel-agent
       calibre-web-on-srv-prod-2
