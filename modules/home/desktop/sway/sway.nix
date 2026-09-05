@@ -50,16 +50,8 @@ in
       ...
     }:
     let
-      screenshotsDir = "${config.home.homeDirectory}/Pictures/Screenshots";
       ns = lib.getExe config.programs.noctalia.package;
       nsipc = "${ns} msg";
-      capture-screenhot = pkgs.writeShellApplication {
-        name = "capture-screenshot";
-        runtimeInputs = [ pkgs.sway-contrib.grimshot ];
-        text = ''
-          grimshot --notify savecopy "$1" "${screenshotsDir}/$(date -Ins).png"
-        '';
-      };
     in
     {
       imports = with outer.flake.modules.homeManager; [
@@ -68,14 +60,6 @@ in
       ];
 
       home.packages = [ pkgs.wl-clipboard ];
-
-      home.sessionVariables = {
-        XDG_SCREENSHOTS_DIR = screenshotsDir;
-      };
-      # make sure the target directory for grimshot exists
-      systemd.user.tmpfiles.rules = [
-        "d ${screenshotsDir} 0700 ${config.home.username} - -"
-      ];
       wayland.windowManager.sway = {
         enable = true;
         wrapperFeatures.gtk = true;
@@ -168,9 +152,8 @@ in
               "${mod}+q" = "kill";
 
               # screenshot capturing
-              "${mod}+x" = "exec ${lib.getExe capture-screenhot} output";
-              "${mod}+Shift+x" = "exec ${lib.getExe capture-screenhot}  window";
-              "${mod}+Ctrl+x" = "exec ${lib.getExe capture-screenhot} area";
+              "${mod}+x" = "exec ${nsipc} screenshot-fullscreen pick";
+              "${mod}+Shift+x" = "exec ${nsipc} screenshot-region";
 
               # Custom modes
               "${mod}+Escape" = "exec ${nsipc} panel-toggle session";
