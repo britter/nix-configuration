@@ -4,23 +4,30 @@ _: {
     {
       programs.git.ignores = [ ".claude/settings.local.json" ];
 
-      programs.git.includes = [
-        # gradlex per-machine signing key (benedikt's chainguard-laptop openpgp key)
-        {
-          condition = "gitdir:~/github/gradlex-org/";
-          contents.user.signingKey = "6C9C4BE5D6A7FCCC";
-        }
-        # chainguard scoped gitsign x509
-        {
-          condition = "gitdir:~/github/chainguard-dev/";
+      programs.git.includes =
+        let
+          # chainguard scoped gitsign x509
+          gitsignDirs = [
+            "chainguard-dev"
+            "chaingurad-sandbox"
+          ];
+        in
+        [
+          # gradlex per-machine signing key (benedikt's chainguard-laptop openpgp key)
+          {
+            condition = "gitdir:~/github/gradlex-org/";
+            contents.user.signingKey = "6C9C4BE5D6A7FCCC";
+          }
+        ]
+        ++ (map (dir: {
+          condition = "gitdir:~/github/${dir}/";
           contents = {
             user.email = "benedikt.ritter@chainguard.dev";
             gpg.format = "x509";
             gpg.x509.program = "${pkgs.gitsign}/bin/gitsign";
             gitsign.connectorID = "https://accounts.google.com";
           };
-        }
-      ];
+        }) gitsignDirs);
 
       home.sessionVariables.GITSIGN_CREDENTIAL_CACHE = "${config.home.homeDirectory}/.cache/sigstore/gitsign/cache.sock";
 
