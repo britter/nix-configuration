@@ -90,6 +90,10 @@ _: {
             source = "custom";
             custom_palette = schemeName;
           };
+          wallpaper = {
+            default.path = "${pkgs.wallpapers}/landscapes/Clearday.jpg";
+            directory = "${pkgs.wallpapers}";
+          };
           bar.default = {
             start = [
               "workspaces"
