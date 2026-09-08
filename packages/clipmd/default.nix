@@ -12,11 +12,11 @@ rustPlatform.buildRustPackage (_finalAttrs: {
   src = fetchFromCodeberg {
     owner = "britter";
     repo = "clipmd";
-    rev = "ef63959d7af4949189c96bf4c358957d2dd6ffb3";
-    hash = "sha256-xaK2ih+ZSoZcJdZlXJEzbBn9t4krta0Nn+j/PfdARsU=";
+    rev = "eff338f513034b20dc73b7dabec964bec3ae99ff";
+    hash = "sha256-9auwdAVaKHwmkl1MhxtN3l7C9OkxMS+LICVWtzLBZNs=";
   };
 
-  cargoHash = "sha256-ZGVJj8EGnD0dWSIEdEMpDDrZrPIZCL2nYvYG6QjBdWk=";
+  cargoHash = "sha256-Wn5B/8P6H37+SEwPGZUMaiX5fQFPq71A8+10kwWfkoc=";
 
   doInstallCheck = true;
   nativeInstallCheckInputs = [ versionCheckHook ];
