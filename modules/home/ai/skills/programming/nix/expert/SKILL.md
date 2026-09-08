@@ -27,6 +27,12 @@ fine in one command and fail in the next.
   changed, before hunting for a bug in the content.
 - When an eval fails oddly, check `git status` for untracked paths before
   reading the stack trace.
+- To reference an executable, use `${lib.getExe pkgs.<package>}` rather than
+  interpolating `${pkgs.<package>}/bin/<name>` by hand. It resolves the binary
+  through `meta.mainProgram`, so a wrong package fails at evaluation time
+  instead of producing a path that does not exist. Use `lib.getExe'
+  pkgs.<package> "<name>"` when the binary is not the main program. Older
+  `${pkgs.x}/bin/x` occurrences in the repo are not the preferred pattern.
 
 ## Look things up before guessing
 
