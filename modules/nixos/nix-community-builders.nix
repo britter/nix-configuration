@@ -1,5 +1,4 @@
-{ config, ... }:
-{
+_: {
   flake.modules.nixos.nix-community-builders =
     { pkgs, ... }:
     let
@@ -14,6 +13,67 @@
         "kvm"
         "nixos-test"
       ];
+
+      # `--max-jobs 0` keeps the laptop out of the build entirely, which is
+      # the whole point of reaching for the community machines. The garbage
+      # collection afterwards is what keeps their output from lingering:
+      # nixpkgs-review builds with `--no-link` and leaves plain symlinks in
+      # ~/.cache/nixpkgs-review, none of which are GC roots, so once the
+      # review shell has exited every path the builders sent is unreachable.
+      # Left in the store it would stay valid forever and could be reused by
+      # a later build instead of being fetched from a signed cache.
+      nixpkgs-review-remote = pkgs.writeShellApplication {
+        name = "nixpkgs-review-remote";
+        runtimeInputs = [
+          pkgs.glow
+          pkgs.delta
+          pkgs.nixpkgs-review
+        ];
+        text = ''
+          usage() {
+            cat <<'EOF'
+          Usage: nixpkgs-review-remote [OPTION]... [ARGUMENT]...
+
+          Build a nixpkgs pull request with `nixpkgs-review pr`, offloading
+          the build to the nix-community builders and dropping every store
+          path they sent once the review shell has exited.
+
+          All arguments are passed through to `nixpkgs-review pr`. The most
+          useful ones:
+
+            <pr-number>   review pull request <pr-number>, e.g. 12345
+            --post-result
+                          post the review results as a PR comment
+            --commit      create a commit per package in the review shell
+
+          Run `nixpkgs-review pr --help` for everything else.
+          EOF
+          }
+
+          if [ "$#" -eq 0 ]; then
+            usage
+            exit 1
+          fi
+
+          case "$1" in
+            -h | --help)
+              usage
+              exit 0
+              ;;
+          esac
+
+          set +e
+          nixpkgs-review pr \
+            --build-args '--builders @/etc/nix/machines --max-jobs 0' \
+            "$@"
+          review_status=$?
+          set -e
+
+          echo "Dropping store paths received from the community builders..."
+          nix-collect-garbage
+          exit $review_status
+        '';
+      };
     in
     {
       # These machines exist to build nixpkgs pull requests and nothing else.
@@ -78,29 +138,10 @@
 
       home-manager.sharedModules = [
         {
-          imports = [ config.flake.modules.homeManager.fish ];
-
-          home.packages = [ pkgs.nixpkgs-review ];
-
-          # `--max-jobs 0` keeps the laptop out of the build entirely, which is
-          # the whole point of reaching for the community machines. The garbage
-          # collection afterwards is what keeps their output from lingering:
-          # nixpkgs-review builds with `--no-link` and leaves plain symlinks in
-          # ~/.cache/nixpkgs-review, none of which are GC roots, so once the
-          # review shell has exited every path the builders sent is unreachable.
-          # Left in the store it would stay valid forever and could be reused by
-          # a later build instead of being fetched from a signed cache.
-          programs.fish.functions.nixpkgs-review-remote = ''
-            nixpkgs-review pr \
-              --build-args '--builders @/etc/nix/machines --max-jobs 0' \
-              $argv
-            set --local review_status $status
-
-            echo "Dropping store paths received from the community builders..."
-            nix-collect-garbage
-
-            return $review_status
-          '';
+          home.packages = [
+            pkgs.nixpkgs-review
+            nixpkgs-review-remote
+          ];
         }
       ];
     };
