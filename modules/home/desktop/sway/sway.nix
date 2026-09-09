@@ -21,6 +21,16 @@ in
         config.common.default = "*";
       };
 
+      # xdg-desktop-portal-wlr needs a chooser that reads the candidate
+      # sources from stdin and prints the pick to stdout (nixpkgs#471244);
+      # noctalia dmenu does exactly that
+      xdg.portal.wlr.settings = {
+        screencast = {
+          chooser_type = "dmenu";
+          chooser_cmd = "${pkgs.lib.getExe pkgs.noctalia} dmenu -p 'Select a source to share:'";
+        };
+      };
+
       services = {
         displayManager = {
           autoLogin = {
