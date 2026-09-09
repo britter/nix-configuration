@@ -83,7 +83,6 @@
 
       programs.hunk = {
         enable = true;
-        enableGitIntegration = true;
         enableClaudeIntegration = config.programs.claude-code.enable;
         enableOpenCodeIntegration = config.programs.opencode.enable;
         settings.theme = "catppuccin-macchiato";

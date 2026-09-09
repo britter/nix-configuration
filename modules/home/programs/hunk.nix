@@ -14,8 +14,14 @@
         description = "Whether to link the hunk-review skill under ~/.config/opencode/skills.";
       };
 
-      config = lib.mkIf (cfg.enable && cfg.enableOpenCodeIntegration) {
-        xdg.configFile."opencode/skills/hunk-review".source = "${cfg.package}/skills/hunk-review";
-      };
+      config = lib.mkMerge [
+        (lib.mkIf (cfg.enable && cfg.enableOpenCodeIntegration) {
+          xdg.configFile."opencode/skills/hunk-review".source = "${cfg.package}/skills/hunk-review";
+        })
+        (lib.mkIf cfg.enable {
+          # hunk as diff pager only; core.pager stays the default.
+          programs.git.settings.pager.diff = "hunk pager";
+        })
+      ];
     };
 }
