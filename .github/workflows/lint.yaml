@@ -12,5 +12,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: DeterminateSystems/nix-installer-action@b074b4ad5f255f9c8a6a2414a2f07e7f4f2925a3 # main
+      - uses: DeterminateSystems/nix-installer-action@c251f11beeb14adb5490acc1b192175d8ae0e95e # main
       - run: nix flake check
