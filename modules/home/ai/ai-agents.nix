@@ -70,6 +70,10 @@
           later and never ended up in the PR.
         - Move files with `git mv`, never delete-and-recreate, so history is
           preserved.
+        - Tee the output of long-running commands (e.g. build processes) into
+          a file, e.g. `nix build ... 2>&1 | tee /tmp/opencode/build.log`. If
+          an error happens later, inspect the file instead of re-running the
+          command.
       '';
       preferencesPath = "${config.xdg.configHome}/agents/preferences.md";
     in
