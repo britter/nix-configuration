@@ -131,10 +131,13 @@ in
           };
 
           layout = {
-            gaps = 2;
+            # Applied around every window, so adjacent columns end up twice
+            # this far apart. niri has no column-only gap setting.
+            gaps = 4;
+
             focus-ring = {
               width = 3;
-              active-color = color "red";
+              active-color = color config.catppuccin.accent;
               inactive-color = color "overlay0";
               urgent-color = color "peach";
             };
@@ -315,6 +318,15 @@ in
             };
 
           _children = [
+            # Matchless, so it applies to every window. The radius alone only
+            # rounds the focus ring; clipping is what rounds the window
+            # itself, and it also cuts off client-side shadows. 12 matches
+            # noctalia's default panel radius.
+            (windowRule [
+              { geometry-corner-radius = 12; }
+              { clip-to-geometry = true; }
+            ])
+
             # Anything launched with an app id ending in "-floating" opens
             # as a floating window.
             (windowRule [
