@@ -1,5 +1,5 @@
 {
-  flake.modules.homeManager.sway =
+  flake.modules.homeManager.niri =
     {
       config,
       lib,
@@ -10,12 +10,16 @@
       lockCmd = "${lib.getExe config.programs.noctalia.package} msg session lock";
     in
     {
+      # Despite the name, swayidle is a plain ext-idle-notify client and is
+      # not tied to sway. niri has no idle handling of its own; it only
+      # honours the idle-inhibit requests applications make, so there is no
+      # compositor-side equivalent of sway's `inhibit_idle fullscreen`.
       services.swayidle = {
         enable = true;
         timeouts = [
           {
             timeout = 295;
-            command = "${pkgs.libnotify}/bin/notify-send 'Locking in 5 seconds' -t 5000";
+            command = "${lib.getExe pkgs.libnotify} 'Locking in 5 seconds' -t 5000";
           }
           {
             timeout = 300;
@@ -23,7 +27,7 @@
           }
           {
             timeout = 600;
-            command = "${pkgs.systemd}/bin/systemctl suspend";
+            command = "${lib.getExe' pkgs.systemd "systemctl"} suspend";
           }
         ];
         events.before-sleep = lockCmd;

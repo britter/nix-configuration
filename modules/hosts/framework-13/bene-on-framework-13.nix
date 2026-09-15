@@ -1,18 +1,18 @@
 { config, ... }:
 {
   flake.modules.nixos.bene-on-framework-13 =
-    { pkgs, ... }:
+    { ... }:
     {
       imports = with config.flake.modules.nixos; [
         bene
         forgejo-client
         nextcloud-client
-        sway
+        niri
       ];
 
       home-manager.users.bene = {
         imports = with config.flake.modules.homeManager; [
-          sway
+          niri
           ai-agents
           bitwarden
           calibre
@@ -61,35 +61,39 @@
         programs.cargo.enable = true;
         programs.opencode.enable = true;
 
-        services.kanshi = {
-          enable = true;
-          settings =
-            let
-              framework-13 = "BOE NE135A1M-NY1 Unknown";
-              lg32 = "LG Electronics LG HDR 4K 111NTBKD6957";
-            in
-            [
-              {
-                profile.name = "home";
-                profile.outputs = [
-                  {
-                    criteria = lg32;
-                    status = "enable";
-                    position = "0,0";
-                  }
-                  {
-                    criteria = framework-13;
-                    status = "enable";
-                    position = "480,2160";
-                  }
-                ];
-                profile.exec = [
-                  "${pkgs.sway}/bin/swaymsg workspace 10, move workspace to eDP-1"
-                  "${pkgs.sway}/bin/swaymsg workspace 1, move workspace to DP-2"
-                ];
-              }
-            ];
-        };
+        # Outputs that are not connected are ignored, so this one static
+        # layout covers both docked and undocked with no profile switching.
+        # Workspaces remember which monitor they came from and migrate back
+        # on reconnect on their own.
+        wayland.windowManager.niri.settings._children =
+          let
+            framework-13 = "BOE NE135A1M-NY1 Unknown";
+            lg32 = "LG Electronics LG HDR 4K 111NTBKD6957";
+          in
+          [
+            {
+              output = {
+                _args = [ lg32 ];
+                position = {
+                  _props = {
+                    x = 0;
+                    y = 0;
+                  };
+                };
+              };
+            }
+            {
+              output = {
+                _args = [ framework-13 ];
+                position = {
+                  _props = {
+                    x = 480;
+                    y = 2160;
+                  };
+                };
+              };
+            }
+          ];
       };
     };
 }

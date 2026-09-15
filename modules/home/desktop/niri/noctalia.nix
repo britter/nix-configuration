@@ -84,6 +84,11 @@ _: {
 
       programs.noctalia = {
         enable = true;
+
+        # niri runs as a systemd session, so the shell is bound to
+        # graphical-session.target rather than spawned by the compositor.
+        systemd.enable = true;
+
         settings = {
           # Doesn't seem to work
           theme = {
@@ -95,6 +100,11 @@ _: {
             directory = "${pkgs.wallpapers}";
           };
           bar.default = {
+            # Vertical, so the workspace pills stack along the same axis as
+            # niri's per-monitor workspace list. start/center/end become
+            # top/center/bottom.
+            position = "left";
+
             start = [
               "workspaces"
               "media"
