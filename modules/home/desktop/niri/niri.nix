@@ -136,7 +136,7 @@ in
             gaps = 4;
 
             focus-ring = {
-              width = 3;
+              width = 2;
               active-color = color config.catppuccin.accent;
               inactive-color = color "overlay0";
               urgent-color = color "peach";
