@@ -23,16 +23,27 @@ _: {
             branches = "branch -a";
             remotes = "remote -v";
             lg = "log --all --graph --pretty=format:'%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
-            cleanup = "!f() { git branch --merged main | grep -v main | xargs -n 1 git branch -D;  }; f";
+            # Resolve a remote's default branch instead of assuming "main".
+            # Takes the remote as an argument (default: origin) and prefers
+            # <remote>/HEAD, which git writes at clone time and never
+            # refreshes on fetch -- run `git remote set-head <remote> -a`
+            # after the remote renames its default branch. Falls back to
+            # whichever of main/master exists, then to main.
+            default-branch = "!f() { r=\"\${1:-origin}\"; b=$(git symbolic-ref --quiet --short \"refs/remotes/$r/HEAD\" 2>/dev/null | sed \"s|^$r/||\"); if [ -z \"$b\" ]; then for c in main master; do if git show-ref --verify --quiet \"refs/remotes/$r/$c\" || git show-ref --verify --quiet \"refs/heads/$c\"; then b=$c; break; fi; done; fi; if [ -z \"$b\" ]; then b=main; fi; echo \"$b\"; }; f";
+            cleanup = "!f() { b=$(git default-branch); git branch --merged \"$b\" --format='%(refname:short)' | grep -vx \"$b\" | xargs -r -n 1 git branch -D;  }; f";
             cleanup-deleted = "!git remote prune origin && git branch -vv | grep ': gone]' | awk '{print $1}' | xargs git branch -D";
-            sync = "!f() { git checkout main && git fetch upstream && git merge upstream/main && git push origin main && git cleanup && git fetch -p;  }; f";
+            # In a fork the branch to merge is upstream's default, which can
+            # differ from the fork's own (e.g. upstream renamed master to
+            # main and the fork did not). Without an upstream remote this
+            # degrades to syncing the default branch against origin.
+            sync = "!f() { r=upstream; git remote get-url upstream >/dev/null 2>&1 || r=origin; o=$(git default-branch origin); git checkout \"$o\" && git fetch \"$r\" && u=$(git default-branch \"$r\") && { git show-ref --verify --quiet \"refs/remotes/$r/$u\" || u=\"$o\"; } && git merge \"$r/$u\" && git push origin \"$o\" && git cleanup && git fetch -p;  }; f";
             co = "checkout";
-            cm = "checkout main";
+            cm = "!f() { git checkout \"$(git default-branch)\"; }; f";
             st = "status";
             ci = "commit";
             cia = "commit --amend";
-            rbi = "rebase --interactive main";
-            rbm = "rebase main";
+            rbi = "!f() { git rebase --interactive \"$(git default-branch)\"; }; f";
+            rbm = "!f() { git rebase \"$(git default-branch)\"; }; f";
             rbc = "rebase --continue";
           };
         };
