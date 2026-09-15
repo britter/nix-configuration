@@ -4,14 +4,14 @@ let
 in
 {
   flake.modules.nixos.niri =
-    { ... }:
+    { config, lib, ... }:
     {
       imports = with outer.flake.modules.nixos; [
         noctalia
       ];
 
-      # puts systemd init logs on tty1
-      # so that tuigreet and systemd logs don't clobber each other
+      # pins systemd init logs to tty1 instead of following the active
+      # console, so they don't clobber the greeter
       boot.kernelParams = [ "console=tty1" ];
 
       # Registers the session with the display manager and wires up the
@@ -20,15 +20,13 @@ in
       programs.niri.enable = true;
 
       services = {
-        displayManager = {
-          autoLogin = {
-            enable = true;
-            user = "bene";
-          };
-          sddm = {
-            enable = true;
-            wayland.enable = true;
-          };
+        # noctalia-greeter enables greetd and points its default session at
+        # the greeter; initial_session skips the greeter once per boot, which
+        # is greetd's equivalent of services.displayManager.autoLogin (that
+        # option only covers the X11-era display managers).
+        greetd.settings.initial_session = {
+          command = lib.getExe' config.programs.niri.package "niri-session";
+          user = "bene";
         };
 
         # Required for automatically mounting USB devices

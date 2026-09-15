@@ -1,10 +1,86 @@
-_: {
-  flake.modules.nixos.noctalia = {
-    networking.networkmanager.enable = true;
-    hardware.bluetooth.enable = true;
-    services.power-profiles-daemon.enable = true;
-    services.upower.enable = true;
+{ config, lib, ... }:
+let
+  outer = config;
+
+  # Same palette source catppuccin/nix uses internally, so the shell and the
+  # greeter track the flavor configured in modules/home/desktop/theme.nix.
+  colorsOf =
+    source: flavor:
+    lib.mapAttrs (_: v: v.hex) (lib.importJSON "${source}/palette.json").${flavor}.colors;
+
+  # The color roles noctalia renders its UI from. The greeter consumes them
+  # under exactly these snake_case names in [appearance.palette]; the shell
+  # wants the same roles as mCamelCase keys.
+  roles = accent: p: {
+    primary = p.${accent};
+    on_primary = p.base;
+    secondary = p.lavender;
+    on_secondary = p.base;
+    tertiary = p.sky;
+    on_tertiary = p.base;
+    error = p.red;
+    on_error = p.base;
+    surface = p.base;
+    on_surface = p.text;
+    surface_variant = p.surface0;
+    on_surface_variant = p.subtext0;
+    outline = p.overlay0;
+    shadow = p.crust;
+    hover = p.surface1;
+    on_hover = p.text;
   };
+  shellKey = name: "m" + lib.concatMapStrings lib.toSentenceCase (lib.splitString "_" name);
+in
+{
+  flake.modules.nixos.noctalia =
+    {
+      config,
+      pkgs,
+      ...
+    }:
+    {
+      # Single import site for the catppuccin NixOS module, which the greeter
+      # needs at system level to derive its palette.
+      imports = [ outer.flake.modules.nixos.theme ];
+
+      networking.networkmanager.enable = true;
+      hardware.bluetooth.enable = true;
+      services.power-profiles-daemon.enable = true;
+      services.upower.enable = true;
+
+      # Login screen. Everything appearance related is declared here rather
+      # than pushed over from the running shell with noctalia's "Sync
+      # Greeter", which writes mutable state into /var/lib. A complete
+      # [appearance.palette] in greeter.toml takes precedence over that state.
+      services.displayManager.noctalia-greeter = {
+        enable = true;
+
+        cursorTheme = {
+          package = pkgs.adwaita-icon-theme;
+          name = "Adwaita";
+        };
+
+        settings = {
+          # Session picker label, not the .desktop id.
+          session.default = "Niri";
+          user.default = "bene";
+          cursor.size = 32;
+          keyboard.layout = "us";
+          appearance = {
+            # Selects the palette below instead of one of the built-in schemes.
+            scheme = "Synced";
+            theme_mode = "dark";
+            palette = roles config.catppuccin.accent (
+              colorsOf config.catppuccin.sources.palette config.catppuccin.flavor
+            );
+            wallpaper = {
+              path = "${pkgs.wallpapers}/landscapes/Clearday.jpg";
+              fill_mode = "crop";
+            };
+          };
+        };
+      };
+    };
 
   flake.modules.homeManager.noctalia =
     {
@@ -14,33 +90,15 @@ _: {
       ...
     }:
     let
-      # Same palette source catppuccin/nix uses internally, so the shell tracks
-      # the flavor configured in modules/home/catppuccin.nix. Noctalia only
-      # ships Catppuccin Mocha, so generate the configured flavor as a custom
-      # scheme instead.
-      palettes = lib.importJSON "${config.catppuccin.sources.palette}/palette.json";
+      # Noctalia only ships Catppuccin Mocha, so generate the configured
+      # flavor as a custom scheme instead.
       variant =
         flavor:
         let
-          p = lib.mapAttrs (_: v: v.hex) palettes.${flavor}.colors;
+          p = colorsOf config.catppuccin.sources.palette flavor;
         in
-        {
-          mPrimary = p.${config.catppuccin.accent};
-          mOnPrimary = p.base;
-          mSecondary = p.lavender;
-          mOnSecondary = p.base;
-          mTertiary = p.sky;
-          mOnTertiary = p.base;
-          mError = p.red;
-          mOnError = p.base;
-          mSurface = p.base;
-          mOnSurface = p.text;
-          mSurfaceVariant = p.surface0;
-          mOnSurfaceVariant = p.subtext0;
-          mOutline = p.overlay0;
-          mShadow = p.crust;
-          mHover = p.surface1;
-          mOnHover = p.text;
+        lib.mapAttrs' (name: lib.nameValuePair (shellKey name)) (roles config.catppuccin.accent p)
+        // {
           terminal = {
             normal = {
               black = p.surface1;
