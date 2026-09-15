@@ -15,7 +15,6 @@
       tools
       ssh
       java-config
-      theme
     ];
     programs.home-manager.enable = true;
   };

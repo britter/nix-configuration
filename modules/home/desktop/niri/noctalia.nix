@@ -1,45 +1,34 @@
-{ config, lib, ... }:
+{ config, ... }:
 let
   outer = config;
 
-  # Same palette source catppuccin/nix uses internally, so the shell and the
-  # greeter track the flavor configured in modules/home/desktop/theme.nix.
-  colorsOf =
-    source: flavor:
-    lib.mapAttrs (_: v: v.hex) (lib.importJSON "${source}/palette.json").${flavor}.colors;
-
-  # The color roles noctalia renders its UI from. The greeter consumes them
-  # under exactly these snake_case names in [appearance.palette]; the shell
-  # wants the same roles as mCamelCase keys.
-  roles = accent: p: {
-    primary = p.${accent};
-    on_primary = p.base;
-    secondary = p.lavender;
-    on_secondary = p.base;
-    tertiary = p.sky;
-    on_tertiary = p.base;
-    error = p.red;
-    on_error = p.base;
-    surface = p.base;
-    on_surface = p.text;
-    surface_variant = p.surface0;
-    on_surface_variant = p.subtext0;
-    outline = p.overlay0;
-    shadow = p.crust;
-    hover = p.surface1;
-    on_hover = p.text;
+  # The color roles noctalia renders its UI from, in the snake_case names the
+  # greeter expects in [appearance.palette]. Stylix has no greeter target, so
+  # this mirrors the mapping its noctalia target applies to the shell.
+  roles = c: {
+    primary = c.base0D;
+    on_primary = c.base00;
+    secondary = c.base0E;
+    on_secondary = c.base00;
+    tertiary = c.base0C;
+    on_tertiary = c.base00;
+    error = c.base08;
+    on_error = c.base00;
+    surface = c.base00;
+    on_surface = c.base05;
+    surface_variant = c.base01;
+    on_surface_variant = c.base04;
+    outline = c.base03;
+    shadow = c.base00;
+    hover = c.base0C;
+    on_hover = c.base00;
   };
-  shellKey = name: "m" + lib.concatMapStrings lib.toSentenceCase (lib.splitString "_" name);
 in
 {
   flake.modules.nixos.noctalia =
+    { config, ... }:
     {
-      config,
-      pkgs,
-      ...
-    }:
-    {
-      # Single import site for the catppuccin NixOS module, which the greeter
+      # Single import site for the stylix NixOS module, which the greeter
       # needs at system level to derive its palette.
       imports = [ outer.flake.modules.nixos.theme ];
 
@@ -56,25 +45,24 @@ in
         enable = true;
 
         cursorTheme = {
-          package = pkgs.adwaita-icon-theme;
-          name = "Adwaita";
+          inherit (config.stylix.cursor) package name;
         };
 
         settings = {
           # Session picker label, not the .desktop id.
           session.default = "Niri";
           user.default = "bene";
-          cursor.size = 32;
+          cursor.size = config.stylix.cursor.size;
           keyboard.layout = "us";
           appearance = {
-            # Selects the palette below instead of one of the built-in schemes.
+            # Selects the palette declared here instead of one of the
+            # built-in schemes.
             scheme = "Synced";
             theme_mode = "dark";
-            palette = roles config.catppuccin.accent (
-              colorsOf config.catppuccin.sources.palette config.catppuccin.flavor
-            );
+            font_family = config.stylix.fonts.sansSerif.name;
+            palette = roles config.lib.stylix.colors.withHashtag;
             wallpaper = {
-              path = "${pkgs.wallpapers}/landscapes/Clearday.jpg";
+              path = config.stylix.image;
               fill_mode = "crop";
             };
           };
@@ -83,63 +71,8 @@ in
     };
 
   flake.modules.homeManager.noctalia =
+    { pkgs, ... }:
     {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
-    let
-      # Noctalia only ships Catppuccin Mocha, so generate the configured
-      # flavor as a custom scheme instead.
-      variant =
-        flavor:
-        let
-          p = colorsOf config.catppuccin.sources.palette flavor;
-        in
-        lib.mapAttrs' (name: lib.nameValuePair (shellKey name)) (roles config.catppuccin.accent p)
-        // {
-          terminal = {
-            normal = {
-              black = p.surface1;
-              inherit (p)
-                red
-                green
-                yellow
-                blue
-                ;
-              magenta = p.pink;
-              cyan = p.teal;
-              white = p.subtext1;
-            };
-            bright = {
-              black = p.surface2;
-              inherit (p)
-                red
-                green
-                yellow
-                blue
-                ;
-              magenta = p.pink;
-              cyan = p.teal;
-              white = p.subtext0;
-            };
-            foreground = p.text;
-            background = p.base;
-            selectionFg = p.text;
-            selectionBg = p.surface2;
-            cursorText = p.base;
-            cursor = p.rosewater;
-          };
-        };
-      schemeName = "Catppuccin ${lib.toSentenceCase config.catppuccin.flavor}";
-    in
-    {
-      xdg.configFile."noctalia/palettes/${schemeName}.json".text = builtins.toJSON {
-        dark = variant config.catppuccin.flavor;
-        light = variant "latte";
-      };
-
       programs.noctalia = {
         enable = true;
 
@@ -148,15 +81,6 @@ in
         systemd.enable = true;
 
         settings = {
-          # Doesn't seem to work
-          theme = {
-            source = "custom";
-            custom_palette = schemeName;
-          };
-          wallpaper = {
-            default.path = "${pkgs.wallpapers}/landscapes/Clearday.jpg";
-            directory = "${pkgs.wallpapers}";
-          };
           bar.default = {
             # Vertical, so the workspace pills stack along the same axis as
             # niri's per-monitor workspace list. start/center/end become

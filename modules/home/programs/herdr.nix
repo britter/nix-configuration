@@ -1,18 +1,6 @@
 {
   flake.modules.homeManager.herdr =
-    {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
-    let
-      # Same palette source catppuccin/nix uses internally, so herdr's colors
-      # track the flavor configured in modules/home/catppuccin.nix.
-      palette =
-        (lib.importJSON "${config.catppuccin.sources.palette}/palette.json")
-        .${config.catppuccin.flavor}.colors;
-    in
+    { lib, pkgs, ... }:
     {
       home.packages = [
         pkgs.nono
@@ -27,26 +15,10 @@
 
           ui.sound.enabled = false;
 
-          theme = {
-            # herdr's built-in "catppuccin" is mocha; the token overrides below
-            # turn it into the flavor configured repo-wide (macchiato).
-            name = "catppuccin";
-            custom = {
-              panel_bg = palette.base.hex;
-              surface_dim = palette.mantle.hex;
-              surface0 = palette.surface0.hex;
-              surface1 = palette.surface1.hex;
-              overlay0 = palette.overlay0.hex;
-              overlay1 = palette.overlay1.hex;
-              subtext0 = palette.subtext0.hex;
-              accent = palette.${config.catppuccin.accent}.hex;
-              mauve = palette.mauve.hex;
-              green = palette.green.hex;
-              yellow = palette.yellow.hex;
-              red = palette.red.hex;
-              peach = palette.peach.hex;
-            };
-          };
+          # Stylix has no herdr target, but herdr can follow the host
+          # terminal's ANSI palette, which stylix does theme. That keeps herdr
+          # in sync with ghostty without restating the colors here.
+          theme.name = "terminal";
 
           # tmux parity — only the bindings that differ from herdr's defaults.
           # Defaults already matching tmux: prefix+c new tab, prefix+n/p tab
