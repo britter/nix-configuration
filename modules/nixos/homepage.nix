@@ -123,14 +123,14 @@ _: {
             {
               "UniFi" = {
                 description = "UniFi Network Configuration";
-                href = "https://192.168.1.1";
+                href = "https://unifi.ritter.family";
                 icon = "unifi.svg";
               };
             }
             {
               "Proxmox" = {
                 description = "Proxmox Virtual Environment";
-                href = "https://proxmox.ritter.family/";
+                href = "https://pve.ritter.family/";
                 icon = "proxmox.svg";
               };
             }
