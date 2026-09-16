@@ -44,6 +44,7 @@ in
         user-base
         ssh-home-lab
         nvim
+        theme
       ];
 
       home.username = lib.mkDefault username;

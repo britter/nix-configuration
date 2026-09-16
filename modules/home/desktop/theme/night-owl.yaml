@@ -1,0 +1,30 @@
+# Base16 port of Sarah Drasner's Night Owl VS Code theme, derived from
+# https://github.com/sdras/night-owl-vscode-theme (themes/Night Owl-color-theme.json).
+#
+# base00-base07 come from the editor chrome: background, panel background,
+# selection, comments, secondary text, foreground, active line number, white.
+# base08-base0E prefer the theme's own terminal.ansi* colors where it defines
+# one, so terminals look like Night Owl's terminal, and fall back to the
+# editor's token colors for the slots ANSI has no equivalent for (base09
+# constants, base0F booleans and null).
+system: "base16"
+name: "Night Owl"
+author: "Sarah Drasner (https://github.com/sdras/night-owl-vscode-theme)"
+variant: "dark"
+palette:
+  base00: "#011627"
+  base01: "#0b2942"
+  base02: "#1d3b53"
+  base03: "#637777"
+  base04: "#5f7e97"
+  base05: "#d6deeb"
+  base06: "#c5e4fd"
+  base07: "#ffffff"
+  base08: "#ef5350"
+  base09: "#f78c6c"
+  base0A: "#ffcb8b"
+  base0B: "#22da6e"
+  base0C: "#7fdbca"
+  base0D: "#82aaff"
+  base0E: "#c792ea"
+  base0F: "#ff5874"

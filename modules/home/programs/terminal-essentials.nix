@@ -13,7 +13,9 @@
       };
 
       programs.btop.enable = true;
-      # required for catppuccin theming of btop
+
+      # Manage the XDG base directories, so the session exports XDG_CONFIG_HOME
+      # and friends.
       xdg.enable = true;
 
       programs.fzf = {

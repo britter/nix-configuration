@@ -47,10 +47,7 @@ in
       ns = lib.getExe config.programs.noctalia.package;
       niri = lib.getExe config.wayland.windowManager.niri.package;
 
-      palette =
-        (lib.importJSON "${config.catppuccin.sources.palette}/palette.json")
-        .${config.catppuccin.flavor}.colors;
-      color = name: palette.${name}.hex;
+      inherit (config.lib.stylix) colors;
 
       # A niri bind is a KDL node whose only child is the action. Actions
       # without arguments are written as empty nodes.
@@ -135,9 +132,9 @@ in
 
             focus-ring = {
               width = 2;
-              active-color = color config.catppuccin.accent;
-              inactive-color = color "overlay0";
-              urgent-color = color "peach";
+              active-color = colors.withHashtag.base0D;
+              inactive-color = colors.withHashtag.base02;
+              urgent-color = colors.withHashtag.base09;
             };
           };
 
@@ -352,8 +349,8 @@ in
               { match._props.is-window-cast-target = true; }
               {
                 focus-ring = {
-                  active-color = color "yellow";
-                  inactive-color = color "yellow";
+                  active-color = colors.withHashtag.base0A;
+                  inactive-color = colors.withHashtag.base0A;
                 };
               }
             ])

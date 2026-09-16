@@ -22,6 +22,7 @@ in
         nvim
         ai-agents
         chainguard-development-tools
+        theme
       ];
 
       home.username = lib.mkDefault username;

@@ -2,9 +2,9 @@ _: {
   flake.modules.homeManager.librewolf =
     { pkgs, ... }:
     {
-      # librewolf's catppuccin theme is applied via the explicit profile
-      # config below rather than through catppuccin's auto-styling.
-      catppuccin.librewolf.profiles.bene.enable = false;
+      # The firefox-family target cannot discover profiles on its own, so it
+      # themes nothing until they are listed here.
+      stylix.targets.librewolf.profileNames = [ "bene" ];
 
       programs.librewolf = {
         enable = true;
