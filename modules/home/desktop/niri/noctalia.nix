@@ -88,6 +88,7 @@ in
             position = "left";
 
             start = [
+              "control-center"
               "workspaces"
               "media"
             ];
@@ -101,7 +102,6 @@ in
               "battery"
               "volume"
               "brightness"
-              "control-center"
             ];
           };
           widget = {
