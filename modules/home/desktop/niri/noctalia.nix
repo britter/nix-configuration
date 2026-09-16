@@ -71,7 +71,12 @@ in
     };
 
   flake.modules.homeManager.noctalia =
-    { pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     {
       programs.noctalia = {
         enable = true;
@@ -123,15 +128,17 @@ in
                 action = "lock";
                 shortcut = "l";
               }
+              # Plain "suspend" suspends without locking first (noctalia v5
+              # session menu semantics), so use lock-and-suspend instead.
               {
-                action = "suspend";
+                action = "lock_and_suspend";
                 shortcut = "s";
               }
               {
                 action = "command";
                 label = "Hibernate";
                 glyph = "zz";
-                command = "systemctl hibernate";
+                command = "${lib.getExe config.programs.noctalia.package} msg session lock && systemctl hibernate";
                 shortcut = "h";
               }
               {

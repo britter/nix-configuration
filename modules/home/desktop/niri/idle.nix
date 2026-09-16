@@ -22,8 +22,8 @@ _: {
       };
     };
 
-    # Locking before sleep needs no configuration: noctalia holds a logind
-    # sleep-delay inhibitor and locks on PrepareForSleep by default, which
-    # also covers lid close.
+    # Lid close and other logind-initiated sleep lock via noctalia's
+    # PrepareForSleep integration. Explicit session-menu actions must use
+    # lock_and_suspend (see noctalia.nix) since plain suspend skips the lock.
   };
 }
