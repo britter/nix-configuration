@@ -13,7 +13,7 @@ let
         base16Scheme = ./theme/night-owl.yaml;
 
         # Consumed by the targets that set a wallpaper, noctalia among them.
-        image = "${pkgs.wallpapers}/landscapes/Rainnight.jpg";
+        image = "${pkgs.wallpapers}/landscapes/tropic_island_night.jpg";
 
         cursor = {
           package = pkgs.adwaita-icon-theme;
