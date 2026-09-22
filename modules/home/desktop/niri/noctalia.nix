@@ -121,6 +121,72 @@ in
           #   enableClipboardHistory = true;
           # };
           location.auto_locate = true;
+          weather.enabled = true;
+          # Floating widgets on the desktop, right edge of eDP-1 (logical
+          # 1440x960 at scale 2). Positions were arranged visually with
+          # `noctalia msg desktop-widgets-edit` and promoted here; the
+          # editor's own writes live in ~/.local/state/noctalia/settings.toml
+          # and override this config while that file exists.
+          desktop_widgets = {
+            enabled = true;
+            schema_version = 2;
+            widget_order = [
+              "clock_main"
+              "weather_main"
+              "sysmon_cpu"
+              "sysmon_ram"
+            ];
+            widget = {
+              clock_main = {
+                type = "clock";
+                output = "eDP-1";
+                cx = 1296.0;
+                cy = 112.0;
+                box_width = 256.0;
+                box_height = 160.0;
+                settings = {
+                  # \n renders as a line break, so this is two rows:
+                  # day + month on top, time below.
+                  format = "{:%d %b\n%H:%M}";
+                  center_text = true;
+                };
+              };
+              weather_main = {
+                type = "weather";
+                output = "eDP-1";
+                cx = 1296.0;
+                cy = 256.0;
+                box_width = 256.0;
+                box_height = 96.0;
+              };
+              sysmon_cpu = {
+                type = "sysmon";
+                output = "eDP-1";
+                cx = 1296.0;
+                cy = 384.0;
+                box_width = 256.0;
+                box_height = 128.0;
+                settings = {
+                  display = "graph";
+                  stat = "cpu_usage";
+                  stat2 = "cpu_temp";
+                };
+              };
+              sysmon_ram = {
+                type = "sysmon";
+                output = "eDP-1";
+                cx = 1296.0;
+                cy = 532.0;
+                box_width = 256.0;
+                box_height = 136.0;
+                settings = {
+                  display = "graph";
+                  stat = "ram_pct";
+                  stat2 = "swap_pct";
+                };
+              };
+            };
+          };
           shell.session = {
             grid_columns = 1;
             actions = [
