@@ -14,7 +14,11 @@ _: {
         "nixos-test"
       ];
 
-      # `--max-jobs 0` keeps the laptop out of the build entirely, which is
+      # A transparent wrapper: every argument goes to `nixpkgs-review`
+      # untouched, and all this adds is the community builders plus the
+      # cleanup afterwards.
+      #
+      # `max-jobs = 0` keeps the laptop out of the build entirely, which is
       # the whole point of reaching for the community machines. The garbage
       # collection afterwards is what keeps their output from lingering:
       # nixpkgs-review builds with `--no-link` and leaves plain symlinks in
@@ -30,42 +34,15 @@ _: {
           pkgs.nixpkgs-review
         ];
         text = ''
-          usage() {
-            cat <<'EOF'
-          Usage: nixpkgs-review-remote [OPTION]... [ARGUMENT]...
-
-          Build a nixpkgs pull request with `nixpkgs-review pr`, offloading
-          the build to the nix-community builders and dropping every store
-          path they sent once the review shell has exited.
-
-          All arguments are passed through to `nixpkgs-review pr`. The most
-          useful ones:
-
-            <pr-number>   review pull request <pr-number>, e.g. 12345
-            --post-result
-                          post the review results as a PR comment
-            --commit      create a commit per package in the review shell
-
-          Run `nixpkgs-review pr --help` for everything else.
-          EOF
-          }
-
-          if [ "$#" -eq 0 ]; then
-            usage
-            exit 1
-          fi
-
-          case "$1" in
-            -h | --help)
-              usage
-              exit 0
-              ;;
-          esac
+          # Configure the builders through the environment rather than through
+          # `--build-args`, so every argument this script gets belongs to
+          # nixpkgs-review alone and none of its subcommands or flags are
+          # off limits.
+          export NIX_CONFIG="builders = @/etc/nix/machines
+          max-jobs = 0"
 
           set +e
-          nixpkgs-review pr \
-            --build-args '--builders @/etc/nix/machines --max-jobs 0' \
-            "$@"
+          nixpkgs-review "$@"
           review_status=$?
           set -e
 
