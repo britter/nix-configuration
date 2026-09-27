@@ -23,7 +23,10 @@ in
         # noctalia-greeter enables greetd and points its default session at
         # the greeter; initial_session skips the greeter once per boot, which
         # is greetd's equivalent of services.displayManager.autoLogin (that
-        # option only covers the X11-era display managers).
+        # option only covers the X11-era display managers). Since no
+        # password is typed, PAM cannot unlock gnome-keyring; both keyrings
+        # carry an empty password as a manual workaround, see
+        # docs/desktop-manual-setup.md.
         greetd.settings.initial_session = {
           command = lib.getExe' config.programs.niri.package "niri-session";
           user = "bene";
