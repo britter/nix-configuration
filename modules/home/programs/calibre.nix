@@ -10,7 +10,6 @@ _: {
     {
       home.packages = with pkgs; [
         # required for Adobe Digital Edition
-        bottles
         calibre
         sync-calibre-library
       ];
