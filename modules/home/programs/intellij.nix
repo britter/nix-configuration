@@ -1,5 +1,5 @@
 _: {
-  flake.allowUnfreePackages = [ "idea" ];
+  flake.allowUnfreePackages = [ "intellij-idea" ];
 
   flake.modules.homeManager.intellij =
     { lib, pkgs, ... }:
