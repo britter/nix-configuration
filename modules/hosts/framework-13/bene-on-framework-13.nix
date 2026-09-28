@@ -24,6 +24,7 @@
           nextcloud-client
           obsidian
           syncthing
+          tailscale
           java
           zoom
         ];
