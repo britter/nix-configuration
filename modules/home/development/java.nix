@@ -41,6 +41,10 @@ _: {
           "systemProp.jna.library.path" = lib.makeLibraryPath [ pkgs.udev ];
         };
       };
+
+      home.packages = [
+        pkgs.fix-gradle-console
+      ];
     };
 
 }
