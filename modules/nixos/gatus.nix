@@ -74,6 +74,14 @@ _: {
               ];
             }
             {
+              name = "Garage";
+              url = "https://garage.srv-prod-3.ritter.family/health";
+              interval = "5m";
+              conditions = [
+                "[STATUS] == 200"
+              ];
+            }
+            {
               name = "Beszel";
               url = "https://beszel.ritter.family/api/health";
               interval = "5m";
