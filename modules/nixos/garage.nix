@@ -21,6 +21,7 @@ _: {
         settings = {
           replication_factor = 1;
           rpc_bind_addr = "[::1]:3901";
+          rpc_public_addr = "[::1]:3901";
           s3_api = {
             s3_region = "garage";
             api_bind_addr = "[::1]:3900";
