@@ -8,10 +8,7 @@ resource "unifi_network" "default" {
     conflict_checking = true
     gateway_enabled   = false
 
-    dns_enabled = true
-    dns_servers = [
-      unifi_client.directions.fixed_ip
-    ]
+    dns_enabled = false
 
     leasetime           = "24h"
     ntp_enabled         = false
@@ -44,9 +41,6 @@ resource "unifi_network" "homelab" {
     gateway_enabled   = false
 
     dns_enabled = false
-    dns_servers = [
-      unifi_client.directions.fixed_ip
-    ]
 
     leasetime           = "24h"
     ntp_enabled         = false
@@ -140,10 +134,7 @@ resource "unifi_network" "servers" {
     conflict_checking = true
     gateway_enabled   = false
 
-    dns_enabled = true
-    dns_servers = [
-      unifi_client.directions.fixed_ip
-    ]
+    dns_enabled = false
 
     leasetime           = "24h"
     ntp_enabled         = false
