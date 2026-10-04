@@ -5,6 +5,9 @@ _: {
       fqdn = "garage.${config.networking.hostName}.ritter.family";
     in
     {
+      # force latest kernel to work around segv errors with garage_2
+      boot.kernelPackages = pkgs.linuxPackages_latest;
+
       sops.secrets."garage/rpc-secret" = { };
       sops.secrets."garage/admin-token" = { };
       sops.templates."garage/env" = {
