@@ -50,10 +50,18 @@ _: {
         ];
       };
 
-      # Expose the admin /health endpoint so gatus can monitor the S3 vhost.
-      services.nginx.virtualHosts.${fqdn}.locations."= /health" = {
-        proxyPass = "http://localhost:3903/health";
-        recommendedProxySettings = true;
+      # Expose the admin /health endpoint so gatus can monitor the S3 vhost,
+      # plus the admin API v2 (all Garage operations live under /v2/) for
+      # remote management via scoped bearer tokens.
+      services.nginx.virtualHosts.${fqdn} = {
+        locations."= /health" = {
+          proxyPass = "http://localhost:3903/health";
+          recommendedProxySettings = true;
+        };
+        locations."/v2/" = {
+          proxyPass = "http://localhost:3903";
+          recommendedProxySettings = true;
+        };
       };
     };
 }
