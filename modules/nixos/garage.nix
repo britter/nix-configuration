@@ -16,7 +16,7 @@ _: {
 
       services.garage = {
         enable = true;
-        package = pkgs.garage;
+        package = pkgs.garage_2;
         environmentFile = config.sops.templates."garage/env".path;
         settings = {
           replication_factor = 1;
