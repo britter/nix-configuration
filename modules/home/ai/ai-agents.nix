@@ -92,6 +92,30 @@
         settings.theme = "catppuccin-macchiato";
       };
 
+      programs.nono = {
+        enable = true;
+
+        # `extends` nolabs-ai/opencode; everything else mirrors the tool's
+        # defaults via the empty values supplied by the nono-base module.
+        profiles.opencode = {
+          extends = [ "nolabs-ai/opencode" ];
+          meta = {
+            version = "1.0.0";
+            description = "Runtime-discovered path additions for opencode";
+          };
+          filesystem = {
+            allow = [
+              "~/.config/gh"
+              "~/.gradle"
+            ];
+            suppress_save_prompt = [
+              "~/.hledger.journal"
+              "~/"
+            ];
+          };
+        };
+      };
+
       programs.opencode = {
         enableMcpIntegration = true;
         settings = {

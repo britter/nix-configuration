@@ -7,6 +7,7 @@
       ai-skills
       fish
       terminal-essentials
+      nono-base
       tmux
       herdr
       gpg
