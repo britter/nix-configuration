@@ -17,9 +17,9 @@ resource "proxmox_vm_qemu" "srv_prod_2" {
   full_clone             = false
   bios                   = "ovmf"
   scsihw                 = "virtio-scsi-single"
-  boot                   = "order=ide2;scsi0;net0"
+  boot                   = "order=scsi0;ide2;net0"
 
-  power_state        = "running"
+  power_state        = "stopped"
   start_at_node_boot = true
   startup_shutdown {
     order            = -1
@@ -45,7 +45,7 @@ resource "proxmox_vm_qemu" "srv_prod_2" {
       scsi0 {
         disk {
           storage = "local-lvm"
-          size    = "250G"
+          size    = "64G"
         }
       }
     }
