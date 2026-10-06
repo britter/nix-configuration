@@ -66,9 +66,12 @@ done
 
 Then cut over the backends: update all Tofu backend configurations to point
 at the garage state buckets (`tofu-states-<project>`, and
-`tofu-states-object-storage` for this project) and update `secrets.json`
-with the new credentials. Run a final `rclone copy` per prefix (delta only),
-re-run the check, then verify client-side per project:
+`tofu-states-object-storage` for this project) and move the state backend
+credentials from the root `secrets.json` into the per-project
+`secrets.json` files (see
+[State backend credentials](#state-backend-credentials) below). Run a final
+`rclone copy` per prefix (delta only), re-run the check, then verify
+client-side per project:
 
 ```bash
 # forces the backend to be re-read with the new credentials
@@ -77,6 +80,95 @@ tofu plan   # must succeed and show no unexpected changes
 ```
 
 From here on, the state buckets are on garage; minIO still serves restic.
+
+## 2a. State backend credentials
+
+Today the root `secrets.json` holds one pair of minIO credentials
+(`AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`) for the single `tofu-states`
+bucket, shared by all four projects. It is consumed in two places:
+
+- locally: the root `.envrc` decrypts it and exports every key verbatim
+- on CI: the self-hosted runners get `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`
+  injected globally via the sops template `state-backend-secrets`
+  (`modules/nixos/github-runners.nix` in nix-configuration) as an
+  `EnvironmentFile`
+
+With garage, each project has its own state bucket (`tofu-states-<project>`)
+and its own key (`tofu-<project>`; object-storage uses the manual
+`tofu-state-object-storage` key). One global credential no longer works —
+each project must authenticate with its own key, scoped to its own bucket.
+The credentials therefore move from the root `secrets.json` into the
+per-project `secrets.json` files, which already hold each project's provider
+secrets. Add to each project's `secrets.json`:
+
+- `state_bucket_key_id` / `state_bucket_secret_key`: the credentials of
+  `tofu-<project>` (from the garage tofu outputs; for object-storage, the
+  manual `tofu-state-object-storage` key). Both consumers below map these
+  onto `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`, so nothing else in the
+  file leaks into the environment.
+
+After the migration, remove `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` from
+the root `secrets.json`.
+
+### Local: direnv
+
+Keep the root `.envrc` as is (`use flake` plus the sops export of the root
+`secrets.json`); once the root file holds no more state-backend credentials,
+the export block there can simply go. Give each project its own `.envrc` so
+direnv picks up the nearest one when working in a subdirectory:
+
+```bash
+use flake
+
+if secrets=$(sops -d secrets.json 2>/dev/null); then
+  export AWS_ACCESS_KEY_ID=$(echo "$secrets" | jq -r .state_bucket_key_id)
+  export AWS_SECRET_ACCESS_KEY=$(echo "$secrets" | jq -r .state_bucket_secret_key)
+else
+  log_status "sops: cannot decrypt secrets.json on this host, skipping secret export"
+fi
+```
+
+Same structure as the root `.envrc`, but exporting only the two state bucket
+entries under their AWS names. The per-project file is picked up because
+direnv resolves `secrets.json` relative to the `.envrc` location. direnv only
+loads the closest `.envrc`, so a per-project file cleanly shadows the root
+one (and brings its own `use flake`).
+
+### CI: workflows
+
+The reusable `_tofu.yaml` runs with `working-directory: ${{ inputs.working-directory }}`
+and the runner already has `SOPS_AGE_KEY_FILE` in its environment. The global
+runner-side `EnvironmentFile` can go away; instead add one step to
+`_tofu.yaml` before `tofu init` that loads the per-project backend
+credentials into `$GITHUB_ENV`:
+
+```yaml
+- name: Load backend credentials
+  run: |
+    creds=$(sops -d secrets.json | jq -r '"AWS_ACCESS_KEY_ID=\(.state_bucket_key_id)",
+      "AWS_SECRET_ACCESS_KEY=\(.state_bucket_secret_key)"')
+    # GITHUB_ENV vars are not masked automatically; mask them in logs explicitly.
+    echo "$creds" | while IFS== read -r name value; do echo "::add-mask::$value"; done
+    echo "$creds" >> "$GITHUB_ENV"
+```
+
+Because the step runs in the job's working directory, it automatically picks
+up that project's `secrets.json` — no per-workflow changes needed beyond the
+one shared step.
+
+### CI: runner cleanup (nix-configuration)
+
+In `modules/nixos/github-runners.nix`, once all projects are migrated:
+
+- remove `sops.secrets."github-runners/aws-access-key-id"` and
+  `".../aws-secret-access-key"`
+- remove the `state-backend-secrets` sops template and its `EnvironmentFile`
+  service override
+- keep `SOPS_AGE_KEY_FILE` — the workflows need it to decrypt the per-project
+  `secrets.json`
+
+The two `github-runners/aws-*` entries in the host sops secrets can then be
+deleted.
 
 ## 3. Restic backups: copy, verify, cutover
 
