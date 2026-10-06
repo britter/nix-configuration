@@ -46,7 +46,7 @@ by hand once:
 garage bucket allow --read --write --key <migration access key ID> tofu-states-object-storage
 ```
 
-## 2. Tofu state
+## 2. Tofu state: copy, verify, cutover
 
 Project prefixes map to their state buckets:
 
@@ -56,7 +56,29 @@ for proj in object-storage dns network proxmox; do
 done
 ```
 
-## 3. Restic backups
+Verify (server side; `--size-only` avoids re-hashing the world):
+
+```bash
+for proj in object-storage dns network proxmox; do
+  rclone check --size-only "minio:tofu-states/home-lab/$proj" "garage:tofu-states-$proj"
+done
+```
+
+Then cut over the backends: update all Tofu backend configurations to point
+at the garage state buckets (`tofu-states-<project>`, and
+`tofu-states-object-storage` for this project) and update `secrets.json`
+with the new credentials. Run a final `rclone copy` per prefix (delta only),
+re-run the check, then verify client-side per project:
+
+```bash
+# forces the backend to be re-read with the new credentials
+tofu init -reconfigure
+tofu plan   # must succeed and show no unexpected changes
+```
+
+From here on, the state buckets are on garage; minIO still serves restic.
+
+## 3. Restic backups: copy, verify, cutover
 
 Each minIO prefix is a self-contained restic repo; copy each into its
 matching bucket:
@@ -67,23 +89,15 @@ for svc in git nextcloud vaultwarden calibre forgejo paperless; do
 done
 ```
 
-Steps 2 and 3 can run while minIO is still in use — this is the initial
-copy, not the cutover.
-
-## 4. Verify (server side)
+Verify (server side):
 
 ```bash
-# --size-only avoids re-hashing the world
-for proj in object-storage dns network proxmox; do
-  rclone check --size-only "minio:tofu-states/home-lab/$proj" "garage:tofu-states-$proj"
-done
-
 for svc in git nextcloud vaultwarden calibre forgejo paperless; do
   rclone check --size-only "minio:restic-backups/$svc" "garage:restic-$svc"
 done
 ```
 
-## 5. Cutover
+Then cut over:
 
 1. Pause the restic backup jobs briefly.
 2. Update the restic config in nix-configuration (srv-prod-2:
@@ -92,29 +106,16 @@ done
    (`s3:https://garage.srv-prod-3.ritter.family/restic-<service>`), new
    per-service credentials from the `restic_user_credentials` output in the
    sops secrets, and a `region = garage` where the S3 client needs it.
-3. Update all Tofu backend configurations to point at the garage state
-   buckets (`tofu-states-<project>`, and `tofu-states-object-storage` for
-   this project) and update `secrets.json` with the new credentials.
-4. Run a final `rclone copy` per prefix — it only transfers the delta
+3. Run a final `rclone copy` per service — it only transfers the delta
    written since the initial copy.
-5. Re-run the checks from step 4, unpause the backup jobs.
-6. Verify client-side (see step 6).
-7. Remove the migration user (section 8).
-8. Once everything is verified, decommission minIO.
+4. Re-run the check, unpause the backup jobs.
+5. Verify client-side (see below).
+6. Once everything is verified, decommission minIO.
 
-## 6. Client-side verification
-
-Tofu (run per project, e.g. in a checkout of that project):
-
-```bash
-# forces the backend to be re-read with the new credentials
-tofu init -reconfigure
-tofu plan   # must succeed and show no unexpected changes
-```
-
-Restic (run per service on the host running the backup; the NixOS restic
-module generates a `restic-<svc>` wrapper on the system path that sources
-the sops-rendered credentials, so no manual env setup is needed):
+Client-side verification (run per service on the host running the backup;
+the NixOS restic module generates a `restic-<svc>` wrapper on the system
+path that sources the sops-rendered credentials, so no manual env setup is
+needed):
 
 ```bash
 restic-<svc> check
@@ -123,7 +124,7 @@ restic-<svc> snapshots
 restic-<svc> restore latest --target /tmp/restic-restore-test
 ```
 
-## 7. srv-offsite-1
+## 4. srv-offsite-1
 
 srv-offsite-1 is the offsite backup host: a nightly `rclone sync` copies the
 full contents of the object store on srv-prod-3 (`minio-sync` module,
@@ -206,9 +207,9 @@ In `modules/hosts/srv-offsite-1/services/minio-sync.nix` and the srv-offsite-1
   `configuration.nix`) — its data is no longer needed once the garage mirror
   is verified. Optionally wipe its data directory first.
 
-## 8. Remove the migration user
+## 5. Remove the migration user
 
-Remove this immediately after the cutover (cutover step 7) — the
+Remove this after the restic cutover (step 3) — the
 `migration` key is a global write key and must not outlive it. Since it is
 tofu-managed, remove `garage/migration.tf` (or flip it to `count = 0`) and
 apply; tofu deletes the key. Also remove the `migration` credentials from
