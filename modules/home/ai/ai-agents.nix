@@ -109,7 +109,6 @@
               "~/.gradle"
             ];
             suppress_save_prompt = [
-              "~/.hledger.journal"
               "~/"
             ];
           };
