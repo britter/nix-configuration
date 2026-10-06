@@ -17,7 +17,7 @@ resource "proxmox_vm_qemu" "srv_prod_2" {
   full_clone             = false
   bios                   = "ovmf"
   scsihw                 = "virtio-scsi-single"
-  boot                   = "order=ide2;scsi0;net0"
+  boot                   = "order=scsi0;ide2;net0"
 
   power_state        = "running"
   start_at_node_boot = true
