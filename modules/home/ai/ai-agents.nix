@@ -95,8 +95,8 @@
       programs.nono = {
         enable = true;
 
-        # `extends` nolabs-ai/opencode; everything else mirrors the tool's
-        # defaults via the empty values supplied by the nono-base module.
+        # `extends` nolabs-ai/opencode; everything else keeps nono's parser
+        # defaults.
         profiles.opencode = {
           extends = [ "nolabs-ai/opencode" ];
           meta = {
