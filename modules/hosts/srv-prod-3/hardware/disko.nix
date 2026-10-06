@@ -32,6 +32,24 @@
           };
         };
       };
+      disk.data = {
+        device = "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi1";
+        type = "disk";
+        content = {
+          type = "gpt";
+          partitions = {
+            main = {
+              size = "100%";
+              content = {
+                type = "filesystem";
+                format = "ext4";
+                mountpoint = "/mnt/data";
+                mountOptions = [ "noatime" ];
+              };
+            };
+          };
+        };
+      };
     };
 
     boot.loader = {
