@@ -48,6 +48,12 @@ resource "proxmox_vm_qemu" "srv_prod_3" {
           size    = "200G"
         }
       }
+      scsi1 {
+        disk {
+          storage = "local-lvm"
+          size    = "200G"
+        }
+      }
     }
   }
 }
