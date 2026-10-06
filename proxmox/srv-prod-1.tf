@@ -19,7 +19,7 @@ resource "proxmox_vm_qemu" "srv_prod_1" {
   scsihw                 = "virtio-scsi-single"
   boot                   = "order=scsi0;ide2;net0"
 
-  vm_state           = "running"
+  power_state        = "running"
   start_at_node_boot = true
   startup_shutdown {
     order            = -1
