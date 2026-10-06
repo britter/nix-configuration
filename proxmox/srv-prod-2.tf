@@ -44,8 +44,11 @@ resource "proxmox_vm_qemu" "srv_prod_2" {
     scsi {
       scsi0 {
         disk {
-          storage = "local-lvm"
-          size    = "64G"
+          storage    = "local-lvm"
+          size       = "64G"
+          emulatessd = true
+          discard    = true
+          replicate  = true
         }
       }
     }
