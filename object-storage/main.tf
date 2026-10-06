@@ -18,6 +18,10 @@ terraform {
       source  = "carlpett/sops"
       version = "1.4.1"
     }
+    garage = {
+      source  = "registry.terraform.io/arsolitt/garagehq"
+      version = ">= 0.0.1"
+    }
   }
 }
 
@@ -32,6 +36,12 @@ module "srv-prod-3" {
   endpoint      = "minio.srv-prod-3.ritter.family"
   root_user     = data.sops_file.secrets.data["srv_prod_3_root_user"]
   root_password = data.sops_file.secrets.data["srv_prod_3_root_password"]
+}
+
+module "srv-prod-3-garage" {
+  source      = "./garage"
+  endpoint    = "garage.srv-prod-3.ritter.family:443"
+  admin_token = data.sops_file.secrets.data["srv_prod_3_garage_admin_token"]
 }
 
 output "srv_prod_3_state_bucket_domain_name" {

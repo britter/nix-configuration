@@ -1,28 +1,81 @@
 # object-storage
 
-Module for managing object storage, in particular minIO instances.
-The module is structured in a way to support rolling out the same configuration across multiple minIO instances.
+Module for managing object storage across S3-compatible stores. Currently
+covers two backends:
 
-Currently a bucket for restic backups as well as a bucket for Tofu states is created, including users for fine-grained access.
+- **minIO** (`minio/`): legacy instance on srv-prod-3, still in use
+- **Garage** (`garage/`): replacement instance on srv-prod-3, exposed at
+  `garage.srv-prod-3.ritter.family`
+
+While migrating, minIO remains the state backend; the state is switched over
+to Garage once the migration is verified (see
+[State bucket](#state-bucket-manual-permanently)).
+
+Garage has no IAM policies like minIO: permissions are grants per key x
+bucket, and keys cannot be scoped to prefixes. As a result, resources that
+minIO models as prefixes inside one bucket (per-service restic backups,
+per-project Tofu state) are modelled as one bucket per service/project in
+Garage.
+
+## Layout
+
+- `tofu-states-object-storage` — state bucket for this project
+  (object-storage), **fully manual**: tofu never manages it or its key
+- `tofu-states-<project>` + key `tofu-<project>` (rw) — state buckets/keys
+  for other Tofu projects, managed
+- `restic-<service>` + key `restic-<service>` (rw) — one bucket per service
+  with restic backups
+- key `restic-restore` (ro) — read access to all restic buckets for restores
+- key `global-read` (ro) — read access to all buckets, for synchronizing
+  content between instances during migrations
+
+Credentials are provided via the top-level `secrets.json` (sops-encrypted):
+the scoped Garage admin API bearer token under
+`srv_prod_3_garage_admin_token`. All S3 credentials created by tofu are
+exposed as outputs. Note that Garage only shows a key's secret once at
+creation — after that, Terraform state is the record.
 
 ## State bucket
 
-The state bucket is supposed to have a prefix per Tofu Project and then for each module in that project another subprefix.
-For example this module is in the home-lab tofu project, so the state should reside in `<minio-instance>/home-lab/minio/`.
+### State bucket (manual, permanently)
 
-### Cyclic setup problem
+Tofu cannot create its own backend's bucket (chicken-and-egg), so the state
+bucket and key for this project are bootstrapped manually and stay manual —
+they are not imported into state, not managed, and not touched by tofu.
+State buckets for other projects are managed resources.
 
-There's currently a caveat with the setup in that this module uses ac bucket for state storage, that is at the same time managed by it.
-The result of that is that moving from one minIO instance to another is a little tricky.
-This is because in order to create the required buckets and permissions on the new instance, we need to modell that state and roll it out.
-That will create a state bucket in the new instance, but store this state in the old instance.
+One-time setup on srv-prod-3:
 
-A process to work around that, looks like the following:
+```bash
+garage bucket create tofu-states-object-storage
+garage key create tofu-state-object-storage
+garage bucket allow --read --write --owner \
+  --key tofu-state-object-storage tofu-states-object-storage
+```
+
+(The grant is needed — a new key has access to no bucket by default; the
+state backend needs read, write, and owner since tofu manages the bucket's
+contents.)
+
+Then point the backend at `tofu-states-object-storage` with the manual key's
+credentials. The `global-read` user does not have access to this bucket; state
+bucket content is synced by hand (or via the admin token) during migrations.
+
+### Migration between instances
+
+See [MIGRATION.md](./MIGRATION.md) for the concrete rclone-based process. In
+summary:
 
 - Add Tofu configuration to set up the new instance
 - Roll out the changes
-- Use the global read user on the new instance to synchronize the content from the old instance (using, e.g. rclone)
-- Verify everything is fine on the new instance
-- Update the top level `secrets.json` to contain the credentials for the new instance. Update all Tofu backend configurations to look manage state on the new instance
+- Synchronize the content from the old instance to the new one using rclone:
+  the old instance's global read user reads, the new instance's per-bucket rw
+  keys write (see [MIGRATION.md](./MIGRATION.md)). Per-service restic backups
+  live in `restic-<service>` buckets now, so sync each minIO
+  `restic-backups/<service>/` prefix into its matching new bucket
+- Verify everything is fine on the new instance (including restores)
+- Update the top level `secrets.json` to contain the credentials for the new
+  instance. Update all Tofu backend configurations to manage state on the new
+  instance
 - Verify everything is fine
 - Decommission the old instance

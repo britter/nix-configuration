@@ -1,0 +1,218 @@
+# Migration plan: minIO → Garage
+
+Steps and commands for migrating Tofu state and restic backups from minIO
+(`minio.srv-prod-3.ritter.family`) to Garage (`garage.srv-prod-3.ritter.family`).
+Both run on srv-prod-3, so rclone runs locally on that host.
+
+Prerequisites: the Garage setup in this repo is rolled out (buckets and keys
+exist, see README), including the temporary `migration` key managed by tofu
+(`garage/migration.tf`), whose credentials come from the
+`migration_credentials` output. On srv-prod-3, `garage` is a wrapper that
+already carries the RPC secret — run its commands directly.
+
+## 1. rclone remotes on srv-prod-3
+
+nixpkgs has no declarative rclone module, so the config is rendered from a
+sops template — the same pattern as the offsite `minio-sync` module. Add to
+srv-prod-3's configuration in nix-configuration:
+
+- sops secrets for the migration key credentials (copy the values from the
+  `migration_credentials` output into the srv-prod-3 secrets file)
+- a sops template rendering the following `rclone.conf`:
+
+```ini
+[minio]
+type = s3
+provider = Minio
+endpoint = https://minio.srv-prod-3.ritter.family
+access_key_id = <global-read user credentials>
+secret_access_key = ...
+
+[garage]
+type = s3
+provider = Other
+region = garage
+endpoint = https://garage.srv-prod-3.ritter.family
+access_key_id = <migration key credentials>
+secret_access_key = ...
+```
+
+The minIO `global-read` user is the copy source (read-only suffices); the
+temporary `migration` key writes into all *managed* garage buckets. For the
+manual `tofu-states-object-storage` bucket, grant the migration key access
+by hand once:
+
+```bash
+garage bucket allow --read --write --key <migration access key ID> tofu-states-object-storage
+```
+
+## 2. Tofu state
+
+Project prefixes map to their state buckets:
+
+```bash
+for proj in object-storage dns network proxmox; do
+  rclone copy "minio:tofu-states/home-lab/$proj" "garage:tofu-states-$proj"
+done
+```
+
+## 3. Restic backups
+
+Each minIO prefix is a self-contained restic repo; copy each into its
+matching bucket:
+
+```bash
+for svc in git nextcloud vaultwarden calibre forgejo paperless; do
+  rclone copy "minio:restic-backups/$svc" "garage:restic-$svc" --transfers 8 --checkers 16
+done
+```
+
+Steps 2 and 3 can run while minIO is still in use — this is the initial
+copy, not the cutover.
+
+## 4. Verify (server side)
+
+```bash
+# --size-only avoids re-hashing the world
+for proj in object-storage dns network proxmox; do
+  rclone check --size-only "minio:tofu-states/home-lab/$proj" "garage:tofu-states-$proj"
+done
+
+for svc in git nextcloud vaultwarden calibre forgejo paperless; do
+  rclone check --size-only "minio:restic-backups/$svc" "garage:restic-$svc"
+done
+```
+
+## 5. Cutover
+
+1. Pause the restic backup jobs briefly.
+2. Update the restic config in nix-configuration (srv-prod-2:
+   `_restic-constants.nix` and the per-service `services/restic.nix`): new
+   repository URL
+   (`s3:https://garage.srv-prod-3.ritter.family/restic-<service>`), new
+   per-service credentials from the `restic_user_credentials` output in the
+   sops secrets, and a `region = garage` where the S3 client needs it.
+3. Update all Tofu backend configurations to point at the garage state
+   buckets (`tofu-states-<project>`, and `tofu-states-object-storage` for
+   this project) and update `secrets.json` with the new credentials.
+4. Run a final `rclone copy` per prefix — it only transfers the delta
+   written since the initial copy.
+5. Re-run the checks from step 4, unpause the backup jobs.
+6. Verify client-side (see step 6).
+7. Remove the migration user (section 8).
+8. Once everything is verified, decommission minIO.
+
+## 6. Client-side verification
+
+Tofu (run per project, e.g. in a checkout of that project):
+
+```bash
+# forces the backend to be re-read with the new credentials
+tofu init -reconfigure
+tofu plan   # must succeed and show no unexpected changes
+```
+
+Restic (run per service on the host running the backup; the NixOS restic
+module generates a `restic-<svc>` wrapper on the system path that sources
+the sops-rendered credentials, so no manual env setup is needed):
+
+```bash
+restic-<svc> check
+restic-<svc> snapshots
+# and, to prove end-to-end restore works (only for small repositories such as git):
+restic-<svc> restore latest --target /tmp/restic-restore-test
+```
+
+## 7. srv-offsite-1
+
+srv-offsite-1 is the offsite backup host: a nightly `rclone sync` copies the
+full contents of the object store on srv-prod-3 (`minio-sync` module,
+`modules/hosts/srv-offsite-1/services/minio-sync.nix` in nix-configuration).
+It runs its own garage instance (set up via the shared `garage` module in
+nix-configuration). Two credentials are involved:
+
+- **Read side (srv-prod-3):** the existing `global-read` user — rclone reads
+  from `garage.srv-prod-3.ritter.family`.
+- **Write side (srv-offsite-1):** a global write user on the *offsite*
+  garage, since the nightly sync writes the full mirror there.
+
+### Create the global write user on srv-offsite-1
+
+Run once on srv-offsite-1 (secret shown once — it goes into that host's
+sops secrets file):
+
+```bash
+garage key create global-write
+
+# Keys cannot create buckets by default; allow it so rclone can create
+# the mirror buckets itself (the key becomes owner of the buckets it creates):
+garage key allow --create-bucket global-write
+```
+
+No `bucket allow` grants and no bucket pre-creation are needed: every
+bucket the key creates via S3 `CreateBucket` is owned by it, which implies
+full read/write.
+
+### Reconfigure (nix-configuration), phase 1: extend rclone config
+
+In `modules/hosts/srv-offsite-1/services/minio-sync.nix`, *temporarily* add
+the garage remotes next to the existing minIO ones (the minIO sync keeps
+running until the fill and the switch below are done):
+
+- sops secrets: `srv-prod-3/garage/access-key` + `secret-key` (the
+  `global-read` user on srv-prod-3), `garage/access-key` + `secret-key`
+  (the `global-write` user on srv-offsite-1).
+- Extend the `rclone.conf` template with:
+  - `[garage-prod]`: `provider = Other`, `region = garage`,
+    `endpoint = https://garage.srv-prod-3.ritter.family`, global-read
+    credentials.
+  - `[garage-offsite]`: `provider = Other`, `region = garage`,
+    `endpoint = https://garage.srv-offsite-1.ritter.family`, global-write
+    credentials.
+
+### One-time: fill the offsite garage
+
+After the last minIO sync has brought the latest data into the offsite
+store, fill the offsite garage from it. Both remotes are local to
+srv-offsite-1, so nothing is transferred over the network:
+
+```bash
+for svc in git nextcloud vaultwarden calibre forgejo paperless; do
+  rclone copy "srv-offsite-1:restic-backups/$svc" "garage-offsite:restic-$svc"
+done
+for proj in object-storage dns network proxmox; do
+  rclone copy "srv-offsite-1:tofu-states/home-lab/$proj" "garage-offsite:tofu-states-$proj"
+done
+```
+
+### Reconfigure (nix-configuration), phase 2: switch and clean up
+
+In `modules/hosts/srv-offsite-1/services/minio-sync.nix` and the srv-offsite-1
+`configuration.nix`:
+
+- Repoint the existing remotes at the garage instances, keeping their names:
+  - `[srv-prod-3]`: `provider = Other`, `region = garage`,
+    `endpoint = https://garage.srv-prod-3.ritter.family`, global-read
+    credentials.
+  - `[srv-offsite-1]`: `provider = Other`, `region = garage`,
+    `endpoint = https://garage.srv-offsite-1.ritter.family`, global-write
+    credentials.
+- Revert the sync command to its original form
+  (`rclone sync srv-prod-3: srv-offsite-1:`) — it is unchanged; only the
+  remote definitions underneath changed.
+- Remove the temporary `[garage-prod]`/`[garage-offsite]` remotes added in
+  phase 1.
+- Remove the minIO service from srv-offsite-1 (the `minio` import in its
+  `configuration.nix`) — its data is no longer needed once the garage mirror
+  is verified. Optionally wipe its data directory first.
+
+## 8. Remove the migration user
+
+Remove this immediately after the cutover (cutover step 7) — the
+`migration` key is a global write key and must not outlive it. Since it is
+tofu-managed, remove `garage/migration.tf` (or flip it to `count = 0`) and
+apply; tofu deletes the key. Also remove the `migration` credentials from
+the rclone config on srv-prod-3. The final delta sync for the restic/state
+copies was already done in cutover step 4, so nothing depends on the key
+afterwards. (srv-offsite-1 does not use it at all — it uses `global-read`
+on srv-prod-3 and `global-write` on its own garage.)
