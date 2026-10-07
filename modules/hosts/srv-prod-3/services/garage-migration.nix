@@ -20,7 +20,7 @@ _: {
           region = eu-central-1
           access_key_id = ${config.sops.placeholder."minio/global-read-user-access-key"}
           secret_access_key = ${config.sops.placeholder."minio/global-read-user-secret-key"}
-          endpoint = https://localhost:9000
+          endpoint = http://localhost:9000
           location_constraint =
           server_side_encryption =
 
