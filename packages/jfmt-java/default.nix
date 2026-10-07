@@ -68,7 +68,7 @@ maven_4.buildMavenPackage (finalAttrs: {
   meta = {
     description = "jfmt is an opinionated java source code formatter for the command line ";
     homepage = "https://github.com/bmarwell/jfmt";
-    license = lib.licenses.apsl20;
+    license = lib.licenses.asl20;
     maintainers = with lib.maintainers; [ britter ];
     mainProgram = "jfmt";
     platforms = lib.platforms.linux;
