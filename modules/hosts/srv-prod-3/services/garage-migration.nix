@@ -7,8 +7,8 @@ _: {
       ...
     }:
     {
-      sops.secrets."minio/root-user" = { };
-      sops.secrets."minio/root-password" = { };
+      sops.secrets."minio/global-read-user-access-key" = { };
+      sops.secrets."minio/global-read-user-secret-key" = { };
       sops.secrets."garage/migration-user-key-id" = { };
       sops.secrets."garage/migration-user-secret-key" = { };
       sops.templates."rclone.conf" = {
@@ -18,8 +18,8 @@ _: {
           provider = Minio
           env_auth = false
           region = eu-central-1
-          access_key_id = ${config.sops.placeholder."minio/root-user"}
-          secret_access_key = ${config.sops.placeholder."minio/root-password"}
+          access_key_id = ${config.sops.placeholder."minio/global-read-user-access-key"}
+          secret_access_key = ${config.sops.placeholder."minio/global-read-user-secret-key"}
           endpoint = https://localhost:9000
           location_constraint =
           server_side_encryption =
