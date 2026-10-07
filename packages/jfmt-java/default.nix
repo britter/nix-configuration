@@ -15,7 +15,7 @@ maven_4.buildMavenPackage (finalAttrs: {
     tag = "v${finalAttrs.version}";
     sha256 = "sha256-wynVkOUFS8MMBp+Go7VUA3j4xsb1UJDeNR2PAmkZAYA=";
   };
-  mvnHash = "sha256-FrY1HUjqTRgfi/HA7ujrEdoydSS+cibI+iYCdOjDJM8=";
+  mvnHash = "sha256-JOo+tcTn4w/Vy5t2HK+MSc/DCHYGy0Ja3oY+nZJaRt4=";
 
   # picocli-codegen 4.7.7 registers VersionProvider's methods and constructors but not
   # its @Spec field, and GraalVM >= 25.2 turns unregistered field access into a fatal
