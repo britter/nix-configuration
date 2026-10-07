@@ -7,7 +7,8 @@
       tailscale-server
       beszel-agent
       minio
-      config.flake.modules.nixos.garage-on-srv-prod-3
+      garage-on-srv-prod-3
+      garage-migration-on-srv-prod-3
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
