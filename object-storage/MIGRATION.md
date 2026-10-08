@@ -263,7 +263,7 @@ running until the fill and the switch below are done):
     `endpoint = https://garage.srv-offsite-1.ritter.family`, global-write
     credentials.
 
-### ⏳ One-time: fill the offsite garage
+### ✅ One-time: fill the offsite garage
 
 After the last minIO sync has brought the latest data into the offsite
 store, fill the offsite garage from it. Both remotes are local to
@@ -278,7 +278,7 @@ for proj in object-storage dns network proxmox; do
 done
 ```
 
-### Reconfigure (nix-configuration), phase 2: switch and clean up
+### ⏳ Reconfigure (nix-configuration), phase 2: switch and clean up
 
 In `modules/hosts/srv-offsite-1/services/minio-sync.nix` and the srv-offsite-1
 `configuration.nix`:
