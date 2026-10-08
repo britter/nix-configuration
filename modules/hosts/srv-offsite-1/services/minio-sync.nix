@@ -9,6 +9,8 @@ _: {
     {
       sops.secrets."srv-prod-3/minio/access-key" = { };
       sops.secrets."srv-prod-3/minio/secret-key" = { };
+      sops.secrets."garage/global-write-key-id" = { };
+      sops.secrets."garage/global-write-secret-key" = { };
       sops.templates."rclone.conf" = {
         content = ''
           [srv-prod-3]
@@ -19,6 +21,17 @@ _: {
           access_key_id = ${config.sops.placeholder."srv-prod-3/minio/access-key"}
           secret_access_key = ${config.sops.placeholder."srv-prod-3/minio/secret-key"}
           endpoint = https://minio.srv-prod-3.ritter.family
+          location_constraint =
+          server_side_encryption =
+
+          [garage]
+          type = s3
+          provider = Other
+          env_auth = false
+          region = garage
+          access_key_id = ${config.sops.placeholder."garage/global-write-key-id"}
+          secret_access_key = ${config.sops.placeholder."garage/global-write-secret-key"}
+          endpoint = http://localhost:3900
           location_constraint =
           server_side_encryption =
 
