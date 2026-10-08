@@ -32,12 +32,12 @@ in
       ];
 
       sops.secrets."restic/paperless/repository-password" = { };
-      sops.secrets."restic/paperless/minio-access-key-id" = { };
-      sops.secrets."restic/paperless/minio-secret-access-key" = { };
+      sops.secrets."restic/paperless/garage-access-key-id" = { };
+      sops.secrets."restic/paperless/garage-secret-access-key" = { };
       sops.templates."restic/paperless/secrets.env" = {
         content = ''
-          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/paperless/minio-access-key-id"}
-          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/paperless/minio-secret-access-key"}
+          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/paperless/garage-access-key-id"}
+          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/paperless/garage-secret-access-key"}
           RESTIC_PASSWORD=${config.sops.placeholder."restic/paperless/repository-password"}
         '';
       };
@@ -52,7 +52,7 @@ in
             "/srv/paperless-media"
             "/var/backups/paperless"
           ];
-          repository = "${restic.bucket}/paperless";
+          repository = "${restic.bucket-prefix}-paperless";
           initialize = true;
           backupPrepareCommand = ''
             ${lib.getExe pkgs.sudo} -u postgres ${pg_dump} --format=custom --file=/var/backups/paperless/paperless.dump paperless

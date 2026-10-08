@@ -19,12 +19,12 @@ in
       ];
 
       sops.secrets."restic/vaultwarden/repository-password" = { };
-      sops.secrets."restic/vaultwarden/minio-access-key-id" = { };
-      sops.secrets."restic/vaultwarden/minio-secret-access-key" = { };
+      sops.secrets."restic/vaultwarden/garage-access-key-id" = { };
+      sops.secrets."restic/vaultwarden/garage-secret-access-key" = { };
       sops.templates."restic/vaultwarden/secrets.env" = {
         content = ''
-          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/vaultwarden/minio-access-key-id"}
-          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/vaultwarden/minio-secret-access-key"}
+          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/vaultwarden/garage-access-key-id"}
+          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/vaultwarden/garage-secret-access-key"}
           RESTIC_PASSWORD=${config.sops.placeholder."restic/vaultwarden/repository-password"}
         '';
       };
@@ -39,7 +39,7 @@ in
             "/var/lib/bitwarden_rs"
             "/var/backups/vaultwarden"
           ];
-          repository = "${restic.bucket}/vaultwarden";
+          repository = "${restic.bucket-prefix}-vaultwarden";
           initialize = true;
           backupPrepareCommand = ''
             systemctl stop vaultwarden
