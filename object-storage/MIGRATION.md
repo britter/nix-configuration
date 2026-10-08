@@ -229,7 +229,7 @@ nix-configuration). Two credentials are involved:
 - **Write side (srv-offsite-1):** a global write user on the *offsite*
   garage, since the nightly sync writes the full mirror there.
 
-### Create the global write user on srv-offsite-1
+### ✅ Create the global write user on srv-offsite-1
 
 Run once on srv-offsite-1 (secret shown once — it goes into that host's
 sops secrets file):
@@ -246,7 +246,7 @@ No `bucket allow` grants and no bucket pre-creation are needed: every
 bucket the key creates via S3 `CreateBucket` is owned by it, which implies
 full read/write.
 
-### Reconfigure (nix-configuration), phase 1: extend rclone config
+### ✅ Reconfigure (nix-configuration), phase 1: extend rclone config
 
 In `modules/hosts/srv-offsite-1/services/minio-sync.nix`, *temporarily* add
 the garage remotes next to the existing minIO ones (the minIO sync keeps
@@ -263,7 +263,7 @@ running until the fill and the switch below are done):
     `endpoint = https://garage.srv-offsite-1.ritter.family`, global-write
     credentials.
 
-### One-time: fill the offsite garage
+### ⏳ One-time: fill the offsite garage
 
 After the last minIO sync has brought the latest data into the offsite
 store, fill the offsite garage from it. Both remotes are local to
