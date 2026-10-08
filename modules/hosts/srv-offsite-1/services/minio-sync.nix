@@ -47,6 +47,11 @@ _: {
           server_side_encryption =
         '';
       };
+      environment.systemPackages = [
+        (pkgs.writeShellScriptBin "rclone" ''
+          exec ${lib.getExe pkgs.rclone} --config ${config.sops.templates."rclone.conf".path} "$@"
+        '')
+      ];
 
       # nightly minio-sync
       systemd.timers.nightly-minio-sync = {
