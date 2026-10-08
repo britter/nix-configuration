@@ -25,15 +25,6 @@ _: {
       users.groups.github-runner = { };
       sops.secrets."github-runners/pat".owner = "github-runner";
       sops.secrets."github-runners/age-key".owner = "github-runner";
-      sops.secrets."github-runners/aws-access-key-id".owner = "github-runner";
-      sops.secrets."github-runners/aws-secret-access-key".owner = "github-runner";
-      sops.templates."state-backend-secrets" = {
-        owner = "github-runner";
-        content = ''
-          AWS_ACCESS_KEY_ID=${config.sops.placeholder."github-runners/aws-access-key-id"}
-          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."github-runners/aws-secret-access-key"}
-        '';
-      };
       # Allow the runner user to use the nix daemon
       nix.settings.trusted-users = [ "github-runner" ];
 
@@ -73,7 +64,6 @@ _: {
               # a second, redundant BindPaths=[workDir] for custom workDirs. Clear
               # it so CacheDirectory manages the dir outright.
               BindPaths = lib.mkForce [ ];
-              EnvironmentFile = [ config.sops.templates.state-backend-secrets.path ];
               Environment = [
                 "SOPS_AGE_KEY_FILE=${config.sops.secrets."github-runners/age-key".path}"
               ];
