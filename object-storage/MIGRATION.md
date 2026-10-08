@@ -170,7 +170,7 @@ In `modules/nixos/github-runners.nix`, once all projects are migrated:
 The two `github-runners/aws-*` entries in the host sops secrets can then be
 deleted.
 
-## 3. Restic backups: copy, verify, cutover
+## ✅ 3. Restic backups: copy, verify, cutover
 
 Each minIO prefix is a self-contained restic repo; copy each into its
 matching bucket:
