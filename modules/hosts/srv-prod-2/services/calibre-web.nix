@@ -10,12 +10,12 @@ in
       imports = [ calibre-web ];
 
       sops.secrets."restic/calibre/repository-password" = { };
-      sops.secrets."restic/calibre/minio-access-key-id" = { };
-      sops.secrets."restic/calibre/minio-secret-access-key" = { };
+      sops.secrets."restic/calibre/garage-access-key-id" = { };
+      sops.secrets."restic/calibre/garage-secret-access-key" = { };
       sops.templates."restic/calibre/secrets.env" = {
         content = ''
-          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/calibre/minio-access-key-id"}
-          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/calibre/minio-secret-access-key"}
+          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/calibre/garage-access-key-id"}
+          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/calibre/garage-secret-access-key"}
           RESTIC_PASSWORD=${config.sops.placeholder."restic/calibre/repository-password"}
         '';
       };
@@ -26,7 +26,7 @@ in
           "/var/lib/calibre-web"
           "/var/lib/calibre-library"
         ];
-        repository = "${restic.bucket}/calibre";
+        repository = "${restic.bucket-prefix}-calibre";
         initialize = true;
         inherit (restic) pruneOpts timerConfig;
       };

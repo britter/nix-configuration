@@ -32,12 +32,12 @@ in
       ];
 
       sops.secrets."restic/nextcloud/repository-password" = { };
-      sops.secrets."restic/nextcloud/minio-access-key-id" = { };
-      sops.secrets."restic/nextcloud/minio-secret-access-key" = { };
+      sops.secrets."restic/nextcloud/garage-access-key-id" = { };
+      sops.secrets."restic/nextcloud/garage-secret-access-key" = { };
       sops.templates."restic/nextcloud/secrets.env" = {
         content = ''
-          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/nextcloud/minio-access-key-id"}
-          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/nextcloud/minio-secret-access-key"}
+          AWS_ACCESS_KEY_ID=${config.sops.placeholder."restic/nextcloud/garage-access-key-id"}
+          AWS_SECRET_ACCESS_KEY=${config.sops.placeholder."restic/nextcloud/garage-secret-access-key"}
           RESTIC_PASSWORD=${config.sops.placeholder."restic/nextcloud/repository-password"}
         '';
       };
@@ -53,7 +53,7 @@ in
             "/srv/nextcloud-data"
             "/var/backups/nextcloud"
           ];
-          repository = "${restic.bucket}/nextcloud";
+          repository = "${restic.bucket-prefix}-nextcloud";
           initialize = true;
           backupPrepareCommand = ''
             ${occ} maintenance:mode --on

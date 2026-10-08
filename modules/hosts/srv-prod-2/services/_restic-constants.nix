@@ -1,5 +1,5 @@
 {
-  bucket = "s3:https://minio.srv-prod-3.ritter.family/restic-backups";
+  bucket-prefix = "s3:https://garage.srv-prod-3.ritter.family/restic-";
   pruneOpts = [
     "--keep-daily 14"
     "--keep-weekly 8"
