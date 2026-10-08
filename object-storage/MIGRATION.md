@@ -10,7 +10,7 @@ exist, see README), including the temporary `migration` key managed by tofu
 `migration_credentials` output. On srv-prod-3, `garage` is a wrapper that
 already carries the RPC secret — run its commands directly.
 
-## 1. rclone remotes on srv-prod-3
+## ✅ 1. rclone remotes on srv-prod-3
 
 nixpkgs has no declarative rclone module, so the config is rendered from a
 sops template — the same pattern as the offsite `minio-sync` module. Add to
@@ -46,7 +46,7 @@ by hand once:
 garage bucket allow --read --write --key <migration access key ID> tofu-states-object-storage
 ```
 
-## 2. Tofu state: copy, verify, cutover
+## ✅ 2. Tofu state: copy, verify, cutover
 
 Project prefixes map to their state buckets:
 
@@ -81,7 +81,7 @@ tofu plan   # must succeed and show no unexpected changes
 
 From here on, the state buckets are on garage; minIO still serves restic.
 
-## 2a. State backend credentials
+## ✅ 2a. State backend credentials
 
 Today the root `secrets.json` holds one pair of minIO credentials
 (`AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`) for the single `tofu-states`
@@ -110,7 +110,7 @@ secrets. Add to each project's `secrets.json`:
 After the migration, remove `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY` from
 the root `secrets.json`.
 
-### Local: direnv
+### ✅ Local: direnv
 
 Keep the root `.envrc` as is (`use flake` plus the sops export of the root
 `secrets.json`); once the root file holds no more state-backend credentials,
@@ -134,7 +134,7 @@ direnv resolves `secrets.json` relative to the `.envrc` location. direnv only
 loads the closest `.envrc`, so a per-project file cleanly shadows the root
 one (and brings its own `use flake`).
 
-### CI: workflows
+### ✅ CI: workflows
 
 The reusable `_tofu.yaml` runs with `working-directory: ${{ inputs.working-directory }}`
 and the runner already has `SOPS_AGE_KEY_FILE` in its environment. The global

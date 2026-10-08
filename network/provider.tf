@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket                      = "tofu-states"
-    key                         = "home-lab/network/terraform.tfstate"
-    region                      = "eu-central-1"
-    endpoint                    = "https://minio.srv-prod-3.ritter.family"
+    bucket                      = "tofu-states-network"
+    key                         = "terraform.tfstate"
+    region                      = "garage"
+    endpoint                    = "https://garage.srv-prod-3.ritter.family"
     skip_credentials_validation = true
     skip_region_validation      = true
     skip_requesting_account_id  = true

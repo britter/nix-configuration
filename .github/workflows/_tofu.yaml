@@ -24,6 +24,14 @@ jobs:
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
 
+      - name: Load backend credentials
+        run: |
+          creds=$(sops -d secrets.json | jq -r '"AWS_ACCESS_KEY_ID=\(.state_bucket_key_id)",
+            "AWS_SECRET_ACCESS_KEY=\(.state_bucket_secret_key)"')
+          # GITHUB_ENV vars are not masked automatically; mask them in logs explicitly.
+          echo "$creds" | while IFS== read -r name value; do echo "::add-mask::$value"; done
+          echo "$creds" >> "$GITHUB_ENV"
+
       - name: OpenTofu fmt
         id: fmt
         run: |
