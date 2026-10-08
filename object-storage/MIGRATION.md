@@ -156,7 +156,7 @@ Because the step runs in the job's working directory, it automatically picks
 up that project's `secrets.json` — no per-workflow changes needed beyond the
 one shared step.
 
-### CI: runner cleanup (nix-configuration)
+### ✅ CI: runner cleanup (nix-configuration)
 
 In `modules/nixos/github-runners.nix`, once all projects are migrated:
 
