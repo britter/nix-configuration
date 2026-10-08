@@ -1,5 +1,5 @@
 {
-  bucket-prefix = "s3:https://garage.srv-prod-3.ritter.family/restic-";
+  bucket-prefix = "s3:https://garage.srv-prod-3.ritter.family/restic";
   pruneOpts = [
     "--keep-daily 14"
     "--keep-weekly 8"
