@@ -136,6 +136,7 @@
       };
 
       programs.opencode = {
+        package = pkgs.llm-agents.opencode2;
         enableMcpIntegration = true;
         settings = {
           plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];

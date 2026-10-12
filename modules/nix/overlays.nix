@@ -10,6 +10,7 @@
       config.flake.overlays.local-pkgs
       config.flake.overlays.fixes
       inputs.nur.overlays.default
+      inputs.llm-agents.overlays.shared-nixpkgs
     ];
   };
 }
