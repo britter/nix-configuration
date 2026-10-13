@@ -1,4 +1,5 @@
 {
+  flake.allowUnfreePackages = [ "claude-code" ];
   flake.modules.homeManager.ai-agents =
     {
       config,
@@ -216,6 +217,8 @@
       xdg.configFile."agents/preferences.md".source = preferences;
 
       programs.claude-code = {
+        enable = true;
+        package = pkgs.llm-agents.claude-code;
         enableMcpIntegration = true;
         plugins.ponytail = ponytail;
 
