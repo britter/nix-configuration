@@ -69,6 +69,10 @@ _: {
             condition = "gitdir:~/github/apache/";
             contents.user.email = "britter@apache.org";
           }
+          {
+            condition = "gitdir:~/github/seeq12/";
+            contents.user.email = "benedikt.ritter@seeq.com";
+          }
         ];
       };
 

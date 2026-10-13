@@ -23,6 +23,7 @@
           librewolf
           nextcloud-client
           obsidian
+          slack
           syncthing
           tailscale
           java
