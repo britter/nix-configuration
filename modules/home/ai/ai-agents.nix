@@ -116,24 +116,38 @@
       programs.nono = {
         enable = true;
 
-        # `extends` nolabs-ai/opencode; everything else keeps nono's parser
-        # defaults.
-        profiles.opencode = {
-          extends = [ "nolabs-ai/opencode" ];
-          meta = {
-            version = "1.0.0";
-            description = "Runtime-discovered path additions for opencode";
+        profiles =
+          let
+            baseProfile = {
+              filesystem = {
+                allow = [
+                  "~/.config/gh"
+                  "~/.gradle"
+                ];
+                suppress_save_prompt = [
+                  "~/"
+                ];
+              };
+            };
+          in
+          {
+            opencode = {
+              extends = [ "nolabs-ai/opencode" ];
+              meta = {
+                version = "1.0.0";
+                description = "Runtime-discovered path additions for opencode";
+              };
+            }
+            // baseProfile;
+            claude = {
+              extends = [ "nolabs-ai/claude" ];
+              meta = {
+                version = "1.0.0";
+                description = "Runtime-discovered path additions for claude";
+              }
+              // baseProfile;
+            };
           };
-          filesystem = {
-            allow = [
-              "~/.config/gh"
-              "~/.gradle"
-            ];
-            suppress_save_prompt = [
-              "~/"
-            ];
-          };
-        };
       };
 
       # Disable opencode's file watcher: on NixOS it exhausts the system-wide
