@@ -36,12 +36,30 @@
         (or `nix shell nixpkgs#<tool> -c ...`) — never ask the user to install
         it or assume it is missing.
 
-        The host is managed declaratively by a Nix flake, typically checked out
-        at `~/github/britter/nix-configuration`
+        The host is managed declaratively by a Nix flake, checked out at
+        `~/github/britter/nix-configuration`
         (https://github.com/britter/nix-configuration). Persistent changes to
         the environment — installed packages, services, dotfiles — belong in
         that repo, not in imperative commands like `nix profile install` or
         hand-edited config files.
+
+        The config repo is your source of truth: you can look anything up
+        there — installed packages, enabled services, skills, nono sandbox
+        profiles, dotfiles. When in doubt about how this host is configured,
+        read the relevant module in that directory instead of guessing or
+        asking the user.
+
+        Skills you have available (e.g. the `skills.programming.*` and
+        `skills.writing.*` entries) are installed from that repo; if asked to
+        create, edit, or remove a skill, make the change in the config
+        project, not in the generated files under `~/.config`.
+
+        The same applies to nono sandbox profiles: they are declared in the
+        config project (`modules/home/ai/ai-agents.nix`,
+        `modules/home/nono-base.nix`) and rendered to
+        `~/.config/nono/profiles/`. To modify sandbox permissions, edit the
+        profile definitions in the config project — never hand-edit or
+        promote drafts in `~/.config/nono` directly.
       '';
       # Important CLI tools installed on this host (see modules/home/programs/tools.nix).
       toolsContext = pkgs.writeText "tools.md" ''
@@ -120,7 +138,8 @@
           let
             baseProfile = {
               filesystem = {
-                allow = [
+                read = [
+                  "~/github/britter/nix-configuration"
                   "~/.config/gh"
                   "~/.gradle"
                 ];
