@@ -243,7 +243,10 @@
           };
           alwaysThinkingEnabled = true;
           effortLevel = "medium";
-          enabledPlugins."gopls-lsp@claude-plugins-official" = true;
+          theme = "dark";
+          enabledPlugins = {
+            "nono@nolabs-ai" = true;
+          };
         };
         context = ''
           @${hostPath}
