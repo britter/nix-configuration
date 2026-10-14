@@ -14,9 +14,21 @@ https://britter.dev/blog/2026/05/11/exploring-the-dendritic-nix-pattern/
 for the reasoning behind it.
 
 The central concept: everything is a named aspect, and importing an aspect
-is enabling it. There are no `enable` options anywhere in this repo. A host
-gets a feature by listing it in its imports; new functionality becomes its
-own named aspect so that hosts can pull it in.
+is enabling it — as long as the aspect only configures existing NixOS or
+home-manager options. A host gets a feature by listing it in its imports;
+new functionality becomes its own named aspect so that hosts can pull it in.
+
+The exception is features for which no module exists upstream: there I
+write my own NixOS or home-manager module as its own base aspect, written in
+the conventional style of the ecosystem (`mkEnableOption`, disabled by
+default, `mkPackageOption`, ...) so that it could be upstreamed to
+nixpkgs or home-manager as-is. Treat these base aspects as my own
+extensions to nixpkgs/home-manager (e.g. `nono-base.nix` providing
+`programs.nono`). They are imported unconditionally by the matching base
+layer so the options exist everywhere. The feature is then enabled and
+configured by a separate, ordinary aspect that imports nothing but sets the
+options (e.g. `ai-agents.nix` setting `programs.nono.enable = true`), and
+that aspect is what hosts pull in.
 
 Every `.nix` file under `modules/` is auto-imported as a flake-parts module
 by import-tree; there is no central list of imports. Aspects register in:
