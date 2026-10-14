@@ -136,8 +136,18 @@
         };
       };
 
+      # Disable opencode's file watcher: on NixOS it exhausts the system-wide
+      # inotify watch budget (https://github.com/anomalyco/opencode/issues/55367).
       programs.opencode = {
-        package = pkgs.llm-agents.opencode2;
+        package = pkgs.symlinkJoin {
+          name = "opencode2";
+          paths = [ pkgs.llm-agents.opencode2 ];
+          nativeBuildInputs = [ pkgs.makeWrapper ];
+          postBuild = ''
+            wrapProgram $out/bin/opencode2 \
+              --set OPENCODE_DISABLE_FILEWATCHER true
+          '';
+        };
         enableMcpIntegration = true;
         settings = {
           plugin = [ "${ponytail}/.opencode/plugins/ponytail.mjs" ];
