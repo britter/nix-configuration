@@ -163,9 +163,9 @@
               meta = {
                 version = "1.0.0";
                 description = "Runtime-discovered path additions for claude";
-              }
-              // baseProfile;
-            };
+              };
+            }
+            // baseProfile;
           };
       };
 
