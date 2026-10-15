@@ -21,6 +21,11 @@ in
 
       users.users.${username} = {
         isNormalUser = true;
+        # Pin the uid instead of letting NixOS allocate one at activation
+        # time (which is only recorded in /var/lib/nixos, invisible to the
+        # config). A stable, declared uid makes `home.uid` usable in
+        # home-manager modules, e.g. for /run/user/<uid> sandbox paths.
+        uid = 1000;
         description = fullName;
         extraGroups = [
           "networkmanager"

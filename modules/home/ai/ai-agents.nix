@@ -142,6 +142,21 @@
                   "~/github/britter/nix-configuration"
                   "~/.config/gh"
                   "~/.gradle"
+                  # Socket directory of live hunk review sessions; without it
+                  # the hunk-review skill cannot reach the MCP server.
+                  "/run/user/${toString config.home.uid}/hunk-mcp"
+                ];
+                readwrite = [
+                  # Rootless container runtime state. Write access is required
+                  # so agents can actually RUN containers, not just inspect
+                  # them: crun/ holds runtime state, netns/ receives named
+                  # network namespace bind mounts, containers/ and libpod/ and
+                  # podman/ carry podman's state and API sockets.
+                  "/run/user/${toString config.home.uid}/containers"
+                  "/run/user/${toString config.home.uid}/crun"
+                  "/run/user/${toString config.home.uid}/libpod"
+                  "/run/user/${toString config.home.uid}/netns"
+                  "/run/user/${toString config.home.uid}/podman"
                 ];
                 suppress_save_prompt = [
                   "~/"
