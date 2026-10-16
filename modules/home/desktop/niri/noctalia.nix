@@ -122,6 +122,13 @@ in
           # };
           location.auto_locate = true;
           weather.enabled = true;
+          # Launcher prefix /web for searching the web and opening configured
+          # sites in the default browser. The plugin lives in the community
+          # git source, which noctalia ships with by default.
+          plugins.enabled = [ "notfinaldev/web-search" ];
+          # Per-plugin settings use the fully-qualified plugin id; provider
+          # picks the search engine used for the /web search result.
+          plugin_settings."notfinaldev/web-search".provider = "kagi";
           # Floating widgets on the desktop, right edge of eDP-1 (logical
           # 1440x960 at scale 2). Positions were arranged visually with
           # `noctalia msg desktop-widgets-edit` and promoted here; the
