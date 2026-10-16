@@ -141,12 +141,13 @@
                 read = [
                   "~/github/britter/nix-configuration"
                   "~/.config/gh"
-                  "~/.gradle"
                   # Socket directory of live hunk review sessions; without it
                   # the hunk-review skill cannot reach the MCP server.
                   "/run/user/${toString config.home.uid}/hunk-mcp"
                 ];
                 allow = [
+                  "~/.m2"
+                  "~/.gradle"
                   # Rootless container runtime state. Write access is required
                   # so agents can actually RUN containers, not just inspect
                   # them: crun/ holds runtime state, netns/ receives named
