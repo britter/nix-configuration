@@ -5,7 +5,7 @@ on the PVE hypervisor (media errors 130 → 133 over the last week, per
 beszel). Technician replaced the device the next day; this document covers
 the overnight data-securing operation and the recovery procedure.
 
-**Ground rules for tonight**
+**Ground rules (during data securing, before the disk was removed)**
 
 - Never boot into PVE. Every write to the failing disk is a loss of
   lifespan/readability. All work happens from the NixOS live ISO.
@@ -17,7 +17,7 @@ the overnight data-securing operation and the recovery procedure.
 
 ---
 
-## Part 1 — Securing data (tonight)
+## Part 1 — Securing data (night of 2026-10-15)
 
 ### 1. Mount the TrueNAS NFS share
 
@@ -118,7 +118,7 @@ minute on the NFS target.
 
 ### 5. Full-disk image — COMPLETE 2026-10-15
 
-Network resolved to 1 GbE, so the full image is part of tonight's plan.
+Network resolved to 1 GbE, so the full image was added to the plan.
 
 ```sh
 # pass 1 (no scratch): copy the good stuff, skip bad areas fast
@@ -140,7 +140,7 @@ safety net under the exports and offsite backups, not a replacement for them.
 ```sh
 cd /mnt/truenas/rescue-2026-10-15
 for f in s*.zst; do zstd -t $f && echo "$f archive OK"; done
-sha256sum s*.zst *.tar > SHA256SUMS   # record for transfer verification tomorrow
+sha256sum s*.zst *.tar > SHA256SUMS   # baseline for transfer verification during restore
 ```
 
 `zstd -t` proves each archive is internally consistent (the compression/NFS
@@ -148,7 +148,7 @@ path); the sha256 list proves any future copy of these files is identical.
 
 ### 7. Manifest (completed 2026-10-15)
 
-Record finished exports here for tomorrow's verification:
+Finished artifacts:
 
 | File | Size | Completed |
 |---|---|---|
@@ -172,7 +172,7 @@ s5=16609514721, s6=13220181067. Total VM exports ≈ 366 GiB.
 2 h 37 m. The entire disk was readable — the 133 SMART media-error events
 had all been corrected (ECC) or reallocated. No pass 2 needed.
 
-### 8. Before the technician arrives
+### 8. Before the technician arrived
 
 ```sh
 sudo umount /mnt/truenas
@@ -185,19 +185,51 @@ anything the image/exports missed.
 
 ---
 
-## Part 2 — Recovery (tomorrow, after the NVMe replacement)
+## Part 2 — Recovery (2026-10-16, after the NVMe replacement)
 
 All artifacts live in `/mnt/default-pool/pve-backup/rescue-2026-10-15/` on
 TrueNAS (`pve-cluster-config.tar`, `pve-root-etc.tar`, the `s*.zst` VM disk
-exports, optionally `pve-nvme.img` + `.map`). Re-mount that share on whatever
-machine is doing the restore.
+exports, `pve-nvme.img` + `.map`). Re-mount that share on whatever machine is
+doing the restore.
 
-### 1. Reinstall Proxmox VE on the new NVMe
+The replacement NVMe was confirmed to have the **exact same byte size** as
+the original (1024209543168 bytes), so the primary restore path is writing
+the ddrescue image back — everything (partition table, LVM, thin pool, VM
+disks, PVE config, host keys) comes back in one operation. The manual
+rebuild (reinstall + config restore + VM import) is the fallback.
 
-Standard PVE installer, same hostname, same IP, same LVM naming
-(`pve/root`, `pve/swap`) to keep paths identical. Apply the latest updates.
+### 1. Primary path: write the image back to the new NVMe
 
-### 2. Restore PVE configuration
+Boot the NixOS live ISO on the PVE host (old NVMe removed, so no duplicate
+VG/UUID conflicts), then:
+
+```sh
+# confirm the target is the new disk and empty:
+lsblk -b -n -o SIZE /dev/nvme0n1      # must equal 1024209543168
+
+mount -t nfs -o addr=192.168.10.20,vers=4.2,proto=tcp \
+  192.168.10.20:/mnt/default-pool/pve-backup /mnt/truenas
+
+dd if=/mnt/truenas/pve-nvme.img of=/dev/nvme0n1 bs=4M status=progress
+# ≈ 2.6 h at ~109 MB/s; must exit 0 with exactly 1024209543168 bytes written
+```
+
+Do **not** `vgscan`/`vgchange` while dd is running, and do not boot PVE until
+the write completes.
+
+Then reboot into PVE. Expected on first boot: ext4 journal replay on
+`pve-root` (like any unclean shutdown), all VM definitions, storage and
+networks present. Check `dmesg` for surprises, then continue with step 3.
+
+### 2. Fallback path: reinstall + manual restore
+
+Only if the image write-back fails or the restored system proves corrupt.
+Also useful as reference if a future incident lacks a full-disk image.
+
+**a. Reinstall Proxmox VE** on the new NVMe: same hostname, same IP, same
+LVM naming (`pve/root`, `pve/swap`). Apply the latest updates.
+
+**b. Restore PVE configuration:**
 
 ```sh
 scp <pve-backup-mount>:/rescue-2026-10-15/pve-cluster-config.tar /root/
@@ -213,9 +245,7 @@ All VMs, storage definitions (`storage.cfg`) and networks reappear. Restore
 any needed files from the rescued `etc/` by hand (e.g. SSH host keys from
 `etc/ssh/ssh_host_*`, network config from `etc/network/interfaces`).
 
-### 3. Import VM disks
-
-The exported files map back like this (from tonight's short names):
+**c. Import VM disks** — mapping table:
 
 | File | VM | LV to recreate |
 |---|---|---|
@@ -248,7 +278,7 @@ journal recovery — that is normal and expected.
 Repeat for every exported VM (srv-prod-2 → 200, srv-prod-3 → 300 with two
 disks, srv-prod-6 → 600, etc. — mapping table above).
 
-### 4. Boot order matters
+### 3. Boot order matters
 
 1. **srv-prod-3 (garage) first.** Its restic repositories are the fallback
    for everything else.
@@ -262,10 +292,11 @@ disks, srv-prod-6 → 600, etc. — mapping table above).
 If a VM's data proves inconsistent (crash-consistent export), restore from
 the restic repo on garage — that is exactly what it is for.
 
-### 5. Last resort: restore from the full-disk image
+### 4. Last resort: pull data from the full-disk image
 
-Only if a needed artifact is missing or corrupt. The image contains the
-entire old NVMe (partition table, LVM, thin pool):
+Only if a needed artifact is missing or corrupt and the image was *not*
+restored wholesale. The image contains the entire old NVMe (partition table,
+LVM, thin pool):
 
 ```sh
 losetup -r -f --show /mnt/pve-backup/rescue-2026-10-15/pve-nvme.img  # → /dev/loopN
@@ -285,7 +316,7 @@ Do **not** let anything write to the image; keep `-r` on the loop device.
 - Paperless, vaultwarden (unlock + password check!), forgejo: login + one repo.
 - gatus / beszel dashboards green again.
 
-### 7. Follow-up (this week, not tonight)
+### 7. Follow-up (the week after the incident)
 
 - **Topology fix:** keep at least one restic target that does not share a
   disk, PSU or enclosure with what it protects. Garage on srv-prod-3 sits on
