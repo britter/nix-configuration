@@ -44,6 +44,7 @@ _: {
 
       home.packages = [
         pkgs.fix-gradle-console
+        pkgs.testlens-cli
       ];
     };
 
