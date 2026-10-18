@@ -202,7 +202,11 @@ Then cut over:
    written since the initial copy.
 4. Re-run the check, unpause the backup jobs.
 5. Verify client-side (see below).
-6. Once everything is verified, decommission minIO.
+6. ✅ Once everything is verified, decommission minIO: the tofu state was
+   switched to Garage, then `tofu state rm 'module.srv-prod-3'` orphaned the
+   minIO resources, and the `minio/` module, its outputs, and the minIO
+   provider were removed (see the README). Shut down the minIO service on
+   srv-prod-3 itself once nothing reads from it anymore.
 
 Client-side verification (run per service on the host running the backup;
 the NixOS restic module generates a `restic-<svc>` wrapper on the system

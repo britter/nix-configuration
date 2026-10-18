@@ -1,21 +1,12 @@
 # object-storage
 
-Module for managing object storage across S3-compatible stores. Currently
-covers two backends:
+Module for managing object storage on Garage, exposed at
+`garage.srv-prod-3.ritter.family`.
 
-- **minIO** (`minio/`): legacy instance on srv-prod-3, still in use
-- **Garage** (`garage/`): replacement instance on srv-prod-3, exposed at
-  `garage.srv-prod-3.ritter.family`
-
-While migrating, minIO remains the state backend; the state is switched over
-to Garage once the migration is verified (see
-[State bucket](#state-bucket-manual-permanently)).
-
-Garage has no IAM policies like minIO: permissions are grants per key x
-bucket, and keys cannot be scoped to prefixes. As a result, resources that
-minIO models as prefixes inside one bucket (per-service restic backups,
-per-project Tofu state) are modelled as one bucket per service/project in
-Garage.
+Garage has no IAM policies: permissions are grants per key x bucket, and
+keys cannot be scoped to prefixes. As a result, per-service restic backups
+and per-project Tofu state are modelled as one bucket per service/project
+in Garage.
 
 ## Layout
 
@@ -71,8 +62,8 @@ summary:
 - Synchronize the content from the old instance to the new one using rclone:
   the old instance's global read user reads, the new instance's per-bucket rw
   keys write (see [MIGRATION.md](./MIGRATION.md)). Per-service restic backups
-  live in `restic-<service>` buckets now, so sync each minIO
-  `restic-backups/<service>/` prefix into its matching new bucket
+  live in `restic-<service>` buckets, so sync each into its matching bucket
+  on the new instance
 - Verify everything is fine on the new instance (including restores)
 - Update the top level `secrets.json` to contain the credentials for the new
   instance. Update all Tofu backend configurations to manage state on the new
