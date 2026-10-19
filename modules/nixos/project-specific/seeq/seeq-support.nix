@@ -7,6 +7,9 @@ _: {
       libraries = with pkgs; [
         # required by Python
         sqlite
+        libffi # ctypes
+        gdbm # dbm.gnu
+        ncurses # curses
 
         # required by Playwright
         libxcb
