@@ -35,6 +35,7 @@ _: {
         "programming.nix.tutor" = ./skills/programming/nix/tutor;
         "programming.rust.tutor" = ./skills/programming/rust/tutor;
         "writing.avoid-ai-tropes" = avoidAiTropes;
+        "math.calculations" = ./skills/math/calculations;
       };
 
       # One enable flag per group, because the skills within a group reference
@@ -58,6 +59,7 @@ _: {
           "programming.rust.tutor"
         ];
         "writing.avoid-ai-tropes" = [ "writing.avoid-ai-tropes" ];
+        "math" = [ "math.calculations" ];
       };
 
       mkGroupOptions = name: {
