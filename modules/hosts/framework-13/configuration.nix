@@ -10,7 +10,8 @@
       scanning
       podman
       tailscale
-      fhs-support
+      testlens-support
+      seeq-support
     ];
 
     system.stateVersion = "25.05";
