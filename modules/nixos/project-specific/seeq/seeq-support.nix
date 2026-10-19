@@ -1,6 +1,6 @@
 _: {
   # nix-ld provides an FHS-style loader so unpatched dynamic binaries can run.
-  flake.modules.nixos.seeq-support = { pkgs, ... }: {
+  flake.modules.nixos.seeq-support = { config, pkgs, ... }: {
     # required to run Seeq's toolchain management
     programs.nix-ld = {
       enable = true;
@@ -43,12 +43,21 @@ _: {
     # allows running bash scripts with #!/bin/bash shebang
     services.envfs = {
       enable = true;
-      extraFallbackPathCommands = "ln -s ${pkgs.bash}/bin/bash $out/bash";
+      extraFallbackPathCommands = ''
+        ln -s ${pkgs.bash}/bin/bash $out/bash
+        # Seeq's docker toolchain script looks docker up with a hard-coded FHS PATH
+        ln -s ${config.virtualisation.docker.package}/bin/docker $out/docker
+      '';
     };
 
     # Seeq services listen in ports below 34410; keep the kernel's ephemeral ports out of that
     # range.
     boot.kernel.sysctl."net.ipv4.ip_local_port_range" = "34410 60999";
+
+    virtualisation.docker.enable = true;
+    users.users.bene.extraGroups = [ "docker" ];
+    # Seeq's docker toolchain script writes this via sudo if it's missing or lacks buildkit
+    environment.etc."docker/daemon.json".text = builtins.toJSON { features.buildkit = true; };
 
     # sq-alter-ps1.sh (sourced by crab's `environment`) calls __git_ps1, but only looks for
     # git-prompt.sh in FHS locations.
@@ -60,12 +69,6 @@ _: {
     home-manager.sharedModules = [
       ({ config, lib, ... }: {
         home.packages = [ pkgs.azure-cli ];
-        # required to make Testcontainers use podman
-        home.file.".testcontainers.properties".text = ''
-          docker.client.strategy=org.testcontainers.dockerclient.EnvironmentAndSystemPropertyClientProviderStrategy
-          docker.host=unix:///run/user/${toString config.home.uid}/podman/podman.sock
-          ryuk.container.privileged=true
-        '';
         # Seeq's claude-code toolchain package only checks ~/.local/bin/claude and writes
         # autoUpdatesChannel into settings.json if it's missing. Point it at the Nix-managed
         # claude and pre-set the key; the Nix wrapper sets DISABLE_AUTOUPDATER=1, so it's a no-op.
