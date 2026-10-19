@@ -95,6 +95,29 @@
           command.
       '';
       preferencesPath = "${config.xdg.configHome}/agents/preferences.md";
+      plansContext = pkgs.writeText "plans.md" ''
+        # Local plan documents
+
+        When working on a task that benefits from written planning — approach
+        sketches, TODO lists, research notes, step-by-step plans — store those
+        documents in a top-level `.my-plans/` directory of the repository you
+        are working in. The directory is globally git-ignored, so nothing in
+        it will ever be committed.
+
+        Conventions:
+
+        - Create one subdirectory per task: `.my-plans/<task-slug>/`.
+        - If you know an issue number for the task, include it in the
+          directory name, e.g. `.my-plans/42-fix-inotify-leak/`. Prefer
+          `<issue-number>-<short-slug>`; without an issue number use just a
+          short descriptive slug.
+        - Inside the task directory you are free to organize files as you
+          see fit (plan.md, notes.md, scratch scripts, checklists).
+        - Reference the plan documents in your replies when they contain the
+          current state of the work, and keep them up to date as the task
+          evolves.
+      '';
+      plansPath = "${config.xdg.configHome}/agents/plans.md";
     in
     {
       # Which harness is actually enabled is decided per user/host; this module
@@ -104,6 +127,12 @@
       skills.programming.rust.enable = true;
       skills.writing.avoid-ai-tropes.enable = true;
       skills.math.enable = true;
+
+      # Scratch directory for agent plan documents (see plansPath below).
+      # programs.git.ignores feeds git's global core.excludesFile, so
+      # `.my-plans/` is ignored in every repository without each repo
+      # carrying its own .gitignore entry.
+      programs.git.ignores = [ ".my-plans/" ];
 
       programs.hunk = {
         enable = true;
@@ -188,6 +217,7 @@
             scriptingPath
             toolsPath
             preferencesPath
+            plansPath
           ];
 
           # A primary agent (cycle to it with Tab) that asks before mutations,
@@ -253,6 +283,7 @@
       xdg.configFile."agents/scripting.md".source = scriptingContext;
       xdg.configFile."agents/tools.md".source = toolsContext;
       xdg.configFile."agents/preferences.md".source = preferences;
+      xdg.configFile."agents/plans.md".source = plansContext;
 
       programs.claude-code = {
         enable = true;
@@ -281,6 +312,7 @@
           @${scriptingPath}
           @${toolsPath}
           @${preferencesPath}
+          @${plansPath}
         '';
       };
     };
