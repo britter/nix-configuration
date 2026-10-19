@@ -10,6 +10,13 @@ _: {
         libffi # ctypes
         gdbm # dbm.gnu
         ncurses # curses
+        readline
+
+        # required by the nginx shipped in Seeq's image (libcrypt.so.1)
+        libxcrypt-legacy
+
+        # required by the JDK's AWT libraries
+        libxtst
 
         # required by Playwright
         libxcb
