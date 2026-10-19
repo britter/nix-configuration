@@ -1,4 +1,5 @@
 _: {
+  flake.allowUnfreePackages = [ "stirling-pdf" ];
   flake.modules.nixos.stirling-pdf =
     { config, pkgs, ... }:
     let
