@@ -190,10 +190,26 @@
                 version = "1.0.0";
                 description = "Runtime-discovered path additions for claude";
               };
+              # The pack grants read-write only on /tmp/claude-$UID; the rest of /tmp is
+              # write-only.
+              environment.set_vars = {
+                # Claude Code appends claude-<uid> to this; keeps its own files in /tmp/claude-$UID
+                # even though TMPDIR below points there.
+                CLAUDE_CODE_TMPDIR = "/tmp";
+                # Tools started from Claude (tempfile, pytest, Gradle, ...) need a temp dir they can
+                # read back; the rest of /tmp is write-only in the sandbox.
+                TMPDIR = "/tmp/claude-${toString config.home.uid}";
+              };
             }
             // baseProfile;
           };
       };
+
+      # Pre-create Claude's temp dir so nono's Landlock grant for it applies
+      # (nolabs-ai/nono-packs#44).
+      systemd.user.tmpfiles.rules = [
+        "d /tmp/claude-${toString config.home.uid} 0700 - - -"
+      ];
 
       # Disable opencode's file watcher: on NixOS it exhausts the system-wide
       # inotify watch budget (https://github.com/anomalyco/opencode/issues/55367).
