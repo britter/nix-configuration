@@ -6,9 +6,7 @@
       proxmox-vm
       tailscale-server
       beszel-agent
-      minio
       garage-on-srv-prod-3
-      garage-migration-on-srv-prod-3
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 

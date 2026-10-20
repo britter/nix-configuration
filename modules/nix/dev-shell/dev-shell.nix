@@ -40,7 +40,6 @@ in
           inherit (config.pre-commit) shellHook;
           buildInputs = config.pre-commit.settings.enabledPackages;
           packages = with pkgs; [
-            minio-client
             setup-host
             sops
           ];

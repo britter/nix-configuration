@@ -1,10 +1,10 @@
 _: {
-  # weekly comin update window
-  # Since we can not coordinate comins fetch / deploy cycle with system shutdown, we wake the system
-  # once per week for 30 minutes so it can run an update.
-  # This is required, because most of the time the minIO sync will run much faster then the time required
-  # to fetch config changes, eval config, and update the system, resulting in no updates being applied
-  # during nightly sync wake ups.
+  # weekly comin update window Since we can not coordinate comins fetch /
+  # deploy cycle with system shutdown, we wake the system once per week for 30
+  # minutes so it can run an update. This is required, because most of the time
+  # the object-storage sync will run much faster then the time required to
+  # fetch config changes, eval config, and update the system, resulting in no
+  # updates being applied during nightly sync wake ups.
   # https://github.com/nlewo/comin/issues/104
   flake.modules.nixos.weekly-update-window-on-srv-offsite-1 =
     { pkgs, ... }:

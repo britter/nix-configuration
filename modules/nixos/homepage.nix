@@ -153,13 +153,6 @@ _: {
         {
           "Storage" = [
             {
-              "Minio" = {
-                description = "S3-compatible object storage";
-                href = "https://minio.srv-prod-3.ritter.family/console/";
-                icon = "minio.svg";
-              };
-            }
-            {
               "TrueNAS" = {
                 description = "Network attached storage";
                 href = "https://truenas.ritter.family/console/";
