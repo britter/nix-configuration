@@ -94,6 +94,7 @@ _: {
           filesystem.allow = [
             "~/sq"
             "~/github/seeq12"
+            "~/obsidian-vault/01 Projects/Seeq"
             "~/.cache/ms-playwright"
           ];
         };
