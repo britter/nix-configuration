@@ -4,9 +4,8 @@
     imports = with config.flake.modules.nixos; [
       system-server
       tailscale-server
-      minio
-      object-storage-sync-on-srv-offsite-1
       garage
+      object-storage-sync-on-srv-offsite-1
       weekly-update-window-on-srv-offsite-1
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];

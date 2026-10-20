@@ -66,14 +66,6 @@ _: {
               ];
             }
             {
-              name = "Minio";
-              url = "https://minio.srv-prod-3.ritter.family/minio/health/live";
-              interval = "5m";
-              conditions = [
-                "[STATUS] == 200"
-              ];
-            }
-            {
               name = "Garage";
               url = "https://garage.srv-prod-3.ritter.family/health";
               interval = "5m";
