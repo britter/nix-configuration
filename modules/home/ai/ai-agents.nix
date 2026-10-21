@@ -244,10 +244,6 @@
                   "$WORKDIR/quotations/drafts"
                 ];
               };
-              # Startup-only denylist; NOT enforced on child processes. The
-              # absence of any .git grant is the real enforcement; this just
-              # stops the top-level agent from launching git directly.
-              commands.deny = [ "git" ];
             };
           };
       };
