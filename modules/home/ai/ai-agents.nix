@@ -202,6 +202,53 @@
               };
             }
             // baseProfile;
+
+            # Sandboxed profile for AI work in the finances repo: the agent
+            # may migrate LaTeX→Typst and build invoicing tooling, but must
+            # never see the production journals, the git history, or existing
+            # invoices/quotations. Uses $WORKDIR so the grant follows
+            # wherever the checkout lives (launch from the repo root).
+            #
+            # Linux/Landlock is strictly allow-list: a deny overlapping an
+            # allow/read/write grant is a hard startup error, so the sensitive
+            # paths (main.journal, journals/, .git/, invoices/2*, quotations/2*)
+            # are simply never granted. Do not add a `deny` list as a backstop
+            # here — on this Linux-only host it enforces nothing and only
+            # emits "Glob deny" warnings at startup.
+            finances = {
+              extends = [ "opencode" ];
+              meta = {
+                version = "1.1.0";
+                description = "Finances repo access without journals, git history, or production invoices/quotations";
+              };
+              filesystem = {
+                # Repo-root files the agent may read. Individual files only —
+                # granting the root would pull the whole repo (including
+                # main.journal) into scope.
+                read = [
+                  "$WORKDIR/flake.nix"
+                  "$WORKDIR/flake.lock"
+                  "$WORKDIR/README.md"
+                  "$WORKDIR/Taskfile.yml"
+                ];
+                # Everything else the agent may read AND write: helper
+                # scripts, both template trees, and a scratch directory for
+                # draft invoices/quotations it generates (create it with
+                # `mkdir -p invoices/drafts quotations/drafts` before the
+                # session; missing paths would expand to nothing).
+                allow = [
+                  "$WORKDIR/imports"
+                  "$WORKDIR/invoices/templates"
+                  "$WORKDIR/invoices/drafts"
+                  "$WORKDIR/quotations/templates"
+                  "$WORKDIR/quotations/drafts"
+                ];
+              };
+              # Startup-only denylist; NOT enforced on child processes. The
+              # absence of any .git grant is the real enforcement; this just
+              # stops the top-level agent from launching git directly.
+              commands.deny = [ "git" ];
+            };
           };
       };
 
