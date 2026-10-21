@@ -1,4 +1,5 @@
 {
+  lib,
   writeShellApplication,
   patchelf,
   ncurses,
@@ -18,9 +19,18 @@ writeShellApplication {
     # RUNPATH; a nixpkgs-built JDK's dlopen then can't resolve their
     # ncurses dependencies. Patch the RUNPATH in place so the cached
     # libraries load. Works for any Gradle version sharing the cache.
+    #
+    # Set the RUNPATH unconditionally: --set-rpath is idempotent, and
+    # re-patching also refreshes stale store paths after a nixpkgs
+    # update or garbage collection.
 
     nativeDir="''${GRADLE_USER_HOME:-$HOME/.gradle}/native"
-    rpath="${ncurses}/lib:${stdenv.cc.cc.lib}/lib"
+    rpath="${
+      lib.makeLibraryPath [
+        ncurses
+        stdenv.cc.cc
+      ]
+    }"
 
     if [ ! -d "$nativeDir" ]; then
       echo "No native cache at $nativeDir, nothing to fix." >&2
@@ -29,7 +39,8 @@ writeShellApplication {
 
     patched=0
     while IFS= read -r -d "" so; do
-      if [ -z "$(patchelf --print-rpath "$so")" ]; then
+      current="$(patchelf --print-rpath "$so")"
+      if [ "$current" != "$rpath" ]; then
         echo "Patching $so"
         patchelf --set-rpath "$rpath" "$so"
         patched=$((patched + 1))
