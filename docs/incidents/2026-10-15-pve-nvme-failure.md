@@ -333,3 +333,50 @@ Do **not** let anything write to the image; keep `-r` on the loop device.
   for hot/restic data may be the better spend).
 - Decide whether to keep the raw exports as long-term backup or delete them
   once the rebuilt host has completed a verified restic cycle.
+
+## Part 3 — Replacement drive findings (2026-10-21)
+
+Beszel's SMART data for the replacement drive did not look factory-new;
+verified directly on the host with `smartctl -a /dev/nvme0`. **Beszel was
+correct** — the counters match and are live.
+
+Replacement drive identity:
+
+- Model: Kioxia KBG6AZNV1T02 (BG-series, 1 TB OEM)
+- Serial: `ZEKPSUUTZ2B9`, firmware 1112ASLA
+- Capacity matches the old drive exactly (1,024,209,543,168 bytes)
+
+SMART baseline at verification (2026-10-21):
+
+| Attribute | Value |
+|---|---|
+| Power On Hours | 6,995 (~291 days) |
+| Power Cycles | 184 |
+| Percentage Used | 2% |
+| Data Units Read / Written | 7.73 TB / 17.5 TB |
+| Media and Data Integrity Errors | 24 (static) |
+| Error Information Log Entries | 38 |
+| Available Spare | 100% |
+| Critical Warning | 0x00 |
+| Overall health | PASSED |
+
+Interpretation:
+
+- The drive is **used/refurbished, not factory-new** — ~7,000 power-on
+  hours cannot come from a part installed 2026-10-16. Extended + short
+  self-tests passed at POH 6,879–6,880, consistent with a refurbisher's
+  or technician's diagnostic pass around the replacement date.
+- It is almost certainly a *different* drive than the failed one (old:
+  media errors 130 → 133; this unit: 24), so the swap did happen.
+- Lenovo warranty terms only promise replacements that are "new or
+  refurbished … equivalent to new in performance" — a refurb part is
+  within spec. Discrepancy with the service paperwork (if it claims a
+  new part) would be worth raising with the serial as evidence.
+
+Monitoring rule going forward: judge this drive by **growth in the
+counters**, not by their absolute values. A fresh `smartctl`/beszel check
+should confirm `Media and Data Integrity Errors` stays at 24,
+`Available Spare` stays 100% and `PercentageUsed` stays low. If media
+errors climb above 24 or spare drops below 100%, that is *not*
+equivalent-to-new performance — go back to Lenovo with the baseline
+above.
