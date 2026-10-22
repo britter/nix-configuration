@@ -14,6 +14,7 @@ let
       loupe
       nautilus
       qalculate-gtk
+      thunderbird
       vlc
     ];
 
