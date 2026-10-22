@@ -12,8 +12,8 @@ rustPlatform.buildRustPackage (_finalAttrs: {
   src = fetchFromCodeberg {
     owner = "britter";
     repo = "nixpkgs-pr";
-    rev = "7ec52918f5120185e20c57f8c1130f41a557e802";
-    hash = "sha256-yVQBbYbNcHO6l5UmNtIqAjDyd2BHip8yI8EqCAc1Z9Q=";
+    rev = "70ddeb360e38b6f2967d922ae880f576ff612a0c";
+    hash = "sha256-1pNB50liQSuva4PsbzPEPXiPSNEHs1NF/TnM8H6iswc=";
   };
 
   cargoHash = "sha256-Jhy0nldP778ROAR1Gz7kuHWN5cZXm+S0nbl0B+p/lOE=";
