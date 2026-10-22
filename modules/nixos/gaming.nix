@@ -14,7 +14,10 @@ _: {
       ];
 
       # performance stats overlay
-      environment.systemPackages = [ pkgs.mangohud ];
+      environment.systemPackages = [
+        pkgs.mangohud
+        pkgs.lutris
+      ];
 
       # requests OS optimizations while gaming
       programs.gamemode.enable = true;
