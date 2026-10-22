@@ -33,6 +33,47 @@
           });
         })
       ];
+
+      # Backport of https://github.com/NixOS/nixpkgs/pull/575818: the kmod
+      # installs the bare module with `install` instead of `modules_install`.
+      # Kernel modules are signed with kmodigest during modules_install,
+      # which produces a per-module certificate next to the module, and the
+      # NixOS module tree aggregator (pkgs/os-specific/linux/kmod/aggregator.nix)
+      # concatenates those certificates of external modules into
+      # `modules.cer`. The custom installPhase drops the certificate, so the
+      # framework-13 toplevel fails with `cat: extra/framework_laptop.ko.cer:
+      # No such file or directory`. Install through `modules_install`, which
+      # signs the module and ships it together with its certificate.
+      linuxPackages_latest = prev.linuxPackages_latest.extend (
+        _kfinal: kprev: {
+          framework-laptop-kmod = kprev.framework-laptop-kmod.overrideAttrs (old: {
+            makeFlags = old.makeFlags ++ [
+              "INSTALL_MOD_PATH=${placeholder "out"}"
+              "INSTALL_MOD_DIR=extra"
+              "DEPMOD=true"
+            ];
+            installPhase = ''
+              runHook preInstall
+              local flagsArray=()
+              concatTo flagsArray makeFlags installTargets=modules_install
+              make "''${flagsArray[@]}"
+              runHook postInstall
+            '';
+          });
+        }
+      );
+
+      # calibre's test suite fails with `ModuleNotFoundError: No module named
+      # 'speechd'`: the speechd package in nixos-unstable never builds its
+      # Python bindings, because its configure script cannot find a Python
+      # interpreter (it is only in buildInputs, and speechd sets strictDeps).
+      # Nothing that depends on speechd can be fixed without rebuilding the
+      # world, so disable speech support instead. This drops the
+      # speech-dispatcher TTS integration (and piper-tts) from calibre until
+      # the packaging bug is fixed upstream.
+      calibre = prev.calibre.override {
+        speechSupport = false;
+      };
     };
 
     default = inputs.nixpkgs.lib.composeManyExtensions [
