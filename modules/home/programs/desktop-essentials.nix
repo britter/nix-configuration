@@ -3,7 +3,7 @@ _: {
     { pkgs, ... }:
     {
       home.packages = with pkgs; [
-        audacity
+        # audacity
         chromium
         gimp
         libreoffice

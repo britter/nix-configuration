@@ -2,6 +2,14 @@ _: {
   flake.modules.nixos.nextcloud =
     { config, pkgs, ... }:
     {
+      # nixpkgs removed services.nextcloud.config.adminpassFile (PR:
+      # https://github.com/NixOS/nixpkgs/pull/571775): the option was
+      # only evaluated on first-time install and had no effect afterwards. The
+      # admin user already exists in the database. To set an admin password
+      # going forward, use:
+      #   nextcloud-occ user:resetpassword <admin-user>
+      # (to create additional admin users: nextcloud-occ user:add <user> and
+      #   nextcloud-occ group:adduser admin <user>)
       sops.secrets."nextcloud/admin-pass" = {
         owner = "nextcloud";
       };
@@ -12,7 +20,6 @@ _: {
         hostName = "nextcloud.${config.networking.hostName}.ritter.family";
         https = true;
         config = {
-          adminpassFile = config.sops.secrets."nextcloud/admin-pass".path;
           dbtype = "pgsql";
         };
         settings = {
