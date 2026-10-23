@@ -25,7 +25,10 @@
 
       programs.gh = {
         enable = true;
-        extensions = with pkgs; [ gh-get ];
+        extensions = with pkgs; [
+          gh-get
+          gh-stack
+        ];
         settings.git_protocol = "ssh";
       };
 
