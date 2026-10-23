@@ -8,13 +8,13 @@ let
   graalvm = graalvmPackages.graalvm-ce-musl;
   self = stdenv.mkDerivation (finalAttrs: {
     pname = "testlens";
-    version = "1.1.0";
+    version = "1.1.1";
 
     src = fetchFromGitHub {
       owner = "testlens-app";
       repo = "cli";
       tag = "v${finalAttrs.version}";
-      hash = "sha256-uysDE1v7o9dZAX+B0HEmEpnuBDlmUYBWHa1phiwiJJ0=";
+      hash = "sha256-LER4Z+qoq0Jv84I0DF740aENdL8mw2gy4lc7ASGuAnw=";
     };
 
     nativeBuildInputs = [
