@@ -151,6 +151,7 @@
                 read = [
                   "~/github/britter/nix-configuration"
                   "~/.config/gh"
+                  "~/.docker"
                   # Socket directory of live hunk review sessions; without it
                   # the hunk-review skill cannot reach the MCP server.
                   "/run/user/${toString config.home.uid}/hunk-mcp"
