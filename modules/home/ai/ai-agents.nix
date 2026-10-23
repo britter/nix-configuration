@@ -218,30 +218,36 @@
             finances = {
               extends = [ "opencode" ];
               meta = {
-                version = "1.1.0";
+                version = "1.2.0";
                 description = "Finances repo access without journals, git history, or production invoices/quotations";
               };
+              # The opencode pack grants the launch directory read-write
+              # (workdir.access: "readwrite"), which at startup would pull the
+              # whole finances repo — main.journal, .git/, journals/,
+              # invoices/2*, quotations/2* — into scope, defeating the
+              # allow-list below. Set it to "none": no CWD prompt at startup
+              # and no grant; the agent may only touch what is granted
+              # explicitly in the filesystem section. ("none" is the schema
+              # default; this override just neutralizes the inherited pack
+              # value.)
+              workdir.access = "none";
               filesystem = {
-                # Repo-root files the agent may read. Individual files only —
-                # granting the root would pull the whole repo (including
-                # main.journal) into scope.
-                read = [
-                  "$WORKDIR/flake.nix"
-                  "$WORKDIR/flake.lock"
-                  "$WORKDIR/README.md"
-                  "$WORKDIR/Taskfile.yml"
-                ];
                 # Everything else the agent may read AND write: helper
                 # scripts, both template trees, and a scratch directory for
                 # draft invoices/quotations it generates (create it with
                 # `mkdir -p invoices/drafts quotations/drafts` before the
                 # session; missing paths would expand to nothing).
                 allow = [
-                  "$WORKDIR/imports"
+                  "$WORKDIR/scripts"
                   "$WORKDIR/invoices/templates"
                   "$WORKDIR/invoices/drafts"
                   "$WORKDIR/quotations/templates"
                   "$WORKDIR/quotations/drafts"
+                  "$WORKDIR/flake.nix"
+                  "$WORKDIR/flake.lock"
+                  "$WORKDIR/README.md"
+                  "$WORKDIR/AGENTS.md"
+                  "$WORKDIR/Taskfile.yml"
                 ];
               };
             };
