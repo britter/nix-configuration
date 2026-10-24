@@ -22,6 +22,7 @@
           intellij
           librewolf
           nextcloud-client
+          nixpkgs-tools
           obsidian
           slack
           syncthing

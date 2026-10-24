@@ -1,6 +1,5 @@
 _: {
   flake.modules.nixos.nix-community-builders =
-    { pkgs, ... }:
     let
       # The public half of this key is registered for `britter` in
       # nix-community/infra. Remote builds are started by the nix daemon, so the
@@ -14,86 +13,6 @@ _: {
         "nixos-test"
       ];
 
-      # A mostly transparent wrapper: arguments go to `nixpkgs-review`
-      # untouched, except for the two flags this script consumes itself:
-      # `--local-workers N` and `--cleanup-store` / `--no-cleanup-store`.
-      # What it adds on top is the community builders and the cleanup
-      # afterwards.
-      #
-      # `max-jobs = 0` (the default via `--local-workers 0`) keeps the laptop
-      # out of the build entirely, which is the whole point of reaching for
-      # the community machines. The garbage collection afterwards is what
-      # keeps their output from lingering: nixpkgs-review builds with
-      # `--no-link` and leaves plain symlinks in ~/.cache/nixpkgs-review,
-      # none of which are GC roots, so once the review shell has exited every
-      # path the builders sent is unreachable. Left in the store it would
-      # stay valid forever and could be reused by a later build instead of
-      # being fetched from a signed cache.
-      nixpkgs-review-remote = pkgs.writeShellApplication {
-        name = "nixpkgs-review-remote";
-        runtimeInputs = [
-          pkgs.glow
-          pkgs.delta
-          pkgs.nixpkgs-review
-        ];
-        text = ''
-          local_workers=0
-          cleanup_store=1
-
-          review_args=()
-          while [ "$#" -gt 0 ]; do
-            case "$1" in
-              --local-workers)
-                [ "$#" -ge 2 ] || {
-                  echo "nixpkgs-review-remote: --local-workers requires an argument" >&2
-                  exit 1
-                }
-                local_workers=$2
-                shift 2
-                ;;
-              --local-workers=*)
-                local_workers=''${1#*=}
-                shift
-                ;;
-              --cleanup-store)
-                cleanup_store=1
-                shift
-                ;;
-              --no-cleanup-store)
-                cleanup_store=0
-                shift
-                ;;
-              *)
-                review_args+=("$1")
-                shift
-                ;;
-            esac
-          done
-
-          # Configure the builders through the environment rather than through
-          # `--build-args`, so the remaining arguments belong to nixpkgs-review
-          # alone and none of its subcommands or flags are off limits.
-          export NIX_CONFIG="builders = @/etc/nix/machines
-          max-jobs = $local_workers"
-
-          set +e
-          nixpkgs-review "''${review_args[@]}"
-          review_status=$?
-          set -e
-
-          if [ "$cleanup_store" -eq 1 ]; then
-            echo "Dropping store paths received from the community builders..."
-            nix-collect-garbage
-          else
-            echo
-            echo "NOTE: --no-cleanup-store was given, the local store now contains"
-            echo "binaries built on the community builders. These paths are unsigned,"
-            echo "so running 'nix-collect-garbage' manually is recommended once they"
-            echo "are no longer needed."
-          fi
-          exit $review_status
-        '';
-      };
     in
     {
       # These machines exist to build nixpkgs pull requests and nothing else.
@@ -155,14 +74,5 @@ _: {
         "darwin-build-box.nix-community.org".publicKey =
           "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKMHhlcn7fUpUuiOFeIhDqBzBNFsbNqq+NpzuGX3e6zv";
       };
-
-      home-manager.sharedModules = [
-        {
-          home.packages = [
-            pkgs.nixpkgs-review
-            nixpkgs-review-remote
-          ];
-        }
-      ];
     };
 }
