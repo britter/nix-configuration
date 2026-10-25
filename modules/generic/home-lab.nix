@@ -44,7 +44,7 @@ _: {
             vm = false;
           };
           directions = {
-            ip = "192.168.5.6";
+            ip = "192.168.30.6";
             dns = "directions.ritter.family";
             vm = false;
           };
