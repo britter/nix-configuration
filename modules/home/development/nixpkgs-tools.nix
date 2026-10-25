@@ -88,12 +88,23 @@ _: {
         """List the attribute names of all gradle consumers (packages using
         gradle*.fetchDeps), one per line, for piping into nixpkgs-review(-remote).
 
-            nix run nixpkgs#python3 -- gradle_deps_users.py \
-              | sed 's/^/-p /' | xargs -r nixpkgs-review-remote rev HEAD
-        """
-        import subprocess
+        Run from the root of a nixpkgs checkout, e.g.:
 
-        # path (as printed by rg) -> correct top-level attribute path
+            gradle_packages | sed 's/^/-p /' | xargs -r nixpkgs-review-remote rev HEAD
+        """
+        import os
+        import re
+        import sys
+        from pathlib import Path
+
+        # `mitmCache = gradle.fetchDeps`, with variations as seen in the
+        # tree: a version suffix (`gradle_8`, `gradle_jdk17`) or a
+        # `finalAttrs.` qualifier.
+        MITM_CACHE = re.compile(
+            r"mitmCache\s*=\s*(?:finalAttrs\.)?gradle(?:_\w+)?\.fetchDeps"
+        )
+
+        # path (relative to the nixpkgs root) -> correct top-level attribute path
         OVERRIDES = {
             "pkgs/tools/security/ghidra/build.nix": "ghidra",
             "pkgs/tools/security/ghidra/extensions/reva/default.nix": "ghidra-extensions.reva",
@@ -106,9 +117,27 @@ _: {
             "pkgs/by-name/sh/shattered-pixel-dungeon/generic.nix": "shattered-pixel-dungeon",
         }
 
-        files = subprocess.run(
-            ["rg", "-l", r"mitmCache\s*=\s*gradle(?:_\d+)?\.fetchDeps", "pkgs/"],
-            capture_output=True, text=True, check=True).stdout.split()
+        root = Path(".")
+
+        # Only meaningful inside a nixpkgs checkout, where the gradle
+        # consumers live under `pkgs/`.
+        if not (root / "pkgs").is_dir():
+            sys.exit("Has to be run from inside a nixpkgs checkout")
+
+        def find_mitm_cache_files(pkgs):
+            """Yield the paths of all .nix files under `pkgs` containing a
+            `mitmCache = gradle*.fetchDeps` assignment."""
+            for dirpath, dirnames, filenames in os.walk(pkgs):
+                dirnames[:] = [d for d in dirnames if d != ".git"]
+                for filename in filenames:
+                    if not filename.endswith(".nix"):
+                        continue
+                    path = os.path.join(dirpath, filename)
+                    with open(path, encoding="utf-8", errors="replace") as fh:
+                        if MITM_CACHE.search(fh.read()):
+                            yield path
+
+        files = sorted(find_mitm_cache_files(root / "pkgs"))
 
         attrs = set()
         for f in files:
