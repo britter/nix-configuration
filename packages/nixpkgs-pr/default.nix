@@ -12,11 +12,11 @@ rustPlatform.buildRustPackage (_finalAttrs: {
   src = fetchFromCodeberg {
     owner = "britter";
     repo = "nixpkgs-pr";
-    rev = "70ddeb360e38b6f2967d922ae880f576ff612a0c";
-    hash = "sha256-1pNB50liQSuva4PsbzPEPXiPSNEHs1NF/TnM8H6iswc=";
+    rev = "fde852b0832e337043a5f084bef9e579fd358e04";
+    hash = "sha256-5N/uXXFqltad0ajG9ktxaX5cJR6Q1rBdWRkO3iLSZQ8=";
   };
 
-  cargoHash = "sha256-Jhy0nldP778ROAR1Gz7kuHWN5cZXm+S0nbl0B+p/lOE=";
+  cargoHash = "sha256-gpGsMGwtno949ma6sBsVvs8d3ZIEIqvLISWnV54qJQU=";
 
   doInstallCheck = true;
   nativeInstallCheckInputs = [ versionCheckHook ];
