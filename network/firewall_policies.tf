@@ -15,7 +15,6 @@ resource "unifi_firewall_policy" "trusted_to_homelab_networks_ping" {
     zone_id         = data.unifi_firewall_zone.internal.id
     matching_target = "NETWORK"
     network_ids = [
-      unifi_network.homelab.id,
       unifi_network.management.id,
       unifi_network.smart_home.id,
       unifi_network.servers.id
@@ -42,7 +41,6 @@ resource "unifi_firewall_policy" "trusted_to_homelab_networks_https" {
     zone_id         = data.unifi_firewall_zone.internal.id
     matching_target = "NETWORK"
     network_ids = [
-      unifi_network.homelab.id,
       unifi_network.servers.id,
       unifi_network.kvms.id,
       unifi_network.management.id
@@ -52,8 +50,8 @@ resource "unifi_firewall_policy" "trusted_to_homelab_networks_https" {
   }
 }
 
-resource "unifi_firewall_policy" "trusted_to_homelab_dns" {
-  name                 = "Allow DNS from Trusted to Homelab"
+resource "unifi_firewall_policy" "trusted_to_servers_dns" {
+  name                 = "Allow DNS from Trusted to Servers"
   action               = "ALLOW"
   protocol             = "all"
   ip_version           = "BOTH"
@@ -69,14 +67,14 @@ resource "unifi_firewall_policy" "trusted_to_homelab_dns" {
   destination = {
     zone_id            = data.unifi_firewall_zone.internal.id
     matching_target    = "NETWORK"
-    network_ids        = [unifi_network.homelab.id]
+    network_ids        = [unifi_network.servers.id]
     port               = "53"
     port_matching_type = "SPECIFIC"
   }
 }
 
-resource "unifi_firewall_policy" "trusted_to_homelab_dns_tls" {
-  name                 = "Allow DNS-TLS from Trusted to Homelab"
+resource "unifi_firewall_policy" "trusted_to_servers_dns_tls" {
+  name                 = "Allow DNS-TLS from Trusted to Servers"
   action               = "ALLOW"
   protocol             = "all"
   ip_version           = "BOTH"
@@ -92,7 +90,7 @@ resource "unifi_firewall_policy" "trusted_to_homelab_dns_tls" {
   destination = {
     zone_id            = data.unifi_firewall_zone.internal.id
     matching_target    = "NETWORK"
-    network_ids        = [unifi_network.homelab.id]
+    network_ids        = [unifi_network.servers.id]
     port               = "853"
     port_matching_type = "SPECIFIC"
   }
@@ -116,7 +114,6 @@ resource "unifi_firewall_policy" "trusted_to_networks_ssh" {
     zone_id         = data.unifi_firewall_zone.internal.id
     matching_target = "NETWORK"
     network_ids = [
-      unifi_network.homelab.id,
       unifi_network.management.id,
       unifi_network.smart_home.id,
       unifi_network.servers.id
@@ -198,7 +195,7 @@ resource "unifi_firewall_policy" "home_assistant_to_yeelights" {
   }
 }
 
-resource "unifi_firewall_policy" "homelab_servers_to_home_assistant" {
+resource "unifi_firewall_policy" "servers_to_home_assistant" {
   name                 = "Allow Poxying of Home Assistant"
   action               = "ALLOW"
   protocol             = "all"
@@ -210,10 +207,7 @@ resource "unifi_firewall_policy" "homelab_servers_to_home_assistant" {
   source = {
     zone_id         = data.unifi_firewall_zone.internal.id
     matching_target = "NETWORK"
-    network_ids = [
-      unifi_network.homelab.id,
-      unifi_network.servers.id
-    ]
+    network_ids     = [unifi_network.servers.id]
   }
 
   destination = {
@@ -522,7 +516,6 @@ resource "unifi_firewall_policy" "trusted_to_homelab_networks_http" {
     zone_id         = data.unifi_firewall_zone.internal.id
     matching_target = "NETWORK"
     network_ids = [
-      unifi_network.homelab.id,
       unifi_network.servers.id,
       unifi_network.kvms.id,
       unifi_network.management.id
