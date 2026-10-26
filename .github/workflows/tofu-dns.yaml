@@ -6,7 +6,6 @@ on:
     paths:
       - tofu/dns/**
       - tofu/.sops.yaml
-      - tofu/secrets.json
       - modules/nix/dev-shell/**
       - modules/nix/treefmt.nix
       - modules/nix/pre-commit.nix
@@ -18,7 +17,6 @@ on:
     paths:
       - tofu/dns/**
       - tofu/.sops.yaml
-      - tofu/secrets.json
       - modules/nix/dev-shell/**
       - modules/nix/treefmt.nix
       - modules/nix/pre-commit.nix
