@@ -1,9 +1,10 @@
 # Migration plan: minIO → Garage
 
 Status: nearly complete (2026-10-26) — steps 1–4 are done (the ✅ marks
-below). Remaining: step 5 (apply to delete the `migration` key + two sops
-cleanups) and step 6 (delete the minIO data on srv-prod-3 and shrink its
-root disk). The repo-side changes for step 5 are done.
+below). Remaining: step 5 (merge so the pipeline deletes the `migration`
+key + two sops cleanups, already done) and step 6 (delete the minIO data
+on srv-prod-3 and shrink its root disk). The repo-side changes for step 5
+are done.
 
 Steps and commands for migrating Tofu state and restic backups from minIO
 (`minio.srv-prod-3.ritter.family`) to Garage (`garage.srv-prod-3.ritter.family`).
@@ -319,13 +320,14 @@ srv-prod-3 and `global-write` on its own garage).
 Done in this repo:
 
 - ✅ `garage/migration.tf` deleted. The repo-side work is done; the key
-  still exists on garage until the apply below runs.
+  still exists on garage until the pipeline applies after the merge.
 - ✅ The rclone config that consumed the migration credentials was already
   removed with the minIO decommissioning (step 3).
 
 Still to do (infra access, not just repo edits):
 
-- `tofu apply` in `tofu/object-storage` — tofu deletes the `migration` key.
+- Merge to `main` — the object-storage pipeline applies, and tofu deletes
+  the `migration` key (applies run only via gitops, never locally).
 - Remove `migration-user-key-id` / `migration-user-secret-key` from
   srv-prod-3's sops secrets (`modules/hosts/srv-prod-3/secrets.yaml`).
 - Remove `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` from the root
@@ -362,8 +364,8 @@ Everything else (garage) is on the separate scsi1 disk mounted at
    `"64G"`, and the stale `description = "VM running minIO"` → garage.
    ✅ The description fix is already in the repo (safe, metadata-only).
    The size edit should land together with the actual shrink so the config
-   never claims a size the disk doesn't have. Run `tofu plan` afterwards
-   and check how the provider treats the size change (PVE resize is
+   never claims a size the disk doesn't have. The pipeline's plan comment
+   on the PR shows how the provider treats the size change (PVE resize is
    grow-only, so a shrink in tf may show drift rather than an actionable
    diff — the tf edit keeps the config in sync with reality either way).
 4. No disko changes needed: the root partition is `size = "100%"`, so it
