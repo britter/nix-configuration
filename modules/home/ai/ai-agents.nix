@@ -125,7 +125,7 @@
       skills.programming.java.enable = true;
       skills.programming.nix.enable = true;
       skills.programming.rust.enable = true;
-      skills.writing.avoid-ai-tropes.enable = true;
+      skills.writing.enable = true;
       skills.math.enable = true;
 
       # Scratch directory for agent plan documents (see plansPath below).

@@ -24,6 +24,25 @@ _: {
         ];
       };
 
+      # https://github.com/danyuchn/asd-ste100-skill — upstream names the skill
+      # `asd-ste100`; we patch the frontmatter so it fits the `writing.*`
+      # namespace shared with the other prose skill.
+      asdSte100 =
+        let
+          src = pkgs.fetchFromGitHub {
+            owner = "danyuchn";
+            repo = "asd-ste100-skill";
+            rev = "8da6b6340aa22faf46fd07db8efbdea010cd38d9";
+            hash = "sha256-s1SVG0ecMcrej45kyQ1s78lGTzscv3CV3M5UGsZwckE=";
+          };
+        in
+        pkgs.runCommand "asd-ste100-skill" { } ''
+          cp -r ${src} $out
+          chmod -R u+w $out
+          substituteInPlace $out/SKILL.md \
+            --replace-fail 'name: asd-ste100' 'name: writing.asd-ste100'
+        '';
+
       # Attribute name == skill directory name == name in the frontmatter, for
       # every harness that discovers skills by directory.
       sources = {
@@ -35,6 +54,7 @@ _: {
         "programming.nix.tutor" = ./skills/programming/nix/tutor;
         "programming.rust.tutor" = ./skills/programming/rust/tutor;
         "writing.avoid-ai-tropes" = avoidAiTropes;
+        "writing.asd-ste100" = asdSte100;
         "math.calculations" = ./skills/math/calculations;
       };
 
@@ -58,7 +78,10 @@ _: {
           "programming.tutor"
           "programming.rust.tutor"
         ];
-        "writing.avoid-ai-tropes" = [ "writing.avoid-ai-tropes" ];
+        "writing" = [
+          "writing.avoid-ai-tropes"
+          "writing.asd-ste100"
+        ];
         "math" = [ "math.calculations" ];
       };
 
