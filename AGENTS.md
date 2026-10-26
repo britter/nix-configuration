@@ -137,6 +137,11 @@ It is the closest thing this repo has to a test suite.
 - Jobs that use the self-hosted pool must declare
   `runs-on: [self-hosted, trusted]`; never a bare `self-hosted`.
 - No workflow may use `pull_request_target`.
+- Tofu is applied exclusively via gitops: the `tofu-*` pipelines plan on
+  pull requests and apply after merge to `main`. Never run `tofu apply`
+  locally — validate changes through the pipeline's plan comment. Local
+  tofu work (`init`, `plan`, debugging) is fine; the per-root `.envrc`
+  provides the state bucket credentials.
 - Every referenced third-party action must be pinned to a full commit SHA
   and pre-registered in the repository's Actions allow-list (Settings →
   Actions → General; UI-only). NixOS pipelines (`ci-build.yaml`,

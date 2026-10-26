@@ -3,7 +3,7 @@ resource "proxmox_vm_qemu" "srv_prod_3" {
   target_node = "pve"
   vmid        = "300"
   name        = "srv-prod-3"
-  description = "VM running minIO"
+  description = "VM running garage"
   tags        = "nixos;linux;production"
 
   cpu {

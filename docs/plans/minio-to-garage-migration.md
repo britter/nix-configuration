@@ -1,5 +1,11 @@
 # Migration plan: minIO → Garage
 
+Status: nearly complete (2026-10-26) — steps 1–4 are done (the ✅ marks
+below). Remaining: step 5 (merge so the pipeline deletes the `migration`
+key + two sops cleanups, already done) and step 6 (delete the minIO data
+on srv-prod-3 and shrink its root disk). The repo-side changes for step 5
+are done.
+
 Steps and commands for migrating Tofu state and restic backups from minIO
 (`minio.srv-prod-3.ritter.family`) to Garage (`garage.srv-prod-3.ritter.family`).
 Both run on srv-prod-3, so rclone runs locally on that host.
@@ -223,8 +229,9 @@ restic-<svc> restore latest --target /tmp/restic-restore-test
 ## 4. srv-offsite-1
 
 srv-offsite-1 is the offsite backup host: a nightly `rclone sync` copies the
-full contents of the object store on srv-prod-3 (`minio-sync` module,
-`modules/hosts/srv-offsite-1/services/minio-sync.nix` in nix-configuration).
+full contents of the object store on srv-prod-3 (`object-storage-sync`
+module, `modules/hosts/srv-offsite-1/services/object-storage-sync.nix` in
+nix-configuration — renamed from `minio-sync.nix` during this migration).
 It runs its own garage instance (set up via the shared `garage` module in
 nix-configuration). Two credentials are involved:
 
@@ -282,10 +289,10 @@ for proj in object-storage dns network proxmox; do
 done
 ```
 
-### ⏳ Reconfigure (nix-configuration), phase 2: switch and clean up
+### ✅ Reconfigure (nix-configuration), phase 2: switch and clean up
 
-In `modules/hosts/srv-offsite-1/services/minio-sync.nix` and the srv-offsite-1
-`configuration.nix`:
+In `modules/hosts/srv-offsite-1/services/object-storage-sync.nix` (then
+still named `minio-sync.nix`) and the srv-offsite-1 `configuration.nix`:
 
 - Repoint the existing remotes at the garage instances, keeping their names:
   - `[srv-prod-3]`: `provider = Other`, `region = garage`,
@@ -303,13 +310,63 @@ In `modules/hosts/srv-offsite-1/services/minio-sync.nix` and the srv-offsite-1
   `configuration.nix`) — its data is no longer needed once the garage mirror
   is verified. Optionally wipe its data directory first.
 
-## 5. Remove the migration user
+## ⏳ 5. Remove the migration user
 
-Remove this after the restic cutover (step 3) — the
-`migration` key is a global write key and must not outlive it. Since it is
-tofu-managed, remove `garage/migration.tf` (or flip it to `count = 0`) and
-apply; tofu deletes the key. Also remove the `migration` credentials from
-the rclone config on srv-prod-3. The final delta sync for the restic/state
-copies was already done in cutover step 4, so nothing depends on the key
-afterwards. (srv-offsite-1 does not use it at all — it uses `global-read`
-on srv-prod-3 and `global-write` on its own garage.)
+The `migration` key is a global write key and must not outlive the
+migration. Nothing depends on it anymore: the final delta sync was done in
+cutover step 3, and srv-offsite-1 never used it (it uses `global-read` on
+srv-prod-3 and `global-write` on its own garage).
+
+Done in this repo:
+
+- ✅ `garage/migration.tf` deleted. The repo-side work is done; the key
+  still exists on garage until the pipeline applies after the merge.
+- ✅ The rclone config that consumed the migration credentials was already
+  removed with the minIO decommissioning (step 3).
+
+Still to do (infra access, not just repo edits):
+
+- Merge to `main` — the object-storage pipeline applies, and tofu deletes
+  the `migration` key (applies run only via gitops, never locally).
+- Remove `migration-user-key-id` / `migration-user-secret-key` from
+  srv-prod-3's sops secrets (`modules/hosts/srv-prod-3/secrets.yaml`).
+- Remove `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` from the root
+  `tofu/secrets.json` (see step 2a) — both consumers (runner
+  `EnvironmentFile`, root `.envrc`) were switched to the per-project
+  credentials in step 2a.
+
+## ⏳ 6. srv-prod-3: remove minIO data, shrink the root disk
+
+The minIO service was removed from the config (step 3.6), but its data is
+still on the host. The module used plain `services.minio.enable`, so the
+data lives in the NixOS default state directory `/var/lib/minio` on the
+**root** disk (scsi0, 200G, ext4) — the reason root sits at ~92%.
+Everything else (garage) is on the separate scsi1 disk mounted at
+`/mnt/data`, so root can shrink to 64G:
+
+1. Once nothing needs restoring from it, delete the data:
+   `rm -rf /var/lib/minio` (and any minIO-related nginx logs if desired).
+2. Shrink the root disk from 200G to 64G. ext4 cannot shrink online and the
+   disko root partition is `size = "100%"`, so this needs the rescue ISO
+   (still attached as `ide2`, and in the boot order):
+   - Boot srv-prod-3 from the ISO, open a shell, and mount nothing.
+   - `e2fsck -f /dev/sda2` (required before an offline shrink), then
+     `resize2fs /dev/sda2 60G` — shrink the FS below the target first.
+   - `parted /dev/sda resizepart 2 63G` — keep the partition below 64G so
+     the host-side volume shrink has headroom (512M ESP + 63G < 64G).
+   - On the Proxmox host, shrink the backing volume:
+     `lvreduce --size 64G pve/vm-300-disk-0` (verify the LV name with
+     `lvs` first). Shrinking the volume before the partition would destroy
+     data — guest side first, always.
+   - Back in the guest: `resize2fs /dev/sda2` to fill the smaller partition,
+     detach the ISO, reboot from scsi0.
+3. Update `tofu/proxmox/srv-prod-3.tf` to match: scsi0 `size = "200G"` →
+   `"64G"`, and the stale `description = "VM running minIO"` → garage.
+   ✅ The description fix is already in the repo (safe, metadata-only).
+   The size edit should land together with the actual shrink so the config
+   never claims a size the disk doesn't have. The pipeline's plan comment
+   on the PR shows how the provider treats the size change (PVE resize is
+   grow-only, so a shrink in tf may show drift rather than an actionable
+   diff — the tf edit keeps the config in sync with reality either way).
+4. No disko changes needed: the root partition is `size = "100%"`, so it
+   follows the disk size automatically.

@@ -54,14 +54,17 @@ bucket content is synced by hand (or via the admin token) during migrations.
 
 ### Migration between instances
 
-See [MIGRATION.md](./MIGRATION.md) for the concrete rclone-based process. In
-summary:
+See
+[MIGRATION.md](../../docs/plans/minio-to-garage-migration.md)
+for the concrete rclone-based process. In summary:
 
 - Add Tofu configuration to set up the new instance
 - Roll out the changes
 - Synchronize the content from the old instance to the new one using rclone:
   the old instance's global read user reads, the new instance's per-bucket rw
-  keys write (see [MIGRATION.md](./MIGRATION.md)). Per-service restic backups
+  keys write (see
+  [MIGRATION.md](../../docs/plans/minio-to-garage-migration.md)).
+  Per-service restic backups
   live in `restic-<service>` buckets, so sync each into its matching bucket
   on the new instance
 - Verify everything is fine on the new instance (including restores)
