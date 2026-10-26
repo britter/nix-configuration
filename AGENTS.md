@@ -2,9 +2,9 @@
 
 This repository is the declarative configuration for all of my machines. It
 holds a set of NixOS hosts (a desktop laptop and several home servers) plus a
-standalone home-manager configuration. A single Nix flake manages all of
-these. Every machine, user environment, service, and dotfile lives here. Do
-not configure anything imperatively on the machines themselves.
+standalone home-manager configuration. Every machine, user environment,
+service, and dotfile lives in a single Nix flake. Do not configure anything
+imperatively on the machines themselves.
 
 ## Structure: dendritic pattern
 
