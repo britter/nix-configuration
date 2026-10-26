@@ -1,6 +1,58 @@
 # Plan: Merge `britter/home-lab` into `nix-configuration`
 
-Status: draft
+Status: done (2026-10-26) — executed end to end; see *Outcome* below for the
+decisions taken mid-flight and the remaining loose ends.
+
+## Outcome
+
+Executed via three commits/PRs: #315 (merge + `tofu/` moves, all 252 commits
+byte-identical), a one-commit caveat from the `required_signatures` ruleset
+(`d1abd50`, an old home-lab commit whose signing key no longer exists —
+merged via a temporary admin; the clean fix — uploading that key to
+GitHub — remains optional), and #317 (the first real tofu pipeline fix:
+`unifi_firewall_policy.trusted_to_networks_http` was invalid
+`protocol = "all"` + specific ports, fixed to `tcp` ports 80/443).
+
+Deviations from the plan as written:
+
+- DevShell went into `devShells.default` (not a separate `.#tofu`): the tofu
+  tools (`opentofu`, `sops`, `jq`, `unifly`) joined the existing shell, so
+  per-root `.envrc` files stayed byte-identical and the workflows keep
+  `nix develop ../..`. `minio-client` was dropped: nixpkgs marks it insecure.
+- Root `secrets.json` became `tofu/secrets.json`; home-lab `.gitignore`'s
+  terraform block was folded into this repo's `.gitignore`.
+- Repo settings writes 404 via the API for personal-account repos — the
+  Actions allow-list/mode `selected` + `sha_pinning_required` and ruleset
+  changes had to happen in the web UI; details live in `docs/homelab.md`.
+- The runners got the PAT they had, not a new one (access grant on the
+  fine-grained PAT; no sops secrets change). Operational note:
+  fine-grained PATs expire — update the `github-runners/pat` sops secret
+  when the current token nears expiry, or all four runners stop
+  re-registering.
+
+Operational learnings worth keeping until they're muscle memory:
+
+- Applies only happen on `main`; PR runs are plan-only.
+- Manual controller changes (like deleting a network in the UniFi UI) must
+  be reconciled with state: `cd tofu/<root> && tofu state rm <resource>`.
+- Use `unifly` to triage controller state (`networks refs <id>`,
+  `devices ports <id>`, `clients reservations`); block deletions persist
+  until stale reservations/clients are cleared.
+
+Still open roll-out leftovers (none blocking):
+
+- Archive `britter/home-lab` on GitHub; then re-enable Renovate there if
+  you disabled it (it is already on for this repo, which is the one that
+  matters).
+- Optional: push `port-home-lab-72` (the staged, empty parity merge linking
+  `home-lab/main`'s final commit into `main`'s ancestry) or delete it.
+- Optional: make the JetKVM DHCP reservation tofu-managed in
+  `tofu/network/clients.tf` so future controller edits don't surprise
+  OpenTofu.
+
+---
+
+## The plan as executed
 
 The home-lab repository (OpenTofu infrastructure: `dns`, `network`,
 `object-storage`, `proxmox`) and this repository (NixOS machine
