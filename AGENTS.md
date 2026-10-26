@@ -118,6 +118,13 @@ Notable inputs from flake.nix and how they show up:
 The `# keep-sorted` markers keep the inputs block in flake.nix sorted
 alphabetically. Add new inputs in sorted order.
 
+## Plan documents
+
+Work plans live in `docs/plans/<slug>.md` while active. When a plan is
+completed, move it with `git mv` to
+`docs/plans/archive/YYYY-MM-DD-<slug>.md` so the archive sorts by
+completion date automatically.
+
 ## Run the checks
 
 After making any change, run `nix flake check` and fix every issue it
