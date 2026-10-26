@@ -13,5 +13,21 @@
   },
   "nix": {
     "enabled": true
-  }
+  },
+  "packageRules": [
+    {
+      "description": "Tofu PRs must never automerge: pipelines plan on PRs; the apply-based merge should be a conscious human decision.",
+      "matchFileNames": [
+        "tofu/**"
+      ],
+      "automerge": false
+    },
+    {
+      "description": "Belt for the terraform manager outside tofu/**.",
+      "matchManagers": [
+        "terraform"
+      ],
+      "automerge": false
+    }
+  ]
 }
