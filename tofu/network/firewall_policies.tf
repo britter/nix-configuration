@@ -362,7 +362,7 @@ resource "unifi_firewall_policy" "management_to_servers_beszel" {
 resource "unifi_firewall_policy" "trusted_to_networks_http" {
   name                 = "Allow HTTP from Trusted"
   action               = "ALLOW"
-  protocol             = "all"
+  protocol             = "tcp"
   ip_version           = "BOTH"
   logging              = false
   create_allow_respond = true
@@ -381,6 +381,7 @@ resource "unifi_firewall_policy" "trusted_to_networks_http" {
       unifi_network.kvms.id,
       unifi_network.management.id
     ]
+    port               = "80,443"
     port_matching_type = "SPECIFIC"
   }
 }
