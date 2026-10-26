@@ -1,5 +1,5 @@
 ---
-name: programming.java.gradle.expert
+name: java-gradle
 description: |
   Working rules for Gradle builds: use the wrapper, ask Gradle for its build
   model instead of guessing, and where dependency versions are declared. Use

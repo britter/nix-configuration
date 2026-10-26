@@ -1,5 +1,5 @@
 ---
-name: programming.nix.expert
+name: nix-expert
 description: |
   Working rules for editing a Nix flake repository such as
   ~/github/britter/nix-configuration, including where to look up options and

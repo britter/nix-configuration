@@ -1,5 +1,5 @@
 ---
-name: programming.java.expert
+name: java-expert
 description: |
   Working rules for Java projects: identify the build tool and load its
   specialized skill, modern Java coding practices, and where to look up JDK
@@ -14,8 +14,8 @@ Before running anything, look for the build files at the repository root:
 
 | File                                            | Build tool | Specialized skill                |
 |-------------------------------------------------|------------|----------------------------------|
-| `build.gradle(.kts)`, `settings.gradle(.kts)`   | Gradle     | `programming.java.gradle.expert` |
-| `pom.xml`                                       | Maven      | `programming.java.maven.expert`  |
+| `build.gradle(.kts)`, `settings.gradle(.kts)`   | Gradle     | `java-gradle`                    |
+| `pom.xml`                                       | Maven      | `java-maven`                     |
 
 Load the matching skill and follow it for anything build-related. A repository
 can contain both — a Maven build being migrated to Gradle, or independent

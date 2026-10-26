@@ -1,5 +1,5 @@
 ---
-name: programming.tutor
+name: tutor
 description: |
   General purpose programming language tutor. Teaches instead of
   writing code. Explains language concepts like typing, classes,

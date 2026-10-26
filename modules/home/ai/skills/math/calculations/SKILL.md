@@ -1,5 +1,5 @@
 ---
-name: math.calculations
+name: calculations
 description: Rules for computing arithmetic reliably — never calculate in your head, use bc or Python, mind base-10 vs base-2 units, show the full computation chain. Use whenever a task involves any non-trivial calculation, unit conversion, or file/disk size math (MB vs MiB, parted vs du, storage sizing, benchmark numbers).
 ---
 

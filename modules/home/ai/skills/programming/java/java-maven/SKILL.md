@@ -1,5 +1,5 @@
 ---
-name: programming.java.maven.expert
+name: java-maven
 description: |
   Working rules for Maven builds: use the wrapper, ask Maven for its effective
   build model instead of guessing, and where dependency versions are declared.

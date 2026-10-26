@@ -13,7 +13,7 @@ _: {
         "SKILL.md" = pkgs.concatText "SKILL.md" [
           (pkgs.writeText "frontmatter.md" ''
             ---
-            name: writing.avoid-ai-tropes
+            name: avoid-ai-tropes
             description: Catalogue of AI writing tells — magic adverbs, "delve", em-dash overuse, "it's not X, it's Y", rule-of-three padding. Use when writing or editing prose a human will read: docs, READMEs, PR descriptions, commit messages, blog posts, emails.
             ---
           '')
@@ -24,38 +24,31 @@ _: {
         ];
       };
 
-      # https://github.com/danyuchn/asd-ste100-skill — upstream names the skill
-      # `asd-ste100`; we patch the frontmatter so it fits the `writing.*`
-      # namespace shared with the other prose skill.
-      asdSte100 =
-        let
-          src = pkgs.fetchFromGitHub {
-            owner = "danyuchn";
-            repo = "asd-ste100-skill";
-            rev = "8da6b6340aa22faf46fd07db8efbdea010cd38d9";
-            hash = "sha256-s1SVG0ecMcrej45kyQ1s78lGTzscv3CV3M5UGsZwckE=";
-          };
-        in
-        pkgs.runCommand "asd-ste100-skill" { } ''
-          cp -r ${src} $out
-          chmod -R u+w $out
-          substituteInPlace $out/SKILL.md \
-            --replace-fail 'name: asd-ste100' 'name: writing.asd-ste100'
-        '';
+      # https://github.com/danyuchn/asd-ste100-skill — upstream's skill name is
+      # already `asd-ste100`, matching ours.
+      asdSte100 = pkgs.fetchFromGitHub {
+        owner = "danyuchn";
+        repo = "asd-ste100-skill";
+        rev = "8da6b6340aa22faf46fd07db8efbdea010cd38d9";
+        hash = "sha256-s1SVG0ecMcrej45kyQ1s78lGTzscv3CV3M5UGsZwckE=";
+      };
 
-      # Attribute name == skill directory name == name in the frontmatter, for
-      # every harness that discovers skills by directory.
+      # Skill names are flat and hyphenated per the Agent Skills spec (the
+      # frontmatter `name` allows lowercase alphanumerics and hyphens only, and
+      # must match the skill's directory name); the harnesses install each
+      # source as `skills/<name>/`. Categories live in the directory layout
+      # below and in `groups`, not in the names.
       sources = {
-        "programming.tutor" = ./skills/programming/tutor;
-        "programming.java.expert" = ./skills/programming/java/expert;
-        "programming.java.gradle.expert" = ./skills/programming/java/gradle/expert;
-        "programming.java.maven.expert" = ./skills/programming/java/maven/expert;
-        "programming.nix.expert" = ./skills/programming/nix/expert;
-        "programming.nix.tutor" = ./skills/programming/nix/tutor;
-        "programming.rust.tutor" = ./skills/programming/rust/tutor;
-        "writing.avoid-ai-tropes" = avoidAiTropes;
-        "writing.asd-ste100" = asdSte100;
-        "math.calculations" = ./skills/math/calculations;
+        "tutor" = ./skills/programming/tutor;
+        "java-expert" = ./skills/programming/java/java-expert;
+        "java-gradle" = ./skills/programming/java/java-gradle;
+        "java-maven" = ./skills/programming/java/java-maven;
+        "nix-expert" = ./skills/programming/nix/nix-expert;
+        "nix-tutor" = ./skills/programming/nix/nix-tutor;
+        "rust-tutor" = ./skills/programming/rust/rust-tutor;
+        "avoid-ai-tropes" = avoidAiTropes;
+        "asd-ste100" = asdSte100;
+        "calculations" = ./skills/math/calculations;
       };
 
       # One enable flag per group, because the skills within a group reference
@@ -65,24 +58,24 @@ _: {
       # become the option path under `skills`.
       groups = {
         "programming.java" = [
-          "programming.java.expert"
-          "programming.java.gradle.expert"
-          "programming.java.maven.expert"
+          "java-expert"
+          "java-gradle"
+          "java-maven"
         ];
         "programming.nix" = [
-          "programming.tutor"
-          "programming.nix.expert"
-          "programming.nix.tutor"
+          "tutor"
+          "nix-expert"
+          "nix-tutor"
         ];
         "programming.rust" = [
-          "programming.tutor"
-          "programming.rust.tutor"
+          "tutor"
+          "rust-tutor"
         ];
         "writing" = [
-          "writing.avoid-ai-tropes"
-          "writing.asd-ste100"
+          "avoid-ai-tropes"
+          "asd-ste100"
         ];
-        "math" = [ "math.calculations" ];
+        "math" = [ "calculations" ];
       };
 
       mkGroupOptions = name: {
