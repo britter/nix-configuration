@@ -41,7 +41,12 @@ in
           buildInputs = config.pre-commit.settings.enabledPackages;
           packages = with pkgs; [
             setup-host
+            # Tools for the OpenTofu roots under tofu/ (also used by the tofu
+            # CI workflows, which develop this shell from tofu/<root>).
+            jq
+            opentofu
             sops
+            unifly
           ];
         };
     };

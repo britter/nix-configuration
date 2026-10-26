@@ -1,0 +1,42 @@
+name: OpenTofu DNS
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tofu/dns/**
+      - tofu/.sops.yaml
+      - tofu/secrets.json
+      - modules/nix/dev-shell/**
+      - modules/nix/treefmt.nix
+      - modules/nix/pre-commit.nix
+      - flake.nix
+      - flake.lock
+      - .github/workflows/tofu-dns.yaml
+      - .github/workflows/_tofu.yaml
+  pull_request:
+    paths:
+      - tofu/dns/**
+      - tofu/.sops.yaml
+      - tofu/secrets.json
+      - modules/nix/dev-shell/**
+      - modules/nix/treefmt.nix
+      - modules/nix/pre-commit.nix
+      - flake.nix
+      - flake.lock
+      - .github/workflows/tofu-dns.yaml
+      - .github/workflows/_tofu.yaml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  tofu:
+    uses: ./.github/workflows/_tofu.yaml
+    with:
+      working-directory: tofu/dns
+    secrets: inherit
+    concurrency:
+      group: tofu_latch_dns
+      cancel-in-progress: false

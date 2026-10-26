@@ -11,6 +11,8 @@
         nixfmt.enable = true;
         statix.enable = true;
         stylua.enable = true;
+        # Format the OpenTofu (HCL) files under tofu/ with `tofu fmt`.
+        terraform.enable = true;
       };
       settings.formatter.stylua.options = [
         "--indent-type"

@@ -2,6 +2,13 @@
 
 Flake based Nix configuration for my machines.
 
+## Layout
+
+- `modules/` — NixOS and home-manager aspects (see `AGENTS.md` for how they
+  compose).
+- `tofu/` — OpenTofu infrastructure code for the home lab, one root per
+  domain (DNS, network, object storage, Proxmox); see `tofu/README.md`.
+
 ## Useful commands
 
 ### General
@@ -138,7 +145,7 @@ Optional: Build a new VM image if changes are required
 nix build .#nixosConfigurations.minimal-server-iso.config.system.build.isoImage
 ```
 
-1. Define a new VM using the [home-lab terraform configuration](https://github.com/britter/home-lab). Make sure to reference the right ISO.
+1. Define a new VM using the Proxmox OpenTofu configuration in `tofu/proxmox/`. Make sure to reference the right ISO.
 1. Wait for the VM to boot into the installer.
 1. Create a new host by copying one of the existing hosts.
 1. Install the VM using [nix-anywhere](https://github.com/nix-community/nix-anywhere) by running
