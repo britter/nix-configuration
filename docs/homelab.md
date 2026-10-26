@@ -57,6 +57,26 @@ workflow uses `pull_request_target`, and third-party actions are pinned to
 SHAs. Defense in depth: fork PRs require approval before their workflows
 run.
 
+### Actions allow-list
+
+Repository settings (Settings → Actions → General → "Actions permissions")
+enforce third-party actions; these settings are UI-only (the REST API
+rejects writes for personal-account repositories):
+
+- Mode **"Allow britter, and select non-britter actions and reusable
+  workflows"** with exactly these explicit patterns:
+  - `DeterminateSystems/nix-installer-action@*`
+  - `jlumbroso/free-disk-space@*`
+- **"Allow actions created by GitHub"** is enabled (covers `actions/checkout`,
+  `actions/github-script`).
+- **"Require actions to be pinned to a full-length commit SHA"** is enabled.
+
+Practical rule: before a workflow can reference a new third-party action,
+its `owner/repo@*` pattern must be added to the allow-list and the reference
+pinned to a full commit SHA — otherwise every run fails at workflow parse.
+Renovate is kept with SHA/digest pinning (`pinDigests` via
+`config:best-practices`), so its action-bump PRs stay compatible.
+
 **Residual risk**: the runner jobs run as a fixed system user
 (`github-runner`) that is a member of `nix.settings.trusted-users`. Consequently, any code the runners execute can install and build arbitrary
 Nix packages as root via the nix daemon. Everything the tofu workflows run

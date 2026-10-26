@@ -124,3 +124,14 @@ After making any change, run `nix flake check` and fix every issue it
 reports before considering the work done. This evaluates all hosts,
 home-manager configurations, packages, and the treefmt formatting check.
 It is the closest thing this repo has to a test suite.
+
+### GitHub Actions `.github/workflows/`
+
+- Jobs that use the self-hosted pool must declare
+  `runs-on: [self-hosted, trusted]`; never a bare `self-hosted`.
+- No workflow may use `pull_request_target`.
+- Every referenced third-party action must be pinned to a full commit SHA
+  and pre-registered in the repository's Actions allow-list (Settings →
+  Actions → General; UI-only). NixOS pipelines (`ci-build.yaml`,
+  `lint.yaml`) ignore `tofu/**` and `docs/**`; the tofu pipelines trigger
+  only on `tofu/**` plus shared files. Details in `docs/homelab.md`.
