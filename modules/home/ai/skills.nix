@@ -30,7 +30,8 @@ in
           (pkgs.writeText "frontmatter.md" ''
             ---
             name: avoid-ai-tropes
-            description: Catalogue of AI writing tells — magic adverbs, "delve", em-dash overuse, "it's not X, it's Y", rule-of-three padding. Use when writing or editing prose a human will read: docs, READMEs, PR descriptions, commit messages, blog posts, emails.
+            description: |-
+              Catalogue of AI writing tells — magic adverbs, "delve", em-dash overuse, "it's not X, it's Y", rule-of-three padding. Use when writing or editing prose a human will read: docs, READMEs, PR descriptions, commit messages, blog posts, emails.
             ---
           '')
           (pkgs.fetchurl {
@@ -57,9 +58,11 @@ in
       # this repository maintains goes through `writeSkill`, which validates
       # it against the spec at build time. The pinned upstream asd-ste100
       # source ships an extra `version` frontmatter field that skills-ref
-      # rejects, so it passes through unvalidated.
-      sources = lib.mapAttrs (name: path: pkgs.writeSkill name path) localSkills // {
-        "avoid-ai-tropes" = pkgs.writeSkill "avoid-ai-tropes" avoidAiTropes;
+      # rejects, so it passes through unvalidated. The body of avoid-ai-tropes
+      # is a pinned upstream gist and not prose we maintain, so only its
+      # frontmatter gets validated (lint = false skips the STE linter).
+      sources = lib.mapAttrs (name: path: pkgs.writeSkill name { } path) localSkills // {
+        "avoid-ai-tropes" = pkgs.writeSkill "avoid-ai-tropes" { lint = false; } avoidAiTropes;
         "asd-ste100" = asdSte100;
       };
 

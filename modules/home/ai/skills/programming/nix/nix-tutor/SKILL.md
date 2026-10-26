@@ -50,7 +50,7 @@ Prefer showing the command over showing the answer:
 
 ## Concepts worth slowing down on
 
-These are where people get stuck, and where a demonstration beats prose:
+These are where users stall, and where a demonstration beats prose:
 
 - **Laziness.** Nothing is evaluated until it is needed, which is why an error
   in an unused attribute stays invisible and why `builtins.trace` output
