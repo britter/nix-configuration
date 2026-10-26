@@ -1,10 +1,10 @@
 ---
 name: java-expert
 description: |
-  Working rules for Java projects: identify the build tool and load its
-  specialized skill, modern Java coding practices, and where to look up JDK
-  APIs, third-party Javadoc and dependency coordinates. Use whenever working
-  on a Java, Kotlin or Groovy project.
+  Working rules for Java projects. Identify the build tool and load its
+  specialized skill. Apply modern Java coding practices. Know where to look
+  up JDK APIs, third-party Javadoc and dependency coordinates. Use whenever
+  working on a Java, Kotlin or Groovy project.
 ---
 # Java Projects
 
@@ -18,11 +18,11 @@ Before running anything, look for the build files at the repository root:
 | `pom.xml`                                       | Maven      | `java-maven`                     |
 
 Load the matching skill and follow it for anything build-related. A repository
-can contain both — a Maven build being migrated to Gradle, or independent
-subprojects — in which case find out which one produces the artifact you care
-about, and load both if the work spans them. If neither file is present, the
-project is built some other way (Bazel, an IDE, a shell script); find out how
-before inventing a command.
+can contain both build files — a Maven build being migrated to Gradle, or
+independent subprojects. Then find out which one produces the artifact you
+care about, and load both skills if the work spans them. If neither file is
+present, the project uses another build method (Bazel, an IDE, a shell
+script). Find out how before inventing a command.
 
 ## Write modern Java
 
@@ -34,18 +34,18 @@ modern, or where you are writing something new, prefer these.
 
 - Annotate packages as non-null by default with JSpecify's `@NullMarked` on
   the `package-info.java` (or on the module), then mark the exceptions with
-  `@Nullable`. Marking every non-null parameter individually is noise; the
-  default plus exceptions is the readable form, and it is what static
+  `@Nullable`. Marking every non-null parameter individually is noise. The
+  default plus exceptions is the readable form. It is also what static
   analysers and Kotlin interop consume.
 - Return `Optional<T>` instead of `null` from methods where absence is a
   normal outcome. Do not use `Optional` for fields, parameters, or collection
   elements — an empty collection already expresses absence.
-- Never call `Optional.get()` without `isPresent()`; use `orElseThrow()`,
-  `orElseGet()`, `map()`, or `ifPresent()` so the absent case is handled at
-  the point it is known.
-- `Objects.requireNonNull(x, "x")` in constructors for arguments that must not
-  be null. Failing at construction beats a `NullPointerException` three calls
-  later.
+- Never call `Optional.get()` without `isPresent()`. Use `orElseThrow()`,
+  `orElseGet()`, `map()`, or `ifPresent()` to handle the absent case at the
+  point where the code knows it.
+- Put `Objects.requireNonNull(x, "x")` in constructors for arguments that must
+  not be null. Failing at construction beats a `NullPointerException` three
+  calls later.
 
 ### Prefer the constructs the language now has
 
@@ -54,30 +54,32 @@ modern, or where you are writing something new, prefer these.
 - `sealed interface` plus a `switch` over the permitted types, using pattern
   matching, when modelling a closed set of alternatives. The compiler then
   proves the switch is exhaustive, which is the whole point.
-- `switch` as an expression with `->` arms rather than statement `switch` with
-  `break`.
-- Text blocks (`"""`) for embedded SQL, JSON and multi-line messages.
-- `java.time` for anything temporal. `Date`, `Calendar` and `SimpleDateFormat`
-  are not to be used in new code.
-- `List.of` / `Map.of` / `Set.of` and `stream().toList()` for immutable
-  collections; `Collections.unmodifiableList` wrapping a mutable list is not
+- Prefer `switch` as an expression with `->` arms over statement `switch`
+  with `break`.
+- Use text blocks (`"""`) for embedded SQL, JSON and multi-line messages.
+- Use `java.time` for anything temporal. Do not use `Date`, `Calendar`, or
+  `SimpleDateFormat` in new code.
+- Use `List.of` / `Map.of` / `Set.of` and `stream().toList()` for immutable
+  collections. `Collections.unmodifiableList` wrapping a mutable list is not
   the same thing.
-- try-with-resources for anything `Closeable`. A `finally` block that closes a
-  resource is a code smell in modern Java.
-- `var` where the initialiser already names the type; not where it hides it.
+- Use try-with-resources for anything `Closeable`. A `finally` block that
+  closes a resource is a code smell in modern Java.
+- Use `var` where the initialiser already names the type. Do not use it
+  where it hides the type.
 
 ### Design defaults
 
-- Immutable by default: final fields, no setters, constructor takes everything
-  the object needs. Mutability is a decision to justify, not a starting point.
-- Constructor injection over field injection, and no framework annotations on
-  fields. It keeps the class testable without a container.
+- Default to immutability: final fields, no setters, and a constructor that
+  takes everything the object needs. Mutability is a decision to justify, not
+  a starting point.
+- Prefer constructor injection over field injection, and put no framework
+  annotations on fields. It keeps the class testable without a container.
 - Program against interfaces at API boundaries, concrete types internally.
 - Throw specific unchecked exceptions with a message naming the offending
-  value; do not catch, log and rethrow the same exception at each layer.
-- Keep `Stream` pipelines side-effect free — no `peek` for logic, no mutating
-  a collection from `forEach` when a collector exists.
-- Virtual threads (`Executors.newVirtualThreadPerTaskExecutor()`) for
+  value. Do not catch, log and rethrow the same exception at each layer.
+- Keep `Stream` pipelines side-effect free. Do not use `peek` for logic, and
+  do not mutate a collection from `forEach` when a collector exists.
+- Use virtual threads (`Executors.newVirtualThreadPerTaskExecutor()`) for
   IO-bound concurrency on Java 21+, instead of a tuned fixed pool. Do not pool
   virtual threads.
 
@@ -89,9 +91,8 @@ modern, or where you are writing something new, prefer these.
 - JDK release documentation, including preview features:
   https://docs.oracle.com/en/java/javase/21/
 - Third-party API: https://javadoc.io/doc/<groupId>/<artifactId>/<version> —
-  static HTML, available for anything published to Maven Central, and pinnable
-  to the exact version the project depends on.
-- Dependency coordinates and available versions:
+  The pages are static HTML. They exist for anything published to Maven
+  Central. You can pin them to the exact version the project depends on.- Dependency coordinates and available versions:
   `https://search.maven.org/solrsearch/select?q=g:<group>+AND+a:<artifact>&core=gav&rows=20&wt=json`.
   Use this JSON API rather than https://central.sonatype.com, whose pages are
   a JavaScript shell that does not fetch usefully.

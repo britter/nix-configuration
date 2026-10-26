@@ -1,10 +1,10 @@
 # Notes for coding agents
 
-This repository is the declarative configuration for all of my machines: a
-set of NixOS hosts (a desktop laptop and several home servers) plus a
-standalone home-manager configuration, all managed by a single Nix flake.
-Every machine, user environment, service, and dotfile lives here; nothing is
-configured imperatively on the machines themselves.
+This repository is the declarative configuration for all of my machines. It
+holds a set of NixOS hosts (a desktop laptop and several home servers) plus a
+standalone home-manager configuration. A single Nix flake manages all of
+these. Every machine, user environment, service, and dotfile lives here. Do
+not configure anything imperatively on the machines themselves.
 
 ## Structure: dendritic pattern
 
@@ -13,25 +13,25 @@ import-tree). See
 https://britter.dev/blog/2026/05/11/exploring-the-dendritic-nix-pattern/
 for the reasoning behind it.
 
-The central concept: everything is a named aspect, and importing an aspect
-is enabling it — as long as the aspect only configures existing NixOS or
-home-manager options. A host gets a feature by listing it in its imports;
-new functionality becomes its own named aspect so that hosts can pull it in.
+The central concept: everything is a named aspect. Importing an aspect
+enables it — as long as the aspect only configures existing NixOS or
+home-manager options. A host gets a feature by listing it in its imports.
+New functionality becomes its own named aspect so that hosts can pull it in.
 
-The exception is features for which no module exists upstream: there I
-write my own NixOS or home-manager module as its own base aspect, written in
+The exception is features for which no module exists upstream. There I write
+my own NixOS or home-manager module as its own base aspect, written in
 the conventional style of the ecosystem (`mkEnableOption`, disabled by
 default, `mkPackageOption`, ...) so that it could be upstreamed to
 nixpkgs or home-manager as-is. Treat these base aspects as my own
 extensions to nixpkgs/home-manager (e.g. `nono-base.nix` providing
-`programs.nono`). They are imported unconditionally by the matching base
-layer so the options exist everywhere. The feature is then enabled and
-configured by a separate, ordinary aspect that imports nothing but sets the
-options (e.g. `ai-agents.nix` setting `programs.nono.enable = true`), and
-that aspect is what hosts pull in.
+`programs.nono`). The matching base layer imports them unconditionally
+so the options exist everywhere. A separate, ordinary aspect then enables and
+configures the feature: it imports nothing but sets the options (e.g.
+`ai-agents.nix` setting `programs.nono.enable = true`). Hosts pull in
+that aspect.
 
-Every `.nix` file under `modules/` is auto-imported as a flake-parts module
-by import-tree; there is no central list of imports. Aspects register in:
+import-tree auto-imports every `.nix` file under `modules/` as a flake-parts
+module. There is no central list of imports. Aspects register in:
 
 - `flake.modules.nixos.<name>` — NixOS aspects
 - `flake.modules.homeManager.<name>` — home-manager aspects
@@ -44,10 +44,10 @@ into an actual `nixosConfigurations.<name>` entry via `flake.lib.mkNixos`.
 Conventions and patterns:
 
 - One feature spanning NixOS and home-manager lives in a single file that
-  sets both registry entries; the NixOS side pulls in its home-manager side
+  sets both registry entries. The NixOS side pulls in its home-manager side
   via `home-manager.sharedModules`.
-- Aspects that need parameters are factories registered under
-  `flake.factory.<name>` and called at the import site, e.g.
+- Aspects that need parameters are factories: register them under
+  `flake.factory.<name>` and call them at the import site, e.g.
   `(config.flake.factory.sops { secretsFile = ./secrets.yaml; })`.
 - Generic service aspects (e.g. `modules/nixos/nextcloud.nix`) stay
   host-agnostic. Per-host instances follow the base-plus-instance pattern:
@@ -55,10 +55,10 @@ Conventions and patterns:
   which imports the generic aspect and adds host specifics such as storage
   paths, secrets, and proxy registration. Hosts import the `-on-<host>`
   variants, never the generic aspect directly.
-- Aspects that declare new options for other aspects to set (like
-  `https-proxy`, which owns `services.https-proxy.*`) are imported once in
+- Import aspects that declare new options for other aspects to set (like
+  `https-proxy`, which owns `services.https-proxy.*`) once in
   the matching system-type base (`system-base`, `system-desktop`,
-  `system-server`) so those options exist everywhere they may be used.
+  `system-server`). The options then exist everywhere you may use them.
 - Dependencies between aspects must otherwise be explicit: import the aspect
   you need, or communicate through the options of a small dedicated
   interface aspect. Never rely on some other file having imported something
@@ -69,8 +69,8 @@ Exceptions to "every feature is its own named aspect":
 - Hardware definitions contribute implicitly to their host aspect. Files
   like `modules/hosts/<host>/hardware/hardware.nix` set the same registry
   key as the host's `configuration.nix`, and the module system merges them.
-  There is no sense in making hardware optional, so no named aspect or
-  import entry is needed.
+  There is no sense in making hardware optional, so hardware needs no named
+  aspect or import entry.
 - Very large configurations decompose into multiple unnamed parts that all
   set one registry key and merge into a single aspect. The nixvim config
   works this way: every file under `modules/home/nvim/` sets
@@ -81,9 +81,9 @@ import-tree consequences worth remembering:
 - Plain modules (files that do not set flake-parts options) must not live
   under `modules/`. Prefix them with `_` to keep import-tree from importing
   them, e.g. `_restic-constants.nix`.
-- Files whose path contains a `_`-prefixed segment and all non-.nix files
-  are skipped, which is why things like `secrets.yaml` can sit next to host
-  configurations.
+- import-tree skips files whose path contains a `_`-prefixed segment, and it
+  skips all non-.nix files. This is why things like `secrets.yaml` can sit
+  next to host configurations.
 - Local packages live in `packages/<name>/` as plain derivations and become
   available as `pkgs.<name>` through `flake.overlays.local-pkgs`.
 
@@ -95,11 +95,11 @@ Notable inputs from flake.nix and how they show up:
   Repository: https://github.com/nix-community/nixvim,
   docs: https://nixvim.dev. To see the init file nixvim actually generates
   from the configured modules, run `nixvim-print-init`. It prints the
-  assembled result directly, no rebuild needed. Use `man nixvim` to find all
+  assembled result directly, without a rebuild. Use `man nixvim` to find all
   available nixvim configuration options.
 - sops-nix manages secrets (https://github.com/Mic92/sops-nix). Each host
   keeps its own `secrets.yaml` next to its configuration, wired in via the
-  sops factory; `.sops.yaml` at the repository root maps host directories
+  sops factory. `.sops.yaml` at the repository root maps host directories
   to age keys.
 - disko defines disk layouts per host under
   `modules/hosts/<host>/hardware/` (https://github.com/nix-community/disko).
@@ -107,20 +107,20 @@ Notable inputs from flake.nix and how they show up:
   URL in `systemConstants.configRepo` and switches when the branch moves
   (https://github.com/nlewo/comin).
 - nixos-hardware and `hardware.facter` provide per-model hardware
-  enablement; see the same `hardware/` directories.
+  enablement. See the same `hardware/` directories.
   (https://github.com/NixOS/nixos-hardware,
   https://github.com/numtide/nixos-facter-modules)
-- treefmt-nix and pre-commit-hooks gate formatting and linting; run
+- treefmt-nix and pre-commit-hooks gate formatting and linting. Run
   `nix fmt` before committing.
   (https://github.com/numtide/treefmt-nix,
   https://github.com/cachix/git-hooks.nix)
 
-The inputs block in flake.nix is kept alphabetically sorted by
-`# keep-sorted` markers; keep new inputs sorted within it.
+The `# keep-sorted` markers keep the inputs block in flake.nix sorted
+alphabetically. Add new inputs in sorted order.
 
-## Verifying changes
+## Run the checks
 
 After making any change, run `nix flake check` and fix every issue it
 reports before considering the work done. This evaluates all hosts,
-home-manager configurations, packages, and the treefmt formatting check;
-it is the closest thing this repo has to a test suite.
+home-manager configurations, packages, and the treefmt formatting check.
+It is the closest thing this repo has to a test suite.

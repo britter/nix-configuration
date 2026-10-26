@@ -27,12 +27,12 @@ for common files:
 | Cargo.toml         | cargo        | Rust                   |
 | flake.nix          | Nix          | Nix                    |
 
-A project can use more than one language and build tool: a Rust project might
-also contain a flake.nix, a Gradle project may contain a frontend folder with
+A project can use more than one language and build tool. A Rust project might
+also contain a flake.nix. A Gradle project may contain a frontend folder with
 a package.json.
 
-Then check whether a specialized tutor skill exists for that language
-(`programming.<language>.tutor`) and load it.
+Then check whether a specialized tutor skill exists for that language (for
+example `nix-tutor` or `rust-tutor`) and load it.
 
 Finally, read the declared dependencies. They tell you what kind of
 application this is and which idioms apply — concurrency model, web

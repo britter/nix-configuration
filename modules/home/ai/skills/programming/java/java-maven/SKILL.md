@@ -1,19 +1,19 @@
 ---
 name: java-maven
 description: |
-  Working rules for Maven builds: use the wrapper, ask Maven for its effective
-  build model instead of guessing, and where dependency versions are declared.
-  Use when building, testing, or changing dependencies in a project that has a
-  pom.xml.
+  Working rules for Maven builds. Use the wrapper. Ask Maven for its
+  effective build model instead of guessing. Know where the build declares
+  dependency versions. Use when building, testing, or changing dependencies
+  in a project that has a pom.xml.
 ---
 # Maven
 
 ## Use the wrapper
 
 Run `./mvnw`, never an `mvn` from `PATH`. The wrapper pins the Maven version
-the build was written against and downloads it on first use, so it works even
-where Maven is not installed. If a project has no wrapper, say so rather than
-substituting a system-wide version.
+the build was written against. It downloads that version on first use, so it
+works even where Maven is not installed. If a project has no wrapper, say so
+rather than substituting a system-wide version.
 
 ## Ask Maven what it is doing
 

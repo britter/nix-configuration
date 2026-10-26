@@ -1,10 +1,10 @@
 ---
 name: java-gradle
 description: |
-  Working rules for Gradle builds: use the wrapper, ask Gradle for its build
-  model instead of guessing, and where dependency versions are declared. Use
-  when building, testing, or changing dependencies in a project that has a
-  build.gradle or settings.gradle file.
+  Working rules for Gradle builds. Use the wrapper. Ask Gradle for its build
+  model instead of guessing. Know where the build declares dependency
+  versions. Use when building, testing, or changing dependencies in a project
+  that has a build.gradle or settings.gradle file.
 ---
 # Gradle
 
@@ -26,16 +26,17 @@ wrapper, say so rather than substituting a system-wide version.
   particular version won. This is the answer to nearly every version-conflict
   question.
 - `./gradlew properties` — the effective project properties.
-- `--stacktrace` and `--info` when a failure is unexplained; `--scan` for a
-  shareable report when it does not reproduce locally. `--debug` is rarely
-  readable.
+- `--stacktrace` and `--info` when a failure is unexplained. Use `--scan`
+  for a shareable report when the failure does not reproduce locally.
+  `--debug` output is rarely readable.
 
 Gradle prints whether a failure happened during configuration or during task
-execution. Note which before reading further; it narrows the cause sharply.
+execution. Note which one before reading further. It narrows the cause
+sharply.
 
 ## Dependency versions have one home
 
-Find where versions are declared and change them there:
+Find where the build declares versions, and change them there:
 
 - A version catalog at `gradle/libs.versions.toml`, referenced as
   `libs.some.library`.
@@ -49,7 +50,7 @@ defect even when it builds.
 
 ## Test results live in the reports
 
-The console output is truncated. Read
+Gradle truncates the console output. Read
 `build/reports/tests/test/index.html` or the XML in
 `build/test-results/test/` for the real assertion and stack trace. Iterate on
 a single test with
@@ -62,4 +63,4 @@ a single test with
 - Kotlin DSL API: https://docs.gradle.org/current/kotlin-dsl/
 
 Pin the version in the URL (`https://docs.gradle.org/8.14/...`) when the
-project is not on the current release; the DSL moves between versions.
+project is not on the current release. The DSL moves between versions.
