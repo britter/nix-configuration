@@ -28,6 +28,15 @@ that evaluate fine in one command and fail in the next.
   changed before you hunt for a bug in the content.
 - When an eval fails oddly, check `git status` for untracked paths before
   reading the stack trace.
+- Write package definitions as `builder (finalAttrs: { ... })`, not
+  `builder rec { ... }`. `rec` is a discouraged pattern in nixpkgs. Shadowing
+  an attribute can trigger an infinite recursion that is hard to debug.
+  References through `rec` also do not survive `overrideAttrs`. Reference the
+  definition's own attributes as `finalAttrs.<name>`, e.g.
+  `tag = "v${finalAttrs.version}"`. This applies to every builder that
+  follows the `mkDerivation` convention, e.g. `stdenv.mkDerivation`,
+  `buildPythonPackage`, or `buildMavenPackage`. Reasoning:
+  https://britter.dev/blog/2026/10/23/maven-build-support-nixpkgs
 - To reference an executable, use `${lib.getExe pkgs.<package>}` rather than
   interpolating `${pkgs.<package>}/bin/<name>` by hand. It resolves the
   binary through `meta.mainProgram`. A wrong package then fails at evaluation
