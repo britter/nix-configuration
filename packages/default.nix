@@ -6,6 +6,7 @@
   jfmt-java = pkgs.callPackage ./jfmt-java { };
   kotlin-lsp = pkgs.callPackage ./kotlin-lsp { };
   nixpkgs-pr = pkgs.callPackage ./nixpkgs-pr { };
+  skills-ref = pkgs.callPackage ./skills-ref { };
   testlens-cli = pkgs.callPackage ./testlens-cli { };
   wallpapers = pkgs.callPackage ./wallpapers { };
 }

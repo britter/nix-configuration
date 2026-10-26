@@ -1,4 +1,20 @@
-_: {
+# Locally maintained skills: attribute name == frontmatter name == leaf
+# directory name, as the Agent Skills spec requires. The directory layout
+# groups them by category; the flat names are what agents see. The writeSkill
+# package (below) validates each of these against the spec at build time.
+let
+  localSkills = {
+    "tutor" = ./skills/programming/tutor;
+    "java-expert" = ./skills/programming/java/java-expert;
+    "java-gradle" = ./skills/programming/java/java-gradle;
+    "java-maven" = ./skills/programming/java/java-maven;
+    "nix-expert" = ./skills/programming/nix/nix-expert;
+    "nix-tutor" = ./skills/programming/nix/nix-tutor;
+    "rust-tutor" = ./skills/programming/rust/rust-tutor;
+    "calculations" = ./skills/math/calculations;
+  };
+in
+{
   flake.modules.homeManager.ai-skills =
     {
       config,
@@ -37,18 +53,14 @@ _: {
       # frontmatter `name` allows lowercase alphanumerics and hyphens only, and
       # must match the skill's directory name); the harnesses install each
       # source as `skills/<name>/`. Categories live in the directory layout
-      # below and in `groups`, not in the names.
-      sources = {
-        "tutor" = ./skills/programming/tutor;
-        "java-expert" = ./skills/programming/java/java-expert;
-        "java-gradle" = ./skills/programming/java/java-gradle;
-        "java-maven" = ./skills/programming/java/java-maven;
-        "nix-expert" = ./skills/programming/nix/nix-expert;
-        "nix-tutor" = ./skills/programming/nix/nix-tutor;
-        "rust-tutor" = ./skills/programming/rust/rust-tutor;
-        "avoid-ai-tropes" = avoidAiTropes;
+      # above and in `groups`, not in the names. Every skill whose frontmatter
+      # this repository maintains goes through `writeSkill`, which validates
+      # it against the spec at build time. The pinned upstream asd-ste100
+      # source ships an extra `version` frontmatter field that skills-ref
+      # rejects, so it passes through unvalidated.
+      sources = lib.mapAttrs (name: path: pkgs.writeSkill name path) localSkills // {
+        "avoid-ai-tropes" = pkgs.writeSkill "avoid-ai-tropes" avoidAiTropes;
         "asd-ste100" = asdSte100;
-        "calculations" = ./skills/math/calculations;
       };
 
       # One enable flag per group, because the skills within a group reference

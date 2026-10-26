@@ -1,7 +1,16 @@
 { config, inputs, ... }:
 {
   flake.overlays = {
-    local-pkgs = final: _prev: import ../../packages { pkgs = final; };
+    local-pkgs =
+      final: _prev:
+      import ../../packages { pkgs = final; }
+      // {
+        # pkgs.writers-style helper: builds an Agent Skill directory and
+        # validates it against the Agent Skills spec in the same build. A
+        # function, hence not a member of the packages registry
+        # (`perSystem.packages` only accepts derivations).
+        writeSkill = final.callPackage ../../packages/write-skill { };
+      };
 
     # Remove entries here once the referenced nixpkgs PR has been merged and
     # is in nixos-unstable.
