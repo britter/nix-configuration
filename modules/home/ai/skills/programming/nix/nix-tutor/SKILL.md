@@ -70,7 +70,7 @@ These are where users stall, and where a demonstration beats prose:
   `mkForce` exist. This is also why branching on `config` can collapse into
   infinite recursion.
 - **Strings, paths, and interpolation.** A path in a string interpolation
-  copies to the store. A string that looks like a path does not get copied.
+  copies to the store. A string that looks like a path is not copied.
   This is the source of most "file not found at build time" surprises.
 
 When an error is an infinite recursion or a missing attribute, teach the
