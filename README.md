@@ -1,293 +1,141 @@
 # nix-configuration
 
-Flake based Nix configuration for my machines.
+Declarative, flake-based configuration for all of my machines — a desktop
+laptop and a fleet of home-lab servers — plus the
+[OpenTofu](https://opentofu.org) code describing the infrastructure they run
+on. Everything lives in code: machines, users, services, dotfiles, networks,
+and VMs. Nothing is configured imperatively.
 
-## Layout
+The NixOS side uses my own flavor of the
+[dendritic Nix pattern](https://britter.dev/blog/2026/05/11/exploring-the-dendritic-nix-pattern/)
+(flake-parts plus import-tree): every feature is a named *aspect*, and hosts
+compose aspects by importing them. See `AGENTS.md` for the details — it is
+written for coding agents, but equally useful for humans.
 
-- `modules/` — NixOS and home-manager aspects (see `AGENTS.md` for how they
-  compose).
-- `tofu/` — OpenTofu infrastructure code for the home lab, one root per
-  domain (DNS, network, object storage, Proxmox); see `tofu/README.md`.
+The OpenTofu side was merged from the separate `britter/home-lab` repository
+in October 2026, with full history preserved
+(see `docs/plans/archive/2026-10-26-merge-home-lab.md`).
 
-## Useful commands
+## What lives where
 
-### General
+| Path | Contents |
+| ---- | -------- |
+| `modules/` | NixOS and home-manager aspects |
+| `modules/hosts/<name>/` | one directory per machine |
+| `tofu/` | OpenTofu infrastructure, one root per domain — see `tofu/README.md` |
+| `packages/` | local packages, available as `pkgs.<name>` via the `local-pkgs` overlay |
+| `templates/` | flake templates, e.g. `nix flake init -t .#minimal-dev-shell` |
+| `docs/` | runbooks, homelab notes, plan documents, incident reports |
 
-**Show store location of a module**
+## Machines
 
-```shell
-nix build <package> --print-out-paths --no-link
-```
+| Host | What it is | Deployment |
+| ---- | ---------- | ---------- |
+| `framework-13` | desktop laptop | manual `nixos-rebuild switch` |
+| `directions` | Raspberry Pi edge server: DNS adblocking, status page, homepage, HTTPS proxy | comin |
+| `pve` | Proxmox VE hypervisor running the `srv-prod-*` VMs | not managed with Nix |
+| `srv-prod-1`–`srv-prod-6` | Proxmox VMs running the home-lab services; `srv-prod-6` also hosts the self-hosted CI runners | comin |
+| `truenas` | NAS providing the NFS backup share for `pve` | not managed with Nix |
+| `srv-offsite-1` | offsite server running Garage object storage | comin |
+| `minimal-server-iso` | minimal installer ISO | build artifact |
 
-Where `<package>` would be something like `nixpkgs#cowsay`
+Servers deploy themselves: [comin](https://github.com/nlewo/comin) pulls this
+repository and switches when `main` moves. `pve` and `truenas` are part of
+the homelab but configured by hand — they are not managed with Nix. See
+`docs/bootstrap.md` for how a new machine joins the fleet.
 
-**Run command without installing or nix-shell**
+## Home lab infrastructure (`tofu/`)
 
-```shell
-nix run <package> -- <args>
-```
+The infrastructure-as-code for the home lab lives under `tofu/`, one
+independent OpenTofu root per domain:
 
-Where
+- [`tofu/dns`](tofu/dns/README.md) — Cloudflare DNS records pointing at
+  Tailscale device addresses
+- [`tofu/network`](tofu/network/README.md) — UniFi: VLANs, zones, firewall
+  policies
+- [`tofu/object-storage`](tofu/object-storage/README.md) — Garage buckets and
+  keys
+- [`tofu/proxmox`](tofu/proxmox/README.md) — the Proxmox VMs that run the
+  NixOS servers
 
-- `<package>` would be something like `nixpkgs#exa`
-- `<args>` would be something like `--tree --level 4` (in the case of exa).
+How it runs:
 
-Note that the `<package>` and `<args>` need to be separated by `--`
+- Each root has its own pipeline (`.github/workflows/tofu-*.yaml`). PRs are
+  **plan-only**, with the plan commented on the PR; applies happen only on
+  `main`, serialized per root.
+- The pipelines run on self-hosted runners on `srv-prod-6`, which hold the
+  sops age key for decrypting credentials. The trust model and runner
+  setup are documented in `docs/homelab.md`.
+- State is stored remotely in the self-hosted Garage S3 instance
+  (`garage.srv-prod-3.ritter.family`), one `tofu-states-<root>` bucket per
+  root. Remote state is what makes the gitops flow work at all: runners can
+  plan and apply without keeping state anywhere local. Reaching it requires
+  the bucket credentials from the root's sops-encrypted `secrets.json`.
+- Secrets are sops-encrypted `secrets.json` files, one per root; the
+  encryption rules live in `tofu/.sops.yaml`. Locally, enter a root and
+  `direnv allow` — the `.envrc` decrypts secrets and loads the shared dev
+  shell (OpenTofu, sops, jq, unifly).
+- Manual changes made outside OpenTofu (e.g. deleting a network in the UniFi
+  UI) must be reconciled with `tofu state rm <resource>` before the next
+  apply. Use `unifly` to triage controller state; block deletions persist
+  until stale reservations and clients are cleared.
 
-**Getting a package hash**
+## Secrets
 
-From URL:
+Two independent sops setups:
 
-```shell
-nix run nixpkgs#nix-prefetch fetchurl --url <url>
-```
+| Scope | Rules file | Secret files |
+| ----- | ---------- | ------------ |
+| NixOS hosts (SSH host keys, service secrets) | `.sops.yaml` | `modules/hosts/<host>/secrets.yaml`, `modules/nix/dev-shell/host-keys.yaml` |
+| OpenTofu (per-root state-bucket and provider credentials) | `tofu/.sops.yaml` | `tofu/<root>/secrets.json` |
 
-From git/GitHub:
+Adding a new host key to the sops store:
 
-```shell
-nix run nixpkgs#nix-prefetch-git <url>
-nix run nixpkgs#nix-prefetch-github <owner> <repo>
-```
-
-This will download the URL/git repository to the store and print the resulting hash.
-
-### Flakes
-
-**Switch to a machine configuration by host name**
-
-```shell
-sudo nixos switch --flake ".#<host>"
-```
-
-**Retrieve flake meta data**
-
-```shell
-nix flake metadata <flake url>
-```
-
-Flake url can be something like
-
-- `.` (flake in CWD)
-- `github:nixos/nixpkgs/nixos-unstable`
-
-**Initialize a new flake**
-
-```shell
-nix flake init --template <template name>
-```
-
-**Update specific flake input**
-
-```shell
-nix flake lock --update-input <input name>
-```
-
-**Update flake with commit**
-
-```shell
-nix flake update --commit-lock-file
-```
-
-**Explore a flake**
-
-```shell
-nix flake show <flake url>
-```
-
-### Secrets management with sops
-
-- https://github.com/Mic92/sops-nix
-- https://github.com/getsops/sops
-- https://www.youtube.com/watch?v=G5f6GC7SnhU
-
-**Adding a new host**
-
-- Generate SSH key for the host using `ssh-key-gen`
-- Convert the public key to age
+1. Convert the host's public SSH key to age:
 
 ```shell
 nix run nixpkgs#ssh-to-age -- -i ~/.ssh/key.pub
-nix run nixpkgs#ssh-to-age -- -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt
 ```
 
-- Add an entry to `.sops.yaml` for that host
-- Create the secrets file
+2. Add an entry to the matching `.sops.yaml` for that host.
+3. Create or edit the secrets file:
 
 ```shell
 nix run nixpkgs#sops -- path/to/secrets.yaml
 ```
 
-**Rotating a key in a sops file**
-
-Modify `.sops.yaml` and update the key.
+Rotating a key: modify the `.sops.yaml` entry, then run
 
 ```shell
 nix run nixpkgs#sops -- updatekeys path/to/secrets.yaml
 ```
 
-## Initializing a new machine
+Further references: [sops-nix](https://github.com/Mic92/sops-nix),
+[sops](https://github.com/getsops/sops).
 
-### NixOS
+## Working on this repository
 
-1. Install the latest NixOS release
-2. Clone this repository using a nix shell that has git `nix shell nixpkgs#git`
-3. Create a new folder under `hosts` that's named after the host.
-4. Copy the `configuration.nix` and `hardware-configuration.nix` files from `etc/nixos/` into the new directory.
-5. Add the new machine to `flake.nix`. Make sure the machine's host name and nixosConfiguration name match.
-6. Repace `/etc/nixos` with a symbolic link to cloned repository.
-7. Run `sudo nixos-rebuild switch --flake` to enable the flake based configuration for the new machine.
+- `direnv allow` (or `nix develop`) provides the dev shell with all tools.
+- `nix fmt` — formatting (treefmt); run before committing.
+- `nix flake check` — evaluates all hosts, home-manager configurations,
+  packages, and the formatting check. It is the closest thing this repo has
+  to a test suite.
+- CI: the NixOS pipelines (`ci-build.yaml`, `lint.yaml`) skip `tofu/**` and
+  `docs/**` changes; the tofu pipelines trigger only on `tofu/**` plus shared
+  files. See `docs/homelab.md` for the runner setup.
 
-### VMs
+Generic Nix commands live in `docs/nix-cheatsheet.md`.
 
-Optional: Build a new VM image if changes are required
+## More documentation
 
-```shell
-nix build .#nixosConfigurations.minimal-server-iso.config.system.build.isoImage
-```
-
-1. Define a new VM using the Proxmox OpenTofu configuration in `tofu/proxmox/`. Make sure to reference the right ISO.
-1. Wait for the VM to boot into the installer.
-1. Create a new host by copying one of the existing hosts.
-1. Install the VM using [nix-anywhere](https://github.com/nix-community/nix-anywhere) by running
-
-```shell
-nix run github:nix-community/nixos-anywhere -- --flake '.#<host-config>' root@192.168.178.199
-```
-
-In case, the machine uses sops secrets, the key needs to be sent to the host during setup.
-Either use an existing setup script in `scripts/` or create a new one based on the others.
-Then run the script from a shell that has `nixos-anywhere`:
-
-```shell
-nix shell github:nix-community/nixos-anywhere
-./scripts/setup-<host>.sh
-```
-
-Redeploy the machine remotely via
-
-```shell
-nixos-rebuild switch --fast --flake .#<host-config> \
-    --target-host root@<host-ip> \
-    --build-host root@<host-ip>
-```
-
-See https://www.haskellforall.com/2023/01/announcing-nixos-rebuild-new-deployment.html
-
-### macOS
-
-1. Install nix using the [Determinate Systems nix installer](https://github.com/DeterminateSystems/nix-installer).
-2. Clone this repository using a nix shell that has git `nix shell nixpkgs#git`
-3. Create a new folder under `hosts` that's names after the host.
-4. Initialize a new configuration from the [examples in the nix-darwin repository](https://github.com/LnL7/nix-darwin/tree/19f75c2b45fbfc307ecfeb9dadc41a4c1e4fb980/modules/examples).
-5. Add the new machine to `flake.nix`. Make sure the machine's host name and darwinConfiguration name match.
-6. Inside the repository clone, run `nix run nix-darwin --extra-experimental-features 'nix-command flake' darwin-rebuild -- switch --flake .` (See for resolution of https://github.com/LnL7/nix-darwin/issues/721 in order to run darwin-rebuild from anywhere after that).
-7. Apply the workaround documented in https://github.com/LnL7/nix-darwin/issues/122#issuecomment-1782971499 is the issue is still unresolved.
-
-### Raspberry Pi
-
-This is the description for a network install that does not require the Raspberry Pi to be connected to a display.
-Instead it's sufficient to connet it to the network via ethernet cable and ssh into the machine.
-The SD card image will setup the root account and a user called `nixos` without password.
-However the SSH service is configred to not accept empty passwords.
-So in order to login via SSH, you need to pre-load your SSH key into the authorized_keys file of either the root user or the `nixos` user.
-The first step is to download the bootable SD card image from the Hydra build system, see [this nixos.wiki entry](https://nixos.wiki/wiki/NixOS_on_ARM#Installation).
-
-#### Pre-load an SSH key into the image
-
-1. Use `nix run nixpkgs#parted <img>` to find out what exactly to mount. See [this stackoverflow answer](https://unix.stackexchange.com/a/156480) for details.
-2. Mount the image file into a local directory by running
-
-```shell
-mkdir img
-sudo mount -o loop,offset=<result from parted> <image file name> img
-```
-
-3. Generate an SSH key if you haven't already using the `ssh-keygen` tool.
-4. The SD card image will setup a user called `nixos` on first boot. For that reason `/home/nixos` does not exist in the image you just mounted. Create the user home, and pre-load your SSH key as an authorized key:
-
-```shell
-sudo mkdir -p img/home/nixos/.ssh
-sudo cp ~/.ssh/id_rsa.pub img/home/nixos/.ssh/authorized_keys
-sudo chown -R 1000:100 img/home/nixos
-sudo chmod -R 700 img/home/nixos
-sudo chmod 600 img/home/nixos/authorized_keys
-```
-
-5. Unmount the image via `sudo umount img`
-6. Use `nix run nixpkgs#rpi-imager` to run the Raspberry Pi imager and write the image to the SD card.
-
-#### After first boot
-
-1. Once the key is on the device, ssh into it as the `nixos` user.
-2. Run `sudo nixos-generate-config` to generate the initial configuration.
-3. IMPORTANT: You need to make two modifications to `/etc/nixos/configuration.nix`. If you forget to add this to the config, when you `nixos-rebuild switch` you won't be able to login anymore!
-
-- Configure the `nixos` user:
-
-```nix
-users.users.nixos = {
-  isNormalUser = true;
-  extraGroups = ["wheel"];
-}
-```
-
-- Enable the SSH services:
-
-```nix
-services.openssh = {
-  enable = true;
-  # require public key authentication for better security
-  settings.PasswordAuthentication = false;
-  settings.KbdInteractiveAuthentication = false;
-  #settings.PermitRootLogin = "yes";
-};
-```
-
-4. Start from 2. in the [NixOs](#nixos) section.
-
-## Useful links
-
-### Packages
-
-- [NixOS Search](https://search.nixos.org/packages)
-- [Nix User Repository](https://nur.nix-community.org/)
-- [NixHub](https://nixhub.io)
-- [Available programs](https://github.com/NixOS/nixpkgs/tree/master/nixos/modules/programs)
-- GNOME
-  - [NixOS manual entry](https://nixos.org/manual/nixos/stable/#chap-gnome)
-  - [NixOS wiki entry](https://nixos.wiki/wiki/GNOME)
-
-### Flakes
-
-- [Flakes book](https://github.com/ryan4yin/nixos-and-flakes-book)
-- [Using Flatpack](https://github.com/asininemonkey/nixos/blob/main/flatpak.nix)
-
-### Configuration examples
-
-- [Nix Configuration Examples](https://nixos.wiki/wiki/Configuration_Collection)
-  - https://github.com/fortuneteller2k/nix-config
-  - https://github.com/wiedzmin/nixos-config
-  - https://github.com/jhol/dots
-  - https://github.com/genebean/dots
-  - https://github.com/icecreammatt/nixfiles
-  - https://github.com/katexochen/nixos
-  - https://github.com/msanft/nixos-conf
-
-### Tools
-
-#### General
-
-- [lazygit](https://github.com/jesseduffield/lazygit)
-
-#### Nix related
-
-- [nix-jabba](https://codeberg.org/raboof/nix-jabba)
-- [devenv.sh](https://devenv.sh)
-- [statix linter](https://git.peppe.rs/languages/statix)
-- [Alejandra formatterl](https://github.com/kamadorueda/alejandra)
-- [Pre-commit-hooks.nix](https://github.com/cachix/pre-commit-hooks.nix)
-
-### Nix on Raspberry Pi
-
-- [SD Image builder](https://github.com/Robertof/nixos-docker-sd-image-builder)
-- [pi-hole flake](https://github.com/mindsbackyard/pihole-flake)
+- [`AGENTS.md`](AGENTS.md) — how the aspects and hosts compose
+- [`docs/bootstrap.md`](docs/bootstrap.md) — bootstrapping new machines
+  (NixOS, Proxmox VMs, macOS, Raspberry Pi)
+- [`docs/homelab.md`](docs/homelab.md) — homelab setup notes, CI and runner
+  details, trust model
+- [`docs/desktop-manual-setup.md`](docs/desktop-manual-setup.md) — stateful
+  changes on `framework-13` that the flake cannot express
+- [`docs/plans/`](docs/plans/) — work plans and their archive
+- [`docs/incidents/`](docs/incidents/) — post-mortems
+- [`tofu/README.md`](tofu/README.md) and the per-root READMEs — the
+  infrastructure code
