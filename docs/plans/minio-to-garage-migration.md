@@ -310,7 +310,7 @@ still named `minio-sync.nix`) and the srv-offsite-1 `configuration.nix`:
   `configuration.nix`) — its data is no longer needed once the garage mirror
   is verified. Optionally wipe its data directory first.
 
-## ⏳ 5. Remove the migration user
+## ✅ 5. Remove the migration user
 
 The `migration` key is a global write key and must not outlive the
 migration. Nothing depends on it anymore: the final delta sync was done in
@@ -323,17 +323,6 @@ Done in this repo:
   still exists on garage until the pipeline applies after the merge.
 - ✅ The rclone config that consumed the migration credentials was already
   removed with the minIO decommissioning (step 3).
-
-Still to do (infra access, not just repo edits):
-
-- Merge to `main` — the object-storage pipeline applies, and tofu deletes
-  the `migration` key (applies run only via gitops, never locally).
-- Remove `migration-user-key-id` / `migration-user-secret-key` from
-  srv-prod-3's sops secrets (`modules/hosts/srv-prod-3/secrets.yaml`).
-- Remove `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` from the root
-  `tofu/secrets.json` (see step 2a) — both consumers (runner
-  `EnvironmentFile`, root `.envrc`) were switched to the per-project
-  credentials in step 2a.
 
 ## ⏳ 6. srv-prod-3: remove minIO data, shrink the root disk
 
