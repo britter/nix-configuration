@@ -1,0 +1,42 @@
+name: OpenTofu Proxmox
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tofu/proxmox/**
+      - tofu/.sops.yaml
+      - tofu/secrets.json
+      - modules/nix/dev-shell/**
+      - modules/nix/treefmt.nix
+      - modules/nix/pre-commit.nix
+      - flake.nix
+      - flake.lock
+      - .github/workflows/tofu-proxmox.yaml
+      - .github/workflows/_tofu.yaml
+  pull_request:
+    paths:
+      - tofu/proxmox/**
+      - tofu/.sops.yaml
+      - tofu/secrets.json
+      - modules/nix/dev-shell/**
+      - modules/nix/treefmt.nix
+      - modules/nix/pre-commit.nix
+      - flake.nix
+      - flake.lock
+      - .github/workflows/tofu-proxmox.yaml
+      - .github/workflows/_tofu.yaml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  tofu:
+    uses: ./.github/workflows/_tofu.yaml
+    with:
+      working-directory: tofu/proxmox
+    secrets: inherit
+    concurrency:
+      group: tofu_latch_proxmox
+      cancel-in-progress: false

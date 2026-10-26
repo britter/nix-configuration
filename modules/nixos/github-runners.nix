@@ -47,12 +47,13 @@ _: {
             # Changing workDir/user triggers a new registration; without replace
             # the re-registration under the same name fails.
             replace = true;
-            url = "https://github.com/britter/home-lab";
+            url = "https://github.com/britter/nix-configuration";
             tokenType = "access";
             tokenFile = config.sops.secrets."github-runners/pat".path;
             extraLabels = [
               "nixos"
               "x86_64"
+              "trusted"
             ];
             serviceOverrides = {
               # CacheDirectory for the workDir above. With a static user systemd

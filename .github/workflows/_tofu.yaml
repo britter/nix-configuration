@@ -1,0 +1,166 @@
+name: OpenTofu (reusable)
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  tofu:
+    name: OpenTofu plan and apply
+    runs-on: [self-hosted, trusted]
+    timeout-minutes: 10
+    defaults:
+      run:
+        # The tofu devShell tools live in the root flake's default devShell;
+        # runs from ${{ inputs.working-directory }} (e.g. tofu/dns), so the
+        # flake is two levels up.
+        shell: nix develop ../.. --command bash -o pipefail {0}
+        working-directory: ${{ inputs.working-directory }}
+
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+
+      - name: Load backend credentials
+        run: |
+          creds=$(sops -d secrets.json | jq -r '"AWS_ACCESS_KEY_ID=\(.state_bucket_key_id)",
+            "AWS_SECRET_ACCESS_KEY=\(.state_bucket_secret_key)"')
+          # GITHUB_ENV vars are not masked automatically; mask them in logs explicitly.
+          echo "$creds" | while IFS== read -r name value; do echo "::add-mask::$value"; done
+          echo "$creds" >> "$GITHUB_ENV"
+
+      - name: OpenTofu fmt
+        id: fmt
+        run: |
+          tofu fmt -check -no-color 2>&1 | tee fmt-output.txt
+          exit_code=${PIPESTATUS[0]}
+          echo "stdout<<EOF" >> $GITHUB_OUTPUT
+          cat fmt-output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          exit $exit_code
+        continue-on-error: true
+
+      - name: OpenTofu Init
+        id: init
+        run: |
+          tofu init -no-color 2>&1 | tee init-output.txt
+          exit_code=${PIPESTATUS[0]}
+          echo "stdout<<EOF" >> $GITHUB_OUTPUT
+          cat init-output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          exit $exit_code
+
+      - name: OpenTofu Validate
+        id: validate
+        run: |
+          tofu validate -no-color 2>&1 | tee validate-output.txt
+          exit_code=${PIPESTATUS[0]}
+          echo "stdout<<EOF" >> $GITHUB_OUTPUT
+          cat validate-output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          exit $exit_code
+
+      - name: OpenTofu Plan
+        id: plan
+        if: github.event_name == 'pull_request'
+        run: |
+          tofu plan -no-color 2>&1 | tee plan-output.txt
+          exit_code=${PIPESTATUS[0]}
+          echo "stdout<<EOF" >> $GITHUB_OUTPUT
+          cat plan-output.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          exit $exit_code
+        continue-on-error: true
+
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
+        if: always() && github.event_name == 'pull_request'
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('OpenTofu (${{ inputs.working-directory }})')
+            })
+
+            // A stage that never ran (a prior stage failed) has an empty/"skipped" outcome.
+            // Success collapses to one line (a clean fmt/init/validate logs nothing worth showing);
+            // only a failure expands its captured output.
+            const stageSection = (title, outcome, output, okLabel) => {
+              if (outcome === '' || outcome === 'skipped') return `${title} ⏭️ Skipped`;
+              if (outcome !== 'failure') return `${title}${okLabel || `\`${outcome}\``}`;
+              return `${title}\`${outcome}\`
+            <details><summary>Output</summary>
+
+            \`\`\`
+            ${output}
+            \`\`\`
+
+            </details>`;
+            };
+
+            const fmtSection = stageSection('#### Format 🖌', `${{ steps.fmt.outcome }}`, `${{ steps.fmt.outputs.stdout }}`);
+            const initSection = stageSection('#### Init ⚙️', `${{ steps.init.outcome }}`, `${{ steps.init.outputs.stdout }}`);
+            const validateSection = stageSection('#### Validate 🤖', `${{ steps.validate.outcome }}`, `${{ steps.validate.outputs.stdout }}`, ' ✅ Valid');
+
+            const plan = `${{ steps.plan.outputs.stdout }}`;
+            const planOutcome = `${{ steps.plan.outcome }}`;
+            const planSection =
+              (planOutcome === '' || planOutcome === 'skipped')
+                ? `#### Plan 📖 ⏭️ Skipped`
+                : plan.includes('No changes. Your infrastructure matches the configuration.')
+                ? `#### Plan 📖 ✅ No changes`
+                : `#### Plan 📖\`${planOutcome}\`
+            <details><summary>Show Plan</summary>
+
+            \`\`\`
+            ${plan}
+            \`\`\`
+
+            </details>`;
+
+            const output = `#### OpenTofu (${{ inputs.working-directory }}) 🏗️
+            ${fmtSection}
+            ${initSection}
+            ${validateSection}
+
+            ${planSection}
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Directory: \`${{ inputs.working-directory }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+
+      - name: OpenTofu Format Status
+        if: steps.fmt.outcome == 'failure'
+        run: exit 1
+
+      - name: OpenTofu Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: OpenTofu Apply
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: tofu apply -auto-approve -input=false
