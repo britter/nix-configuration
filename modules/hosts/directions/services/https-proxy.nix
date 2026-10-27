@@ -85,6 +85,10 @@ _: {
             '';
           }
           {
+            fqdn = "account.ritter.family";
+            target = "https://account.srv-prod-1.ritter.family";
+          }
+          {
             fqdn = "tools.ritter.family";
             target = "https://tools.srv-prod-6.ritter.family";
           }

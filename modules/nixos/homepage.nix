@@ -142,6 +142,13 @@ _: {
               };
             }
             {
+              "Keycloak" = {
+                description = "Single sign-on";
+                href = "https://account.ritter.family/";
+                icon = "keycloak.svg";
+              };
+            }
+            {
               "FritzBox" = {
                 description = "FritzBox Administration";
                 href = "https://fritz-box.ritter.family/";
