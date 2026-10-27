@@ -82,6 +82,14 @@ _: {
               ];
             }
             {
+              name = "SSO";
+              url = "https://account.ritter.family";
+              interval = "5m";
+              conditions = [
+                "[STATUS] == 200"
+              ];
+            }
+            {
               name = "Forgejo";
               url = "https://git.ritter.family/api/healthz";
               interval = "5m";

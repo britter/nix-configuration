@@ -12,7 +12,7 @@ variable "admin_token" {
 # Services with restic backups, mirrors the minIO module
 variable "restic_backups" {
   type    = list(string)
-  default = ["git", "nextcloud", "vaultwarden", "calibre", "forgejo", "paperless"]
+  default = ["git", "nextcloud", "vaultwarden", "calibre", "forgejo", "paperless", "keycloak"]
 }
 
 # Tofu projects whose state buckets/keys are managed here. The state bucket
@@ -20,5 +20,5 @@ variable "restic_backups" {
 # can't create the bucket its own backend uses.
 variable "managed_tofu_projects" {
   type    = list(string)
-  default = ["domains", "dns", "network", "proxmox"]
+  default = ["domains", "dns", "network", "proxmox", "keycloak"]
 }

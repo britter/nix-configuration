@@ -6,6 +6,7 @@
       proxmox-vm
       tailscale-server
       beszel-agent
+      keycloak-on-srv-prod-1
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
 
