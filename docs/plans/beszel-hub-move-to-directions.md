@@ -96,28 +96,28 @@ hub's sops entries stay in srv-prod-1's secrets file for now; the
 cutover PR removes them (until then they are simply unconsumed).
 
 Ship it the normal way: `nix fmt`, `nix flake check`, PR, CI green,
-merge. comin switches srv-prod-1 within a couple of minutes:
+merge. comin switches srv-prod-1 within a couple of minutes. Then check
+the phase gate — run them from framework-13, any host that reaches
+`root@<host>.ritter.family` over ssh works as well:
 
 ```bash
-# the hub must be gone from the running generation
 ssh root@srv-prod-1.ritter.family systemctl status beszel-hub
-```
+# expected: 'Unit beszel-hub.service could not be found.'
 
-From this moment until the cutover lands, `beszel.ritter.family` no
-longer serves anything (its upstream vhost no longer exists): agents
-cannot connect and the gatus monitor turns red. This is the deliberate
-downtime window — prepare the cutover PR while phase 1 rolls out and
-don't let it sit.
+ssh root@srv-prod-1.ritter.family systemctl is-active beszel-agent
+# expected: 'active' — srv-prod-1 stays a monitored host
 
-While the state directory is quiescent, verify the keypair identity
-(cheap insurance that the hardcoded `KEY` in `beszel-agent.nix` still
-matches the migrated key):
-
-```bash
 ssh root@srv-prod-1.ritter.family \
   ssh-keygen -y -f /var/lib/beszel-hub/beszel_data/id_ed25519
-# must print the public key that is hardcoded in beszel-agent.nix
+# expected: the public key that is hardcoded in beszel-agent.nix
 ```
+
+Do not move on until all three pass. From that moment until the cutover
+merges, `beszel.ritter.family` no longer serves the hub (its upstream
+vhost no longer exists): agents cannot connect, and URL-based checks —
+gatus included — are not meaningful there, because srv-prod-1's default
+vhost handling answers instead. This is the deliberate downtime window —
+prepare the cutover PR while phase 1 rolls out and don't let it sit.
 
 ### ⏳ 2. Phase-2 (cutover) PR: move the hub to directions
 
@@ -309,48 +309,83 @@ srv-prod-1's switch lands whenever it lands — its hub is already gone,
 and the only change here is dropping three unconsumed sops entries, so
 the order no longer matters.
 
-### ⏳ 5. Verify
+End of the phase: check the boundary. The hub must be up on directions,
+absent on srv-prod-1, and the public entry must serve the hub's own
+health payload (static JSON today, so local and public responses
+compare byte-for-byte; if a future hub adds volatile fields, compare
+the payload shape instead). Do not move on until these pass:
 
-Run the "Verification" checklist below. If anything is red, fall back
-to the "Rollback" section.
+```bash
+ssh root@directions.ritter.family systemctl is-active beszel-hub
+# expected: 'active'
 
-### ⏳ 6. Retire the leftover state on srv-prod-1 (about a week later)
+ssh root@directions.ritter.family \
+  "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8090/api/health"
+# expected: '200' — the hub serves on 127.0.0.1:8090
+
+ssh root@srv-prod-1.ritter.family systemctl status beszel-hub
+# expected: still 'Unit beszel-hub.service could not be found.'
+
+ssh root@directions.ritter.family \
+  "curl -s http://127.0.0.1:8090/api/health" > /tmp/hub-local.json
+curl -s https://beszel.ritter.family/api/health > /tmp/hub-public.json
+diff /tmp/hub-local.json /tmp/hub-public.json \
+  && echo 'public entry serves the local hub'
+# expected: the echo line, no diff output
+```
+
+Then check the system content in the hub UI (admin password unchanged):
+all six systems — directions, srv-prod-1 … srv-prod-5 — show a connected
+state with fresh timestamps, the alert rules and contact points from
+before the move are intact, and the history graphs end at the downtime
+window and resume with live data (the gap is expected, see Known
+effects). An optional probe for the reconnect path:
+
+```bash
+ssh root@srv-prod-2.ritter.family systemctl restart beszel-agent
+# expected: the srv-prod-2 row recovers within seconds
+```
+
+gatus must come back healthy too:
+
+```bash
+curl -s https://gatus.ritter.family/api/endpoints/statuses \
+  | jq -r '.[] | select(.name == "Beszel") | "\(.name): \(.status)"'
+# expected: 'Beszel: healthy'
+```
+
+(The API is public in this gatus setup; if a future gatus version names
+the JSON fields differently, read the raw response instead. Nothing
+else points at `beszel.srv-prod-1.ritter.family`, and the other services
+proxied by directions are outside this migration — spot-check one if
+you like. If any gate above fails, fall back to the Rollback section
+instead of proceeding.)
+
+### ⏳ 5. Retire the leftover state on srv-prod-1 (about a week later)
 
 Once the new hub has run through a soak period and the rollback window
-can close, delete the old state. This comes last because it ends the
-state-based rollback: reverting the PRs after this would give a running
-but empty hub.
+can close, delete the old state. Before the delete, re-run the step-4
+gate commands once more — they must still pass, because this step ends
+the state-based rollback: reverting the PRs afterwards would give a
+running but empty hub.
 
 ```bash
 ssh root@srv-prod-1.ritter.family rm -rf /var/lib/beszel-hub
 ```
 
 The hub's sops entries were removed from srv-prod-1's secrets file as
-part of the cutover PR, so nothing configuration-related remains
-there.
-
-## Verification
-
-- `curl https://beszel.ritter.family/api/health` → 200, served from
-  directions itself (the intermediate `beszel.srv-prod-1.ritter.family`
-  hop is gone).
-- Log into the hub UI as usual (admin password unchanged) and check
-  systems, alert config, and a few history graphs predate the cutover.
-- On the hub, all six systems reconnect within a minute of the switch
-  (`journalctl -u beszel-hub` on directions shows agent connects). Agents
-  need no restart; restarting any one of them is a harmless cross-check if
-  you want one.
-- gatus reports the beszel check green; the other services proxied by
-  directions were unaffected.
-- On srv-prod-1 the hub unit no longer exists
-  (`systemctl status beszel-hub`); `beszel-agent` keeps running there.
+part of the cutover PR, so nothing configuration-related remains there.
 
 ## Known effects and their limits
 
 - Downtime window (deliberate): the hub is offline from the phase-1
   switch until the cutover switch. Agents keep running and reconnect on
-  their own afterwards; gatus reports the beszel check red in between.
-  Keep the window short by having the cutover PR ready.
+  their own afterwards. During the window `beszel.ritter.family`
+  answers from srv-prod-1's default vhost handling instead of the hub,
+  so URL-based checks — gatus included — are not meaningful there and
+  gatus may even stay green for the wrong reason; the step-1 gate
+  commands are the reliable signal. Keep
+  the window short by having the cutover PR ready.
 - Metrics gap: history recorded during the downtime window is lost —
   the agents do not buffer history and the frozen srv-prod-1 database
   sees none of it.
