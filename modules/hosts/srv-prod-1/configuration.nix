@@ -5,7 +5,6 @@
       system-server
       proxmox-vm
       tailscale-server
-      beszel-hub
       beszel-agent
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
     ];
