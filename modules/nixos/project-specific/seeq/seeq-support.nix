@@ -68,6 +68,11 @@ _: {
     users.users.bene.extraGroups = [ "docker" ];
     # Seeq's docker toolchain script writes this via sudo if it's missing or lacks buildkit
     environment.etc."docker/daemon.json".text = builtins.toJSON { features.buildkit = true; };
+    # pods (kind) call back into host services via the kind network's gateway.
+    # The firewall drops traffic from Docker bridges otherwise; the kind bridge
+    # gets a new br-<id> name whenever the network is recreated, hence the
+    # wildcard.
+    networking.firewall.trustedInterfaces = [ "br-+" ];
 
     # sq-alter-ps1.sh (sourced by crab's `environment`) calls __git_ps1, but only looks for
     # git-prompt.sh in FHS locations.
