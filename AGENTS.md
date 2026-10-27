@@ -125,6 +125,48 @@ completed, move it with `git mv` to
 `docs/plans/archive/YYYY-MM-DD-<slug>.md` so the archive sorts by
 completion date automatically.
 
+When you write a plan, follow these rules. They come from writing and
+reviewing the migration plans in this directory:
+
+- State the chosen approach early. Answer the obvious alternatives in two
+  or three sentences.
+- Keep the runbook complete and self-contained. A reader follows the
+  runbook alone. Steps must not depend on a summary in another section.
+- State the rollout mechanics inside each step. comin switches a server
+  as soon as `main` moves. Merges and data moves therefore interact. Make
+  that interaction explicit where it matters.
+- Make the order deterministic. Stop or disable the old component first,
+  through its own rollout. Then move data. Then switch URLs. Accept the
+  downtime window that this creates. A controlled outage is easier to
+  reason about than a coincidental overlap.
+- Search for every reference to the component that moves: URL patterns,
+  secret names, firewall rules, DNS entries, monitoring checks. Write a
+  list of the changes. Write a second list of the places that need no
+  change, each with its reason. Without a stated reason the reader cannot
+  tell whether the check happened.
+- Start with the smallest change that solves the problem. Let review cut
+  bigger designs.
+- Render every repo change as a diff fence. Use an `@@ <path> @@` header
+  instead of line numbers. The patch then stays valid when lines shift.
+  Mark values that a diff cannot show, such as `ENC[...]` ciphertext, as
+  placeholders. State clearly that placeholders are not copyable.
+- Run every command before you put it into the plan. Record the results
+  that you verified. A command that nobody executed is an unverified
+  claim.
+- Mark each step as idempotent or not. A delete step that errors on a
+  second run must say so.
+- Write a Known effects section for every deliberate side effect:
+  downtime windows, data gaps, certificate churn, doubled notifications.
+  Point each effect at the runbook step that controls it.
+- Define rollback per phase. State what each rollback restores. Name the
+  step that ends the state-based rollback. It is usually a delete step.
+  Put it last.
+- Check at every phase boundary. State the expected state after each
+  phase. Do not start the next phase before that check passes.
+- Keep secret values out of the plan. Name paths, not values. Move
+  secrets through pipes, not through manual copying or a clipboard.
+- Update the status line and the ✅/⏳ marks as work completes.
+
 ## Run the checks
 
 After making any change, run `nix flake check` and fix every issue it
@@ -135,15 +177,15 @@ It is the closest thing this repo has to a test suite.
 ### GitHub Actions `.github/workflows/`
 
 - Jobs that use the self-hosted pool must declare
-  `runs-on: [self-hosted, trusted]`; never a bare `self-hosted`.
+  `runs-on: [self-hosted, trusted]`. Never declare a bare `self-hosted`.
 - No workflow may use `pull_request_target`.
-- Tofu is applied exclusively via gitops: the `tofu-*` pipelines plan on
+- All Tofu applies run through gitops. The `tofu-*` pipelines plan on
   pull requests and apply after merge to `main`. Never run `tofu apply`
-  locally — validate changes through the pipeline's plan comment. Local
-  tofu work (`init`, `plan`, debugging) is fine; the per-root `.envrc`
+  locally. Check the changes through the pipeline's plan comment. Local
+  tofu work (`init`, `plan`, debugging) is fine. The per-root `.envrc`
   provides the state bucket credentials.
-- Every referenced third-party action must be pinned to a full commit SHA
-  and pre-registered in the repository's Actions allow-list (Settings →
-  Actions → General; UI-only). NixOS pipelines (`ci-build.yaml`,
-  `lint.yaml`) ignore `tofu/**` and `docs/**`; the tofu pipelines trigger
+- Pin every referenced third-party action to a full commit SHA.
+  Pre-register it in the repository's Actions allow-list (Settings →
+  Actions → General, UI only). NixOS pipelines (`ci-build.yaml`,
+  `lint.yaml`) ignore `tofu/**` and `docs/**`. The tofu pipelines trigger
   only on `tofu/**` plus shared files. Details in `docs/homelab.md`.
