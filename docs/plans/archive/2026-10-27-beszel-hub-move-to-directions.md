@@ -1,12 +1,11 @@
 # Migration plan: beszel hub srv-prod-1 → directions
 
-Status: in progress (2026-10-27) — steps 1 and 2a–2d are done (the ✅
-marks below). The cutover changes (code + sops move) sit staged on the
-`beszel-on-directions` branch, not yet pushed. Remaining: commit and
-open the cutover PR (do not merge before step 3), step 3 (move the
-state), step 4 (merge), step 5 (retire the old state about a week
-later). Status marks: ✅ done, ⏳ pending (same convention as the minIO
-→ garage plan).
+Status: complete (2026-10-27) — all steps done (the ✅ marks below).
+The hub runs on directions with the full migrated state (cutover PR
+#320), the public entry serves it again, and srv-prod-1's leftover
+state is deleted — the state-based rollback window is closed. Archived
+to `docs/plans/archive/` per AGENTS.md. Status marks: ✅ done, ⏳
+pending (same convention as the minIO → garage plan).
 
 Steps for moving the beszel hub from srv-prod-1 to directions while
 keeping every user, system, alert, and the whole metrics history —
@@ -126,7 +125,7 @@ gatus included — are not meaningful there, because srv-prod-1's default
 vhost handling answers instead. This is the deliberate downtime window —
 prepare the cutover PR while phase 1 rolls out and don't let it sit.
 
-### ⏳ 2. Phase-2 (cutover) PR: move the hub to directions
+### ✅ 2. Phase-2 (cutover) PR: move the hub to directions
 
 Compose all four changes on a branch and open the PR as one. Merge
 happens in step 4, after the state move — comin would otherwise deploy a
@@ -277,7 +276,7 @@ nix flake check
 PR as usual, let CI build everything. Do not merge yet — the state
 goes first.
 
-### ⏳ 3. Move the state (PR open, not merged)
+### ✅ 3. Move the state (PR open, not merged)
 
 The source directory has been quiescent since step 1 — no stop/start
 dance needed, and because the source database froze when phase 1
@@ -324,7 +323,7 @@ creates the missing top-level symlink, the same mechanism that already
 carries srv-prod-1 through reboots. Watch the first start in the
 journal anyway.
 
-### ⏳ 4. Merge the cutover PR
+### ✅ 4. Merge the cutover PR
 
 Merge once CI is green. That is the trigger; directions switches within
 a couple of minutes:
@@ -395,7 +394,13 @@ proxied by directions are outside this migration — spot-check one if
 you like. If any gate above fails, fall back to the Rollback section
 instead of proceeding.)
 
-### ⏳ 5. Retire the leftover state on srv-prod-1 (about a week later)
+### ✅ 5. Retire the leftover state on srv-prod-1 (about a week later)
+
+Done the same day as the cutover, at the operator's discretion — all
+step-4 gate commands passed before the delete, so the rollback window
+closed early and deliberately. The deleted state:
+`/var/lib/private/beszel-hub` (the real directory) plus the
+`/var/lib/beszel-hub` symlink.
 
 Once the new hub has run through a soak period and the rollback window
 can close, delete the old state. Before the delete, re-run the step-4
@@ -454,8 +459,8 @@ part of the cutover PR, so nothing configuration-related remains there.
 
 ## Cleanup / follow-ups
 
-- ⏳ When done, move this plan to
-  `docs/plans/archive/<date>-beszel-hub-move-to-directions.md` per
+- ✅ Archived to
+  `docs/plans/archive/2026-10-27-beszel-hub-move-to-directions.md` per
   AGENTS.md.
 - No tofu changes: DNS already routes `beszel.ritter.family` to directions
   (the public vhost's name), and the firewall policy maps cleanly onto the
