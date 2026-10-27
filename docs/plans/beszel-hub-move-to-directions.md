@@ -285,9 +285,13 @@ at the private path on directions, so systemd finds exactly the layout
 it expects on first start:
 
 ```bash
-rsync -a --info=progress2 \
-  root@srv-prod-1.ritter.family:/var/lib/private/beszel-hub/ \
-  root@directions.ritter.family:/var/lib/private/beszel-hub/
+# rsync cannot copy between two remote hosts (one side must be local),
+# and the state must not land on framework-13's disk — stream a tar
+# pipe through it instead
+ssh root@srv-prod-1.ritter.family \
+  'tar -C /var/lib/private -cf - beszel-hub' \
+  | ssh root@directions.ritter.family \
+      'mkdir -p --mode=0700 /var/lib/private && tar -C /var/lib/private -xf -'
 
 # sanity check: identical file listings on both hosts
 ssh root@srv-prod-1.ritter.family \
@@ -295,11 +299,12 @@ ssh root@srv-prod-1.ritter.family \
 ssh root@directions.ritter.family \
   ls /var/lib/private/beszel-hub /var/lib/private/beszel-hub/beszel_data
 
-# convergence check: a second run must transfer nothing
-rsync -a --info=stats2 \
-  root@srv-prod-1.ritter.family:/var/lib/private/beszel-hub/ \
-  root@directions.ritter.family:/var/lib/private/beszel-hub/
-# expected: 'Number of regular files transferred: 0'
+# convergence check: deterministic archive hashes must match
+for h in srv-prod-1 directions; do
+  ssh root@$h.ritter.family \
+    'tar --sort=name -C /var/lib/private -cf - beszel-hub | sha256sum'
+done
+# expected: two identical hash lines
 ```
 
 Do not seed `/var/lib/beszel-hub` directly: on directions it does not
