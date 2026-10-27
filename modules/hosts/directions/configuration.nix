@@ -5,6 +5,7 @@
       system-server
       adguard
       beszel-agent
+      beszel-hub
       gatus
       homepage
       tailscale-server

@@ -1,7 +1,12 @@
 # Migration plan: beszel hub srv-prod-1 → directions
 
-Status: proposed (2026-10-27) — nothing executed yet. Status marks: ✅
-done, ⏳ pending (same convention as the minIO → garage plan).
+Status: in progress (2026-10-27) — steps 1 and 2a–2d are done (the ✅
+marks below). The cutover changes (code + sops move) sit staged on the
+`beszel-on-directions` branch, not yet pushed. Remaining: commit and
+open the cutover PR (do not merge before step 3), step 3 (move the
+state), step 4 (merge), step 5 (retire the old state about a week
+later). Status marks: ✅ done, ⏳ pending (same convention as the minIO
+→ garage plan).
 
 Steps for moving the beszel hub from srv-prod-1 to directions while
 keeping every user, system, alert, and the whole metrics history —
@@ -127,7 +132,7 @@ Compose all four changes on a branch and open the PR as one. Merge
 happens in step 4, after the state move — comin would otherwise deploy a
 hub whose secrets file exists but whose state directory is empty.
 
-#### ⏳ 2a. Re-enable the hub aspect, now on directions
+#### ✅ 2a. Re-enable the hub aspect, now on directions
 
 ```diff
 @@ modules/hosts/directions/configuration.nix @@
@@ -146,7 +151,7 @@ derived vhost `beszel.directions.ritter.family` targeting the local hub
 label only, so nothing answers it) at the cost of one extra DNS-01
 certificate.
 
-#### ⏳ 2b. Re-point the upstream of the beszel vhost
+#### ✅ 2b. Re-point the upstream of the beszel vhost
 
 The entry in `modules/hosts/directions/services/https-proxy.nix` keeps
 its fqdn and its certificate; only the upstream changes, from the
@@ -171,7 +176,7 @@ this file already use. The intermediate name
 `beszel.srv-prod-1.ritter.family` disappears with the old hub and
 nothing references it afterwards.
 
-#### ⏳ 2c. Move the hub secrets between the host sops files
+#### ✅ 2c. Move the hub secrets between the host sops files
 
 Run on framework-13, which holds the age key for both files. `sops set`
 has no export/import mode, so the move pipes the decrypted value from
@@ -239,7 +244,7 @@ No `.sops.yaml` change needed: directions' file is already encrypted to
 framework-13 + the directions age key. No rotation either — the point
 of the state copy is that every token and credential stays identical.
 
-#### ⏳ 2d. Fix the stale agent comment
+#### ✅ 2d. Fix the stale agent comment
 
 ```diff
 @@ modules/nixos/beszel-agent.nix @@
