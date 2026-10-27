@@ -73,7 +73,7 @@ cutover PR's srv-prod-1 side is inert (it only removes secrets the hub no
 longer consumes), so no comin pinning is needed. Work the list top to
 bottom.
 
-### ⏳ 1. Phase-1 PR: take the hub off srv-prod-1
+### ✅ 1. Phase-1 PR: take the hub off srv-prod-1
 
 An aspect is enabled by import, so "disable beszel in the beszel module"
 means dropping the import. The `beszel-hub` aspect itself is not touched,
