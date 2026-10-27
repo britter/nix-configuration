@@ -32,8 +32,10 @@ directions and carries all the re-pointing and secret moves.
 
 The hub is PocketBase-backed: all state (user, systems with their agent
 tokens, alert rules and contact points, settings, and the metrics history)
-lives in `/var/lib/beszel-hub/` — mainly the `beszel_data/` subdirectory
-(`beszel.db` & co.) plus `config.yml` and the SSH key. Answering the
+lives in `/var/lib/private/beszel-hub/` (the on-disk location;
+`/var/lib/beszel-hub` is a symlink systemd maintains into it) —
+mainly the `beszel_data/` subdirectory (`beszel.db` & co.) plus
+`config.yml` and the SSH key. Answering the
 original question: a plain copy of that directory is the way. Beszel has no
 export that does this job — the UI's settings export only covers app
 settings (no systems, no history, no tokens), and a UI backup zip is just a
@@ -274,21 +276,43 @@ goes first.
 
 The source directory has been quiescent since step 1 — no stop/start
 dance needed, and because the source database froze when phase 1
-stopped the hub, there are no deltas to chase:
+stopped the hub, there are no deltas to chase. One layout detail: the
+hub unit runs with `DynamicUser = true` and
+`StateDirectory = "beszel-hub"`, so the real directory lives at
+`/var/lib/private/beszel-hub` and `/var/lib/beszel-hub` is a relative
+symlink (`private/beszel-hub`) that systemd maintains. Seed the state
+at the private path on directions, so systemd finds exactly the layout
+it expects on first start:
 
 ```bash
 rsync -a --info=progress2 \
-  root@srv-prod-1.ritter.family:/var/lib/beszel-hub/ \
-  root@directions.ritter.family:/var/lib/beszel-hub/
+  root@srv-prod-1.ritter.family:/var/lib/private/beszel-hub/ \
+  root@directions.ritter.family:/var/lib/private/beszel-hub/
 
-# sanity check on the destination
-ssh root@directions.ritter.family ls /var/lib/beszel-hub /var/lib/beszel-hub/beszel_data
+# sanity check: identical file listings on both hosts
+ssh root@srv-prod-1.ritter.family \
+  ls /var/lib/private/beszel-hub /var/lib/private/beszel-hub/beszel_data
+ssh root@directions.ritter.family \
+  ls /var/lib/private/beszel-hub /var/lib/private/beszel-hub/beszel_data
+
+# convergence check: a second run must transfer nothing
+rsync -a --info=stats2 \
+  root@srv-prod-1.ritter.family:/var/lib/private/beszel-hub/ \
+  root@directions.ritter.family:/var/lib/private/beszel-hub/
+# expected: 'Number of regular files transferred: 0'
 ```
 
-The files arrive with srv-prod-1's numeric uids; that is fine — when
-the hub first starts on directions, systemd re-assigns the state tree
-to the unit's user, the same mechanism that already carries srv-prod-1
-through reboots. Watch the first start in the journal anyway.
+Do not seed `/var/lib/beszel-hub` directly: on directions it does not
+exist yet, and with the dynamic-user setup systemd expects that path to
+be either absent or a correct symlink — a real directory there trips
+its EEXIST check and the unit fails to start (an error along the lines
+of "Failed to set up state directory: File exists"); systemd never
+adopts or converts an unexpected layout on its own. The files arrive
+with srv-prod-1's numeric uids; that is fine — when the hub first starts on
+directions, systemd chowns the state tree to the unit's user and
+creates the missing top-level symlink, the same mechanism that already
+carries srv-prod-1 through reboots. Watch the first start in the
+journal anyway.
 
 ### ⏳ 4. Merge the cutover PR
 
@@ -370,7 +394,10 @@ the state-based rollback: reverting the PRs afterwards would give a
 running but empty hub.
 
 ```bash
-ssh root@srv-prod-1.ritter.family rm -rf /var/lib/beszel-hub
+# both the real directory and the symlink — rm -rf on the symlink
+# alone would leave the state behind
+ssh root@srv-prod-1.ritter.family \
+  rm -rf /var/lib/private/beszel-hub /var/lib/beszel-hub
 ```
 
 The hub's sops entries were removed from srv-prod-1's secrets file as
@@ -403,14 +430,17 @@ part of the cutover PR, so nothing configuration-related remains there.
 - Before the cutover PR merges: abort it, then revert the phase-1 PR.
   comin puts the hub back on srv-prod-1 with its intact, untouched state
   directory; the seeded copy on directions is then just garbage to
-  delete (`rm -rf /var/lib/beszel-hub` there).
+  delete (`rm -rf /var/lib/private/beszel-hub` there — until the hub
+  has started once, no symlink exists, so nothing else to remove).
 - After the cutover PR merges: revert both PRs (one revert PR that
   undoes the two changes is enough). comin redeploys the previous
   generation on both hosts: srv-prod-1's hub comes back with its intact
   state and the directions proxy serves it through the chain again;
   agents follow the public name without a manual step. Delete
   directions' stale copy first so the old hub's files are the only ones
-  around.
+  around: remove the `/var/lib/beszel-hub` symlink and
+  `/var/lib/private/beszel-hub` (the switched-out hub leaves both
+  behind).
 
 ## Cleanup / follow-ups
 
