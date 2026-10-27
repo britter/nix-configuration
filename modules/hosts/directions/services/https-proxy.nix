@@ -7,7 +7,7 @@ _: {
         configurations = [
           {
             fqdn = "beszel.ritter.family";
-            target = "https://beszel.srv-prod-1.ritter.family";
+            target = "http://localhost:${toString config.services.beszel.hub.port}";
             proxyWebsockets = true;
           }
           {
