@@ -56,10 +56,12 @@ _: {
       #   evaluated before the generic port accepts of the nixos-fw input
       #   chain (priority 0).
       #
-      # The accepts for the allowed INPUT ports are NOT in this table: an
-      # accept in one table does not exempt a packet from other tables, and
-      # the nixos-fw input chain drops everything it does not accept itself.
-      # They therefore live in networking.firewall.extraInputRules below.
+      # Cross-table accepts: every input-hooking table must accept the
+      # DNS/cache traffic on its own — an accept in one table does not
+      # exempt a packet from another table's rules. The gateway accepts
+      # therefore exist twice: here (before the drop, which would otherwise
+      # swallow them first) and in networking.firewall.extraInputRules
+      # (nixos-fw's default-drop would otherwise kill them last).
       #
       # This switches the NixOS firewall rendering from the iptables to the
       # nftables backend. The firewall options in use (allowedTCPPorts etc.)
@@ -88,6 +90,15 @@ _: {
               type filter hook input priority -10; policy accept;
 
               ct state established,related accept
+
+              # Mirror of the extraInputRules accepts below. Both are needed:
+              # without this mirror the drop rule would swallow DNS/cache
+              # traffic before the nixos-fw accept ever sees it, and without
+              # the nixos-fw accept its default-drop would kill what this
+              # table lets through. Accepts in one table do not protect a
+              # packet in the other.
+              iifname "podman*" ip daddr 10.0.0.0/8 udp dport 53 accept
+              iifname "podman*" ip daddr 10.0.0.0/8 tcp dport { 53, ${toString cacheProxyPort} } accept
 
               iifname "podman*" ip daddr {
                 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16,

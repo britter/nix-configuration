@@ -62,11 +62,14 @@ the guest, in the generic runner aspect, as the nftables table
   gateway. Everything else on private destination addresses (sshd, nginx,
   beszel-agent, the tailnet IP) is dropped — at priority `-10`, so it wins
   over the generic `allowedTCPPorts` accepts of the nixos-fw input chain
-  (priority 0). The corresponding *accepts* render inside the nixos-fw
-  chain itself (`networking.firewall.extraInputRules`): an accept in one
-  nftables table does not exempt a packet from another table, so the
-  nixos-fw default-drop would have swallowed them otherwise. Found by the
-  post-deploy probe (`wget: bad address` inside a job container).
+  (priority 0). The DNS/cache *accepts* exist twice: once in this table
+  (before the drop, which would otherwise swallow them first) and once in
+  nixos-fw (`networking.firewall.extraInputRules`, whose default-drop
+  would otherwise kill them last). An accept in one nftables table does
+  not exempt a packet from another table's rules — learned the hard way:
+  the first rollout dropped container DNS (`wget: bad address`) because
+  the accepts only lived in nixos-fw, the second because they only lived
+  in container-egress.
 
 Side effect: `networking.nftables.enable = true` switches the NixOS firewall
 rendering from the iptables to the nftables backend on this host. The
