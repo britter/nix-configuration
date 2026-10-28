@@ -836,7 +836,7 @@ resource "keycloak_realm" "ritter" {
   # that can decrypt secrets.json (framework-13 + github-runners).
   smtp_server {
     host              = "smtp-relay.brevo.com"
-    port              = 587
+    port              = "587"
     from              = "account@ritter.family"
     from_display_name = "Ritter Account"
     starttls          = true
