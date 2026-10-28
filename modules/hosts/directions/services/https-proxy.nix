@@ -90,7 +90,7 @@ _: {
             # Keycloak's account-console responses carry a large cookie
             # bundle; nginx's 4k default proxy_buffer_size 502s on it
             # ("upstream sent too big header"). Same raise on srv-prod-1.
-            extraConfig = "proxy_buffer_size 16k;";
+            proxyHeaderBufferSize = "16k";
           }
           {
             fqdn = "tools.ritter.family";

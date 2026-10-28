@@ -39,6 +39,19 @@ _: {
             type = lib.types.lines;
             default = "";
           };
+          proxyHeaderBufferSize = lib.mkOption {
+            type = lib.types.nullOr lib.types.str;
+            default = null;
+            description = ''
+              proxy_buffer_size for backends that send large response
+              headers (e.g. a big cookie bundle). Also pins
+              proxy_busy_buffers_size to the same value: nginx derives its
+              default busy size as twice this value, which fails nginx's
+              "proxy_busy_buffers_size must be less than the size of all
+              proxy_buffers minus one buffer" check against the default
+              8x4k proxy_buffers when proxy_buffer_size is raised alone.
+            '';
+          };
         };
       });
     in
@@ -68,6 +81,10 @@ _: {
                     proxy_read_timeout ${conf.proxyTimeout};
                     proxy_send_timeout ${conf.proxyTimeout};
                     send_timeout ${conf.proxyTimeout};
+                  '')
+                  (lib.optionalString (conf.proxyHeaderBufferSize != null) ''
+                    proxy_buffer_size ${conf.proxyHeaderBufferSize};
+                    proxy_busy_buffers_size ${conf.proxyHeaderBufferSize};
                   '')
                   (lib.optionalString (!conf.buffering) "proxy_buffering off;\n")
                   conf.extraConfig
