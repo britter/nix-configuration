@@ -8,6 +8,7 @@
       beszel-agent
       it-tools
       forgejo-on-srv-prod-6
+      codeberg-runner-on-srv-prod-6
       (config.flake.factory.sops { secretsFile = ./secrets.yaml; })
       (config.flake.factory.github-runners { count = 4; })
     ];
