@@ -41,6 +41,10 @@ _: {
           {
             fqdn = localFqdn;
             target = "http://127.0.0.1:8080";
+            # The account console hands back a large cookie bundle; nginx's
+            # 4k default proxy_buffer_size 502s on it ("upstream sent too
+            # big header"). Raised on directions' vhost too.
+            extraConfig = "proxy_buffer_size 16k;";
           }
         ];
       };
