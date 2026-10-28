@@ -6,6 +6,7 @@ per domain — each one is an independent OpenTofu project with its own
 `secrets.json` and README:
 
 - [`tofu/dns`](dns/README.md) — DNS (Cloudflare, Tailscale devices)
+- [`tofu/keycloak`](keycloak/README.md) — Keycloak realm and OIDC clients
 - [`tofu/network`](network/README.md) — UniFi network (VLANs, zones, firewall policies)
 - [`tofu/object-storage`](object-storage/README.md) — Garage buckets and keys
 - [`tofu/proxmox`](proxmox/README.md) — the Proxmox VMs

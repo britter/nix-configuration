@@ -1,0 +1,40 @@
+name: OpenTofu Keycloak
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - tofu/keycloak/**
+      - tofu/.sops.yaml
+      - modules/nix/dev-shell/**
+      - modules/nix/treefmt.nix
+      - modules/nix/pre-commit.nix
+      - flake.nix
+      - flake.lock
+      - .github/workflows/tofu-keycloak.yaml
+      - .github/workflows/_tofu.yaml
+  pull_request:
+    paths:
+      - tofu/keycloak/**
+      - tofu/.sops.yaml
+      - modules/nix/dev-shell/**
+      - modules/nix/treefmt.nix
+      - modules/nix/pre-commit.nix
+      - flake.nix
+      - flake.lock
+      - .github/workflows/tofu-keycloak.yaml
+      - .github/workflows/_tofu.yaml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  tofu:
+    uses: ./.github/workflows/_tofu.yaml
+    with:
+      working-directory: tofu/keycloak
+    secrets: inherit
+    concurrency:
+      group: tofu_latch_keycloak
+      cancel-in-progress: false
