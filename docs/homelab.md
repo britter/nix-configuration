@@ -83,3 +83,35 @@ Nix packages as root via the nix daemon. Everything the tofu workflows run
 (infrastructure jobs and the pinned GitHub Actions they invoke) is
 therefore effectively root-equivalent on every co-located server;
 triage any workflow change accordingly.
+
+## Forgejo runner (Codeberg)
+
+`srv-prod-6` also hosts one Forgejo runner (instance `codeberg`,
+`forgejo-runner-codeberg.service`, see `modules/nixos/forgejo-runner.nix`
+and `modules/hosts/srv-prod-6/services/codeberg-runner.nix`). It is
+registered at **repo level** against
+https://codeberg.org/britter/nixpkgs-pr and only executes that
+repository's workflows — currently the Renovate workflow, which acts as
+the dedicated `britters-bot` Codeberg account (setup documented in
+`modules/hosts/srv-prod-6/services/renovate.md`).
+Registration used the Forgejo UUID + token model; the token lives in sops
+(`forgejo-runner/token`), the UUID is part of the nix config (not
+confidential, and upstream has no `uuid_url` yet).
+
+Trust model: jobs run in unprivileged rootful-podman containers (the runner
+talks to `/run/docker.sock`, a symlink to the podman socket), capped at
+`--memory=2g --cpus=1`. Containers have no nix daemon access, no host bind
+mounts, and the container socket is not shared into jobs
+(`docker_host: "-"`). The nixpkgs-pr repository is public, so PRs from
+forks can run arbitrary container images on this runner: Forgejo gates
+those behind an explicit approval for read-access authors (per run, or
+standing via "Approve always", revocable), and `pull_request` workflows get
+no repository secrets. On the host, the `container-egress` nftables table
+limits job containers to internet egress plus DNS and the pinned
+action-cache port on their podman gateway — the UniFi gateway cannot do
+this filtering because container traffic NATs behind the VM's own address.
+This pool is therefore much less trusted than the GitHub runner pool above;
+if a job ever needs host-level capabilities or internal network access,
+treat that as a trust-model change, not a config tweak. Never use
+`pull_request_target` in nixpkgs-pr workflows; it combines secrets with
+PR-influenced content.
