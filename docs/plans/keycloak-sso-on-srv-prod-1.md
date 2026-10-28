@@ -1,9 +1,13 @@
 # Keycloak SSO on srv-prod-1, client config in tofu
 
-**Status: PR 1 implemented and verified (`nix flake check`, `nix fmt`, and
-host evaluations of srv-prod-1 + directions pass). PR 3's tofu code verified
-with `tofu validate` (provider 5.10.0) in a scratch directory. PR 2 and PR 3
-pending.**
+**Status: PR 1 merged and verified in production (IdP reachable, gatus
+green). The plan was revised after the deployment with two things PR 1 did
+not cover: replacing the temporary bootstrap admin with a persistent
+master-realm admin plus a service-account client for the tofu provider
+(section 1.5, one-time click-ops), and outgoing e-mail for invites/password
+resets via the existing Brevo account (PR 2 module cleanup + PR 3 realm
+SMTP). The personal `bene` identity is a user in the `ritter` realm,
+managed by tofu (PR 3). PR 2 and PR 3 pending.**
 
 ## Chosen approach
 
@@ -15,7 +19,14 @@ OIDC clients in a new tofu root `tofu/keycloak` using the official
 vhost `https://account.srv-prod-1.ritter.family`, which targets Keycloak on
 `127.0.0.1:8080`). The issuer URL is therefore decoupled from the host — if
 Keycloak ever moves off srv-prod-1 (as the Beszel hub did), every client's
-configured issuer keeps working.
+configured issuer keeps working. The provider authenticates with its own
+service-account client in the master realm (client-credentials grant — the
+provider docs' recommended setup), so no human credential is machine-read.
+Realm e-mail (invite links, password resets) goes through the Brevo SMTP
+account that vaultwarden on srv-prod-2 already uses, sending from
+`account@ritter.family` — configured on the realm via tofu, because
+Keycloak 26 has no server-wide SMTP setting (mail is realm data stored in
+the database, and `services.keycloak.settings` has no SMTP keys).
 
 Alternatives considered: Pocket ID was rejected because its only tofu
 provider is a small community project covering OIDC clients only, which would
@@ -32,17 +43,20 @@ constraints that a single PR cannot guarantee:
 1. **PR 1** deploys the IdP and creates the Garage buckets/keys that later
    phases consume. srv-prod-1's switch only needs the two new keycloak
    secrets, which are added to its `secrets.yaml` before the PR goes up.
-2. **PR 2** adds the restic backup. It references the Garage key
+2. **PR 2** adds the restic backup, raises `proxy_buffer_size` on both
+   Keycloak proxy hops (section 1.6), and drops the bootstrap-admin env
+   (dead weight after section 1.5). It references the Garage key
    `restic-keycloak`, whose credentials only exist after PR 1's
    object-storage apply — and every sops secret referenced by the Nix config
    must exist in `secrets.yaml` before the switch, or activation fails and
    the host stays on its old generation.
 3. **PR 3** adds the tofu root. Its pipeline `plan` needs a reachable
-   Keycloak with the admin credentials from PR 1, and its `init` needs the
-   `tofu-states-keycloak` bucket from PR 1's apply.
+   Keycloak with the service-account credentials from section 1.5, and its
+   `init` needs the `tofu-states-keycloak` bucket from PR 1's apply.
 
 PR 2 and PR 3 are independent of each other and can go up in parallel after
-PR 1 is verified.
+PR 1 is verified — except that section 1.5 must be complete before PR 3 is
+opened, because the pipeline authenticates with the credentials it writes.
 
 ## References searched
 
@@ -56,17 +70,23 @@ Changed (PR 1):
 - `modules/nixos/homepage.nix` — dashboard card
 - `tofu/object-storage/garage/variables.tf` — state bucket/key and restic
   bucket/key for keycloak
+- `tofu/keycloak/secrets.json` — sops-encrypted provider credentials
+  (rotated in section 1.5)
 
 Changed (PR 2):
 
 - `modules/hosts/srv-prod-1/services/keycloak.nix` — restic backup of the
   Postgres dump
+- `modules/nixos/keycloak.nix` — drop the bootstrap-admin env (section 1.5)
+  and raise `proxy_buffer_size` on the Keycloak vhost (section 1.6)
+- `modules/hosts/directions/services/https-proxy.nix` — `proxy_buffer_size`
+  for the `account.ritter.family` vhost (section 1.6)
 - `modules/hosts/srv-prod-1/secrets.yaml` — restic credentials (via `sops set`)
 
 Changed (PR 3):
 
 - `tofu/keycloak/` — new root (`provider.tf`, `main.tf`, `.envrc`,
-  `README.md`, `secrets.json`)
+  `README.md`; `secrets.json` is already on main since PR 1)
 - `.github/workflows/tofu-keycloak.yaml` — new pipeline
 - `tofu/README.md` — root list
 
@@ -86,6 +106,8 @@ Deliberately unchanged, with reasons:
 - **Actions allow-list**: PR 3 reuses `actions/checkout` and
   `actions/github-script`; no new third-party action.
 - **`restic-restore`**: srv-prod-1 gets it via `system-server`; no change.
+- **Master realm e-mail**: only the `ritter` realm gets SMTP (PR 3). Realm
+  e-mail is per-realm by design, and master-realm users never receive mail.
 
 ## PR 1 — deploy the IdP
 
@@ -129,6 +151,10 @@ jq -n --arg u admin --arg p "$KC_ADMIN_PW" \
 
 unset KC_ADMIN_PW KC_DB_PW
 ```
+
+(Superseded by section 1.5: it removes both `keycloak_admin_*` keys and
+stores the tofu service-account client credentials instead; the host's
+`keycloak/admin-password` is dropped in step 2.3.)
 
 Verify:
 
@@ -349,16 +375,146 @@ curl -s https://account.ritter.family/realms/master/.well-known/openid-configura
 ```
 
 Then log in at `https://account.ritter.family` as `admin` with the generated
-admin password and let Keycloak offer to delete the temporary admin
-bootstrap warning (leave the user in place; tofu uses it). Check that gatus
-shows the SSO endpoint green at `https://status.ritter.family`.
+admin password to verify the console is reachable, and continue with
+section 1.5 — the temporary bootstrap account is replaced there, not left
+in place (an earlier revision of this plan said to keep it for tofu; that
+no longer holds). Check that gatus shows the SSO endpoint green at
+`https://status.ritter.family`.
 
 **Rollback (PR 1):** `git revert` the PR; comin switches back. The new
 buckets/keys in Garage are inert and can stay. The Keycloak state
 (Postgres data under `/var/lib/postgresql`) is disposable at this point —
 no clients exist yet.
 
-## PR 2 — backups
+### 1.5 One-time hardening: replace the temporary bootstrap admin (click-ops)
+
+Keycloak flags the account created from `KC_BOOTSTRAP_ADMIN_*` as
+**temporary**: the console shows the hardening banner on every login, and
+the server honors those variables only during the very first start, when
+the master realm does not exist yet
+(https://www.keycloak.org/server/bootstrap-admin-recovery). Two
+consequences the original plan got wrong:
+
+- Deleting the temporary `admin` user is safe and permanent — it is *not*
+  recreated on restart, even while the environment file is still wired into
+  the service. The wiring (removed in PR 2) is dead weight, not a recovery
+  path.
+- The real break-glass path is the dedicated `kc.sh bootstrap-admin user`
+  command, run manually against the stopped server (documented in the
+  tofu/keycloak README, PR 3).
+
+The plan originally assumed the bootstrap account would double as the tofu
+admin. That keeps the banner (and a shared, MFA-less password) around
+forever, so it is replaced by a persistent human admin plus a dedicated
+service-account client for the provider — the setup the provider docs
+recommend ("the client credentials grant is recommended, as it was designed
+for machine to machine authentication"). All console steps are one-time
+click-ops in the master realm; the sops step runs on framework-13.
+
+1. Create the persistent admin user (Users → *Create user*): `bene` (pick
+   any username), your real email. **Credentials** → *Set password* from
+   the password manager, *Temporary* off; **Role mapping** → *Assign role*
+   → filter by realm roles → check `admin` → *Assign*. The master realm's
+   `admin` realm role is the superuser role (full access to all realms).
+   A second factor can be added to this account later without affecting
+   the provider.
+
+2. Create the provider client (Clients → *Create client*): Client type
+   *OpenID Connect*, Client ID `tofu`; turn *Client authentication* ON
+   (confidential), *Standard flow* and *Direct access grants* OFF, and
+   service accounts ON (*Service accounts roles*) — the provider docs'
+   client-credentials setup. Then, in the client's **Service accounts
+   roles** tab: *Assign role* → filter by realm roles → `admin`
+   ("Managing the entire Keycloak instance: assign the `admin` role to a
+   user or service account within the `master` realm"). Copy the secret
+   from the **Credentials** tab. The journal then logs a deprecation
+   warning about this client's "Full scope allowed" switch — leave it
+   enabled: it is what keeps the `admin` realm role in the provider's
+   tokens (disabling it would require mapping the role into the client's
+   dedicated scope; no benefit for an instance-wide admin client).
+
+3. Store the client credentials in `tofu/keycloak/secrets.json` (keep the
+   key names — `provider.tf` reads exactly these), and drop the bootstrap
+   keys written in step 1.1:
+
+   ```bash
+   printf 'tofu' | jq -R . | \
+     sops set tofu/keycloak/secrets.json '["keycloak_admin_client_id"]' --value-stdin
+   read -rs -p "Secret of client 'tofu': " KC_CLIENT_SECRET; echo
+   printf '%s' "$KC_CLIENT_SECRET" | jq -R . | \
+     sops set tofu/keycloak/secrets.json '["keycloak_admin_client_secret"]' --value-stdin
+   unset KC_CLIENT_SECRET
+   sops unset tofu/keycloak/secrets.json '["keycloak_admin_username"]'
+   sops unset tofu/keycloak/secrets.json '["keycloak_admin_password"]'
+   ```
+
+4. Log out, log back in as the new admin user: no banner, *Create realm*
+   button present.
+5. Delete the temporary `admin` user (Users → `admin` → *Delete*). Safe and
+   permanent per the docs link above.
+6. Verify the provider credentials (this is exactly the grant the tofu
+   provider uses — client credentials on the master realm):
+
+   ```bash
+   curl -s https://account.ritter.family/realms/master/protocol/openid-connect/token \
+     -d grant_type=client_credentials -d client_id=tofu \
+     --data-urlencode client_secret="$(sops -d tofu/keycloak/secrets.json | jq -r .keycloak_admin_client_secret)" \
+     | jq -r 'if .access_token then "ok" else .error end'
+   # expected: ok
+   ```
+
+The personal identity (`bene` in the `ritter` realm) is not created here —
+it is tofu-managed in PR 3 (`keycloak_user`), and it is deliberately a
+separate, unprivileged account: the master-realm admin is for the admin
+console only, while application logins happen in the `ritter` realm. Users
+are realm-local, so apps pointed at the `ritter` issuer only ever accept
+`ritter` users — the admin account cannot become an app identity, and a
+compromised application exposes `bene`, not the superuser. Reusing the
+username `bene` in both realms is fine: uniqueness is per realm, and the
+two accounts share nothing (credentials, sessions, roles). Tofu covers the
+user data (username, email), but not the password: `keycloak_user` could
+set an `initial_password`, yet the plain value would land in the tofu
+state file, so passwords are set by the user — via the console or the
+forgot-password mail.
+
+Must be complete before PR 3 is opened: the pipeline's `plan`/`apply`
+authenticate with `secrets.json`, which now holds the client credentials.
+
+**Rollback (section 1.5):** nothing in git to revert. If an admin login is
+locked out mid-run, use the break-glass command (tofu/keycloak README) and
+redo the failed step.
+
+### 1.6 Known issue: 502 on "Manage account" (diagnosed — fix in PR 2)
+
+Clicking *Manage account* in the admin console (master realm) redirects to
+the master realm's account console and ends in an nginx 502. Everything
+else works — the token endpoint returned `ok` in step 1.5.6, the admin
+console and login pages work — so Keycloak is up, and the failure is
+specific to the one request where Keycloak hands the browser back its full
+cookie bundle (`KEYCLOAK_IDENTITY`, `KEYCLOAK_SESSION`, `AUTH_SESSION_ID`,
+plus a `KC_RESTART` cookie fattened by the double-encoded `referrer_uri`
+deep-link).
+
+Confirmed 2026-10-28 in directions' nginx journal:
+
+```
+upstream sent too big header while reading response header from upstream
+... server: account.ritter.family ... upstream: "https://192.168.30.11:443/realms/master/..."
+```
+
+The response header block exceeds nginx's default `proxy_buffer_size`
+(4 KB — the https-proxy module sets no override). srv-prod-1's own nginx
+hop and Keycloak are clean, but the same header bundle rides both hops, so
+the buffer is raised on **both** account vhosts (diffs in step 2.2):
+directions' `account.ritter.family` entry and the srv-prod-1 Keycloak
+instance's vhost. Until PR 2 switches, *Manage account* keeps 502ing —
+cosmetic; nothing depends on the master account console.
+
+Must be merged before step 3.4 — the account-console flows (logging into
+the account console, forgot-password) take the same response path in the
+`ritter` realm.
+
+## PR 2 — backups, the 502 fix, and admin cleanup
 
 ### 2.1 Prepare restic secrets (idempotent: no — run once, after PR 1's object-storage apply)
 
@@ -454,6 +610,59 @@ New file, identical to srv-prod-2's (same Garage endpoint, same retention):
  }
 ```
 
+@@ modules/nixos/keycloak.nix @@
+
+Remove the bootstrap-admin wiring entirely. The environment file is only
+honored on the very first start (when the master realm is created), so it
+never was a recovery path — the comment in the PR 1 module was wrong; the
+real recovery path is the `bootstrap-admin` command (section 1.5, and the
+tofu/keycloak README). The temporary `admin` user it created was deleted in
+section 1.5.
+
+```diff
+       sops.secrets."keycloak/database-password" = { };
+-      sops.secrets."keycloak/admin-password" = { };
+-      # Bootstrap/recovery admin. Keycloak only creates the user if it does
+-      # not exist, so this is inert after first start and acts as a recovery
+-      # path per https://www.keycloak.org/server/bootstrap-admin-recovery.
+-      sops.templates."keycloak-bootstrap-env".content = ''
+-        KC_BOOTSTRAP_ADMIN_USERNAME=admin
+-        KC_BOOTSTRAP_ADMIN_PASSWORD=${config.sops.placeholder."keycloak/admin-password"}
+-      '';
+-      systemd.services.keycloak.serviceConfig.EnvironmentFile =
+-        config.sops.templates."keycloak-bootstrap-env".path;
+
+       services.https-proxy = {
+         enable = true;
+         configurations = [
+           {
+             fqdn = localFqdn;
+             target = "http://127.0.0.1:8080";
++            # The account console hands back a large cookie bundle;
++            # nginx's 4k default proxy_buffer_size 502s on it ("upstream
++            # sent too big header", section 1.6). Raised on directions'
++            # vhost too.
++            extraConfig = "proxy_buffer_size 16k;";
+           }
+         ];
+       };
+```
+
+@@ modules/hosts/directions/services/https-proxy.nix @@
+
+Same buffer raise for the public hop — this is the hop that actually 502'd
+(section 1.6):
+
+```diff
+           {
+             fqdn = "account.ritter.family";
+             target = "https://account.srv-prod-1.ritter.family";
++            extraConfig = "proxy_buffer_size 16k;";
+           }
+           {
+             fqdn = "tools.ritter.family";
+```
+
 ### 2.3 Verify, merge, check
 
 ```bash
@@ -469,8 +678,26 @@ ssh root@srv-prod-1.ritter.family \
 # expected: active (exited) — wait — check journal for a successful dump + restic snapshot
 ```
 
+After the switch, drop the dead bootstrap password — only then: the
+previous generation still declares the secret, and removing the key from
+`secrets.yaml` before that switch would fail activation:
+
+```bash
+sops unset modules/hosts/srv-prod-1/secrets.yaml '["keycloak"]["admin-password"]'
+```
+
+Re-verify section 1.6: in the admin console, *Manage account* must now load
+the master account console instead of 502ing.
+
 **Rollback (PR 2):** revert; comin switches back. The restic repo in Garage
-stays (harmless, will be pruned by retention once unused).
+stays (harmless, will be pruned by retention once unused). If the revert
+happens after the `sops unset` above, re-add the key first (any value
+works; the reverted module requires it to exist) or activation fails:
+
+```bash
+echo unused | jq -R . | sops set modules/hosts/srv-prod-1/secrets.yaml \
+  '["keycloak"]["admin-password"]' --value-stdin
+```
 
 ## PR 3 — tofu root for realm/client management
 
@@ -484,6 +711,36 @@ echo "$creds" | jq .access_key | sops set tofu/keycloak/secrets.json \
   '["state_bucket_key_id"]' --value-stdin
 echo "$creds" | jq .secret_key | sops set tofu/keycloak/secrets.json \
   '["state_bucket_secret_key"]' --value-stdin
+```
+
+Then add the Brevo SMTP credentials — the account also serves vaultwarden
+on srv-prod-2, so create a separate SMTP key for Keycloak in the Brevo
+dashboard (Settings → *SMTP & API*), one key per service like the Garage
+keys. The SMTP login is the login shown on that page, the password is the
+SMTP key. The realm sends from `account@ritter.family` — validate that
+sender in the Brevo dashboard (Settings → Senders) if it does not exist
+yet.
+
+```bash
+read -rs -p "Brevo SMTP login: " KC_SMTP_USER; echo
+read -rs -p "Brevo SMTP key: " KC_SMTP_KEY; echo
+printf '%s' "$KC_SMTP_USER" | jq -R . | sops set tofu/keycloak/secrets.json \
+  '["keycloak_smtp_username"]' --value-stdin
+printf '%s' "$KC_SMTP_KEY" | jq -R . | sops set tofu/keycloak/secrets.json \
+  '["keycloak_smtp_password"]' --value-stdin
+unset KC_SMTP_USER KC_SMTP_KEY
+```
+
+Alternative (reuse the vaultwarden credentials, no Brevo dashboard visit;
+framework-13 is in srv-prod-2's key group):
+
+```bash
+sops -d modules/hosts/srv-prod-2/secrets.yaml | jq -r '."vaultwarden/smtp-username"' \
+  | jq -R . | sops set tofu/keycloak/secrets.json \
+      '["keycloak_smtp_username"]' --value-stdin
+sops -d modules/hosts/srv-prod-2/secrets.yaml | jq -r '."vaultwarden/smtp-password"' \
+  | jq -R . | sops set tofu/keycloak/secrets.json \
+      '["keycloak_smtp_password"]' --value-stdin
 ```
 
 ### 3.2 Repo changes
@@ -521,11 +778,12 @@ data "sops_file" "secrets" {
 }
 
 # Official provider, hosted under the keycloak org since 2024-12.
+# Client-credentials grant against the `tofu` service-account client in the
+# master realm (section 1.5) — the provider docs' recommended setup.
 provider "keycloak" {
-  client_id = "admin-cli"
-  url       = data.sops_file.secrets.data["keycloak_url"]
-  username  = data.sops_file.secrets.data["keycloak_admin_username"]
-  password  = data.sops_file.secrets.data["keycloak_admin_password"]
+  client_id     = data.sops_file.secrets.data["keycloak_admin_client_id"]
+  client_secret = data.sops_file.secrets.data["keycloak_admin_client_secret"]
+  url           = data.sops_file.secrets.data["keycloak_url"]
   # Required for servers >= 26.4 (provider fails version parsing otherwise).
   # Keep in sync with the nixpkgs keycloak version; renovate bumps both.
   keycloak_version = "26.8.1"
@@ -541,11 +799,48 @@ resource "keycloak_realm" "ritter" {
   enabled      = true
 
   # Conservative defaults; open up deliberately when a feature is needed.
-  registration_allowed   = false
-  reset_password_allowed = false
-  verify_email           = false
+  registration_allowed = false
+  # "Forgot password?" on the login page — the reason this realm gets SMTP
+  # in the same PR (without mail the reset link is a dead end).
+  reset_password_allowed = true
+  # Flip on when wanted: forces email verification on first login and after
+  # address changes. Invites work without it (the admin console sends the
+  # verify/set-password mails as required actions).
+  verify_email = false
 
   ssl_required = "external"
+
+  # Outgoing mail via the Brevo account that also serves vaultwarden on
+  # srv-prod-2 (own SMTP key, credentials in secrets.json). Keycloak 26 has
+  # no server-wide SMTP setting — mail is realm data, so the realm resource
+  # is the only place to manage it. The provider reads the password back
+  # from the API, so plans stay drift-free; the value does end up in the
+  # tofu state in Garage, whose bucket is readable by exactly the hosts
+  # that can decrypt secrets.json (framework-13 + github-runners).
+  smtp_server {
+    host              = "smtp-relay.brevo.com"
+    port              = 587
+    from              = "account@ritter.family"
+    from_display_name = "Ritter Account"
+    starttls          = true
+
+    auth {
+      username = data.sops_file.secrets.data["keycloak_smtp_username"]
+      password = data.sops_file.secrets.data["keycloak_smtp_password"]
+    }
+  }
+}
+
+# Personal identities, managed like everything else. No password here —
+# passwords are set by the user via the console or the forgot-password
+# mail; an initial_password would land in the tofu state (section 1.5).
+resource "keycloak_user" "bene" {
+  realm_id = keycloak_realm.ritter.id
+  username = "bene"
+  enabled  = true
+
+  email          = "bene@example.com" # your real address
+  email_verified = true
 }
 ```
 
@@ -564,12 +859,31 @@ fi
 
 @@ tofu/keycloak/README.md @@ (new file)
 
-Short root README: what it manages (realm `ritter`, later one
-`keycloak_oidc_client` resource per service), where the admin credentials
-come from (`secrets.json`, same value as srv-prod-1's
-`keycloak/admin-password`), the `.envrc` flow, and the note that the realm
-is created by tofu — if it is ever created manually first, run
-`tofu import keycloak_realm.ritter ritter`.
+Short root README: what it manages (realm `ritter` including its SMTP
+config and its users — starting with the personal `bene` identity; later
+one `keycloak_oidc_client` resource per service), where the provider
+credentials come from (`secrets.json` — the `tofu` service-account client
+in the master realm from section 1.5, not a bootstrap account), the
+`.envrc` flow, the note that the realm is created by tofu — if it is ever
+created manually first, run `tofu import keycloak_realm.ritter ritter` —
+and the break-glass procedure for lost admin access:
+
+```bash
+ssh root@srv-prod-1.ritter.family
+systemctl stop keycloak
+# creates a NEW temporary admin; the db options must match the service
+# (db "keycloak", user "keycloak" — see `systemctl cat keycloak` for the
+# rendered config). Do not reuse the section 1.1 password.
+KC_DB=postgres KC_DB_USERNAME=keycloak KC_DB_PASSWORD='…' \
+KC_BOOTSTRAP_ADMIN_USERNAME=temp-admin KC_BOOTSTRAP_ADMIN_PASSWORD='…' \
+  kc.sh bootstrap-admin user
+systemctl start keycloak
+```
+
+Then log in as `temp-admin`, restore access to the real admins (reset a
+password / re-assign the `admin` role), delete `temp-admin`. `kc.sh` is on
+the system PATH because the nixpkgs module adds the package to
+`environment.systemPackages`.
 
 @@ .github/workflows/tofu-keycloak.yaml @@ (new file — copy of
 `tofu-proxmox.yaml` with the paths and latch renamed)
@@ -636,10 +950,10 @@ nix fmt
 tofu fmt -check
 tofu init          # uses state bucket credentials from .envrc
 tofu validate      # PASSED (syntax + provider schema)
-tofu plan          # expected: + keycloak_realm.ritter
+tofu plan          # expected: + keycloak_realm.ritter, + keycloak_user.bene
 ```
 
-The PR's pipeline plan comment must show the same single resource. Merge;
+The PR's pipeline plan comment must show the same two resources. Merge;
 the pipeline applies on `main`.
 
 ### 3.4 Post-merge check
@@ -648,6 +962,18 @@ the pipeline applies on `main`.
 curl -s https://account.ritter.family/realms/ritter/.well-known/openid-configuration | jq -r .issuer
 # expected: https://account.ritter.family/realms/ritter
 ```
+
+Then verify the user and the mail path end to end:
+
+1. Set your password on the tofu-created `bene` user: admin console →
+   realm `ritter` → Users → `bene` → Credentials → *Set password*
+   (Temporary off). Alternatively use *Forgot password?* on the realm's
+   login page — that also smoke-tests SMTP.
+2. Log in as `bene` at the account console,
+   `https://account.ritter.family/realms/ritter/account`.
+3. Admin console, realm `ritter` → Realm settings → Email → *Test
+   connection* — the test mail goes to the logged-in admin's email address
+   (the master-realm admin from section 1.5).
 
 **Rollback (PR 3):** revert; comin is unaffected. The pipeline apply is
 state-based: a revert deletes the realm on the next apply. Only do that when
@@ -666,12 +992,23 @@ URL that points into it.
 - **gatus flap at cutover**: the SSO check goes green only after both
   servers (directions entry + srv-prod-1 backend) have switched. Ordering
   between the two hosts is not guaranteed; a short flap is expected.
-- **Admin bootstrap password persists in the environment**: the sops
-  template is injected on every start. Keycloak ignores it once the `admin`
-  user exists (documented recovery path). Rotating
-  `keycloak/admin-password` in the sops file and restarting the service
-  rotates it for both recovery and tofu (keep `tofu/keycloak/secrets.json`
-  in sync).
+- **Admin accounts after section 1.5**: the temporary bootstrap admin is
+  deleted, and PR 2 removes its (inert) environment wiring — it was only
+  honored on the very first start and never a recovery path. The master
+  realm holds one persistent human admin (password manager; may gain a
+  second factor) and the `tofu` service-account client the provider
+  authenticates with (client-credentials grant, per the provider docs'
+  recommendation; its secret lives only in `secrets.json`, never in
+  state). Users' passwords are never tofu-managed — see section 1.5.
+  Rotating the provider secret: regenerate it in the console (Clients →
+  tofu → Credentials) and `sops set` it into secrets.json. Break-glass:
+  `kc.sh bootstrap-admin user` (tofu/keycloak README).
+- **SMTP password in tofu state**: the realm's Brevo SMTP key is stored in
+  the Keycloak realm and therefore in the tofu state in Garage. Accepted:
+  the state bucket is readable only by the `tofu-keycloak` Garage key,
+  held by exactly the hosts that can decrypt `secrets.json` (framework-13 +
+  github-runners). Rotate by creating a new SMTP key in Brevo, `sops set`
+  it into secrets.json, apply.
 
 ## Status
 
@@ -681,7 +1018,18 @@ URL that points into it.
 - [x] PR 3 tofu code verified with `tofu validate` (scratch dir; caught
       `display_name` vs `realm_display_name`)
 - [x] User: run step 1.1 (sops secrets) — host secrets added; secrets.json
-      created and left untracked for PR 3
-- [ ] PR 1 opened, pipeline plan checked, merged, post-merge checks pass
-- [ ] PR 2 prepared (step 2.1), merged, first backup verified
-- [ ] PR 3 prepared (step 3.1), merged, realm applied and verified
+      committed with PR 1 (the "left untracked" note was outdated), rotated
+      in section 1.5
+- [x] PR 1 merged; post-merge checks pass (IdP reachable, gatus green)
+- [x] Section 1.5: persistent master-realm admin + `tofu` service-account
+      client created, temporary `admin` deleted, secrets.json switched to
+      client credentials (verified: token check `ok`)
+- [x] Section 1.6: account-console 502 diagnosed — directions' nginx,
+      "upstream sent too big header" on the account-console cookie bundle;
+      fix folded into PR 2
+- [ ] PR 2 prepared (step 2.1), merged, first backup verified, proxy
+      buffers raised, bootstrap env dropped, `sops unset` after the switch
+      (step 2.3)
+- [ ] PR 3 prepared (step 3.1 incl. SMTP credentials), merged, realm + bene
+      user + SMTP applied and verified (step 3.4: account login, SMTP test
+      mail, forgot-password)
