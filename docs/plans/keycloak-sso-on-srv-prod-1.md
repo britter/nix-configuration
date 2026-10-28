@@ -47,7 +47,7 @@ constraints that a single PR cannot guarantee:
 1. **PR 1** deploys the IdP and creates the Garage buckets/keys that later
    phases consume. srv-prod-1's switch only needs the two new keycloak
    secrets, which are added to its `secrets.yaml` before the PR goes up.
-2. **PR 2** adds the restic backup, raises `proxy_buffer_size` on both
+2. **PR 2** adds the restic backup, raises the proxy header buffer on both
    Keycloak proxy hops (section 1.6), and drops the bootstrap-admin env
    (dead weight after section 1.5). It references the Garage key
    `restic-keycloak`, whose credentials only exist after PR 1's
@@ -84,10 +84,13 @@ Changed (PR 2):
 
 - `modules/hosts/srv-prod-1/services/keycloak.nix` — restic backup of the
   Postgres dump
+- `modules/nixos/https-proxy.nix` — new `proxyHeaderBufferSize` option
+  (constraint-safe `proxy_buffer_size` + `proxy_busy_buffers_size` pair,
+  section 1.6)
 - `modules/nixos/keycloak.nix` — drop the bootstrap-admin env (section 1.5)
-  and raise `proxy_buffer_size` on the Keycloak vhost (section 1.6)
-- `modules/hosts/directions/services/https-proxy.nix` — `proxy_buffer_size`
-  for the `account.ritter.family` vhost (section 1.6)
+  and raise the header buffer on the Keycloak vhost (section 1.6)
+- `modules/hosts/directions/services/https-proxy.nix` — header buffer for
+  the `account.ritter.family` vhost (section 1.6)
 - `modules/hosts/srv-prod-1/secrets.yaml` — restic credentials (via `sops set`)
 
 Changed (PR 3):
@@ -470,15 +473,27 @@ click-ops in the master realm; the sops step runs on framework-13.
 5. Delete the temporary `admin` user (Users → `admin` → *Delete*). Safe and
    permanent per the docs link above.
 6. Verify the provider credentials (this is exactly the grant the tofu
-   provider uses — client credentials on the master realm):
+   provider uses — client credentials on the master realm). All three
+   values must come from the file, like the provider reads them — a check
+   that hardcodes the client id would mask a typo in the file:
 
    ```bash
-   curl -s https://account.ritter.family/realms/master/protocol/openid-connect/token \
-     -d grant_type=client_credentials -d client_id=tofu \
-     --data-urlencode client_secret="$(sops -d tofu/keycloak/secrets.json | jq -r .keycloak_admin_client_secret)" \
-     | jq -r 'if .access_token then "ok" else .error end'
-   # expected: ok
+   cd tofu/keycloak   # check the file the provider actually reads
+   id=$(sops -d secrets.json | jq -r .keycloak_admin_client_id)
+   url=$(sops -d secrets.json | jq -r .keycloak_url)
+   curl -s "$url/realms/master/protocol/openid-connect/token" \
+     -d grant_type=client_credentials -d "client_id=$id" \
+     --data-urlencode client_secret="$(sops -d secrets.json | jq -r .keycloak_admin_client_secret)" \
+     | jq -r 'if .access_token then "ok" else . end'
+   # expected: ok; anything else is the token endpoint's error object:
+   # invalid_client — client id or secret in the file doesn't match Keycloak
+   # unauthorized_client — the client lacks "Service accounts roles"
    ```
+
+   If the CI plan 401s where this check passes, compare what each runs
+   against — and read the exact failure reason in the admin console
+   (master realm → Events → Login events: `client_not_found`, secret
+   mismatch, or a capability problem).
 
 The personal identity (`bene` in the `ritter` realm) is not created here —
 it is tofu-managed in PR 3 (`keycloak_user`), and it is deliberately a
@@ -526,6 +541,20 @@ the buffer is raised on **both** account vhosts (diffs in step 2.2):
 directions' `account.ritter.family` entry and the srv-prod-1 Keycloak
 instance's vhost. Until PR 2 switches, *Manage account* keeps 502ing —
 cosmetic; nothing depends on the master account console.
+
+**Correction (same day):** the first fix raised `proxy_buffer_size 16k`
+**alone** — invalid nginx config. nginx derives its default
+`proxy_busy_buffers_size` as 2 × max(`proxy_buffer_size`, one
+`proxy_buffers` buffer) = 32k, and that violates nginx's constraint
+`proxy_busy_buffers_size` must be less than the size of all
+`proxy_buffers` minus one buffer (default `proxy_buffers` 8 × 4k → 28k
+ceiling); `nginx -t` fails with exactly that emerg. A failed reload
+keeps the old config in memory, so the 502 fix *appeared* to work after
+the PR 2 switches — until nginx's next restart, which took directions'
+nginx down (`connect: connection refused` from the runner mid-PR-3
+debugging). The https-proxy module now has a `proxyHeaderBufferSize`
+option emitting the constraint-safe pair (`proxy_buffer_size` +
+`proxy_busy_buffers_size`, both 16k), used by both account vhosts.
 
 Must be merged before step 3.4 — the account-console flows (logging into
 the account console, forgot-password) take the same response path in the
@@ -659,7 +688,7 @@ section 1.5.
 +            # nginx's 4k default proxy_buffer_size 502s on it ("upstream
 +            # sent too big header", section 1.6). Raised on directions'
 +            # vhost too.
-+            extraConfig = "proxy_buffer_size 16k;";
++            proxyHeaderBufferSize = "16k";
            }
          ];
        };
@@ -674,7 +703,7 @@ Same buffer raise for the public hop — this is the hop that actually 502'd
            {
              fqdn = "account.ritter.family";
              target = "https://account.srv-prod-1.ritter.family";
-+            extraConfig = "proxy_buffer_size 16k;";
++            proxyHeaderBufferSize = "16k";
            }
            {
              fqdn = "tools.ritter.family";
@@ -973,6 +1002,15 @@ tofu plan          # expected: + keycloak_realm.ritter, + keycloak_user.bene
 The PR's pipeline plan comment must show the same two resources. Merge;
 the pipeline applies on `main`.
 
+Runner network path: the self-hosted runner resolves
+`account.ritter.family` to directions (192.168.30.6, the front proxy)
+via the LAN's DNS. A CI plan failing with `connect: connection refused`
+against that address means directions' nginx is down — an operational
+outage, not a tofu problem (`systemctl status nginx` on directions;
+re-run the failed job once it serves again). A `401` in contrast means
+the request reached Keycloak and the credentials in `secrets.json` are
+being rejected — see the check in section 1.5, step 6.
+
 ### 3.4 Post-merge check
 
 ```bash
@@ -1180,7 +1218,10 @@ pointing at a missing client — remove it if it bothers anyone:
       client credentials (verified: token check `ok`)
 - [x] Section 1.6: account-console 502 diagnosed — directions' nginx,
       "upstream sent too big header" on the account-console cookie bundle;
-      fix folded into PR 2
+      fix folded into PR 2. Correction: the first fix (`proxy_buffer_size`
+      alone) was invalid nginx config and took directions' nginx down at
+      its next restart; replaced by the https-proxy module's
+      `proxyHeaderBufferSize` option (see section 1.6)
 - [ ] PR 2 prepared (step 2.1), merged, first backup verified, proxy
       buffers raised, bootstrap env dropped, `sops unset` after the switch
       (step 2.3)
