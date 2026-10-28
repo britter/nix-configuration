@@ -24,16 +24,6 @@ _: {
       };
 
       sops.secrets."keycloak/database-password" = { };
-      sops.secrets."keycloak/admin-password" = { };
-      # Bootstrap/recovery admin. Keycloak only creates the user if it does
-      # not exist, so this is inert after first start and acts as a recovery
-      # path per https://www.keycloak.org/server/bootstrap-admin-recovery.
-      sops.templates."keycloak-bootstrap-env".content = ''
-        KC_BOOTSTRAP_ADMIN_USERNAME=admin
-        KC_BOOTSTRAP_ADMIN_PASSWORD=${config.sops.placeholder."keycloak/admin-password"}
-      '';
-      systemd.services.keycloak.serviceConfig.EnvironmentFile =
-        config.sops.templates."keycloak-bootstrap-env".path;
 
       services.https-proxy = {
         enable = true;
@@ -41,6 +31,10 @@ _: {
           {
             fqdn = localFqdn;
             target = "http://127.0.0.1:8080";
+            # The account console hands back a large cookie bundle; nginx's
+            # 4k default proxy_buffer_size 502s on it ("upstream sent too
+            # big header"). Raised on directions' vhost too.
+            extraConfig = "proxy_buffer_size 16k;";
           }
         ];
       };
