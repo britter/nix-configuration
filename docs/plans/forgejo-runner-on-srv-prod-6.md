@@ -62,7 +62,11 @@ the guest, in the generic runner aspect, as the nftables table
   gateway. Everything else on private destination addresses (sshd, nginx,
   beszel-agent, the tailnet IP) is dropped — at priority `-10`, so it wins
   over the generic `allowedTCPPorts` accepts of the nixos-fw input chain
-  (priority 0).
+  (priority 0). The corresponding *accepts* render inside the nixos-fw
+  chain itself (`networking.firewall.extraInputRules`): an accept in one
+  nftables table does not exempt a packet from another table, so the
+  nixos-fw default-drop would have swallowed them otherwise. Found by the
+  post-deploy probe (`wget: bad address` inside a job container).
 
 Side effect: `networking.nftables.enable = true` switches the NixOS firewall
 rendering from the iptables to the nftables backend on this host. The
@@ -180,15 +184,16 @@ runtime (rootful podman on srv-prod-6, default bridge `podman0` — the same
    ```
 
 3. Negative probes — must time out (not refuse) and increment the forward
-   drop counter from step 1. Substitute real addresses:
+   drop counter from step 1. Server LAN IPs are the UniFi fixed IPs
+   (`tofu/network/clients.tf`); tailscale IPs via `tailscale status`:
 
    ```
-   # another server's LAN IP (FORWARD, RFC1918)
-   sudo podman run --rm alpine wget -T 5 -O- http://<srv-prod-N-lan-ip>/ || echo BLOCKED
+   # srv-prod-1's LAN IP (FORWARD, RFC1918)
+   sudo podman run --rm alpine wget -T 5 -O- http://192.168.30.11/ || echo BLOCKED
    # any host's tailscale IP (FORWARD, 100.64.0.0/10)
    sudo podman run --rm alpine wget -T 5 -O- http://<tailscale-ip>/ || echo BLOCKED
    # srv-prod-6's own LAN IP (INPUT: nginx 443, sshd 22)
-   sudo podman run --rm alpine sh -c 'wget -T 5 -O- https://<srv-prod-6-lan-ip>/ || nc -z -w 5 <srv-prod-6-lan-ip> 22' || echo BLOCKED
+   sudo podman run --rm alpine sh -c 'wget -T 5 -O- https://192.168.30.16/ || nc -z -w 5 192.168.30.16 22' || echo BLOCKED
    ```
 
    A timeout (drop) is the expected failure mode; a connection refused

@@ -25,8 +25,10 @@ _: {
           runner.labels = [
             # Matches `runs-on: docker`. The image is only a default: workflows
             # that set `container: image:` (like the renovate workflow on
-            # britter/nixpkgs-pr) replace it for their job.
-            "docker:docker://node:24-bookworm"
+            # britter/nixpkgs-pr) replace it for their job. Fully qualified:
+            # podman on NixOS has no unqualified-search registries, short
+            # names would not resolve.
+            "docker:docker://docker.io/library/node:24-bookworm"
           ];
           cache.proxy_port = cacheProxyPort;
           # Jobs run untrusted code (the runner is registered on a public
@@ -53,6 +55,11 @@ _: {
       #   dropped. The chains hook at priority -10 so these drops are
       #   evaluated before the generic port accepts of the nixos-fw input
       #   chain (priority 0).
+      #
+      # The accepts for the allowed INPUT ports are NOT in this table: an
+      # accept in one table does not exempt a packet from other tables, and
+      # the nixos-fw input chain drops everything it does not accept itself.
+      # They therefore live in networking.firewall.extraInputRules below.
       #
       # This switches the NixOS firewall rendering from the iptables to the
       # nftables backend. The firewall options in use (allowedTCPPorts etc.)
@@ -82,9 +89,6 @@ _: {
 
               ct state established,related accept
 
-              iifname "podman*" ip daddr 10.0.0.0/8 udp dport 53 accept
-              iifname "podman*" ip daddr 10.0.0.0/8 tcp dport { 53, ${toString cacheProxyPort} } accept
-
               iifname "podman*" ip daddr {
                 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16,
                 100.64.0.0/10, 169.254.0.0/16, 224.0.0.0/4, 240.0.0.0/4
@@ -93,5 +97,14 @@ _: {
           '';
         };
       };
+
+      # Allowed container-to-host traffic, accepted inside the nixos-fw
+      # input chain (see the comment above for why it cannot live in the
+      # container-egress table): DNS via aardvark-dns and the pinned
+      # action-cache proxy on the podman networks' gateways.
+      networking.firewall.extraInputRules = ''
+        iifname "podman*" ip daddr 10.0.0.0/8 udp dport 53 accept
+        iifname "podman*" ip daddr 10.0.0.0/8 tcp dport { 53, ${toString cacheProxyPort} } accept
+      '';
     };
 }
