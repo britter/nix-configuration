@@ -7,7 +7,8 @@ master-realm admin plus a service-account client for the tofu provider
 (section 1.5, one-time click-ops), and outgoing e-mail for invites/password
 resets via the existing Brevo account (PR 2 module cleanup + PR 3 realm
 SMTP). The personal `bene` identity is a user in the `ritter` realm,
-managed by tofu (PR 3). PR 2 and PR 3 pending.**
+managed by tofu (PR 3). PR 2 and PR 3 pending. Today's goal: sign into
+Forgejo on srv-prod-6 with the Keycloak identity (PR 4).**
 
 ## Chosen approach
 
@@ -26,7 +27,10 @@ Realm e-mail (invite links, password resets) goes through the Brevo SMTP
 account that vaultwarden on srv-prod-2 already uses, sending from
 `account@ritter.family` — configured on the realm via tofu, because
 Keycloak 26 has no server-wide SMTP setting (mail is realm data stored in
-the database, and `services.keycloak.settings` has no SMTP keys).
+the database, and `services.keycloak.settings` has no SMTP keys. Forgejo on srv-prod-6
+(`git.ritter.family`) is the first OIDC client: the tofu root manages its
+client, and the Forgejo module declares the OAuth2 authentication source
+that its `preStart` creates idempotently (PR 4).
 
 Alternatives considered: Pocket ID was rejected because its only tofu
 provider is a small community project covering OIDC clients only, which would
@@ -34,7 +38,7 @@ leave users/groups/passkeys hand-configured — a hard requirement against.
 Authelia/Authentik were not considered; the requirement was Keycloak vs
 Pocket ID.
 
-## Why three PRs
+## Why these PRs
 
 Applies and switches both happen after merge: tofu pipelines apply on `main`,
 and comin switches each server when `main` moves. That creates ordering
@@ -51,12 +55,15 @@ constraints that a single PR cannot guarantee:
    must exist in `secrets.yaml` before the switch, or activation fails and
    the host stays on its old generation.
 3. **PR 3** adds the tofu root. Its pipeline `plan` needs a reachable
-   Keycloak with the service-account credentials from section 1.5, and its
-   `init` needs the `tofu-states-keycloak` bucket from PR 1's apply.
+   Keycloak with the service-account credentials from section 1.5 (done),
+   and its `init` needs the `tofu-states-keycloak` bucket from PR 1's apply.
+4. **PR 4** adds the first OIDC client (Forgejo) on both ends: the
+   `keycloak_openid_client` resource needs the `ritter` realm from PR 3's
+   apply in the tofu state, and Forgejo's OAuth2 source points at that
+   realm's discovery URL.
 
-PR 2 and PR 3 are independent of each other and can go up in parallel after
-PR 1 is verified — except that section 1.5 must be complete before PR 3 is
-opened, because the pipeline authenticates with the credentials it writes.
+PR 2 and PR 3 are independent of each other and can go up in parallel.
+PR 4 follows PR 3's merge and apply.
 
 ## References searched
 
@@ -89,6 +96,16 @@ Changed (PR 3):
   `README.md`; `secrets.json` is already on main since PR 1)
 - `.github/workflows/tofu-keycloak.yaml` — new pipeline
 - `tofu/README.md` — root list
+
+Changed (PR 4):
+
+- `tofu/keycloak/main.tf` — first OIDC client
+  (`keycloak_openid_client.forgejo`)
+- `modules/nixos/forgejo.nix` — `[oauth2_client]` settings + idempotent
+  OAuth2 authentication source in `preStart`
+- `tofu/keycloak/secrets.json` — `forgejo_client_secret` (via `sops set`)
+- `modules/hosts/srv-prod-6/secrets.yaml` — `forgejo/keycloak-client-secret`
+  (same value, via `sops set`)
 
 Deliberately unchanged, with reasons:
 
@@ -860,8 +877,8 @@ fi
 @@ tofu/keycloak/README.md @@ (new file)
 
 Short root README: what it manages (realm `ritter` including its SMTP
-config and its users — starting with the personal `bene` identity; later
-one `keycloak_oidc_client` resource per service), where the provider
+config and its users — starting with the personal `bene` identity;
+one `keycloak_openid_client` resource per service — Forgejo first (PR 4)), where the provider
 credentials come from (`secrets.json` — the `tofu` service-account client
 in the master realm from section 1.5, not a bootstrap account), the
 `.envrc` flow, the note that the realm is created by tofu — if it is ever
@@ -980,6 +997,143 @@ state-based: a revert deletes the realm on the next apply. Only do that when
 no clients are enrolled yet — deleting the realm invalidates every issuer
 URL that points into it.
 
+## PR 4 — first client: Forgejo (today's goal)
+
+Forgejo on srv-prod-6 (`git.ritter.family`) becomes the first OIDC client.
+Two halves must both exist for a login to work: the Keycloak client (tofu,
+applied on merge) and Forgejo's OAuth2 authentication source (stored in
+Forgejo's database, declared via the `forgejo admin auth` CLI in the
+service's `preStart`). Depends on PR 3's apply — the client lives in the
+`ritter` realm from its state.
+
+### 4.1 Secrets (idempotent: no — run once, before opening the PR)
+
+One generated client secret, stored twice: tofu reads it from
+`secrets.json`, Forgejo from srv-prod-6's secrets file (flat key style,
+matching `forgejo/admin-user-password`). Run on framework-13.
+
+```bash
+SECRET=$(openssl rand -base64 24 | tr -d '/+=')
+printf '%s' "$SECRET" | jq -R . | \
+  sops set tofu/keycloak/secrets.json '["forgejo_client_secret"]' --value-stdin
+printf '%s' "$SECRET" | jq -R . | \
+  sops set modules/hosts/srv-prod-6/secrets.yaml \
+    '["forgejo/keycloak-client-secret"]' --value-stdin
+unset SECRET
+```
+
+### 4.2 One-time click-ops: Forgejo account e-mail
+
+Account linking matches on e-mail, and the provisioned admin account's
+address is `root@localhost`. While signed into Forgejo as `britter`:
+Settings → Profile → change the e-mail to the Keycloak identity's address
+(the one set in section 1.5).
+
+### 4.3 Repo changes
+
+@@ tofu/keycloak/main.tf @@ (append)
+
+```hcl
+resource "keycloak_openid_client" "forgejo" {
+  realm_id  = keycloak_realm.ritter.id
+  client_id = "forgejo"
+  name      = "Forgejo"
+  enabled   = true
+
+  access_type                  = "CONFIDENTIAL"
+  standard_flow_enabled        = true
+  direct_access_grants_enabled = false
+  # Forgejo sends PKCE (S256) on the authorization-code flow.
+  pkce_code_challenge_method   = "S256"
+
+  # Explicit from sops so the same value can go to the Forgejo side; ends
+  # up in the tofu state, same accepted exposure as the SMTP secret.
+  client_secret = data.sops_file.secrets.data["forgejo_client_secret"]
+
+  # Forgejo's callback path embeds the auth source's NAME (step 4.4).
+  valid_redirect_uris = [
+    "https://git.ritter.family/user/oauth2/Keycloak/callback"
+  ]
+}
+```
+
+@@ modules/nixos/forgejo.nix @@
+
+```diff
+       services.forgejo = {
+         enable = true;
+         database.type = "sqlite3";
+         settings = {
++          # Keycloak SSO (PR 4): link IdP identities onto existing accounts
++          # by e-mail; auto-create accounts for users that exist in the
++          # IdP. Safe because the realm has registration off — every
++          # account is admin-provisioned, with unique admin-set e-mails.
++          "oauth2_client" = {
++            ENABLE_AUTO_REGISTRATION = true;
++            ACCOUNT_LINKING = "auto";
++            USERNAME = "preferred_username";
++          };
+           server = {
+             DOMAIN = "git.ritter.family";
+```
+
+```diff
+       sops.secrets."forgejo/admin-user-password".owner = "forgejo";
++      sops.secrets."forgejo/keycloak-client-secret".owner = "forgejo";
+       systemd.services.forgejo.preStart =
+         let
+-          adminCmd = "${lib.getExe config.services.forgejo.package} admin user";
++          forgejoCmd = "${lib.getExe config.services.forgejo.package}";
++          adminCmd = "${forgejoCmd} admin user";
+           pwd = config.sops.secrets."forgejo/admin-user-password";
++          keycloakSecret = config.sops.secrets."forgejo/keycloak-client-secret";
+           user = "britter"; # Note, Forgejo doesn't allow creation of an account named "admin"
+         in
+         ''
+           ${adminCmd} create --admin --email "root@localhost" --username ${user} --password "$(tr -d '\n' < ${pwd.path})" || true
+           ## uncomment this line to change an admin user which was already created
+           # ${adminCmd} change-password --username ${user} --password "$(tr -d '\n' < ${pwd.path})" || true
++
++          # Keycloak OAuth2 source. Idempotent: created once, never touched
++          # again (grep-guard). The callback URL on the Keycloak side must
++          # be /user/oauth2/Keycloak/callback — it embeds the source NAME.
++          ${forgejoCmd} admin auth list | grep -q Keycloak || \
++            ${forgejoCmd} admin auth add-oauth \
++              --name=Keycloak \
++              --provider=openidConnect \
++              --key=forgejo \
++              --secret="$(tr -d '\n' < ${keycloakSecret.path})" \
++              --auto-discover-url=https://account.ritter.family/realms/ritter/.well-known/openid-configuration \
++              --scopes='openid email profile'
+         '';
+```
+
+### 4.4 Verify, merge, check
+
+```bash
+nix flake check && nix fmt
+```
+
+The PR's pipeline plan comment must show `+ keycloak_openid_client.forgejo`
+only. Merge; the pipeline applies the client, and comin switches
+srv-prod-6 (its `preStart` creates the auth source — check its journal):
+
+```bash
+ssh root@srv-prod-6.ritter.family \
+  'journalctl -u forgejo --since "-10min" --no-pager | grep -iE "keycloak|auth" | tail'
+```
+
+Then the end-to-end login (the goal): open `https://git.ritter.family` in
+a fresh/incognito window → the login page shows a **Keycloak** SSO button →
+click it → redirect to `account.ritter.family/realms/ritter` → log in as
+`bene` → back in Forgejo, signed in as `britter` (linked by e-mail, no
+local password asked — `ACCOUNT_LINKING = "auto"`).
+
+**Rollback (PR 4):** revert; comin switches back and the pipeline apply
+deletes the Keycloak client. Forgejo's auth source stays in its database
+pointing at a missing client — remove it if it bothers anyone:
+`forgejo admin auth delete <id>` (or via the admin UI).
+
 ## Known effects
 
 - **Certificate churn**: two new Let's Encrypt certs (one on srv-prod-1, one
@@ -1033,3 +1187,6 @@ URL that points into it.
 - [ ] PR 3 prepared (step 3.1 incl. SMTP credentials), merged, realm + bene
       user + SMTP applied and verified (step 3.4: account login, SMTP test
       mail, forgot-password)
+- [ ] PR 4: secrets (step 4.1) + Forgejo e-mail click-ops (step 4.2),
+      merged, Keycloak client applied, login into Forgejo as `britter` via
+      Keycloak verified — today's goal
