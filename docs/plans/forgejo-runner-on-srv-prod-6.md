@@ -57,19 +57,21 @@ the guest, in the generic runner aspect, as the nftables table
   is dropped. Container↔container on the same job network keeps working
   (`iifname == oifname` on the podman bridges); different job networks stay
   isolated.
-- INPUT: containers may only reach DNS (aardvark-dns, port 53) and the
-  pinned action-cache proxy (`cache.proxy_port = 32230`) on their network
-  gateway. Everything else on private destination addresses (sshd, nginx,
-  beszel-agent, the tailnet IP) is dropped — at priority `-10`, so it wins
-  over the generic `allowedTCPPorts` accepts of the nixos-fw input chain
-  (priority 0). The DNS/cache *accepts* exist twice: once in this table
-  (before the drop, which would otherwise swallow them first) and once in
-  nixos-fw (`networking.firewall.extraInputRules`, whose default-drop
-  would otherwise kill them last). An accept in one nftables table does
-  not exempt a packet from another table's rules — learned the hard way:
-  the first rollout dropped container DNS (`wget: bad address`) because
-  the accepts only lived in nixos-fw, the second because they only lived
-  in container-egress.
+- DNS: allowed as a protocol to any resolver, in both chains. The UniFi
+  gateway is the network's primary resolver and podman/act hand containers
+  the host's resolv.conf, so queries target private addresses
+  (`192.168.30.1`). Public-resolver DNS was never blocked, so this adds no
+  risk — the original gateway-scoped accepts broke container DNS
+  (`wget: bad address`, found by the post-deploy probes).
+- INPUT: containers may reach the pinned action-cache proxy
+  (`cache.proxy_port = 32230`) on their network gateway. Everything else
+  on private destination addresses (sshd, nginx, beszel-agent, the
+  tailnet IP) is dropped — at priority `-10`, so it wins over the generic
+  `allowedTCPPorts` accepts of the nixos-fw input chain (priority 0). The
+  DNS/cache *accepts* exist twice — in this table (before the drop) and
+  in nixos-fw (`networking.firewall.extraInputRules`) — because an accept
+  in one nftables table does not exempt a packet from another table's
+  default-drop.
 
 Side effect: `networking.nftables.enable = true` switches the NixOS firewall
 rendering from the iptables to the nftables backend on this host. The

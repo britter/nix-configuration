@@ -49,12 +49,12 @@ _: {
       # - FORWARD: drops to private/link-local/tailnet ranges. Container
       #   pairs on the same job network keep working (iif == oif); different
       #   job networks stay isolated from each other.
-      # - INPUT: containers may only reach DNS (aardvark-dns) and the pinned
-      #   action-cache proxy on their network gateway. Everything else on
-      #   private addresses (sshd, nginx, beszel-agent, the tailnet IP) is
-      #   dropped. The chains hook at priority -10 so these drops are
-      #   evaluated before the generic port accepts of the nixos-fw input
-      #   chain (priority 0).
+      # - INPUT: containers may only reach DNS and the pinned action-cache
+      #   proxy on this host. Everything else on private destination
+      #   addresses (sshd, nginx, beszel-agent, the tailnet IP) is dropped.
+      #   The chains hook at priority -10 so these drops are evaluated
+      #   before the generic port accepts of the nixos-fw input chain
+      #   (priority 0).
       #
       # Cross-table accepts: every input-hooking table must accept the
       # DNS/cache traffic on its own — an accept in one table does not
@@ -76,6 +76,14 @@ _: {
 
               ct state established,related accept
 
+              # DNS is allowed as a protocol, to any resolver: the UniFi
+              # gateway is the network's primary resolver and podman/act
+              # hand containers the host's resolv.conf, so queries target
+              # private addresses. DNS to public resolvers was never
+              # blocked, so this does not widen the policy meaningfully.
+              iifname "podman*" udp dport 53 accept
+              iifname "podman*" tcp dport 53 accept
+
               iifname "podman*" oifname "podman*" accept
 
               iifname "podman*" ip daddr {
@@ -91,14 +99,11 @@ _: {
 
               ct state established,related accept
 
-              # Mirror of the extraInputRules accepts below. Both are needed:
-              # without this mirror the drop rule would swallow DNS/cache
-              # traffic before the nixos-fw accept ever sees it, and without
-              # the nixos-fw accept its default-drop would kill what this
-              # table lets through. Accepts in one table do not protect a
-              # packet in the other.
-              iifname "podman*" ip daddr 10.0.0.0/8 udp dport 53 accept
-              iifname "podman*" ip daddr 10.0.0.0/8 tcp dport { 53, ${toString cacheProxyPort} } accept
+              # DNS + action-cache proxy accepts — mirrored with the
+              # extraInputRules rules below (both tables must accept on
+              # their own; see the comment above).
+              iifname "podman*" udp dport 53 accept
+              iifname "podman*" tcp dport { 53, ${toString cacheProxyPort} } accept
 
               iifname "podman*" ip daddr {
                 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16,
@@ -110,12 +115,15 @@ _: {
       };
 
       # Allowed container-to-host traffic, accepted inside the nixos-fw
-      # input chain (see the comment above for why it cannot live in the
-      # container-egress table): DNS via aardvark-dns and the pinned
-      # action-cache proxy on the podman networks' gateways.
+      # input chain (mirrored in the container-egress table — every
+      # input-hooking table must accept on its own, see above): DNS as a
+      # protocol (the host's resolver, the UniFi gateway, sits on a private
+      # address and its address is what containers get in their
+      # resolv.conf) and the pinned action-cache proxy on the podman
+      # networks' gateways.
       networking.firewall.extraInputRules = ''
-        iifname "podman*" ip daddr 10.0.0.0/8 udp dport 53 accept
-        iifname "podman*" ip daddr 10.0.0.0/8 tcp dport { 53, ${toString cacheProxyPort} } accept
+        iifname "podman*" udp dport 53 accept
+        iifname "podman*" tcp dport { 53, ${toString cacheProxyPort} } accept
       '';
     };
 }
