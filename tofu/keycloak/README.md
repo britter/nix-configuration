@@ -5,8 +5,11 @@ its users — and the OIDC clients of the services that use it for single
 sign-on: one `keycloak_openid_client` resource per service.
 
 The Keycloak server itself is deployed with NixOS on srv-prod-1, see
-[nix-configuration](https://github.com/britter/nix-configuration) and
-`docs/plans/keycloak-sso-on-srv-prod-1.md`.
+[nix-configuration](https://github.com/britter/nix-configuration): the
+deployment plan is archived at
+`docs/plans/archive/2026-10-29-keycloak-sso-on-srv-prod-1.md`, and the
+first OIDC client (Forgejo) is onboarded per
+`docs/plans/forgejo-keycloak-sso-on-srv-prod-6.md`.
 
 ## Credentials
 
