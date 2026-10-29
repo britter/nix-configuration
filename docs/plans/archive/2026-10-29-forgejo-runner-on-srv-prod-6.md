@@ -1,8 +1,9 @@
 # forgejo-runner on srv-prod-6
 
-**Status:** ⏳ ready to merge — code, hardening, docs, UUID, and sops token
-all in place; full `srv-prod-6` toplevel builds. Pending: commit/PR/merge,
-then post-deploy verification (phase 3/4 below)
+**Status:** ✅ done (2026-10-29) — deployed on srv-prod-6, network hardening
+proven by probes (internet egress + DNS work, all private-destination
+probes time out with drop counters firing), and the Renovate workflow
+completes end to end (phase 4).
 **Goal:** host a Forgejo runner on `srv-prod-6` that executes the Renovate
 workflow of https://codeberg.org/britter/nixpkgs-pr
 (`.forgejo/workflows/renovate.yaml`).
@@ -164,6 +165,15 @@ the runner on the Codeberg runner list flips to "idle".
 **Check:** the workflow run completes; depending on findings, Renovate opens
 PRs against the repository.
 
+**Outcome (2026-10-29):** the first dispatch failed at startup with "Init:
+Authentication failure" — Renovate's initial API call (`GET /api/v1/user`)
+needs the `user` scope, which Forgejo forbids on repository-bound tokens
+(they can only carry repo and issue scopes). Fixed by making the
+`britters-bot` token account-wide with the full scope set (see
+`renovate.md`): the token cannot be bound to the repository, so the
+account's own single-repository access is the least-privilege boundary.
+Subsequent runs complete successfully.
+
 ### Phase 5 — verify the network hardening
 
 The drop rules are silent by design, so verification combines observable
@@ -258,5 +268,5 @@ ongoing signal of blocked egress attempts.
   `modules/hosts/srv-prod-6/services/renovate.md` covers the workflow, the
   two repository secrets (`RENOVATE_TOKEN`, `GH_TOKEN`) and where they
   were generated, and the dedicated `britters-bot` account (Proton alias,
-  commit attribution). Verify the token-scope details noted there against
-  what was actually selected.
+  commit attribution) — including the token scopes as actually configured
+  (account-wide token, full scope set).

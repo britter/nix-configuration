@@ -33,9 +33,23 @@ this repository, or in the runner's configuration.
 
 - `RENOVATE_TOKEN` — a Codeberg access token of the `britters-bot` account
   (generated while logged in as `britters-bot` under Settings →
-  Applications → Access Tokens). It needs repository read/write scope:
-  Renovate uses it to clone, push update branches, and open PRs against
-  `https://codeberg.org/api/v1` (`RENOVATE_ENDPOINT`).
+  Applications → *Access Tokens* — not the "OAuth2 Applications" section
+  further up the same page). Renovate uses it to clone, push update
+  branches, and open PRs against `https://codeberg.org/api/v1`
+  (`RENOVATE_ENDPOINT`). Grant the scopes from the
+  [Renovate Forgejo docs](https://docs.renovatebot.com/modules/platform/forgejo/):
+  `read:user`, `read:repository`, `write:repository`, `read:issue`,
+  `write:issue`, `read:organization`.
+
+  The token must be **account-wide** — do not select the "limited to
+  specific repositories" option. Forgejo only allows repo and issue scopes
+  on repository-bound tokens, but Renovate needs the user and organization
+  scopes too: its startup probe is `GET /api/v1/user` (fails with "Init:
+  Authentication failure" without `read:user`), and repository
+  initialization probes `GET /orgs/<owner>` to detect org repos. With a
+  repository-bound token both calls 403 and the run dies at startup.
+  The least-privilege boundary is therefore the bot account itself, which
+  has collaborator access to `nixpkgs-pr` only (see above).
 
   It must be a `britters-bot` token, not one from the personal account: a
   personal-account token could write to every repository the account can
