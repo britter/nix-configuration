@@ -40,9 +40,11 @@ resource "keycloak_realm" "homelab" {
 # passwords are set by the user via the console or the forgot-password
 # mail; an initial_password would land in the tofu state.
 resource "keycloak_user" "bene" {
-  realm_id = keycloak_realm.homelab.id
-  username = "bene"
-  enabled  = true
+  realm_id   = keycloak_realm.homelab.id
+  username   = "bene"
+  first_name = "Benedikt"
+  last_name  = "Ritter"
+  enabled    = true
 
   email          = "beneritter@gmail.com"
   email_verified = true
