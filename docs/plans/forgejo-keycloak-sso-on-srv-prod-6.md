@@ -1,11 +1,13 @@
 # Forgejo on srv-prod-6: first Keycloak client (staged rollout)
 
-**Status:** active. Part A (SMTP mailer) is code-complete and
-key-complete, **not yet merged** — `nix flake check` and `nix fmt` pass
-on the `forgejo-keycloak-sso` branch, the sops keys were written and
-their nesting verified (2026-10-29). Part B (the SSO client) is drafted
-and gated behind Part A's click-ops. The Keycloak deployment this builds
-on is complete and archived at
+**Status:** active. Part A (SMTP mailer) is **merged and verified**:
+comin switched srv-prod-6, and the admin UI (Site Administration →
+Configuration → Mailer Configuration) shows the SMTP settings; the
+built-in "Send test email" form delivered a test mail successfully
+(2026-10-29). A.4 (the e-mail click-ops on `britter`) is in progress —
+that is the gate for Part B. Part B (the SSO client) is drafted and
+gated behind A.4. The Keycloak deployment this builds on is complete and
+archived at
 [`docs/plans/archive/2026-10-29-keycloak-sso-on-srv-prod-1.md`](archive/2026-10-29-keycloak-sso-on-srv-prod-1.md)
 (realm `homelab`, issuer `https://account.ritter.family/realms/homelab`,
 `bene` user with e-mail set and verified in Keycloak, realm SMTP
@@ -470,6 +472,20 @@ Deliberately unchanged, with reasons:
   realm already has `registration_allowed = false` (archived plan,
   PR 3), which is what makes `ENABLE_AUTO_REGISTRATION` safe.
 
+## Follow-ups (after the rollout)
+
+- **Split `tofu/keycloak/main.tf`** — it holds the realm, the users, and
+  (since Part B) the first client; one file per concern makes the root
+  scale. Target layout mirrors the repo's other tofu roots (proxmox
+  keeps one file per host; dns splits per provider directory):
+  `realm.tf` (realm + SMTP config), `users.tf` (personal identities),
+  `client-forgejo.tf` (per-service files; future clients get one file
+  each). Move with `git mv`, not delete-and-recreate. The split is
+  state-neutral — no import, no state surgery — and its `tofu plan`
+  must print **No changes.** to prove that. Timing: after
+  `bene-fullname`'s `main.tf` edits land *and* Part B is verified in
+  production (B.4), so the split PR carries zero behavior.
+
 ## Status
 
 - ✅ Repository exploration: Forgejo 15.0.10 on srv-prod-6 (package flags
@@ -480,12 +496,22 @@ Deliberately unchanged, with reasons:
   `forgejo:`; underscore miskeys cleaned up)
 - ✅ A.2 module changes verified: `nix flake check` all-pass,
   `preStart`/app.ini evaluated, `restartUnits` resolved per secret
-- ⏳ A.3 merge PR Part A, comin switches srv-prod-6, journal shows the
-  switch, and login behavior unchanged
-- ⏳ A.4 e-mail click-ops on `britter`: `beneritter@gmail.com` set,
-  verified via the activation mail from `git@ritter.family` — gate for Part B
+- ✅ A.3 merged; comin switched srv-prod-6; the admin UI (Site
+      Administration → Configuration → Mailer Configuration) shows
+      protocol `smtp+starttls`, `smtp-relay.brevo.com:587`, and the SMTP
+      login; the built-in "Send test email" delivered a test mail
+      (2026-10-29) — the mailer works end to end
+- ⏳ A.4 e-mail click-ops on `britter` (in progress): set
+      `beneritter@gmail.com`, complete the activation mail, make it
+      primary — gate for Part B
 - ⏳ B.1 client secret stored twice (`secrets.json` +
   srv-prod-6 yaml; nested paths)
-- ⏳ B.2 Part B code branches off A (tofu client resource + forgejo SSO
-  bits), `tofu plan` shows `+ keycloak_openid_client.forgejo` only
-- ⏳ B.3/B.4 merged/applied/switched; first SSO login lands in `britter`
+- ✅ B.2 Part B code prepared on the `forgejo-sso` branch (tofu client
+  resource + forgejo SSO bits): `nix flake check` all-pass,
+  `tofu fmt -check` exit 0, `tofu validate` Success, `preStart` and
+  app.ini `[oauth2_client]` evaluated, client-secret sops wiring with
+  `restartUnits` verified
+- ⏳ B.3 merged/applied/switched: pipeline plan comment shows
+  `+ keycloak_openid_client.forgejo` only, comin switches srv-prod-6,
+  `preStart` creates the auth source (journal + `admin auth list`)
+- ⏳ B.4 first SSO login lands in `britter`
