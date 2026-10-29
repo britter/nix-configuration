@@ -128,6 +128,13 @@ Deliberately unchanged, with reasons:
 - **`restic-restore`**: srv-prod-1 gets it via `system-server`; no change.
 - **Master realm e-mail**: only the `ritter` realm gets SMTP (PR 3). Realm
   e-mail is per-realm by design, and master-realm users never receive mail.
+- **Brevo SMTP keys**: dashboard-managed. Brevo's API does not expose SMTP
+  key management (the community `bbieniek/brevo` provider covers senders,
+  domains, templates, webhooks — but not keys), so keys are created once
+  per service in the dashboard and stored in sops; everything that *uses*
+  them is tofu-managed (the realm's SMTP config, PR 3). Managing Brevo
+  senders via `bbieniek/brevo` was considered and declined for now: the
+  required API key is a far bigger secret than an SMTP key.
 
 ## PR 1 — deploy the IdP
 
@@ -564,18 +571,31 @@ the account console, forgot-password) take the same response path in the
 
 ### 2.1 Prepare restic secrets (idempotent: no — run once, after PR 1's object-storage apply)
 
+The credential maps are child-module outputs
+(`tofu/object-storage/garage/outputs.tf`), which `tofu output` cannot
+reach — pull them from the state instead. `cd` into the root first:
+`-chdir` does not fire direnv, so the state-bucket credentials would be
+missing.
+
 ```bash
-creds=$(tofu -chdir=tofu/object-storage output -json restic_user_credentials \
-  | jq -r '.value.keycloak')
+cd tofu/object-storage   # direnv loads this root's state-bucket credentials
+state=$(tofu state pull)
+cd ../..
+
+# Garage key attributes are access_key_id / secret_access_key.
+restic_id=$(echo "$state" | jq -r '.resources[] | select(.module=="module.srv-prod-3-garage" and .type=="garage_key" and .name=="restic_users") | .instances[] | select(.index_key=="keycloak") | .attributes.access_key_id')
+restic_secret=$(echo "$state" | jq -r '.resources[] | select(.module=="module.srv-prod-3-garage" and .type=="garage_key" and .name=="restic_users") | .instances[] | select(.index_key=="keycloak") | .attributes.secret_access_key')
 
 # jq without -r emits the value as a JSON string, which is exactly what
 # sops set --value-stdin expects.
-echo "$creds" | jq .access_key | sops set modules/hosts/srv-prod-1/secrets.yaml \
+echo "$restic_id" | jq -R . | sops set modules/hosts/srv-prod-1/secrets.yaml \
   '["restic"]["keycloak"]["garage-access-key-id"]' --value-stdin
-echo "$creds" | jq .secret_key | sops set modules/hosts/srv-prod-1/secrets.yaml \
+echo "$restic_secret" | jq -R . | sops set modules/hosts/srv-prod-1/secrets.yaml \
   '["restic"]["keycloak"]["garage-secret-access-key"]' --value-stdin
 openssl rand -base64 24 | tr -d '/+=' | jq -R . | sops set modules/hosts/srv-prod-1/secrets.yaml \
   '["restic"]["keycloak"]["repository-password"]' --value-stdin
+
+unset state restic_id restic_secret
 ```
 
 ### 2.2 Repo changes
@@ -749,15 +769,28 @@ echo unused | jq -R . | sops set modules/hosts/srv-prod-1/secrets.yaml \
 
 ### 3.1 Finish secrets.json (idempotent: yes — `sops set` overwrites each key)
 
-```bash
-creds=$(tofu -chdir=tofu/object-storage output -json managed_state_user_credentials \
-  | jq -r '.value.keycloak')
+The state-bucket credentials: same child-module-output situation as in
+step 2.1 — pull from the state, from inside the root (direnv):
 
-echo "$creds" | jq .access_key | sops set tofu/keycloak/secrets.json \
+```bash
+cd tofu/object-storage   # direnv loads this root's state-bucket credentials
+state=$(tofu state pull)
+cd ../..
+
+state_id=$(echo "$state" | jq -r '.resources[] | select(.module=="module.srv-prod-3-garage" and .type=="garage_key" and .name=="state_users") | .instances[] | select(.index_key=="keycloak") | .attributes.access_key_id')
+state_secret=$(echo "$state" | jq -r '.resources[] | select(.module=="module.srv-prod-3-garage" and .type=="garage_key" and .name=="state_users") | .instances[] | select(.index_key=="keycloak") | .attributes.secret_access_key')
+
+echo "$state_id" | jq -R . | sops set tofu/keycloak/secrets.json \
   '["state_bucket_key_id"]' --value-stdin
-echo "$creds" | jq .secret_key | sops set tofu/keycloak/secrets.json \
+echo "$state_secret" | jq -R . | sops set tofu/keycloak/secrets.json \
   '["state_bucket_secret_key"]' --value-stdin
+unset state state_id state_secret
 ```
+
+(Improvement candidate, not needed today: surface the garage module's
+credential maps as root-level outputs in `tofu/object-storage/main.tf` —
+the module already computes them in exactly the shape these commands
+assume; `tofu output` would then replace the state-pull jq.)
 
 Then add the Brevo SMTP credentials — the account also serves vaultwarden
 on srv-prod-2, so create a separate SMTP key for Keycloak in the Brevo
