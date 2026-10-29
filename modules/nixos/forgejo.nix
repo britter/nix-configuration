@@ -33,7 +33,7 @@ _: {
           # Safe because the realm has registration off — every account is
           # admin-provisioned, with unique admin-set e-mails — and because
           # the account e-mails were activated first (forgejo plan, part A
-          # gate: docs/plans/forgejo-keycloak-sso-on-srv-prod-6.md).
+          # gate: docs/plans/archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md).
           "oauth2_client" = {
             ENABLE_AUTO_REGISTRATION = true;
             ACCOUNT_LINKING = "auto";

@@ -1,17 +1,20 @@
 # Forgejo on srv-prod-6: first Keycloak client (staged rollout)
 
-**Status:** active. Part A (SMTP mailer) is **merged and verified**:
-comin switched srv-prod-6, and the admin UI (Site Administration →
-Configuration → Mailer Configuration) shows the SMTP settings; the
-built-in "Send test email" form delivered a test mail successfully
-(2026-10-29). A.4 (the e-mail click-ops on `britter`) is in progress —
-that is the gate for Part B. Part B (the SSO client) is drafted and
-gated behind A.4. The Keycloak deployment this builds on is complete and
-archived at
-[`docs/plans/archive/2026-10-29-keycloak-sso-on-srv-prod-1.md`](archive/2026-10-29-keycloak-sso-on-srv-prod-1.md)
+**Status:** complete (2026-10-29), archived per AGENTS.md — the Keycloak
+deployment it builds on is archived at
+[`docs/plans/archive/2026-10-29-keycloak-sso-on-srv-prod-1.md`](2026-10-29-keycloak-sso-on-srv-prod-1.md)
 (realm `homelab`, issuer `https://account.ritter.family/realms/homelab`,
 `bene` user with e-mail set and verified in Keycloak, realm SMTP
-working).
+working). Part A: Forgejo's declarative SMTP mailer is live on
+srv-prod-6 (module-verified in the admin UI; send-test-email delivered).
+Part B: PR #332 merged, the `OpenTofu Keycloak` pipeline applied
+`keycloak_openid_client.forgejo`, comin switched srv-prod-6, and the
+first SSO login landed in `britter` (linked by e-mail, admin badge
+intact). An authorization-endpoint probe independently confirmed the
+client accepts the Forgejo callback and enforces PKCE: the probe's
+hand-built authorize request was refused precisely with
+"Missing parameter: code_challenge_method" after client and redirect-URI
+validation.
 
 Status marks: ✅ done, ⏳ pending. Part A's rollout ends with the
 account e-mail activated; Part B ends with the first SSO login landing
@@ -410,6 +413,23 @@ secret in both sops files can stay until the next rotation.
   `forgejo admin auth update-oauth --id=<id from 'forgejo admin auth list'> --secret="$(cat /run/secrets/forgejo/keycloak-client-secret)"`
   — or edit it in the Forgejo admin UI under Authentication → Keycloak.
   Run it *after* the apply, not before.
+- **Provisioning a new person (e.g. a son) is Keycloak-side + their first
+  login.** Add a `keycloak_user` (tofu or console): the Keycloak
+  *username* becomes the Forgejo handle (via `preferred_username`), the
+  e-mail must be **unique across Forgejo's userbase** — a reuse would
+  silently link and sign into that existing account (this is the
+  destructive edge of `ACCOUNT_LINKING = "auto"`). Set
+  `email_verified = true` and give the person a Keycloak credential
+  (console-set *temporary* password → forced change on first login, or
+  the forgot-password mail). On first SSO login Forgejo auto-creates an
+  **active, non-admin, non-restricted** account with the IdP e-mail and
+  an external-login entry keyed by Keycloak `sub` (renames in Keycloak
+  keep the linkage intact). No local password exists on auto-created
+  accounts — generate an access token from their web session for
+  git-over-HTTPS, set a Forgejo password via the forgot-password flow if
+  wanted, and grant repository/organization access in Forgejo as
+  needed (access control stays Forgejo-side). Only takes effect once
+  Part B ships and `preStart` has created the auth source.
 - **The client secret lives in two sops files and in tofu state.**
   Operator-generated, because it must be identical in stores nothing can
   cross-read (`secrets.json` for the CI apply, srv-prod-6's yaml for the
@@ -424,6 +444,19 @@ secret in both sops files can stay until the next rotation.
   with nothing (one key per service); activation mails and future
   password-reset mails to Forgejo users come from this sender. The
   `git@ritter.family` sender must stay validated in Brevo.
+- **Machine/API clients are unaffected by SSO.** Git over HTTPS still
+  authenticates with username+password or username+access-token — the
+  credential is checked locally (`britter` keeps a normal local account
+  and its password; auth sources only add a method to the *web* login
+  flow), and access tokens are invisible to Keycloak entirely. The
+  Forgejo API (pat/session/token headers), its own OAuth2 provider
+  endpoints, and instance-level tokens (Actions runner registration,
+  `forgejo-cli actions`) never route through the authentication source
+  either — the Actions runner configured on srv-prod-6 targets
+  codeberg.org, so it is untouched. One effect for *auto-registered*
+  users (not `britter`): those accounts start without a local password,
+  so their git-over-HTTPS needs an access token created from the web
+  session, or a password set through the forgot-password flow.
 - **Transient SSO unavailability on Keycloak deploys.** Every srv-prod-1
   switch restarts Keycloak (~15–30 s); during that window, SSO redirects
   fail briefly. Password login into Forgejo is unaffected. Covered by
@@ -501,17 +534,22 @@ Deliberately unchanged, with reasons:
       protocol `smtp+starttls`, `smtp-relay.brevo.com:587`, and the SMTP
       login; the built-in "Send test email" delivered a test mail
       (2026-10-29) — the mailer works end to end
-- ⏳ A.4 e-mail click-ops on `britter` (in progress): set
-      `beneritter@gmail.com`, complete the activation mail, make it
-      primary — gate for Part B
-- ⏳ B.1 client secret stored twice (`secrets.json` +
-  srv-prod-6 yaml; nested paths)
+- ✅ A.4 e-mail click-ops: `beneritter@gmail.com` set, verified, and
+      primary on `britter` — evidenced by the SSO test landing directly
+      in `britter` with the admin badge; no auto-registered account
+      appeared (e-mail match resolved first)
+- ✅ B.1 client secret stored twice (`secrets.json` +
+      srv-prod-6 yaml; nested paths; verified by structural check before
+      the PR went up)
 - ✅ B.2 Part B code prepared on the `forgejo-sso` branch (tofu client
   resource + forgejo SSO bits): `nix flake check` all-pass,
   `tofu fmt -check` exit 0, `tofu validate` Success, `preStart` and
   app.ini `[oauth2_client]` evaluated, client-secret sops wiring with
   `restartUnits` verified
-- ⏳ B.3 merged/applied/switched: pipeline plan comment shows
-  `+ keycloak_openid_client.forgejo` only, comin switches srv-prod-6,
-  `preStart` creates the auth source (journal + `admin auth list`)
-- ⏳ B.4 first SSO login lands in `britter`
+- ✅ B.3 PR #332 merged 2026-10-29; pipeline applied
+      `keycloak_openid_client.forgejo`; comin switched srv-prod-6 and
+      `preStart` created the auth source; the pre-merge plan comment
+      showed `+ keycloak_openid_client.forgejo` only
+- ✅ B.4 first SSO login lands in `britter` (confirmed by operator
+      2026-10-29); the authorization endpoint probe confirms the client
+      and redirect URI are wired as declared

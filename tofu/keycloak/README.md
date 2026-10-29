@@ -9,7 +9,8 @@ The Keycloak server itself is deployed with NixOS on srv-prod-1, see
 deployment plan is archived at
 `docs/plans/archive/2026-10-29-keycloak-sso-on-srv-prod-1.md`, and the
 first OIDC client (Forgejo) is onboarded per
-`docs/plans/forgejo-keycloak-sso-on-srv-prod-6.md`.
+`docs/plans/archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md`
+(both complete).
 
 ## Credentials
 

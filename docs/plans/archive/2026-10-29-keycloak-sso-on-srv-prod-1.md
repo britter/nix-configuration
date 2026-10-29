@@ -13,7 +13,7 @@ The first-client work (Forgejo) was split out mid-execution because its
 rollout order is constrained — Forgejo's SMTP mailer must be live and
 the account e-mail activated before any SSO behavior ships — and now
 lives in
-[`docs/plans/forgejo-keycloak-sso-on-srv-prod-6.md`](../forgejo-keycloak-sso-on-srv-prod-6.md).
+[`docs/plans/archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md`](2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md).
 This archive covers the Keycloak deployment itself (PRs 1–3).**
 
 ## Chosen approach
@@ -107,7 +107,7 @@ Changed (PR 3):
 - `tofu/README.md` — root list
 
 Changed by the Forgejo plan (split out): see
-docs/plans/forgejo-keycloak-sso-on-srv-prod-6.md.
+docs/plans/archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md.
 
 Deliberately unchanged, with reasons:
 
@@ -1077,7 +1077,7 @@ otherwise auto-register a brand-new non-admin account instead of
 linking into `britter`).
 
 The staged runbook lives in
-[`docs/plans/forgejo-keycloak-sso-on-srv-prod-6.md`](../forgejo-keycloak-sso-on-srv-prod-6.md)
+[`docs/plans/archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md`](2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md)
 (Part A: SMTP mailer → account e-mail click-ops; Part B: the SSO
 client). This archive ends after PR 3.
 
@@ -1144,5 +1144,5 @@ client). This archive ends after PR 3.
       forgot-password flow, which verified the SMTP path end to end
       (realm named `homelab` — see the header correction)
 - ⇨ PR 4 (Forgejo onboarding) was split out mid-execution; its runbook
-  and status live in docs/plans/forgejo-keycloak-sso-on-srv-prod-6.md.
+  and status live in docs/plans/archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md.
   This archive ends after PR 3 (PR 4b never became part of this plan).
