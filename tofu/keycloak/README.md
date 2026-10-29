@@ -34,6 +34,41 @@ Users created by tofu (`keycloak_user`) get no password from tofu — a
 password in the tofu state would be a liability. Set passwords via the
 admin console or the forgot-password mail.
 
+## Restricting who can use a client (per-service gate)
+
+By default, every enabled realm user can authenticate against every
+*enabled* OIDC client — Keycloak has no implicit per-client
+user allow-list. When a service must only be usable by specific people
+(the PVE hypervisor, for example), build the gate in tofu:
+
+1. One realm role per service, assigned only to the intended users:
+   `keycloak_role`, then `keycloak_user_realm_roles` (or the group
+   route — `keycloak_group` + `keycloak_group_memberships` +
+   `keycloak_group_roles` — when several users share the grant).
+
+2. Gate the client with fine-grained authorization: enable
+   Authorization Services on the client
+   (`keycloak_openid_client` gains `authorization_services_enabled` +
+   `policy_enforcement_mode = "ENFORCING"`), define a role policy
+   (`keycloak_openid_client_authorization_policy`) over the gate role,
+   and attach it with
+   `keycloak_openid_client_authorization_permission`. Users without the
+   role are rejected by Keycloak at the authorization step — before the
+   application ever sees them.
+
+3. Keep the application's own authorization model as defense in depth.
+   For PVE specifically: its native OIDC realm (issuer, client id and
+   secret, autocreate) sits on top of PVE's own ACL system — an OIDC
+   user gets no PVE privileges until PVE roles are granted there, so
+   the Keycloak gate plus "grant nothing in PVE" double-locks the
+   hypervisor. Lock both layers when onboarding PVE.
+
+Roles *inside* an application are not a Keycloak concern: Keycloak only
+delivers claims (realm roles, client roles, groups) and the mapping is
+per app. The Forgejo auth source supports `--group-claim-name` /
+`--admin-group` for claim-driven promotion; PVE does not consume
+claims for authorization at all — its own users/ACLs are authoritative.
+
 ## Break-glass: lost admin access
 
 ```bash
