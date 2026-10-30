@@ -14,6 +14,17 @@ _: {
         owner = "nextcloud";
       };
 
+      sops.templates."nextcloud/mail-secrets.json" = {
+        owner = "nextcloud";
+        restartUnits = [ "phpfpm-nextcloud.service" ];
+        content = builtins.toJSON {
+          mail_smtpname = config.sops.placeholder."nextcloud/smtp-username";
+          mail_smtppassword = config.sops.placeholder."nextcloud/smtp-password";
+        };
+      };
+      sops.secrets."nextcloud/smtp-username" = { };
+      sops.secrets."nextcloud/smtp-password" = { };
+
       services.nextcloud = {
         enable = true;
         package = pkgs.nextcloud35;
@@ -22,9 +33,17 @@ _: {
         config = {
           dbtype = "pgsql";
         };
+        secretFile = config.sops.templates."nextcloud/mail-secrets.json".path;
         settings = {
           trusted_domains = [ "nextcloud.ritter.family" ];
           trusted_proxies = [ config.home-lab.hosts.directions.ip ];
+          mail_domain = "ritter.family";
+          mail_from_address = "nextcloud";
+          mail_smtpmode = "smtp";
+          mail_smtphost = "smtp-relay.brevo.com";
+          mail_smtpport = 587;
+          mail_smtpsecure = "tls";
+          mail_smtpauth = true;
           default_language = "de";
           default_locale = "de_DE";
           reduce_to_languages = [
