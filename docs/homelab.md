@@ -20,6 +20,23 @@ All of this configuration should be part of the backups, so it's only required t
 1. Configure URL of Collabora Online Server to point to the server
 2. Configure Allow list to only allow 172.17.0.2 (IP of the collabora docker container)
 
+### Proxmox VE
+
+OIDC realm `keycloak` backed by the Keycloak `homelab` realm (client
+`pve`, tofu-managed in `tofu/keycloak/client-pve.tf`). Created once via:
+
+    pveum realm add keycloak --type openid \
+      --issuer-url https://account.ritter.family/realms/homelab \
+      --client-id pve --client-key <secret-from-sops/tofu-keycloak> \
+      --username-claim username --autocreate 1
+
+Auto-created users (`<username>@keycloak`, e.g. `bene@keycloak`) have no
+privileges until granted via `pveum acl modify`; `root@pam` is
+break-glass. A recreated hypervisor needs this command again plus
+`pveum acl modify`. SSO logins only support entering via
+`https://pve.ritter.family` (direct IP access registers a different
+redirect origin, see `docs/plans/proxmox-keycloak-sso.md`).
+
 
 ## Repository layout
 

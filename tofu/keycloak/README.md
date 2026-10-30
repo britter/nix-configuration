@@ -38,32 +38,40 @@ admin console or the forgot-password mail.
 ## Restricting who can use a client (per-service gate)
 
 By default, every enabled realm user can authenticate against every
-*enabled* OIDC client — Keycloak has no implicit per-client
-user allow-list. When a service must only be usable by specific people
-(the PVE hypervisor, for example), build the gate in tofu:
+*enabled* OIDC client — Keycloak has no implicit per-client user
+allow-list. What vanilla Keycloak also lacks is any built-in way to
+restrict *one given client* to specific users when the login itself
+flows through it:
 
-1. One realm role per service, assigned only to the intended users:
-   `keycloak_role`, then `keycloak_user_realm_roles` (or the group
-   route — `keycloak_group` + `keycloak_group_memberships` +
-   `keycloak_group_roles` — when several users share the grant).
+- Authorization Services policies/permissions (realm role + role policy
+  + permission, `ENFORCING` mode) evaluate only RPT/UMA permission
+  requests. A plain authorization-code login is never stopped by them,
+  no matter what role the user does or does not carry — see the
+  Authorization Services Guide and keycloak/keycloak discussion #20779
+  for the scoping of these mechanisms.
+- The known-good remedy is the third-party authenticator
+  [`sventorben/keycloak-restrict-client-auth`](https://github.com/sventorben/keycloak-restrict-client-auth):
+  deployed as a JAR in the Keycloak NixOS module (package override), it
+  makes the browser flow deny logins unless a per-client policy (e.g.
+  a realm role) permits the user. That is the future path when the
+  realm grows and services must diverge — not deployed today.
 
-2. Gate the client with fine-grained authorization: enable
-   Authorization Services on the client
-   (`keycloak_openid_client` gains `authorization_services_enabled` +
-   `policy_enforcement_mode = "ENFORCING"`), define a role policy
-   (`keycloak_openid_client_authorization_policy`) over the gate role,
-   and attach it with
-   `keycloak_openid_client_authorization_permission`. Users without the
-   role are rejected by Keycloak at the authorization step — before the
-   application ever sees them.
+Until then, the gate is each application's own authorization model,
+with the realm's admin-provisioned userbase as the outer shell
+(registration off, unique admin-set e-mails):
 
-3. Keep the application's own authorization model as defense in depth.
-   For PVE specifically: its native OIDC realm (issuer, client id and
-   secret, autocreate) sits on top of PVE's own ACL system — an OIDC
-   user gets no PVE privileges until PVE roles are granted there, so
-   the Keycloak gate plus "grant nothing in PVE" double-locks the
-   hypervisor. Lock both layers when onboarding PVE.
+- **PVE** uses its native OIDC realm (issuer, client id and secret,
+  autocreate) on top of its own ACL system: an
+  auto-created SSO user starts with zero PVE privileges and stays there
+  until an explicit `pveum acl modify`. There is nothing to build
+  Keycloak-side for PVE — the ACL grant on the hypervisor is the gate.
+- **Forgejo** gates via the deployment order its plan enforced: only
+  activated e-mails exist to auto-link against
+  (`ACCOUNT_LINKING = "auto"`), so a realm identity cannot spawn
+  anything unexpected.
 
+Role assignments to users are managed with `keycloak_user_roles`
+(v5.10; `keycloak_user_realm_roles` exists only as a data source).
 Roles *inside* an application are not a Keycloak concern: Keycloak only
 delivers claims (realm roles, client roles, groups) and the mapping is
 per app. The Forgejo auth source supports `--group-claim-name` /
