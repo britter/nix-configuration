@@ -5,10 +5,11 @@
 # Provisioning a new person: Keycloak-side recipe (username becomes the
 # Forgejo handle, e-mail must be unique across the Forgejo userbase) in
 # docs/plans/archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md →
-# Known effects → "Provisioning a new person". Per-user roles that gate
-# a service (e.g. a future PVE hypervisor access gate) go into the
-# service's client file; see the README "Restricting who can use a
-# client" section.
+# Known effects → "Provisioning a new person". Note that per-user role
+# assignment is NOT an access gate in vanilla Keycloak — see the README
+# "Restricting who can use a client" section (corrected 2026-10-30):
+# each service's own authorization model (PVE ACLs, Forgejo
+# admin/e-mail model) is authoritative.
 resource "keycloak_user" "bene" {
   realm_id   = keycloak_realm.homelab.id
   username   = "bene"
