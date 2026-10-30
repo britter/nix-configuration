@@ -12,12 +12,12 @@ resource "keycloak_openid_client" "pve" {
   # challenge/verifier pair per login and redeems the code with its own
   # verifier (the verifier never leaves the hypervisor). Enforceable
   # since the 9.x line; pve-manager/9.2.21 confirmed 2026-10-30
-  # (docs/plans/proxmox-keycloak-sso.md, Step 0).
+  # (docs/plans/archive/2026-10-30-proxmox-keycloak-sso.md, Step 0).
   pkce_code_challenge_method = "S256"
 
   # Operator-generated and seeded into sops (tofu/keycloak/secrets.json).
   # PVE keeps its own copy in /etc/pve/domains.cfg, set once via pveum —
-  # rotation runbook: docs/plans/proxmox-keycloak-sso.md → Known effects.
+  # rotation runbook: docs/plans/archive/2026-10-30-proxmox-keycloak-sso.md → Known effects.
   client_secret = data.sops_file.secrets.data["pve_client_secret"]
 
   # The PVE web GUI sends its window origin as the IdP redirect-url

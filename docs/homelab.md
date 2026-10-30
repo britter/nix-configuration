@@ -35,7 +35,7 @@ privileges until granted via `pveum acl modify`; `root@pam` is
 break-glass. A recreated hypervisor needs this command again plus
 `pveum acl modify`. SSO logins only support entering via
 `https://pve.ritter.family` (direct IP access registers a different
-redirect origin, see `docs/plans/proxmox-keycloak-sso.md`).
+redirect origin, see `docs/plans/archive/2026-10-30-proxmox-keycloak-sso.md`).
 
 
 ## Repository layout

@@ -1,7 +1,19 @@
 # Proxmox VE on pve: second Keycloak client
 
-**Status:** draft (2026-10-30; gate decision and ACL decision made
-2026-10-29). Builds on the Keycloak deployment
+**Status:** complete (2026-10-30), archived per AGENTS.md. The
+`OpenTofu Keycloak` pipeline applied `keycloak_openid_client.pve`
+(secret committed to `tofu/keycloak/secrets.json` in 1.1 beforehand),
+the PVE realm `keycloak` was created on the hypervisor via `pveum`
+(PVE 9.2.21, issuer/client-id/claims as declared below), the
+authorization-endpoint probe and the first SSO login landed in
+`bene@keycloak`, and Operator granted `Administrator` on `/` after the
+zero-privilege window (pveum acl modify / --users bene@keycloak --roles
+Administrator) — confirmed by the operator 2026-10-30. `root@pam`
+break-glass is untouched. See also the README gate-section correction
+merged with Part 1 (vanilla Keycloak cannot gate a client per user;
+`keycloak-restrict-client-auth` is the future path).
+
+Builds on the Keycloak deployment
 (archived at
 [`docs/plans/archive/2026-10-29-keycloak-sso-on-srv-prod-1.md`](archive/2026-10-29-keycloak-sso-on-srv-prod-1.md):
 realm `homelab`, issuer `https://account.ritter.family/realms/homelab`)
@@ -170,7 +182,7 @@ resource "keycloak_openid_client" "pve" {
 
   # Operator-generated and seeded into sops (tofu/keycloak/secrets.json).
   # PVE keeps its own copy in /etc/pve/domains.cfg, set once via pveum —
-  # rotation runbook: docs/plans/proxmox-keycloak-sso.md → Known effects.
+  # rotation runbook: docs/plans/archive/2026-10-30-proxmox-keycloak-sso.md → Known effects.
   client_secret = data.sops_file.secrets.data["pve_client_secret"]
 
   # The PVE web GUI sends its window origin as the IdP redirect-url
@@ -536,17 +548,26 @@ Upstream sources consulted:
 - [x] Step 0 (2026-10-30): `pve-manager/9.2.21`, realms `pam`+`pve`,
       user `root@pam` only — PKCE `S256` confirmed enforceable; the
       resource ships the attribute as written
-- [ ] 1.1 `pve_client_secret` stored in secrets.json (operator `sops set`,
-      verified by structural check) — runs before the PR goes up
+- [x] 1.1 `pve_client_secret` stored in secrets.json (operator `sops set`,
+      structural check passed) — done before the PR, confirmed in
+      production by the successful token exchange
 - [x] 1.2 code prepared on the `pve-sso` branch: `client-pve.tf`
       (PKCE `S256` kept, per Step 0), README gate-section correction,
       `users.tf` comment fix, `docs/homelab.md` Proxmox VE section;
       `tofu fmt -check` exit 0, `tofu validate` Success,
       `nix fmt`/treefmt clean
-- [ ] 1.3 PR opened (after 1.1) and merged; pipeline applied
-      `keycloak_openid_client.pve` — gate for Part 2
-- [ ] 2.1 secret transferred over SSH stdin; file shredded after 2.2
-- [ ] 2.2 realm created; `pveum realm list` shows it
-- [ ] 2.3 first SSO login lands in `bene@keycloak` (probe passed before it)
-- [ ] 2.4 unprivileged-first-login verified; Administrator on `/` granted
-- [ ] docs: `docs/homelab.md` Proxmox VE section matches what shipped
+- [x] 1.3 PR #335 merged; pipeline applied `keycloak_openid_client.pve`
+      (evidenced by the probe and first login afterwards)
+- [x] 2.1 secret transferred over SSH stdin into `/root/.pve-oidc-secret`,
+      shredded after 2.2
+- [x] 2.2 realm `keycloak` created on the hypervisor; verifies correctly
+      (realm list, discovery from pve, probe, secret hash-match — the
+      working login is the strongest of the four)
+- [x] 2.3 first SSO login lands in `bene@keycloak` (confirmed by
+      operator 2026-10-30)
+- [x] 2.4 Administrator on `/` granted to `bene@keycloak`
+      (`pveum acl modify / --users bene@keycloak --roles Administrator`,
+      confirmed 2026-10-30); the pre-grant zero-privilege window was not
+      explicitly observed in the browser, but the model was verified
+      structurally (autocreate grants nothing)
+- [x] docs: `docs/homelab.md` Proxmox VE section matches what shipped

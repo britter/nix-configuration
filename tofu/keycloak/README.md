@@ -10,7 +10,10 @@ deployment plan is archived at
 `docs/plans/archive/2026-10-29-keycloak-sso-on-srv-prod-1.md`, and the
 first OIDC client (Forgejo) is onboarded per
 `docs/plans/archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md`
-(both complete).
+(both complete). The second client is the PVE hypervisor
+(`client-pve.tf`); its OIDC realm on the hypervisor is one-time `pveum`
+state — runbook and quirks in
+`docs/plans/archive/2026-10-30-proxmox-keycloak-sso.md`.
 
 ## Credentials
 
