@@ -39,7 +39,7 @@ The service list below mirrors the directions homepage
 | Vaultwarden | `passwords.ritter.family` | Native | ⏳ Pending | SSO is admin-toggleable; keep master password unlock working |
 | Paperless-ngx | `documents.ritter.family` | Native | ⏳ Pending | django-allauth based; admin account needed for first login |
 | Immich | `photos.ritter.family` | Native | ⏳ Pending | |
-| Calibre Web | `books.ritter.family` | No — auth proxy | ⏳ Pending | |
+| Calibre Web | `books.ritter.family` | No — auth proxy | ⏳ Pending | OPDS catalog at `/opds` is consumed by KOReader using basic-auth credentials embedded in the URL — the proxy must exempt `/opds` from SSO and keep basic auth working there (no browser redirect possible) |
 | Navidrome | `music.ritter.family` | No — auth proxy | ⏳ Pending | Subsonic clients don't follow browser SSO; proxy must allow API paths or stay read-only compromise |
 | Home Assistant | `homeassistant.ritter.family` | Native | ⏳ Pending | Needs a trusted-proxy setup so local logins stay possible |
 | IT Tools | `tools.ritter.family` | No auth at all — auth proxy | ⏳ Pending | Pure static app; proxy is the only gate |
