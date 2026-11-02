@@ -1,7 +1,6 @@
 {
   rustPlatform,
   fetchFromCodeberg,
-  versionCheckHook,
 }:
 rustPlatform.buildRustPackage (_finalAttrs: {
   __structuredAttrs = true;
@@ -19,5 +18,12 @@ rustPlatform.buildRustPackage (_finalAttrs: {
   cargoHash = "sha256-w6aLQ/5ikMgSFOXwFgevwDNw3IzYdLEOes4pK6Aet3s=";
 
   doInstallCheck = true;
-  nativeInstallCheckInputs = [ versionCheckHook ];
+  # The upstream crate version (0.1.0) does not match the package's
+  # unstable version, so versionCheckHook cannot be used. Instead, check
+  # that the binary runs at all.
+  installCheckPhase = ''
+    runHook preInstallCheck
+    "$out/bin/nixpkgs-pr" --version > /dev/null
+    runHook postInstallCheck
+  '';
 })
