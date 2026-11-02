@@ -38,6 +38,11 @@
       url = "github:nixos/nixos-hardware/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixpkgs-pr = {
+      url = "git+https://codeberg.org/britter/nixpkgs-pr";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+    };
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixvim = {
       url = "github:nix-community/nixvim";

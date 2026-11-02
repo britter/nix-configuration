@@ -486,6 +486,29 @@
         "type": "github"
       }
     },
+    "nixpkgs-pr": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pre-commit-hooks": [
+          "pre-commit-hooks"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793635120,
+        "narHash": "sha256-4LyXw59x1NfkaYGVe7sErUBIRjwHYcl0x9viI6ASMAw=",
+        "ref": "refs/heads/main",
+        "rev": "a40ca0ad45c508a35ba332a5c1777039043af675",
+        "revCount": 63,
+        "type": "git",
+        "url": "https://codeberg.org/britter/nixpkgs-pr"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://codeberg.org/britter/nixpkgs-pr"
+      }
+    },
     "nixvim": {
       "inputs": {
         "flake-parts": [
@@ -566,6 +589,7 @@
         "llm-agents": "llm-agents",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-pr": "nixpkgs-pr",
         "nixvim": "nixvim",
         "nur": "nur",
         "pre-commit-hooks": "pre-commit-hooks",
