@@ -58,6 +58,14 @@ _: {
               ];
             }
             {
+              name = "Home Assistant";
+              url = "https://homeassistant.ritter.family";
+              interval = "5m";
+              conditions = [
+                "[STATUS] == 200"
+              ];
+            }
+            {
               name = "Stirling PDF";
               url = "https://pdf.ritter.family";
               interval = "5m";
