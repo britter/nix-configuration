@@ -13,6 +13,15 @@ _: {
         "steam-unwrapped"
       ];
 
+      # lutris' FHS environment still ships gtk2, which nixpkgs marks as
+      # broken since https://github.com/NixOS/nixpkgs/issues/410814.
+      # Evaluating a system that imports this module (e.g. the mandb service
+      # walking environment.systemPackages) refuses to evaluate because of
+      # it, so downgrade the hardcoded eval error to a warning until lutris
+      # drops gtk2 upstream. Upstream tracks this as an open lutris task in
+      # 410814; remove this override once that lands.
+      nixpkgs.config.problems.handlers."gtk+".broken = "warn";
+
       # performance stats overlay
       environment.systemPackages = [
         pkgs.mangohud
