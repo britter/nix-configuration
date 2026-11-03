@@ -44,6 +44,52 @@ Notes on the current state:
   wildcards the proxy stack depends on), and `email.tf` (mail records —
   SPF/DKIM/DMARC must be carried over exactly; see Phase 1 verification).
 
+### Web hosting on `britter.dev` / `benediktritter.de` (verified via live DNS/HTTP, 2026-11-03)
+
+Both domains currently serve the same static website: the Netlify site
+**`britter-dev`**, built from `https://github.com/britter/website`.
+
+| Record | Value | Serves |
+|---|---|---|
+| `britter.dev` CNAME @* | `apex-loadbalancer.netlify.com` (flattened to A `75.2.60.5`, `99.83.231.61` by Cloudflare) | HTTP 200, `server: Netlify` |
+| `www.britter.dev` CNAME | `britter-dev.netlify.app` | HTTP 200, same site |
+| `benediktritter.de` CNAME @* | `apex-loadbalancer.netlify.com` (flattened to A `75.2.60.5`, `99.83.231.61` by Cloudflare) | HTTP **301 → `https://britter.dev/`** |
+| `www.benediktritter.de` CNAME | `britter-dev.netlify.app` | HTTP 200, same site (identical etag to `britter.dev`) |
+
+\* Live `dig` answers with A records — Cloudflare flattens apex CNAMEs. On
+the wire/in the zone they are CNAMEs.
+
+Notes:
+
+- The `benediktritter.de` → `britter.dev` apex redirect is a **Netlify-side
+  redirect rule** (and the domains are aliases of the same Netlify site), not
+  a DNS-level thing. It survives the DNS migration as long as the records
+  above are copied 1:1 — nothing to re-configure, but verify it after the NS
+  flip (Phase 3).
+- **The apex records cannot be ported as plain CNAMEs.** Cloudflare flattens
+  apex CNAMEs; standard DNS forbids CNAME at the apex and INWX will reject
+  them. INWX offers an `ALIAS` record type for exactly this (apex →
+  `apex-loadbalancer.netlify.com`), with one caveat: ALIAS limits/breaks
+  DNSSEC on the zone. That is fine here — the plan deliberately skips DNSSEC
+  (see Phase 0) — but it is another reason *not* to turn DNSSEC on later
+  without revisiting these two apex records.
+- Neither zone carries mail records (no MX, no SPF/DKIM/DMARC TXT). They are
+  web-only zones, so Phase 1's byte-exact mail worry only concerns
+  `ritter.family`.
+- **These records live in the private repo `github.com/britter/domains`**
+  (Terraform, Cloudflare provider ~4, files `britter-dev.tf` /
+  `benediktritter-de.tf`) — not in `tofu/dns/cloudflare/` here, which manages
+  only `ritter.family`. The consolidation into `tofu/dns/inwx/` in this repo
+  has not happened yet; Phase 1 is the natural moment to do it: port the
+  records from `britter/domains` into `tofu/dns/inwx/` and retire the old
+  repo once the INWX zones are authoritative. If the consolidation slips,
+  port from the repo's HCL directly rather than re-enumerating the dashboard.
+- ⚠️ The same `britter/domains` repo also manages a **fourth Cloudflare
+  zone, `autoweird.fm`** (`autoweird-fm.tf`), which is out of scope for this
+  migration (not registered/dns-hosted by this plan). Keep it in mind in
+  Phase 5 — do not treat "delete the Cloudflare zones" as "empty the whole
+  Cloudflare account".
+
 ## TLD support and pricing at INWX (checked 2026-11-03)
 
 All three TLDs can be registered at INWX.
@@ -141,8 +187,20 @@ Proxy:          unchanged — nginx + services.https-proxy as today
         `*.srv-prod-{1..6}.ritter.family` (INWX supports wildcard records),
       - all `email.tf` records: MX, SPF (TXT), DKIM (TXT), DMARC — DKIM
         selector keys must be copied byte-exact or mail signing breaks.
-      - any records for `britter.dev` and `benediktritter.de` hosted in
-        the same Cloudflare account.
+      - the **Netlify web records** for `britter.dev` and
+        `benediktritter.de` (see the table in "Current state"), ported
+        from the `britter/domains` repo:
+        - `www` CNAME → `britter-dev.netlify.app` (both zones, plain CNAME works at INWX),
+        - apex records: currently CNAME → `apex-loadbalancer.netlify.com`
+          with Cloudflare flattening. At INWX these must become **ALIAS
+          records** with the same target (INWX rejects apex CNAMEs; its
+          ALIAS type synthesises A/AAAA answers like Cloudflare flattening
+          does — but limits DNSSEC on the zone).
+      While at it, this is the consolidation point: move the
+      `britter/domains` records into `tofu/dns/inwx/` in this repo so all
+      zones end up managed in one place, and retire `britter/domains` after
+      the cutover. Note `britter/domains` also manages `autoweird.fm`,
+      which stays out of scope here.
 - [ ] Verify zone parity before touching delegation:
       ```sh
       # INWX side (query their NS directly — safe, zone is inert)
@@ -202,6 +260,13 @@ primary domain, most traffic, goes last once the procedure is proven).
       dig @8.8.8.8 nextcloud.ritter.family
       ```
 - [ ] Watch gatus monitors and mail logs for the propagation window.
+- [ ] After flipping `britter.dev` or `benediktritter.de`, verify the
+      Netlify site still serves and the apex redirect still works:
+      ```sh
+      curl -sI https://britter.dev | grep -i '^HTTP\|^server'
+      curl -sI https://benediktritter.de | grep -i '^HTTP\|location'
+      # expect: 200 / Netlify on the first, 301 → https://britter.dev/ on the second
+      ```
 
 Rollback for this phase: flip the delegation back at the registrar. The
 Cloudflare zones remain intact and in sync until Phase 5, so rollback is
@@ -256,7 +321,11 @@ Only once **every** certificate on every host has renewed at least once
 through INWX (check `/var/lib/acme/*/account*` or cert issuer), and the
 gatus monitors have been green across a full cert cycle:
 
-- [ ] Delete the three zones from the Cloudflare account.
+- [ ] Delete the three migrated zones (`ritter.family`, `britter.dev`,
+      `benediktritter.de`) from the Cloudflare account. **Careful:** the
+      account also hosts `autoweird.fm` (managed by the `britter/domains`
+      repo) — leave that zone and its API-token scope untouched, or migrate
+      it in a follow-up.
 - [ ] Revoke and delete the `acme/cloudflare-dns-api-token` sops entries
       everywhere; remove the credentialFiles line from
       `modules/nixos/https-proxy.nix`.
@@ -285,6 +354,8 @@ Phase 2 has no deadline pressure and can slip without consequence.
 |---|---|
 | Transfer rejected close to expiry | Start transfers ≥ 5 weeks before `britter.dev`'s expiry; transfers renew the domain on completion |
 | Botched DKIM/SPF copy breaks mail | Byte-exact record copy in Phase 1 + parity check before any delegation change; Cloudflare zone untouched as rollback |
+| Missed Netlify record takes britter.dev / benediktritter.de offline | Records are IaC-managed in `britter/domains` — port the HCL 1:1 in Phase 1 and run the `curl` checks after the NS flip (Phase 3) |
+| Apex CNAME rejected at INWX (no flattening) | Use INWX `ALIAS` records → `apex-loadbalancer.netlify.com`; verify `dig <domain> A` returns Netlify LB IPs before the NS flip |
 | ACME renewal fails mid-cycle on a backend | Old certs remain valid until natural expiry (~60+ days); restore-from-backup procedure in Phase 4 |
 | Edge cert re-issuance outage (directions) | Force renewals deliberately, one vhost pattern at a time, with the `.bak`-restore fallback — never delete certs ahead of a verified renewal |
 | INWX automation account lockout (2FA/credentials) | Dedicated sub-account, shared secret in sops, test a manual lego run from a shell before relying on it fleet-wide |
