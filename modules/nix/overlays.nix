@@ -47,6 +47,23 @@
         })
       ];
 
+      # paperless-ngx: skip the check suite. Because of the modified fabric
+      # package above, paperless-ngx is built locally instead of fetched from
+      # the binary cache, and its test suite is far too expensive to run on
+      # every rebuild.
+      #
+      # Setting `doCheck = false` alone is not enough because upstream derives
+      # `doInstallCheck` (which drives pytest) from the original `doCheck`
+      # before overrides apply, so turn it off directly as well. This also
+      # skips seeding the offline tiktoken test cache, which upstream gates
+      # behind the check phase.
+      #
+      # Remove when the fabric fix above is removed.
+      paperless-ngx = prev.paperless-ngx.overrideAttrs (_old: {
+        doCheck = false;
+        doInstallCheck = false;
+      });
+
       # Backport of https://github.com/NixOS/nixpkgs/pull/575818: the kmod
       # installs the bare module with `install` instead of `modules_install`.
       # Kernel modules are signed with kmodigest during modules_install,
