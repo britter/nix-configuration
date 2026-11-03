@@ -46,27 +46,33 @@ The proxy side was correct (`proxyWebsockets = true` and
 
 ## Root cause
 
-Home Assistant's `http.trusted_proxies` contained the
-proxy's **old** IP. HA's `configuration.yaml` is click-ops (managed via
-its UI) and not encoded in this repository, so it was overlooked when the
-proxy's IP changed:
+The proxy-trust setting *effective* in Home Assistant held the proxy's
+**old** IP. Details worth recording, because this failure mode is
+unusually well-hidden:
 
+- HA 2026.8 (2026-08) migrated the `http:` block out of
+  `configuration.yaml` into UI storage (`/config/.storage/http`),
+  importing the YAML **once** on first boot and ignoring the block
+  thereafter. The import captured the pre-migration value —
+  `trusted_proxies: 192.168.5.6`, the old *Homelab*-VLAN proxy IP.
 - `directions` originally lived in the *Homelab* VLAN
-  (192.168.5.0/24) with fixed IP `192.168.5.6` — the IP that
-  `trusted_proxies` was configured for.
+  (192.168.5.0/24) with fixed IP `192.168.5.6` — the IP the trust
+  setting was first configured for.
 - `2eee4d9` (2026-04-09) introduced the *Servers* VLAN
   (192.168.30.0/24).
 - `52e1ef9` + `2b073d5` (PR #70, 2026-10-25) moved `directions` into
   that VLAN: fixed IP `192.168.5.6` → `192.168.30.6`.
 - `35b581f` (PR #71, later the same day) decommissioned the Homelab
   VLAN entirely, erasing the network the trusted entry pointed at.
-
-After the move, HA trusted `192.168.5.6` — a subnet that no longer
-existed — while the actual proxy traffic arrived from the untrusted
-`192.168.30.6`. Every proxied request got a 400. The breakage went
-unnoticed for eight days because Home Assistant had no external uptime
-check until the gatus endpoint was added on 2026-11-02 (the same day
-this incident was discovered).
+- HA's *active* trust config (in `.storage/http`) kept `192.168.5.6` —
+  a subnet that no longer existed — while proxy traffic arrived from
+  the untrusted `192.168.30.6`. Every proxied request got a 400.
+- Because the setting is UI-stored and the YAML block is dead, **no
+  `configuration.yaml` change could have fixed this** — the config
+  lived exclusively out of tree, invisible to this repo. The breakage
+  went unnoticed for eight days because Home Assistant had no external
+  uptime check until the gatus endpoint was added on 2026-11-02 (the
+  same day this incident was discovered).
 
 ## Red herring: the firewall
 
@@ -87,17 +93,28 @@ No firewall change was made.
 
 ## Resolution
 
-On the Home Assistant device (out of tree, via its UI), `configuration.yaml`:
+*Corrected 2026-11-03: the fix described below was **not** applied via
+`configuration.yaml`. HA 2026.8 (2026-08) migrated the entire `http:`
+block into the UI and stores it in `/config/.storage/http`; the YAML
+block is imported once and never read again. The working value lives in
+UI storage; the `configuration.yaml` edit was a no-op.*
 
-```yaml
-http:
-  use_x_forwarded_for: true
-  trusted_proxies:
-    - 192.168.30.6   # nginx https-proxy on directions
-```
+The actual fix, done in the HA UI on the device:
 
-followed by a full restart of Home Assistant (`http:` settings cannot be
-reloaded live). The proxied URL and the gatus check went green afterwards.
+- **Settings > System > Network > HTTP server → Reverse proxy:**
+  enable **Trust X-Forwarded-For**, add `192.168.30.6` to **Trusted
+  proxies**, save and restart.
+- HA then shows a confirmation dialog that must be confirmed **within
+  5 minutes**, otherwise it reverts to the previous settings and
+  restarts again.
+
+The proxied URL and the gatus check went green afterwards.
+
+The stale `http:` block in `configuration.yaml` (still showing
+`trusted_proxies: 192.168.5.6`) is dead weight: HA raises a repair
+("HTTP YAML configuration is ignored after migration") and will stop
+tolerating it in 2027.2.0. It must be removed; nothing on the device
+reads it.
 
 ## Follow-ups
 
@@ -105,12 +122,13 @@ reloaded live). The proxied URL and the gatus check went green afterwards.
   `unifi_client.directions`: if its `fixed_ip` changes, Home Assistant's
   `http.trusted_proxies` must be updated out of tree, or HA rejects all
   proxied traffic with 400 again.
-- **Consider** managing HA's `configuration.yaml` (or at least the `http:`
-  block) from this repo. The root cause here was precisely that gap:
-  click-ops config that depends on network topology silently broke during
-  the VLAN migration and stayed broken until an uptime check noticed.
-  Until then, any topology change touching the proxy IP needs a manual
-  HA-config review — hence the tofu comment above.
+- **Remove the dead `http:` block** from the device's
+  `configuration.yaml` before upgrading past 2027.2.0 (HA raises the
+  "ignored after migration" repair until then). It is not read at all;
+  nothing is lost by deleting it. *Decision 2026-11-03: that file is a
+  few default includes, so managing it in git was evaluated and
+  rejected — click-ops plus the guardrails above stay. Analysis:
+  `docs/plans/archive/2026-11-03-home-assistant-config-git.md`.*
 - **Monitoring:** this outage was only caught because the HA gatus check
   was added the same day. The service-worker behavior means HA can look
   fine in a browser tab while being broken — an external uptime check is

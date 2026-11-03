@@ -1,8 +1,10 @@
 resource "unifi_client" "directions" {
-  # NOTE: If fixed_ip changes, update Home Assistant's
-  # `http.trusted_proxies` accordingly. It is configured out of tree
-  # via Home Assistant's UI (configuration.yaml is not managed here);
-  # a stale value makes HA reject every proxied request with a 400.
+  # NOTE: If fixed_ip changes, update Home Assistant's trusted proxies
+  # accordingly: Settings > System > Network > HTTP server > Reverse
+  # proxy (persisted in .storage/http; the `http:` block in
+  # configuration.yaml is NOT read since HA 2026.8). A stale value
+  # makes HA reject every proxied request with a 400.
+  # See docs/incidents/2026-11-02-home-assistant-unreachable.md.
   name     = "directions"
   mac      = "d8:3a:dd:72:2a:26"
   fixed_ip = "192.168.30.6"
