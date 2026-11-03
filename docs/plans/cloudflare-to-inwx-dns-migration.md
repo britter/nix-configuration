@@ -26,19 +26,18 @@ other than the `security.acme` defaults block changes.
 
 Notes on the current state:
 
-- **The renewal-urgency assumption is only half true.** RDAP shows
-  `britter.dev` expiring 2026-12-21 (≈ 7 weeks out — this drives the
-  schedule), but `ritter.family` expires 2027-06-28, roughly eight months
-  away. Worth double-checking the Cloudflare billing dashboard in case
-  RDAP reflects a recently renewed term, but the plan proceeds on the
-  RDAP data: `britter.dev` is pressing, `ritter.family` is not.
-- Both Cloudflare-registered domains show `last changed` more than 60 days
-  ago (`ritter.family`: 2026-08-12, `britter.dev`: 2025-11-26), so the
-  ICANN 60-day transfer lock after a registrant change does not apply.
-- `britter.dev` has zone signing enabled without a published DS record —
-  an incomplete DNSSEC state. Nothing validates against it today. This
-  plan does **not** introduce DNSSEC; see Phase 0 for the recommendation
-  to switch signing off first.
+- RDAP shows `britter.dev` expiring 2026-12-21 (≈ 7 weeks out — this drives the
+  schedule), but `ritter.family` expires 2027-06-28, roughly eight months away.
+  Worth double-checking the Cloudflare billing dashboard in case RDAP reflects a
+  recently renewed term, but the plan proceeds on the RDAP data: `britter.dev` is
+  pressing, `ritter.family` is not.
+- Both Cloudflare-registered domains show `last changed` more than 60 days ago
+  (`ritter.family`: 2026-08-12, `britter.dev`: 2025-11-26), so the ICANN 60-day
+  transfer lock after a registrant change does not apply.
+- `britter.dev` has zone signing enabled without a published DS record — an
+  incomplete DNSSEC state. Nothing validates against it today. This plan does
+  **not** introduce DNSSEC; see Phase 0 for the recommendation to switch signing
+  off first.
 - DNS records are managed in `tofu/dns/cloudflare/` (OpenTofu): `main.tf`,
   `directions.tf` (the `*.ritter.family` and `*.srv-prod-N.ritter.family`
   wildcards the proxy stack depends on), and `email.tf` (mail records —
@@ -150,23 +149,24 @@ Proxy:          unchanged — nginx + services.https-proxy as today
 
 ## Phase 0 — Preparation (no user-visible change)
 
-- [ ] Create an INWX account under **inwx.de** (German entity, EUR billing,
+- [x] Create an INWX account under **inwx.de** (German entity, EUR billing,
       matches where you live). Note that inwx.de / inwx.com / inwx.ch /
       inwx.at are separate entities with different currencies and VAT.
-- [ ] Create a dedicated **sub-account** for automation with access to the
+- [x] Create a dedicated **sub-account** for automation with access to the
       three domains and their nameserver entries — do not use the main
       login for ACME. Enable 2FA on the main account; note the TOTP
       shared secret of the *automation* account, since lego needs it
       (`INWX_SHARED_SECRET`) if 2FA is active there too.
-- [ ] Stash the INWX automation-account credentials (`acme/inwx-username`,
+- [x] Stash the INWX automation-account credentials (`acme/inwx-username`,
       `acme/inwx-password`, and `acme/inwx-shared-secret` if the account
       uses 2FA) in your password manager for now — their sops home is the
       module-local shared `secrets.yaml` created in Phase 1.
-- [ ] Check both Cloudflare-registered domains in the dashboard:
+- [x] Check both Cloudflare-registered domains in the dashboard:
       registrar transfer lock status, auto-renew status, and confirm the
       expiry dates seen via RDAP.
-- [ ] Check `benediktritter.de` in the Hosting Europe panel: expiry date,
+- [x] Check `benediktritter.de` in the Hosting Europe panel: expiry date,
       DNSSEC status, and whether an authinfo code can be generated there.
+      expires on 19.02.2027, no DNSSEC.
 - [ ] **DNSSEC:** switch off zone signing for `britter.dev` in Cloudflare
       (it is incomplete anyway — signed zone, no DS in the parent), and
       confirm `ritter.family` has no DNSSEC. Revisit DNSSEC as a separate
