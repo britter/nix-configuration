@@ -5,6 +5,9 @@ DNS records point to [Tailscale](https://tailscale.com) IP addresses.
 Tailscale provider is used to retrieved IP addresses of known devices from the Tailscale API.
 Using that data DNS entries are automatically created via Cloudflare.
 
+The interplay between these public records and the local DNS overrides
+(AdGuard Home) is described in [docs/split-dns.md](../../docs/split-dns.md).
+
 ## Known issues
 
 ### Tailscale data refresh times out
