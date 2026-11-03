@@ -103,7 +103,7 @@ in
             ];
             end = [
               "tray"
-              "systmon"
+              "sysmon"
               "battery"
               "volume"
               "brightness"
