@@ -1,5 +1,4 @@
 _: {
-  flake.allowUnfreePackages = [ "stirling-pdf" ];
   flake.modules.nixos.stirling-pdf =
     { config, pkgs, ... }:
     let
@@ -11,6 +10,7 @@ _: {
     {
       services.stirling-pdf = {
         enable = true;
+        package = pkgs.stirling-pdf-free;
         environment = {
           INSTALL_BOOK_AND_ADVANCED_HTML_OPS = "true";
           SYSTEM_ENABLEANALYTICS = "false";
