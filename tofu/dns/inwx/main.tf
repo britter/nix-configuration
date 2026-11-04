@@ -14,6 +14,9 @@ locals {
     "ns2.inwx.de",
     "ns3.inwx.eu",
   ]
+
+  # INWX minimum, matches Cloudflare's "auto" TTL
+  ttl = 300
 }
 
 # One zone per domain on INWX's anycast nameservers. While the domains still
@@ -29,22 +32,27 @@ resource "inwx_nameserver" "zone" {
 }
 
 # A record per Tailscale device, e.g. srv-prod-1.ritter.family.
+#
+# Records take their `domain` from the zone resource rather than repeating
+# the name; that reference also makes every record wait for its zone to be
+# provisioned — records hitting the INWX API before their zone exists fail
+# with 2303 (Object does not exist).
 resource "inwx_nameserver_record" "host" {
   for_each = var.host_ips
-  domain   = "ritter.family"
-  name     = each.key
+  domain   = inwx_nameserver.zone["ritter.family"].domain
+  name     = "${each.key}.${inwx_nameserver.zone["ritter.family"].domain}"
   type     = "A"
   content  = each.value
-  ttl      = 300
+  ttl      = local.ttl
 }
 
 # Wildcard per host so every vhost behind the proxy resolves without its own
 # record, e.g. *.srv-prod-1.ritter.family -> srv-prod-1.ritter.family.
 resource "inwx_nameserver_record" "host_wildcard" {
   for_each = inwx_nameserver_record.host
-  domain   = "ritter.family"
-  name     = "*.${each.key}"
+  domain   = inwx_nameserver.zone["ritter.family"].domain
+  name     = "*.${each.key}.${inwx_nameserver.zone["ritter.family"].domain}"
   type     = "CNAME"
   content  = "${each.key}.ritter.family"
-  ttl      = 300
+  ttl      = local.ttl
 }
