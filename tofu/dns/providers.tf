@@ -18,6 +18,10 @@ terraform {
       source  = "cloudflare/cloudflare"
       version = "5.28.1"
     }
+    inwx = {
+      source  = "inwx/inwx"
+      version = "1.7.1"
+    }
     sops = {
       source  = "carlpett/sops"
       version = "1.4.1"
@@ -40,4 +44,10 @@ provider "tailscale" {
 ## Cloudflare ##
 provider "cloudflare" {
   api_token = data.sops_file.secrets.data["cloudflare_api_token"]
+}
+
+## INWX ##
+provider "inwx" {
+  username = data.sops_file.secrets.data["inwx_username"]
+  password = data.sops_file.secrets.data["inwx_password"]
 }

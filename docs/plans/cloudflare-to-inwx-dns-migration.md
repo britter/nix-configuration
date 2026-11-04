@@ -167,11 +167,12 @@ Proxy:          unchanged — nginx + services.https-proxy as today
 - [x] Check `benediktritter.de` in the Hosting Europe panel: expiry date,
       DNSSEC status, and whether an authinfo code can be generated there.
       expires on 19.02.2027, no DNSSEC.
-- [ ] **DNSSEC:** switch off zone signing for `britter.dev` in Cloudflare
+- [x] **DNSSEC:** switch off zone signing for `britter.dev` in Cloudflare
       (it is incomplete anyway — signed zone, no DS in the parent), and
       confirm `ritter.family` has no DNSSEC. Revisit DNSSEC as a separate
       project after the migration; INWX and all three TLDs support it.
-- [ ] Add the INWX provider to `tofu` (`inwx/inwx` from the OpenTofu
+      -> DNSSEC not turned on in Cloudflare according to the dashboard.
+- [x] Add the INWX provider to `tofu` (`inwx/inwx` from the OpenTofu
       registry) with the automation account's credentials via
       `secrets.json`/environment, mirroring how the Cloudflare provider is
       configured today.
