@@ -8,33 +8,33 @@
 # deliberately does not enable DNSSEC.
 
 resource "inwx_nameserver_record" "britter_dev_apex" {
-  domain  = "britter.dev"
-  name    = ""
+  domain  = inwx_nameserver.zone["britter.dev"].domain
+  name    = inwx_nameserver.zone["britter.dev"].domain
   type    = "ALIAS"
   content = "apex-loadbalancer.netlify.com"
-  ttl     = 300
+  ttl     = local.ttl
 }
 
 resource "inwx_nameserver_record" "britter_dev_www" {
-  domain  = "britter.dev"
-  name    = "www"
+  domain  = inwx_nameserver.zone["britter.dev"].domain
+  name    = "www.${inwx_nameserver.zone["britter.dev"].domain}"
   type    = "CNAME"
   content = "britter-dev.netlify.app"
-  ttl     = 300
+  ttl     = local.ttl
 }
 
 resource "inwx_nameserver_record" "benediktritter_de_apex" {
-  domain  = "benediktritter.de"
-  name    = ""
+  domain  = inwx_nameserver.zone["benediktritter.de"].domain
+  name    = inwx_nameserver.zone["benediktritter.de"].domain
   type    = "ALIAS"
   content = "apex-loadbalancer.netlify.com"
-  ttl     = 300
+  ttl     = local.ttl
 }
 
 resource "inwx_nameserver_record" "benediktritter_de_www" {
-  domain  = "benediktritter.de"
-  name    = "www"
+  domain  = inwx_nameserver.zone["benediktritter.de"].domain
+  name    = "www.${inwx_nameserver.zone["benediktritter.de"].domain}"
   type    = "CNAME"
   content = "britter-dev.netlify.app"
-  ttl     = 300
+  ttl     = local.ttl
 }
