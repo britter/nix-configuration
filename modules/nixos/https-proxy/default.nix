@@ -104,7 +104,9 @@ _: {
           in
           lib.mkMerge (lib.map makeHost cfg.configurations);
 
-        sops.secrets."acme/cloudflare-dns-api-token" = { };
+        sops.secrets."cloudflare/api-token" = {
+          sopsFile = ./secrets.yaml;
+        };
 
         security.acme = {
           acceptTerms = true;
@@ -113,7 +115,7 @@ _: {
             dnsProvider = "cloudflare";
             dnsPropagationCheck = true;
             credentialFiles = {
-              "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets."acme/cloudflare-dns-api-token".path;
+              "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets."cloudflare/api-token".path;
             };
           };
         };

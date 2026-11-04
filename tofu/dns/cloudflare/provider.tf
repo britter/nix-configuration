@@ -6,7 +6,3 @@ terraform {
     }
   }
 }
-
-# Required for managing API tokens
-data "cloudflare_api_token_permission_groups_list" "all" {
-}

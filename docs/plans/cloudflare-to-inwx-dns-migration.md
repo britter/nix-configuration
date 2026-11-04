@@ -157,8 +157,8 @@ Proxy:          unchanged — nginx + services.https-proxy as today
       login for ACME. Enable 2FA on the main account; note the TOTP
       shared secret of the *automation* account, since lego needs it
       (`INWX_SHARED_SECRET`) if 2FA is active there too.
-- [x] Stash the INWX automation-account credentials (`acme/inwx-username`,
-      `acme/inwx-password`, and `acme/inwx-shared-secret` if the account
+- [x] Stash the INWX automation-account credentials (`inwx/username`,
+      `inwx/password`, and `inwx/shared-secret` if the account
       uses 2FA) in your password manager for now — their sops home is the
       module-local shared `secrets.yaml` created in Phase 1.
 - [x] Check both Cloudflare-registered domains in the dashboard:
@@ -194,10 +194,10 @@ scoping, so they are capability-equivalent to a single shared credential —
 and INWX has no scoped tokens at all (lego uses username/password of the
 automation account), so the shared model is where this ends up regardless.
 
-- [ ] Restructure `modules/nixos/https-proxy.nix` into a directory module
+- [x] Restructure `modules/nixos/https-proxy.nix` into a directory module
       (precedent: `modules/nixos/nextcloud/`):
       `modules/nixos/https-proxy/{default.nix,secrets.yaml}`.
-- [ ] Add a `.sops.yaml` creation rule for
+- [x] Add a `.sops.yaml` creation rule for
       `modules/nixos/https-proxy/secrets\.yaml$` listing `*framework-13`
       plus the age anchors of **every host that imports the module**.
       This recipient list is the credential's access list — keep it in
@@ -205,24 +205,33 @@ automation account), so the shared model is where this ends up regardless.
       `sops updatekeys modules/nixos/https-proxy/secrets.yaml` (a missing
       key fails loudly at activation, so it cannot be forgotten silently —
       but only at the next deploy).
-- [ ] Create **one** Cloudflare token manually: DNS Write, scoped to
+- [x] Create **one** Cloudflare token manually: DNS Write, scoped to
       `ritter.family` only (least privilege, same as the per-host tokens
       were). Put its value in the shared `secrets.yaml` under the existing
-      key name `acme/cloudflare-dns-api-token`.
-- [ ] In `default.nix`, point the secret at the module-local file:
+      key name `cloudflare/api-token`.
+- [x] In `default.nix`, point the secret at the module-local file:
       ```nix
-      sops.secrets."acme/cloudflare-dns-api-token" = {
+      sops.secrets."cloudflare/api-token" = {
         sopsFile = ./secrets.yaml;
       };
       ```
       The module keeps declaring the secret as before — hosts pick it up
       automatically; their per-host `secrets.yaml` files no longer contain
       any ACME entry.
-- [ ] Remove the token-generation machinery from tofu: the
+      (Module change done and verified via `nix eval`; the per-host sops
+      files still carry the now-unused `acme.cloudflare-dns-api-token`
+      entries — remove with `sops edit` manually, sops decryption is not
+      available in the agent sandbox.)
+- [x] Remove the token-generation machinery from tofu: the
       `cloudflare_api_token` resource, the `acme_tokens` output, and the
       README's clipboard instructions (`tofu/dns/cloudflare/main.tf`,
-      `README.md`). The DNS records (`main.tf`, `directions.tf`,
-      `email.tf`) stay.
+      `README.md`, plus the now-unused
+      `cloudflare_api_token_permission_groups_list` data block in
+      `provider.tf`, and the re-exporting output in `tofu/dns/main.tf`).
+      `tofu validate` passes. The DNS records (`main.tf`,
+      `directions.tf`, `email.tf`) stay. The old per-host Cloudflare
+      tokens should be revoked in the Cloudflare dashboard during Phase 6
+      cleanup.
 - [ ] Redeploy all hosts and confirm certs still renew (no action needed
       until natural renewal — the token value is the same credential class
       as before). From this point on, a credential or provider change is
@@ -344,17 +353,17 @@ provider and the credential values.
       ```nix
       dnsProvider = "inwx";
       credentialFiles = {
-        "INWX_USERNAME_FILE" = config.sops.secrets."acme/inwx-username".path;
-        "INWX_PASSWORD_FILE" = config.sops.secrets."acme/inwx-password".path;
+        "INWX_USERNAME_FILE" = config.sops.secrets."inwx/username".path;
+        "INWX_PASSWORD_FILE" = config.sops.secrets."inwx/password".path;
         # only if the automation account has 2FA:
-        # "INWX_SHARED_SECRET_FILE" = config.sops.secrets."acme/inwx-shared-secret".path;
+        # "INWX_SHARED_SECRET_FILE" = config.sops.secrets."inwx/shared-secret".path;
       };
       ```
 - [ ] Add the INWX automation-account credentials to the **shared**
-      `modules/nixos/https-proxy/secrets.yaml` (`acme/inwx-username`,
-      `acme/inwx-password`, and optionally `acme/inwx-shared-secret`).
+      `modules/nixos/https-proxy/secrets.yaml` (`inwx/username`,
+      `inwx/password`, and optionally `inwx/shared-secret`).
       One `sops edit`, no per-host work. Keep the
-      `acme/cloudflare-dns-api-token` entry in the same file until every
+      `cloudflare/api-token` entry in the same file until every
       cert has renewed once (rollback path).
 - [ ] **Validate on the lowest-stakes host first:** srv-prod-5
       (navidrome / `music.ritter.family`). NixOS acme renewal units only
@@ -390,7 +399,7 @@ gatus monitors have been green across a full cert cycle:
       account also hosts `autoweird.fm` (managed by the `britter/domains`
       repo) — leave that zone and its API-token scope untouched, or migrate
       it in a follow-up.
-- [ ] Remove the `acme/cloudflare-dns-api-token` entry from the shared
+- [ ] Remove the `cloudflare/api-token` entry from the shared
       `modules/nixos/https-proxy/secrets.yaml` and remove the
       `credentialFiles` line from
       `modules/nixos/https-proxy/default.nix`.
