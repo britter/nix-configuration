@@ -227,7 +227,8 @@ automation account), so the shared model is where this ends up regardless.
       README's clipboard instructions (`tofu/dns/cloudflare/main.tf`,
       `README.md`, plus the now-unused
       `cloudflare_api_token_permission_groups_list` data block in
-      `provider.tf`). `tofu validate` passes. The DNS records (`main.tf`,
+      `provider.tf`, and the re-exporting output in `tofu/dns/main.tf`).
+      `tofu validate` passes. The DNS records (`main.tf`,
       `directions.tf`, `email.tf`) stay. The old per-host Cloudflare
       tokens should be revoked in the Cloudflare dashboard during Phase 6
       cleanup.

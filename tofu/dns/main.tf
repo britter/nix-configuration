@@ -12,8 +12,3 @@ module "cloudflare" {
   cloudflare_zone_id = data.sops_file.secrets.data["cloudflare_zone_id"]
   host_ips           = module.tailscale.device_ips
 }
-
-output "acme_tokens" {
-  value     = module.cloudflare.acme_tokens
-  sensitive = true
-}
