@@ -12,3 +12,8 @@ module "cloudflare" {
   cloudflare_zone_id = data.sops_file.secrets.data["cloudflare_zone_id"]
   host_ips           = module.tailscale.device_ips
 }
+
+module "inwx" {
+  source   = "./inwx"
+  host_ips = module.tailscale.device_ips
+}
