@@ -139,7 +139,7 @@ Resulting per-domain order:
 ```
 Registrar:      all three domains at INWX
 DNS hosting:    all three zones on INWX nameservers
-                  (ns.inwx.de, ns2.inwx.de, ns3.inx.wtf)
+                  (ns.inwx.de, ns2.inwx.de, ns3.inwx.eu)
 Zone mgmt:      tofu/dns/inwx/ (OpenTofu, INWX provider)
 ACME DNS-01:    security.acme dnsProvider = "inwx",
                 credentials from sops (INWX_USERNAME_FILE / INWX_PASSWORD_FILE)
@@ -232,7 +232,7 @@ automation account), so the shared model is where this ends up regardless.
       `directions.tf`, `email.tf`) stay. The old per-host Cloudflare
       tokens should be revoked in the Cloudflare dashboard during Phase 6
       cleanup.
-- [ ] Redeploy all hosts and confirm certs still renew (no action needed
+- [x] Redeploy all hosts and confirm certs still renew (no action needed
       until natural renewal — the token value is the same credential class
       as before). From this point on, a credential or provider change is
       an edit to one shared file plus a module change, deployed per host.
@@ -243,11 +243,11 @@ not belong in it.
 
 ## Phase 2 — Replicate all three zones in INWX (non-authoritative)
 
-- [ ] Port `tofu/dns/cloudflare/{main,directions,email}.tf` to an
+- [x] Port `tofu/dns/cloudflare/{main,directions,email}.tf` to an
       `tofu/dns/inwx/` tree, creating the zones and records on INWX's
       nameservers. While the domains still delegate to Cloudflare, these
       zones are inert — creating them changes nothing for users.
-- [ ] Every record must be reproduced 1:1, in particular:
+- [x] Every record must be reproduced 1:1, in particular:
       - the apex records for `ritter.family`,
       - the **wildcards** `*.ritter.family` and
         `*.srv-prod-{1..6}.ritter.family` (INWX supports wildcard records),
@@ -314,7 +314,7 @@ primary domain, most traffic, goes last once the procedure is proven).
 - [ ] Set the nameservers at the (new) registrar — INWX panel for all
       three now, or Hosting Europe's panel for the .de if its transfer is
       deliberately deferred:
-      `ns.inwx.de`, `ns2.inwx.de`, `ns3.inx.wtf`.
+      `ns.inwx.de`, `ns2.inwx.de`, `ns3.inwx.eu`.
 - [ ] Propagation of a delegation is TTL-bound (typically hours, up to
       `NS`/`SOA` TTL). Resolvers will serve a mix of old and new NS
       answers during the window — both zones are identical (Phase 2), so
