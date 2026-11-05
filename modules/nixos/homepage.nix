@@ -187,6 +187,26 @@ _: {
           ];
         }
       ];
+      bookmarks = [
+        {
+          "Nix" = [
+            {
+              "nix-configuration" = {
+                description = "This server's NixOS configuration";
+                href = "https://github.com/britter/nix-configuration";
+                icon = "github.svg";
+              };
+            }
+            {
+              "nixpkgs" = {
+                description = "Nix Packages collection";
+                href = "https://github.com/NixOS/nixpkgs";
+                icon = "github.svg";
+              };
+            }
+          ];
+        }
+      ];
     };
 
     services.https-proxy = {
