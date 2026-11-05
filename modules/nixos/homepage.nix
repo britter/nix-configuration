@@ -49,13 +49,6 @@ _: {
               };
             }
             {
-              "Vaultwarden" = {
-                description = "Password safe";
-                href = "https://passwords.ritter.family/";
-                icon = "vaultwarden.svg";
-              };
-            }
-            {
               "Paperless" = {
                 description = "Document management system";
                 href = "https://documents.ritter.family/";
@@ -108,6 +101,24 @@ _: {
           ];
         }
         {
+          "Account" = [
+            {
+              "Keycloak" = {
+                description = "Single sign-on";
+                href = "https://account.ritter.family/";
+                icon = "keycloak.svg";
+              };
+            }
+            {
+              "Vaultwarden" = {
+                description = "Password safe";
+                href = "https://passwords.ritter.family/";
+                icon = "vaultwarden.svg";
+              };
+            }
+          ];
+        }
+        {
           "Smart Home" = [
             {
               "Home Assistant" = {
@@ -139,13 +150,6 @@ _: {
                 description = "Network-wide ads & trackers blocking DNS server";
                 href = "https://adguard.ritter.family/";
                 icon = "adguard-home.svg";
-              };
-            }
-            {
-              "Keycloak" = {
-                description = "Single sign-on";
-                href = "https://account.ritter.family/";
-                icon = "keycloak.svg";
               };
             }
             {
@@ -182,6 +186,26 @@ _: {
                 description = "Service status monitoring";
                 href = "https://status.ritter.family/";
                 icon = "gatus.svg";
+              };
+            }
+          ];
+        }
+      ];
+      bookmarks = [
+        {
+          "Nix" = [
+            {
+              "nix-configuration" = {
+                description = "This server's NixOS configuration";
+                href = "https://github.com/britter/nix-configuration";
+                icon = "github.svg";
+              };
+            }
+            {
+              "nixpkgs" = {
+                description = "Nix Packages collection";
+                href = "https://github.com/NixOS/nixpkgs";
+                icon = "github.svg";
               };
             }
           ];
