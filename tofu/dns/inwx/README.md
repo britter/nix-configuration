@@ -8,15 +8,20 @@ This module replaces `../cloudflare/` as part of the DNS migration
 domains still delegate to Cloudflare's nameservers, the zones created here are
 inert — they only become authoritative once the NS delegation flips (phase 4).
 
-Record conventions differ from Cloudflare:
+Record conventions differ from Cloudflare (these follow the proven setup in
+the `testlens` infrastructure repo):
 
-- Apex records are created by omitting `name` (Cloudflare uses `"@"`).
+- Record names are FQDNs (`www.britter.dev`, `mail._domainkey.ritter.family`);
+  apex records use the zone name itself as `name` (Cloudflare uses `"@"`).
   INWX rejects CNAMEs at the apex, so the Netlify apex records use INWX's
   `ALIAS` type instead of Cloudflare's CNAME flattening.
-- Wildcards are spelled out in the name (`*`, `*.srv-prod-1`), same as in the
-  INWX panel.
-- TTLs are explicit (minimum 300). 300 mirrors Cloudflare's "Auto" TTL for
-  DNS-only records.
+- Wildcards are spelled out in the name (`*.ritter.family`,
+  `*.srv-prod-1.ritter.family`).
+- Every record takes its `domain` from the `inwx_nameserver.zone` resource —
+  that reference also orders record creation after zone creation (records
+  hitting the INWX API before their zone exists fail with 2303).
+- TTLs come from `local.ttl` (300, the INWX minimum, mirroring Cloudflare's
+  "Auto" TTL for DNS-only records).
 
 The `britter.dev` / `benediktritter.de` web records were ported from the
 `britter/domains` repository (which also manages the out-of-scope
