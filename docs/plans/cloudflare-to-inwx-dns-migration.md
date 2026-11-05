@@ -267,7 +267,7 @@ not belong in it.
       zones end up managed in one place, and retire `britter/domains` after
       the cutover. Note `britter/domains` also manages `autoweird.fm`,
       which stays out of scope here.
-- [ ] Verify zone parity before touching delegation:
+- [x] Verify zone parity before touching delegation:
       ```sh
       # INWX side (query their NS directly — safe, zone is inert)
       dig @ns.inwx.de ritter.family AXFR          # if AXFR not offered:
@@ -278,6 +278,17 @@ not belong in it.
       A `tofu plan` against the imported state showing no diffs is the
       stronger check — worth doing properly given how much (mail,
       wildcards, per-server names) rides on the zones.
+      -> Verified 2026-11-05 via `dig` spot-checks (AXFR refused by both
+      providers), all records byte-identical between `@ns.inwx.de`/`@ns2.inwx.de`
+      and `@salvador.ns.cloudflare.com`: all 8 host A records, all 8 per-host
+      wildcards, the `*` global wildcard, brevo-code/DKIM/DMARC TXT for
+      `ritter.family`; apex ALIAS → same Netlify LB IPs (75.2.60.5 / 99.83.231.61)
+      and `www` CNAME for `britter.dev` and `benediktritter.de`. Anti-miss probes
+      (MX/CAA/AAAA/SPF/`mail.`) return identical (empty) answers on both sides.
+      The stronger `tofu plan` against the imported state also shows no
+      changes (confirmed by hand on 2026-11-05; the check could not run in
+      the agent sandbox because sops was denied the age key for
+      `tofu/dns/secrets.json`).
 
 ## Phase 3 — Registrar transfers (the time-critical phase)
 
