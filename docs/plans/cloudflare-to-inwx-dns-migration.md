@@ -1,6 +1,6 @@
 # Plan: Migrate DNS from Cloudflare to INWX
 
-**Status:** 🚀 In progress — Phases 0–4 done, Phase 5 (ACME flip) next
+**Status:** 🚀 In progress — Phases 0–4 and 5 (INWX ACME flip, #348) done; srv-prod-5 validated 2026-11-06. Next: force re-issuance + verify on remaining hosts (Phase 5 tail), then Phase 6.
 **Created:** 2026-11-03
 
 ## Goal
@@ -11,10 +11,13 @@ homelab certificates are answered against INWX instead of Cloudflare.
 
 The reverse-proxy stack (nginx, `services.https-proxy`, `security.acme`)
 stays as it is. Only the ACME *provider* configuration changes; the
-nginx-vs-Caddy-vs-Traefik question is explicitly out of scope. All cert
-issuance continues to run through `security.acme` (lego) exactly as today —
-lego has shipped a native INWX DNS provider since v2.0.0, so no component
-other than the `security.acme` defaults block changes.
+nginx-vs-Caddy-vs-Traefik question is explicitly out of scope, as is the
+certificate consolidation idea (shared wildcard certs per host) — that
+is deferred to a separate design effort and is not part of this
+migration. All cert issuance continues to run through `security.acme`
+(lego) exactly as today — lego has shipped a native INWX DNS provider
+since v2.0.0, so no component other than the `security.acme` defaults
+block changes.
 
 ## Current state (verified via RDAP/whois, 2026-11-03)
 
@@ -349,14 +352,22 @@ Rollback for this phase: flip the delegation back at the registrar. The
 Cloudflare zones remain intact and in sync until Phase 6, so rollback is
 always available within minutes.
 
-## Phase 5 — Flip ACME DNS-01 to INWX (per host, with the comin model)
+## Phase 5 — Flip ACME DNS-01 to INWX — ✅ deployed 2026-11-06
 
-Each host evaluates and builds its own configuration, so the flip is per
-host and independently verifiable. lego's INWX provider is built into
-`security.acme`'s lego package — no new dependencies.
+Deployed fleet-wide atomically (comin) as #348. Rollout to the hosts is
+**all-or-nothing**: one deploy flips the ACME provider on every host at
+once, so there is no staged per-host pilot; the `srv-prod-5`-first
+verification below happened as the first check after the deploy, not as
+a rollout gate.
+
+> 2026-11-06: rollout is atomic across all hosts (comin deploys the same
+> revision fleet-wide), so a staged srv-prod-5 → directions → rest plan
+> was dropped. Old certs keep serving until natural expiry (~60+ days),
+> so even a fleet-wide renewal failure leaves clients unaffected while
+> the rollback (revert `dnsProvider` + redeploy) is executed.
 
 The shared `modules/nixos/https-proxy/secrets.yaml` and the module-local
-sops wiring already exist since Phase 1, so this phase only changes the
+sops wiring already existed since Phase 1, so this phase only changed the
 provider and the credential values.
 
 - [x] In `modules/nixos/https-proxy/default.nix`, change the
@@ -370,18 +381,18 @@ provider and the credential values.
         # "INWX_SHARED_SECRET_FILE" = config.sops.secrets."inwx/shared-secret".path;
       };
       ```
-      -> Module change done 2026-11-06; the `cloudflare/api-token`
-      credentialFiles entry is kept for now as the rollback path (see
-      Phase 6 for its removal).
-- [ ] Add the INWX automation-account credentials to the **shared**
-      `modules/nixos/https-proxy/secrets.yaml` (`inwx/username`,
-      `inwx/password`, and optionally `inwx/shared-secret`).
-      One `sops edit`, no per-host work. Keep the
-      `cloudflare/api-token` entry in the same file until every
-      cert has renewed once (rollback path).
-- [ ] **Validate on the lowest-stakes host first:** srv-prod-5
-      (navidrome / `music.ritter.family`). NixOS acme renewal units only
-      renew near expiry, so force one re-issuance through INWX:
+      -> Done in #348; the `cloudflare/api-token` credentialFiles entry
+      is kept until Phase 6 as the rollback path.
+      -> The INWX automation account has **no 2FA** (confirmed
+      2026-11-06), so `INWX_SHARED_SECRET*` stays off; re-add the shared
+      secret only if that account ever gets 2FA enabled.
+- [x] Add the INWX automation-account credentials (`inwx/username`,
+      `inwx/password`) to the shared
+      `modules/nixos/https-proxy/secrets.yaml`. Keep the
+      `cloudflare/api-token` entry until every cert has renewed once
+      (rollback path).
+- [x] Deploy the fleet, then **validate via srv-prod-5 first** by forcing
+      one re-issuance:
       ```sh
       # on srv-prod-5, after the switch with new sops secrets:
       systemctl stop acme-music.srv-prod-5.ritter.family.service
@@ -390,17 +401,18 @@ provider and the credential values.
       systemctl start acme-music.srv-prod-5.ritter.family.service
       # watch: journalctl -u acme-music.srv-prod-5.ritter.family -f
       ```
-      If the INWX challenge fails, restore the backup directory and
-      restart — the old cert keeps serving; nothing client-visible broke.
-      Raise `INWX_PROPAGATION_TIMEOUT` via `security.acme.defaults`
-      environment if propagation checks time out (default 360 s).
-- [ ] Then the edge (directions — highest value, 19 vhosts sharing the
-      pattern), then the remaining srv-prod hosts one at a time. Each
-      host: switch → force one renewal → verify cert issuer via
-      `openssl s_client -connect <host>:443 ... | openssl x509 -noout -text`.
-- [ ] srv-prod-2's Nextcloud nginx vhost uses `useACMEHost` from the same
-      defaults — it flips along with everything else on that host; no
-      separate handling needed.
+      -> Deployed + validated 2026-11-06:
+      `music.srv-prod-5.ritter.family` re-issued the same day
+      (notBefore 2026-11-06 09:43 UTC, verified via `openssl s_client`
+      from outside). INWX credentials, DNS-01 challenge and propagation
+      check all work; no `INWX_PROPAGATION_TIMEOUT` override needed.
+- [ ] Force (or wait for) re-issuance on the **other hosts** and verify
+      each cert's `notBefore` is post-deploy:
+      `openssl s_client -connect <host>:443 ... | openssl x509 -noout -dates`.
+      Applies to directions (its 19 per-vhost certs, e.g.
+      `nextcloud.ritter.family` still showed 2026-10-21 right after the
+      deploy), srv-prod-2 (6 certs), srv-prod-6 (2), and the single cert
+      each on srv-prod-1, srv-prod-3, srv-prod-4, srv-offsite-1.
 
 ## Phase 6 — Decommission Cloudflare
 
@@ -427,11 +439,10 @@ gatus monitors have been green across a full cert cycle:
 
 | When | What |
 |---|---|
-| Week of 2026-11-09 | Phase 0, Phase 1, Phase 2: account + credentials, secrets consolidation (independent of the migration), tofu port, zones replicated and verified |
-| Week of 2026-11-16 | Phase 3: initiate all three transfers (britter.dev deadline buffer: transfer must complete before 2026-12-21; ≤ 5 days once initiated) |
-| Late Nov 2026 | Phase 4: NS flips, one domain at a time |
-| Early Dec 2026 | Phase 5: ACME flip across hosts, srv-prod-5 pilot → directions → rest |
-| ≥ one renewal cycle later | Phase 6: Cloudflare decommission |
+| Early Nov 2026 ✅ | Phases 0–4: account + credentials, secrets consolidation, tofu port, zone parity, transfers, NS flips — all done |
+| 2026-11-06 | Phase 5 (#348): ACME provider flipped to INWX in one atomic deploy; `music.srv-prod-5.ritter.family` force-renewed same day as proof |
+| Next | Phase 5 tail: one forced re-issuance + `notBefore` check per remaining cert (directions ×19, srv-prod-2 ×6, srv-prod-6 ×2, single certs ×4) |
+| After the Phase 5 tail | Phase 6: Cloudflare decommission — only once every cert has renewed through INWX |
 
 The hard deadline is `britter.dev`'s 2026-12-21 expiry — everything after
 Phase 3 has no deadline pressure and can slip without consequence.
