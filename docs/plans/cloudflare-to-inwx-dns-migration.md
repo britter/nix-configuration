@@ -1,6 +1,6 @@
 # Plan: Migrate DNS from Cloudflare to INWX
 
-**Status:** 🚀 In progress — Phases 0–4 and 5 (INWX ACME flip, #348) done; srv-prod-5 validated 2026-11-06. Next: bulk passive verification of natural renewals across the fleet (Phase 5 tail), then Phase 6.
+**Status:** 🚀 In progress — Phases 0–4 and 5 (INWX ACME flip, #348) done; srv-prod-5 validated 2026-11-06. **2026-11-06 evening: #349 (one wildcard cert per host — the deferred cert-consolidation design, since landed) broke DNS-01 issuance fleet-wide** — challenge names get captured by the zone's own wildcard records ([incident](../incidents/2026-11-06-untrusted-wildcard-certs.md)) — and #349 was **reverted the same evening**: per-vhost certificates are back, serving the still-valid on-disk LE certs (trusted). The wildcard design is parked on branch `acme-dns01-fixes` (PR #352: challenge-node CNAME delegation); the incident's follow-ups hold the re-landing sequence (rebase → merge so records land → then revert the reverts).
 **Created:** 2026-11-03
 
 ## Goal
@@ -422,6 +422,20 @@ provider and the credential values.
       cert each on srv-prod-1, srv-prod-3, srv-prod-4, srv-offsite-1.
       Expected to be fully green from ~early January 2027; Phase 6's gate
       (below) is unchanged and still requires the full sweep to pass.
+      -> Amendment 2026-11-06 evening: an additional #349 landed one
+      wildcard cert per host (plus the apex `*.ritter.family` on
+      directions — the deferred cert-consolidation design). Its DNS-01
+      challenge names get captured by the zone's own wildcard records
+      (and the UniFi gateway's local zone), which broke issuance
+      fleet-wide until it was reverted the same evening. Root cause,
+      catch-22 (tofu state backend via the fleet's own garage endpoint)
+      and the parked fix (explicit `_acme-challenge.*` CNAME delegation
+      into `acme.*.challenge` on branch `acme-dns01-fixes` / PR #352,
+      plus `dnsPropagationCheck = false`) are documented in
+      [docs/incidents/2026-11-06-untrusted-wildcard-certs.md](../incidents/2026-11-06-untrusted-wildcard-certs.md).
+      Once re-landed (records merged and applied, then the module
+      change), the sweep target becomes the 9 wildcard certs; the
+      per-vhost path above resumes meanwhile.
 
 ## Phase 6 — Decommission Cloudflare
 
@@ -451,8 +465,8 @@ gatus monitors have been green across a full cert cycle:
 |---|---|
 | Early Nov 2026 ✅ | Phases 0–4: account + credentials, secrets consolidation, tofu port, zone parity, transfers, NS flips — all done |
 | 2026-11-06 | Phase 5 (#348): ACME provider flipped to INWX in one atomic deploy; `music.srv-prod-5.ritter.family` force-renewed same day as proof |
-| Next | Phase 5 tail (amended 2026-11-06): no forced renewals — let certs renew naturally, then bulk `notBefore` sweep over all hosts/vhosts (directions ×19, srv-prod-2 ×6, srv-prod-6 ×2, single certs ×4); fully green expected ~early Jan 2027 |
-| After the Phase 5 tail | Phase 6: Cloudflare decommission — only once the sweep shows every cert renewed through INWX and gatus has been green across a full cert cycle |
+| Next | Phase 5 tail (amended 2026-11-06, two rounds): per-vhost certs are re-landed via the #349 revert — sweep the per-vhost certs for `notBefore` as they keep renewing naturally through INWX. The wildcard design (one cert per host + apex) is parked on branch `acme-dns01-fixes`/PR #352 behind the incident's re-landing sequence ([incident](../incidents/2026-11-06-untrusted-wildcard-certs.md)) |
+| After the Phase 5 tail | Phase 6: Cloudflare decommission — once the per-vhost sweep is green and gatus has been green across a full cert cycle; re-run the sweep over the 9 wildcard certs after the parked wildcard design is re-landed |
 
 The hard deadline is `britter.dev`'s 2026-12-21 expiry — everything after
 Phase 3 has no deadline pressure and can slip without consequence.
@@ -466,6 +480,7 @@ Phase 3 has no deadline pressure and can slip without consequence.
 | Missed Netlify record takes britter.dev / benediktritter.de offline | Records are IaC-managed in `britter/domains` — port the HCL 1:1 in Phase 2 and run the `curl` checks after the NS flip (Phase 4) |
 | Apex CNAME rejected at INWX (no flattening) | Use INWX `ALIAS` records → `apex-loadbalancer.netlify.com`; verify `dig <domain> A` returns Netlify LB IPs before the NS flip |
 | ACME renewal fails mid-cycle on a backend | Old certs remain valid until natural expiry (~60+ days); restore-from-backup procedure in Phase 5 |
+| Wildcard-cert challenge names captured by the zone's own wildcard records (and the UniFi local zone) — broke issuance fleet-wide in practice on 2026-11-06 | Explicit `_acme-challenge.*` CNAME delegation into the reserved `acme.*.challenge` subtree (branch `acme-dns01-fixes`/PR #352, apply **before** re-landing the wildcard module config) + `dnsPropagationCheck = false`; see [incident 2026-11-06](../incidents/2026-11-06-untrusted-wildcard-certs.md) |
 | Edge cert re-issuance outage (directions) | Force renewals deliberately, one vhost pattern at a time, with the `.bak`-restore fallback — never delete certs ahead of a verified renewal |
 | INWX automation account lockout (2FA/credentials) | Dedicated sub-account, shared secret in sops, test a manual lego run from a shell before relying on it fleet-wide |
 | Registrar-side lockout from INWX | Enable 2FA on the main account; registry lock / transfer lock on all three domains once settled |

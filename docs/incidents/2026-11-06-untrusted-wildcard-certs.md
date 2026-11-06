@@ -15,8 +15,10 @@ authority`.
 | 09:43 | INWX DNS-01 issuance visibly working: `music.srv-prod-5.ritter.family` forced-renewed through INWX (per-vhost cert, #348) |
 | 19:41 | #349 deployed fleet-wide (comin): one wildcard cert per host (`*.<host>.ritter.family`), plus `*.ritter.family` on directions |
 | 19:41–19:48 | Every wildcard order fails at lego's DNS-01 propagation check; NixOS ACME falls back to self-signed `minica` certificates so dependent services still start |
-| ~20:23 | Workaround deployed: `security.acme.defaults.dnsPropagationCheck = false` (2026-11-06, PR pending) |
+| ~20:23 | Workaround deployed: `security.acme.defaults.dnsPropagationCheck = false` (#350, later reverted together with #349) |
 | 20:39–20:42 | Retry attempts now fail *later* in the flow: lego passes the check, but Let's Encrypt rejects validation with `403 :: unauthorized :: No TXT record found at _acme-challenge.*` |
+| later | The structural fix (challenge-node CNAME delegation in `tofu/dns/`, PR #352) could not roll out: the tofu CI's state backend is the fleet's own object store (`garage.srv-prod-3.ritter.family`), which was still serving the minica fallback → `x509: certificate signed by unknown authority` → CI blocked its own fix |
+| later | **Reverted #349** (per-vhost certificates back); per-vhost Let's Encrypt certificates were still on disk and valid, so trusted certificates returned immediately (`home.ritter.family` verified) and the garage endpoint became LE-signed again |
 
 ## Root cause
 
@@ -25,7 +27,7 @@ not by the Cloudflare → INWX migration (the same zone layout with
 Cloudflare would have behaved identically; the per-vhost renewal at
 09:43 through INWX proves the provider path itself is fine).
 
-### 1. Local: the UniFi gateway shadows the challenge names (fixed by the workaround)
+### 1. Local: the UniFi gateway shadows the challenge names (first failure layer)
 
 lego verifies DNS-01 propagation by querying the *system* resolver,
 which on every host is the home network's gateway (`192.168.30.1`, see
@@ -47,7 +49,7 @@ propagation check (`dnsPropagationCheck = false`) is correct here:
 Let's Encrypt validates the TXT record through INWX's authoritative
 nameservers itself.
 
-### 2. Public: the zone's wildcard CNAME records capture the challenge nodes (open)
+### 2. Public: the zone's wildcard CNAME records capture the challenge nodes (deeper layer; fix parked in PR #352)
 
 Disabling the local check exposed the second layer. The public zone
 (INWX, and identically Cloudflare before) contains per-host wildcard
@@ -75,41 +77,65 @@ trace loop continues.
 
 ## Resolution
 
-Depends on the decision for #349's design; two options discussed:
+**Reverted #349.** Per-vhost cert configuration is back on the fleet,
+and — crucial — the *on-disk* per-vhost certificates were stored from
+earlier renewals and valid into January 2027, so trusted certificates
+returned the moment the revert deployed, with no issuance necessary.
+The revert also unblocked the fleet's own tooling: the tofu CI/apply
+reaches its state backend through the S3 API of garage
+(`garage.srv-prod-3.ritter.family`), which had been serving the minica
+fallback for its own vhost — the catch-22 that made PR #352
+(placeholder for the structural fix) impossible to merge or apply while
+the fleet served untrusted certificates.
 
-1. **Structural fix in the zone data (preferred):** for each wildcard
-   cert, publish an explicit CNAME at the challenge node pointing into a
-   depth that no wildcard record can capture, e.g.
-
-   ```
-   _acme-challenge.srv-prod-2.ritter.family  CNAME  acme.<deep>.srv-prod-2.ritter.family
-   ```
-
-   with the target two-or-more labels below `<host>`. Explicit records
-   override wildcard synthesis, so the challenge node stops being
-   shadowed, resolution is identical for authoritative and recursive
-   paths, and lego/LE both behave deterministically. Requires records in
-   `tofu/dns/inwx/` and the same records in `tofu/dns/cloudflare/` until
-   that zone is decommissioned (Phase 6).
-2. **Fallback (lower-tech):** revert #349 fleet-wide (back to per-vhost
-   certificates, which demonstrably renewed fine through INWX at 09:43)
-   and re-introduce wildcard certs later with option 1's zone changes.
+The wildcard-cert design is **parked, not discarded**: branch
+`acme-dns01-fixes` (PR #352) carries the structural fix — explicit
+`_acme-challenge.*` CNAME delegations in `tofu/dns/` that jail the
+challenge TXT into the `acme.<host>.challenge` subtree (a depth no
+wildcard record in either zone can capture), where lego/LE behave
+deterministically; verified live during this incident that lego follows
+CNAMEs and writes at the target. The follow-ups below describe how to
+re-land it safely.
 
 ## Follow-ups
 
-- `tofu/dns/` zone layout: challenge-node delegation records (option 1)
-  or per-vhost enumeration (option 2 fallback).
-- Keep `dnsPropagationCheck = false` permanently — with split DNS via
-  the UniFi gateway, this local check can never succeed for wildcard
-  names and is redundant (LE validates independently).
+Re-landing the wildcard-cert design, in exactly this order (each step
+removes the obstacle that blocked the previous attempt):
+
+- [ ] Rebase `acme-dns01-fixes` (PR #352) on `main` (which now contains
+      the #349 revert).
+- [ ] Confirm the tofu state backend is reachable again — post-revert,
+      `garage.srv-prod-3.ritter.family` serves its per-vhost LE
+      certificate, so `tofu init` (CI, plan, apply) works.
+- [ ] Merge PR #352: its OpenTofu run creates the challenge-delegation
+      records in the INWX zone plus the parity copy in the Cloudflare
+      zone (the latter disappears in Phase 6 of the
+      [DNS migration](../plans/cloudflare-to-inwx-dns-migration.md)).
+      The re-landed module change must **also re-apply
+      `dnsPropagationCheck = false`** — that change lived in #350 and
+      was reverted together with #349 (it is harmless under per-vhost
+      certs and mandatory under wildcard certs).
+- [ ] Only once the delegation records exist in the zone: **revert the
+      reverts** — re-apply #349's module commit. Every wildcard order
+      then meets a sanctioned, explicit challenge chain from its first
+      attempt instead of an accidentally wildcard-owned one.
+- [ ] Verify the fleet per cert: `openssl s_client -connect <vhost>:443
+      … | openssl x509 -noout -subject -issuer -startdate` must show
+      subject `*.<host>.ritter.family` (or `*.ritter.family` on
+      directions), issuer **Let's Encrypt**, `notBefore` ≥ the
+      re-landing deploy. Only then is this incident fully closed; until
+      then untrusted names are the fallback state for any failed order.
+
+Standing notes from this incident (independent of the revert):
+
+- lego's present/cleanup-only failure path can leave the challenge TXT
+  stranded at the CNAME target, and NODATA negative caching (inwx SOA
+  minimum TTL 3600 s) can mask a successfully placed TXT for up to an
+  hour for any resolver that queried before it landed. Useful for
+  future DNS-01 debugging under split DNS.
 - The identical `minica root ca` fallbacks on every host (and the
-  `beszel-agent` x509 warnings) are symptoms; they self-heal once orders
-  succeed.
-- Allocation of the event's flakiness: NODATA negative caching (inwx SOA
-  min TTL 3600 s) can mask a *successful* TXT placement for up to an
-  hour for any resolver that queried the apex TXT node before lego
-  wrote it. Worth keeping in mind for future DNS-01 debugging under
-  split DNS.
+  beszel-agent x509 warnings) are symptoms only; they self-heal once
+  orders succeed.
 - `srv-offsite-1.ritter.family` resolves to directions' LAN IP
   (`192.168.30.6`) in the local zone; SSH'ing there lands on directions,
   not srv-offsite-1. Either the local record (tofu `unifi_dns_record`)
