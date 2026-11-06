@@ -4,10 +4,6 @@ _: {
     {
       services.https-proxy = {
         enable = true;
-        # Serves names directly under the base domain (e.g.
-        # books.ritter.family), which the per-host wildcard
-        # *.directions.ritter.family does not cover.
-        extraWildcardDomains = [ "*.ritter.family" ];
         configurations = [
           {
             fqdn = "beszel.ritter.family";
