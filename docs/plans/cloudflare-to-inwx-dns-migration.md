@@ -1,6 +1,6 @@
 # Plan: Migrate DNS from Cloudflare to INWX
 
-**Status:** ⏳ Draft — not started
+**Status:** 🚀 In progress — Phases 0–4 done, Phase 5 (ACME flip) next
 **Created:** 2026-11-03
 
 ## Goal
@@ -296,20 +296,20 @@ Start this phase immediately after Phase 2 — `britter.dev` expires
 2026-12-21 and gTLD transfers take up to 5 days. Do **not** cut it close:
 initiate the transfer by early December at the latest.
 
-- [ ] In Cloudflare (per domain): disable the registrar transfer lock and
+- [x] In Cloudflare (per domain): disable the registrar transfer lock and
       request the auth/EPP code.
-- [ ] Initiate the transfer at INWX using the auth code. gTLD transfers
+- [x] Initiate the transfer at INWX using the auth code. gTLD transfers
       (`ritter.family`, `britter.dev`) complete in ≤ 5 days; the transfer
       itself renews the domain by one year, which resolves `britter.dev`'s
       pending expiry.
-- [ ] `benediktritter.de`: order the **provider switch** (Kconnect/authinfo)
+- [x] `benediktritter.de`: order the **provider switch** (Kconnect/authinfo)
       at INWX, generate the authinfo code in the Hosting Europe panel.
       .de switches typically complete within hours, do not add a
       registration year, and the remaining term carries over.
-- [ ] While the domains sit at INWX **before** the NS flip, they still
+- [x] While the domains sit at INWX **before** the NS flip, they still
       delegate to Cloudflare's nameservers — resolution and certificates
       are unaffected. This is the safe parking spot between phases.
-- [ ] Watch for transfer-related email from the losing registrars
+- [x] Watch for transfer-related email from the losing registrars
       (Cloudflare/Hosting Europe may require explicit confirmation).
 
 Rollback for this phase: reject/cancel the pending transfer at INWX, or
@@ -322,22 +322,22 @@ One domain at a time, lowest-stakes first. Suggested order:
 `benediktritter.de` → `britter.dev` → `ritter.family` (the homelab's
 primary domain, most traffic, goes last once the procedure is proven).
 
-- [ ] Set the nameservers at the (new) registrar — INWX panel for all
+- [x] Set the nameservers at the (new) registrar — INWX panel for all
       three now, or Hosting Europe's panel for the .de if its transfer is
       deliberately deferred:
       `ns.inwx.de`, `ns2.inwx.de`, `ns3.inwx.eu`.
-- [ ] Propagation of a delegation is TTL-bound (typically hours, up to
+- [x] Propagation of a delegation is TTL-bound (typically hours, up to
       `NS`/`SOA` TTL). Resolvers will serve a mix of old and new NS
       answers during the window — both zones are identical (Phase 2), so
       this is transparent.
-- [ ] Verify from the outside:
+- [x] Verify from the outside:
       ```sh
       dig +trace ritter.family NS
       dig @1.1.1.1 books.ritter.family   # resolves, via new NS
       dig @8.8.8.8 nextcloud.ritter.family
       ```
-- [ ] Watch gatus monitors and mail logs for the propagation window.
-- [ ] After flipping `britter.dev` or `benediktritter.de`, verify the
+- [x] Watch gatus monitors and mail logs for the propagation window.
+- [x] After flipping `britter.dev` or `benediktritter.de`, verify the
       Netlify site still serves and the apex redirect still works:
       ```sh
       curl -sI https://britter.dev | grep -i '^HTTP\|^server'
@@ -359,7 +359,7 @@ The shared `modules/nixos/https-proxy/secrets.yaml` and the module-local
 sops wiring already exist since Phase 1, so this phase only changes the
 provider and the credential values.
 
-- [ ] In `modules/nixos/https-proxy/default.nix`, change the
+- [x] In `modules/nixos/https-proxy/default.nix`, change the
       `security.acme.defaults` block:
       ```nix
       dnsProvider = "inwx";
@@ -370,6 +370,9 @@ provider and the credential values.
         # "INWX_SHARED_SECRET_FILE" = config.sops.secrets."inwx/shared-secret".path;
       };
       ```
+      -> Module change done 2026-11-06; the `cloudflare/api-token`
+      credentialFiles entry is kept for now as the rollback path (see
+      Phase 6 for its removal).
 - [ ] Add the INWX automation-account credentials to the **shared**
       `modules/nixos/https-proxy/secrets.yaml` (`inwx/username`,
       `inwx/password`, and optionally `inwx/shared-secret`).
