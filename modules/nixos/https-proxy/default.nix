@@ -107,14 +107,29 @@ _: {
         sops.secrets."cloudflare/api-token" = {
           sopsFile = ./secrets.yaml;
         };
+        sops.secrets."inwx/username" = {
+          sopsFile = ./secrets.yaml;
+        };
+        sops.secrets."inwx/password" = {
+          sopsFile = ./secrets.yaml;
+        };
+        # only if the automation account has 2FA enabled:
+        # sops.secrets."inwx/shared-secret" = {
+        #   sopsFile = ./secrets.yaml;
+        # };
 
         security.acme = {
           acceptTerms = true;
           defaults = {
             email = config.systemConstants.adminEmail;
-            dnsProvider = "cloudflare";
+            dnsProvider = "inwx";
             dnsPropagationCheck = true;
             credentialFiles = {
+              "INWX_USERNAME_FILE" = config.sops.secrets."inwx/username".path;
+              "INWX_PASSWORD_FILE" = config.sops.secrets."inwx/password".path;
+              # only if the automation account has 2FA enabled:
+              # "INWX_SHARED_SECRET_FILE" = config.sops.secrets."inwx/shared-secret".path;
+              # keep until every cert has renewed once through INWX (rollback path):
               "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets."cloudflare/api-token".path;
             };
           };
