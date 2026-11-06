@@ -3,6 +3,29 @@ _: {
     { config, lib, ... }:
     let
       cfg = config.services.https-proxy;
+      # Wildcard cert for this host, e.g. "*.srv-prod-2.ritter.family".
+      # One cert for all services on the host: adding a service does
+      # not require requesting a new certificate.
+      wildcardDomain = "*.${config.networking.hostName}.${config.systemConstants.baseDomain}";
+      wildcardDomains = [ wildcardDomain ] ++ cfg.extraWildcardDomains;
+      # Wildcard certificates only match a single label, so
+      # "*.a.b.c" covers "x.a.b.c" but not "x.y.a.b.c". Match a
+      # config's fqdn by stripping its first label.
+      #
+      # The cert attribute name must not contain "*" (it ends up in
+      # systemd unit names, and nixpkgs asserts against it); the
+      # wildcard belongs in the cert's `domain` option instead.
+      certName =
+        wildcard: "wildcard." + lib.concatStringsSep "." (lib.drop 1 (lib.splitString "." wildcard));
+      certFor =
+        fqdn:
+        let
+          wildcard = "*." + lib.concatStringsSep "." (lib.drop 1 (lib.splitString "." fqdn));
+        in
+        if lib.elem wildcard wildcardDomains then
+          certName wildcard
+        else
+          throw "https-proxy: no wildcard certificate covers ${fqdn} (requested: ${lib.concatStringsSep ", " wildcardDomains})";
       proxyConfig = lib.types.submodule (_: {
         options = {
           fqdn = lib.mkOption {
@@ -58,6 +81,15 @@ _: {
     {
       options.services.https-proxy = {
         enable = lib.mkEnableOption "https-proxy";
+        extraWildcardDomains = lib.mkOption {
+          type = lib.types.listOf (lib.types.strMatching "\\*\\..+");
+          default = [ ];
+          description = ''
+            Additional wildcard domains to request certificates for,
+            e.g. "*.example.com" for a proxy that serves names outside
+            *.<host-name>.<baseDomain>.
+          '';
+        };
         configurations = lib.mkOption {
           type = lib.types.listOf proxyConfig;
           default = [ ];
@@ -90,7 +122,7 @@ _: {
                   conf.extraConfig
                 ];
                 serverAliases = conf.aliases;
-                useACMEHost = conf.fqdn;
+                useACMEHost = certFor conf.fqdn;
                 forceSSL = true;
               }
               // lib.optionalAttrs (conf.target != null) {
@@ -137,13 +169,13 @@ _: {
 
         users.users.nginx.extraGroups = [ "acme" ];
 
-        security.acme.certs =
-          let
-            makeCert = conf: {
-              ${conf.fqdn} = { };
-            };
-          in
-          lib.mkMerge (lib.map makeCert cfg.configurations);
+        # One wildcard cert for the host itself, plus any extra
+        # wildcards from extraWildcardDomains. All requested via
+        # DNS-01 (see security.acme.defaults above), since wildcard
+        # certs cannot be issued over HTTP.
+        security.acme.certs = lib.listToAttrs (
+          map (wildcard: lib.nameValuePair (certName wildcard) { domain = wildcard; }) wildcardDomains
+        );
       };
     };
 }
