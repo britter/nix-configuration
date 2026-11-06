@@ -1,6 +1,6 @@
 # Plan: Migrate DNS from Cloudflare to INWX
 
-**Status:** 🚀 In progress — Phases 0–4 and 5 (INWX ACME flip, #348) done; srv-prod-5 validated 2026-11-06. Next: force re-issuance + verify on remaining hosts (Phase 5 tail), then Phase 6.
+**Status:** 🚀 In progress — Phases 0–4 and 5 (INWX ACME flip, #348) done; srv-prod-5 validated 2026-11-06. Next: bulk passive verification of natural renewals across the fleet (Phase 5 tail), then Phase 6.
 **Created:** 2026-11-03
 
 ## Goal
@@ -232,9 +232,11 @@ automation account), so the shared model is where this ends up regardless.
       `cloudflare_api_token_permission_groups_list` data block in
       `provider.tf`, and the re-exporting output in `tofu/dns/main.tf`).
       `tofu validate` passes. The DNS records (`main.tf`,
-      `directions.tf`, `email.tf`) stay. The old per-host Cloudflare
-      tokens should be revoked in the Cloudflare dashboard during Phase 6
-      cleanup.
+      `directions.tf`, `email.tf`) stay. The resources' removal went
+      through an apply, so the old per-host Cloudflare tokens were
+      destroyed by tofu (revoked at Cloudflare) — no Phase 6 cleanup
+      needed for them; a glance at the API-tokens page for orphans is
+      optional confirmation only.
 - [x] Redeploy all hosts and confirm certs still renew (no action needed
       until natural renewal — the token value is the same credential class
       as before). From this point on, a credential or provider change is
@@ -406,13 +408,20 @@ provider and the credential values.
       (notBefore 2026-11-06 09:43 UTC, verified via `openssl s_client`
       from outside). INWX credentials, DNS-01 challenge and propagation
       check all work; no `INWX_PROPAGATION_TIMEOUT` override needed.
-- [ ] Force (or wait for) re-issuance on the **other hosts** and verify
-      each cert's `notBefore` is post-deploy:
-      `openssl s_client -connect <host>:443 ... | openssl x509 -noout -dates`.
-      Applies to directions (its 19 per-vhost certs, e.g.
-      `nextcloud.ritter.family` still showed 2026-10-21 right after the
-      deploy), srv-prod-2 (6 certs), srv-prod-6 (2), and the single cert
-      each on srv-prod-1, srv-prod-3, srv-prod-4, srv-offsite-1.
+- [x] ~~Force (or wait for) re-issuance on the **other hosts**~~ ->
+      Decision 2026-11-06: do **not** force renewals. The srv-prod-5
+      re-issuance plus the successful atomic #348 deploy already prove
+      everything that per-host renewal depends on (lego INWX provider,
+      DNS-01 challenge, propagation check, sops decryption on every host —
+      a missing recipient would have failed activation, i.e. the deploy).
+      Instead, let certs renew naturally (~30 days before their ~90-day
+      expiry) and run a read-only bulk sweep over all hosts/vhosts:
+      `openssl s_client -connect <host>:443 ... | openssl x509 -noout -startdate`,
+      confirming every `notBefore` is past 2026-11-06. Covers directions
+      (19 per-vhost certs), srv-prod-2 (6), srv-prod-6 (2), and the single
+      cert each on srv-prod-1, srv-prod-3, srv-prod-4, srv-offsite-1.
+      Expected to be fully green from ~early January 2027; Phase 6's gate
+      (below) is unchanged and still requires the full sweep to pass.
 
 ## Phase 6 — Decommission Cloudflare
 
@@ -431,9 +440,10 @@ gatus monitors have been green across a full cert cycle:
       `modules/nixos/https-proxy/default.nix`.
 - [ ] Remove `tofu/dns/cloudflare/` (after confirming nothing else uses
       that provider/state) and the Cloudflare provider block.
-- [ ] Confirm INWX auto-renew is enabled for all three domains, payment
+- [x] Confirm INWX auto-renew is enabled for all three domains, payment
       method on file, and expiry dates transferred/imported correctly
       (INWX imports the remaining registration term on transfer).
+      -> Confirmed by hand 2026-11-06.
 
 ## Timeline
 
@@ -441,8 +451,8 @@ gatus monitors have been green across a full cert cycle:
 |---|---|
 | Early Nov 2026 ✅ | Phases 0–4: account + credentials, secrets consolidation, tofu port, zone parity, transfers, NS flips — all done |
 | 2026-11-06 | Phase 5 (#348): ACME provider flipped to INWX in one atomic deploy; `music.srv-prod-5.ritter.family` force-renewed same day as proof |
-| Next | Phase 5 tail: one forced re-issuance + `notBefore` check per remaining cert (directions ×19, srv-prod-2 ×6, srv-prod-6 ×2, single certs ×4) |
-| After the Phase 5 tail | Phase 6: Cloudflare decommission — only once every cert has renewed through INWX |
+| Next | Phase 5 tail (amended 2026-11-06): no forced renewals — let certs renew naturally, then bulk `notBefore` sweep over all hosts/vhosts (directions ×19, srv-prod-2 ×6, srv-prod-6 ×2, single certs ×4); fully green expected ~early Jan 2027 |
+| After the Phase 5 tail | Phase 6: Cloudflare decommission — only once the sweep shows every cert renewed through INWX and gatus has been green across a full cert cycle |
 
 The hard deadline is `britter.dev`'s 2026-12-21 expiry — everything after
 Phase 3 has no deadline pressure and can slip without consequence.
