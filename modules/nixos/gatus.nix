@@ -2,10 +2,37 @@ _: {
   flake.modules.nixos.gatus =
     { config, ... }:
     {
+      sops.secrets."gatus/brevo-smtp-username" = { };
+      sops.secrets."gatus/brevo-smtp-password" = { };
+      sops.templates."gatus/brevo-smtp-env" = {
+        content = ''
+          BREVO_SMTP_USERNAME=${config.sops.placeholder."gatus/brevo-smtp-username"}
+          BREVO_SMTP_PASSWORD=${config.sops.placeholder."gatus/brevo-smtp-password"}
+        '';
+        restartUnits = [ "gatus.service" ];
+      };
+
       services.gatus = {
         enable = true;
+        environmentFile = config.sops.templates."gatus/brevo-smtp-env".path;
         settings = {
           web.port = 8888;
+
+          alerting.email = {
+            from = "gatus@ritter.family";
+            username = "\${BREVO_SMTP_USERNAME}";
+            password = "\${BREVO_SMTP_PASSWORD}";
+            host = "smtp-relay.brevo.com";
+            port = 587;
+            to = config.systemConstants.adminEmail;
+            # Applies to every endpoint that lists an email alert below.
+            default-alert = {
+              enabled = true;
+              failure-threshold = 3;
+              send-on-resolved = true;
+            };
+          };
+
           endpoints = [
             {
               name = "NextCloud";
@@ -15,6 +42,9 @@ _: {
                 "[STATUS] == 200"
                 "[BODY].installed == true"
               ];
+              alerts = [
+                { type = "email"; }
+              ];
             }
             {
               name = "Vaultwarden";
@@ -22,6 +52,9 @@ _: {
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
+              ];
+              alerts = [
+                { type = "email"; }
               ];
             }
             {
@@ -32,6 +65,9 @@ _: {
                 "[STATUS] == 200"
                 "[BODY].res == pong"
               ];
+              alerts = [
+                { type = "email"; }
+              ];
             }
             {
               name = "Navidrome";
@@ -39,6 +75,9 @@ _: {
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
+              ];
+              alerts = [
+                { type = "email"; }
               ];
             }
             {
@@ -48,6 +87,9 @@ _: {
               conditions = [
                 "[STATUS] == 200"
               ];
+              alerts = [
+                { type = "email"; }
+              ];
             }
             {
               name = "AdGuard Home";
@@ -55,6 +97,9 @@ _: {
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
+              ];
+              alerts = [
+                { type = "email"; }
               ];
             }
             {
@@ -64,6 +109,9 @@ _: {
               conditions = [
                 "[STATUS] == 200"
               ];
+              alerts = [
+                { type = "email"; }
+              ];
             }
             {
               name = "Stirling PDF";
@@ -71,6 +119,9 @@ _: {
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
+              ];
+              alerts = [
+                { type = "email"; }
               ];
             }
             {
@@ -80,6 +131,9 @@ _: {
               conditions = [
                 "[STATUS] == 200"
               ];
+              alerts = [
+                { type = "email"; }
+              ];
             }
             {
               name = "Beszel";
@@ -88,6 +142,9 @@ _: {
               conditions = [
                 "[STATUS] == 200"
               ];
+              alerts = [
+                { type = "email"; }
+              ];
             }
             {
               name = "SSO";
@@ -95,6 +152,9 @@ _: {
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
+              ];
+              alerts = [
+                { type = "email"; }
               ];
             }
             {
@@ -105,6 +165,9 @@ _: {
                 "[STATUS] == 200"
                 "[BODY].status == pass"
               ];
+              alerts = [
+                { type = "email"; }
+              ];
             }
             {
               name = "IT Tools";
@@ -113,6 +176,9 @@ _: {
               conditions = [
                 "[STATUS] == 200"
               ];
+              alerts = [
+                { type = "email"; }
+              ];
             }
             {
               name = "Paperless";
@@ -120,6 +186,9 @@ _: {
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
+              ];
+              alerts = [
+                { type = "email"; }
               ];
             }
           ];
