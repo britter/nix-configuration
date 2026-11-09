@@ -41,7 +41,7 @@ The service list below mirrors the directions homepage
 | Forgejo | `git.ritter.family` | Native | ✅ Done | See archived plan (srv-prod-6) |
 | Proxmox VE | `pve.ritter.family` | Native | ✅ Done | See archived plan; `root@pam` break-glass |
 | Nextcloud | `nextcloud.ritter.family` | Native (user_oidc app) | ⏳ Pending | Disable local passwords after migration |
-| Stirling PDF | `pdf.ritter.family` | Native | ⏳ Pending | |
+| Stirling PDF | `pdf.ritter.family` | Native | ⏳ Pending | Plan prepared: [`stirling-pdf-keycloak-sso.md`](stirling-pdf-keycloak-sso.md) |
 | Vaultwarden | `passwords.ritter.family` | Native | ⏳ Pending | SSO is admin-toggleable; keep master password unlock working |
 | Paperless-ngx | `documents.ritter.family` | Native | ⏳ Pending | django-allauth based; admin account needed for first login |
 | Immich | `photos.ritter.family` | Native | ⏳ Pending | |
