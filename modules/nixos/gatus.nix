@@ -122,9 +122,6 @@ _: {
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
-                # unquoted compare: gatus treats a quoted RHS as
-                # literal-with-quotes (Forgejo's check uses the same
-                # unquoted style).
                 "[BODY].status == UP"
               ];
               alerts = [
@@ -154,7 +151,7 @@ _: {
               ];
             }
             {
-              name = "SSO";
+              name = "Keycloak";
               url = "https://account.ritter.family";
               interval = "5m";
               conditions = [
