@@ -1,16 +1,15 @@
 # Beszel hub: Keycloak SSO (third native client)
 
-**Status:** in progress — tofu client applied, Part B click-ops done
-(OAuth / Keycloak OIDC provider ✅, Brevo SMTP ✅), first SSO login verified
-✅ 2026-11-09; Part C (`DISABLE_PASSWORD_AUTH` + `APP_URL` in the hub
-env, [`modules/nixos/beszel-hub.nix`](../../modules/nixos/beszel-hub.nix))
-is on main awaiting the next comin switch / merge — the verification
-step below closes this plan. Part of
-[`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) (step 3, "remaining
-native apps"); client conventions follow the Forgejo and PVE onboardings
-([archive](archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md),
-[archive](archive/2026-10-30-proxmox-keycloak-sso.md)). Status marks: ✅
-done, ⏳ pending.
+**Status:** complete (2026-11-09), archived per AGENTS.md — refresh
+(click-ops) steps live in [`docs/homelab.md`](../../homelab.md) →
+Beszel. Tofu client applied by the `OpenTofu Keycloak` pipeline,
+PocketBase click-ops done (Keycloak OIDC provider ✅, Brevo SMTP ✅),
+first SSO login landed in the existing admin account ✅ 2026-11-09, and
+Part C (`DISABLE_PASSWORD_AUTH` + `APP_URL` in the hub env) is rolled
+out — password login is gone from the login page. Part of
+[`../keycloak-sso-rollout.md`](../keycloak-sso-rollout.md) (step 3,
+"remaining native apps"); client conventions follow the Forgejo and PVE
+onboardings.
 
 ## Background
 
@@ -108,7 +107,7 @@ Keep the value around for Part B — it must be pasted into the PocketBase
 UI so both sides match (view it later with
 `sops -d --extract '["beszel_client_secret"]' tofu/keycloak/secrets.json`).
 
-## Part B — PocketBase click-ops ⏳ (operator, ~5 minutes)
+## Part B — PocketBase click-ops ✅ (operator, 2026-11-09, ~5 minutes)
 
 Ordered so the hub's login behavior changes only after the Keycloak
 client exists and is applied:
@@ -178,8 +177,9 @@ is disabled declaratively alongside `APP_URL`:
 +          # Links in emails / notifications use this instead of the
 +          # request origin — the hub serves via the public FQDN.
 +          APP_URL = "https://beszel.ritter.family";
-+          # SSO is the only door (Part C of docs/plans/beszel-keycloak-sso.md);
-+          # the break-glass is this line's removal + sops hub-admin-password.
++          # SSO is the only door; the break-glass is this line's
++          # removal + sops hub-admin-password. See
++          # docs/plans/archive/2026-11-09-beszel-keycloak-sso.md.
 +          DISABLE_PASSWORD_AUTH = "true";
 +        };
          environmentFile = config.sops.templates."beszel-hub-env".path;
@@ -191,7 +191,7 @@ option disappears from the login page while Keycloak SSO keeps working.
 `hub-admin-password` deliberately **stays** in sops — it is the
 break-glass credential for the env-flip rollback.
 
-## Verification
+## Verification ✅ (2026-11-09: health `200`, auth-methods lists `oidc` only)
 
 ```bash
 # health endpoint stays public (gatus keeps working)
@@ -217,11 +217,15 @@ curl -s "https://account.ritter.family/realms/homelab/protocol/openid-connect/au
 
 ## Cleanup / follow-ups
 
-- ⏳ After Part C lands: update the Beszel row in
-  [`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) to ✅ and archive
-  this plan per AGENTS.md.
-- ⏳ `docs/homelab.md` + directions homepage entry only if the login
-  model changes something user-visible (tile stays; no URL change).
+- ✅ Archived to `docs/plans/archive/2026-11-09-beszel-keycloak-sso.md`
+  and the Beszel row in [`../keycloak-sso-rollout.md`](../keycloak-sso-rollout.md)
+  set to ✅ per AGENTS.md.
+- ✅ `docs/homelab.md` → Beszel documents the from-scratch recital
+  (first-user env, Brevo SMTP, PocketBase OIDC provider, FQDN-only
+  login); no directions homepage entry needed — tile and URL unchanged.
+- ⏳ Optional hardening, unprioritized: superuser-API `ExecStartPost`
+  script to converge SMTP settings from code (see Part B addendum);
+  `MFA_OTP=true` email-OTP MFA now that SMTP exists.
 - When a second person ever needs hub access: set `USER_CREATION=true`
   or pre-create the user in PocketBase, then assign systems to them —
   and note Beszel's per-user `systems` assignment in the hub config.

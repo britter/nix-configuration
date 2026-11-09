@@ -37,6 +37,36 @@ break-glass. A recreated hypervisor needs this command again plus
 `https://pve.ritter.family` (direct IP access registers a different
 redirect origin, see `docs/plans/archive/2026-10-30-proxmox-keycloak-sso.md`).
 
+### Beszel
+
+All of this was configured via click-ops per
+`docs/plans/archive/2026-11-09-beszel-keycloak-sso.md`; it lives in the
+hub's PocketBase database and needs to be redone when rebuilding the hub
+from scratch (the flake replaces the Keycloak-side parts on rebuild):
+
+1. First user comes from the hub env on new installs (`USER_EMAIL` /
+   `USER_PASSWORD` in `modules/nixos/beszel-hub.nix`, the password from
+   sops `beszel/hub-admin-password`). Password login is disabled
+   declaratively (`DISABLE_PASSWORD_AUTH=true`); if the env line is
+   removed, the sops password works again on restart — that is the
+   break-glass.
+2. SMTP: hub Settings → SMTP, Brevo (per-service credentials + sender,
+   same pattern as Forgejo/Keycloak in this file). Not declarable —
+   PocketBase app state, no env override.
+3. OIDC: PocketBase superuser settings (`https://beszel.ritter.family/_/#/settings`)
+   → toggle off "Hide collection create and edit controls" → users
+   collection → Options → OAuth2 → OIDC provider:
+   client id `beszel`, secret from sops/tofu-keycloak
+   (`beszel_client_secret`), display name `Keycloak`, auth/token/userinfo
+   from `https://account.ritter.family/realms/homelab/protocol/openid-connect/*`,
+   "Support PKCE" checked. Then toggle the collection-hide switch back
+   on. Click "Set provider config" and save the collection.
+
+Login works via the public FQDN only (`https://beszel.ritter.family`, the
+`/api/oauth2-redirect` callback; the hub aspect's spare vhost registers a
+rejected redirect origin). Agents and the `/api/health` endpoint don't
+use the users collection — SSO and the password switch don't affect them.
+
 
 ## Repository layout
 

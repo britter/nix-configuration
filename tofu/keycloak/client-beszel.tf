@@ -16,7 +16,8 @@ resource "keycloak_openid_client" "beszel" {
   # Operator-generated and seeded into sops (tofu/keycloak/secrets.json).
   # The hub keeps its own copy in PocketBase's database, set once via the
   # superuser UI (no env-var path for provider config) — paste it during
-  # Part B of docs/plans/beszel-keycloak-sso.md so both sides match.
+  # Part B of docs/plans/archive/2026-11-09-beszel-keycloak-sso.md so
+  # both sides match; refresh steps live in docs/homelab.md → Beszel.
   client_secret = data.sops_file.secrets.data["beszel_client_secret"]
 
   # PocketBase derives the redirect URI from the request origin plus the

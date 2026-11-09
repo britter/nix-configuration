@@ -50,7 +50,7 @@ The service list below mirrors the directions homepage
 | Home Assistant | `homeassistant.ritter.family` | Native | ⏳ Pending | Needs a trusted-proxy setup so local logins stay possible |
 | IT Tools | `tools.ritter.family` | No auth at all — auth proxy | ⏳ Pending | Pure static app; proxy is the only gate |
 | Homepage (directions) | `home.ritter.family` | No auth at all — auth proxy | ⏳ Pending | |
-| Beszel | `beszel.ritter.family` | Native | ⏳ Pending | Plan: [`beszel-keycloak-sso.md`](beszel-keycloak-sso.md); tofu client merged, click-ops + password switch staged |
+| Beszel | `beszel.ritter.family` | Native | ✅ Done | Password login disabled (`DISABLE_PASSWORD_AUTH`); see [archived plan (2026-11-09)](archive/2026-11-09-beszel-keycloak-sso.md) |
 | Gatus | `status.ritter.family` | Native | ⏳ Pending | Keep unauthenticated uptime exposure in mind — SSO hides status from the household |
 | AdGuard Home | `adguard.ritter.family` | No — auth proxy | ⏳ Pending | DNS query APIs (DoH/DoT) must bypass the proxy |
 | UniFi Network | `unifi.ritter.family` | No | ❌ Not possible | Confirmed: UniFi admin UI has no OIDC support; local auth stays |
