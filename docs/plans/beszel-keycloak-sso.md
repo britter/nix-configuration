@@ -1,7 +1,11 @@
 # Beszel hub: Keycloak SSO (third native client)
 
-**Status:** in progress — the tofu half is merged; the click-ops and the
-password-login switch are staged runbook steps below. Part of
+**Status:** in progress — tofu client applied, Part B click-ops done
+(OAuth / Keycloak OIDC provider ✅, Brevo SMTP ✅), first SSO login verified
+✅ 2026-11-09; Part C (`DISABLE_PASSWORD_AUTH` + `APP_URL` in the hub
+env, [`modules/nixos/beszel-hub.nix`](../../modules/nixos/beszel-hub.nix))
+is on main awaiting the next comin switch / merge — the verification
+step below closes this plan. Part of
 [`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) (step 3, "remaining
 native apps"); client conventions follow the Forgejo and PVE onboardings
 ([archive](archive/2026-10-29-forgejo-keycloak-sso-on-srv-prod-6.md),
@@ -117,7 +121,11 @@ client exists and is applied:
    `https://beszel.ritter.family/_/#/settings`.
 3. Toggle **off** "Hide collection create and edit controls", save.
 4. Collections → `users` → gear icon → **Options** → **OAuth2**:
-   enable it, **Add provider** → *OpenID Connect*, fill in:
+   enable it, **Add provider** → *OpenID Connect* — Beszel offers three
+   generic slots (*OIDC*, *OIDC2*, *OIDC3*) for custom OIDC providers;
+   they are interchangeable containers (pick any free one so the login
+   button carries the display name you want), per
+   https://beszel.dev/guide/oauth. Fill in:
    - Client id: `beszel`
    - Client secret: the sops value from Part A
    - Display name: `Keycloak`
@@ -135,17 +143,47 @@ client exists and is applied:
 
 Stage gate: do not proceed to Part C until 6 has passed. While it
 hasn't, the local password login still works and nothing is locked out.
+✅ Passed 2026-11-09 (first SSO login landed in the admin account).
 
-## Part C — disable password login ⏳ (one-line PR)
+### Part B addendum — SMTP mailer via Brevo ✅ (click-ops, 2026-11-09)
 
-After the first SSO login is confirmed:
+Configured in the same sitting as the OAuth provider (hub Settings →
+SMTP, Brevo credentials per the per-service-sender pattern from the
+Forgejo plan). This one is **not** declarable: mail settings are
+PocketBase app state in `beszel.db`, without an env override — the full
+hub env list (https://beszel.dev/guide/environment-variables) has no
+SMTP entry, and the nixpkgs module exposes no mail options (the Forgejo umbrella had a declarative
+mailer; Beszel doesn't). The only in-code path would be a bespoke
+Forgejo-style `ExecStartPost` superuser-API script — noted as a
+possible follow-up, not built. The DB state survives rebuilds, so the
+click-ops is the config.
+
+Code-able follow-ups discovered in the env list: setting
+`APP_URL=https://beszel.ritter.family` in the hub env (used for links
+in emails/notifications, now that mail exists), and `MFA_OTP=true`
+(email one-time password MFA, requires SMTP — now available).
+
+## Part C — disable password login ✅ (one-line env change)
+
+After the first SSO login is confirmed (✅ 2026-11-09), password login
+is disabled declaratively alongside `APP_URL`:
 
 ```diff
 @@ modules/nixos/beszel-hub.nix @@
-       sops.templates."beszel-hub-env".content = ''
-         USER_PASSWORD=${config.sops.placeholder."beszel/hub-admin-password"}
-+        DISABLE_PASSWORD_AUTH=true
-       '';
+       services.beszel.hub = {
+         enable = true;
+-        environment.USER_EMAIL = config.systemConstants.adminEmail;
++        environment = {
++          USER_EMAIL = config.systemConstants.adminEmail;
++          # Links in emails / notifications use this instead of the
++          # request origin — the hub serves via the public FQDN.
++          APP_URL = "https://beszel.ritter.family";
++          # SSO is the only door (Part C of docs/plans/beszel-keycloak-sso.md);
++          # the break-glass is this line's removal + sops hub-admin-password.
++          DISABLE_PASSWORD_AUTH = "true";
++        };
+         environmentFile = config.sops.templates."beszel-hub-env".path;
+       };
 ```
 
 Merge; comin switches directions, the hub restarts, and the password

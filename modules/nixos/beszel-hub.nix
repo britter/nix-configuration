@@ -34,7 +34,15 @@ _: {
 
       services.beszel.hub = {
         enable = true;
-        environment.USER_EMAIL = config.systemConstants.adminEmail;
+        environment = {
+          USER_EMAIL = config.systemConstants.adminEmail;
+          # Links in emails / notifications use this instead of the
+          # request origin — the hub serves via the public FQDN.
+          APP_URL = "https://beszel.ritter.family";
+          # SSO is the only door (Part C of docs/plans/beszel-keycloak-sso.md);
+          # the break-glass is this line's removal + sops hub-admin-password.
+          DISABLE_PASSWORD_AUTH = "true";
+        };
         environmentFile = config.sops.templates."beszel-hub-env".path;
       };
 
