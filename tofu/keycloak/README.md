@@ -25,6 +25,48 @@ credentials live in the sops-encrypted `secrets.json`; rules for it are in
 `direnv allow` — the `.envrc` decrypts the state bucket credentials and
 loads the shared dev shell from the repository root flake.
 
+## Required click-ops
+
+The `tofu` client itself is not tofu-managed — it lives in the `master`
+realm and is maintained by hand. One-time creation is documented in the
+archived rollout plan, section 1.5
+([`docs/plans/archive/2026-10-29-keycloak-sso-on-srv-prod-1.md`](../../docs/plans/archive/2026-10-29-keycloak-sso-on-srv-prod-1.md)).
+
+Since the Keycloak 26.8.2 server upgrade (incident
+[`2026-11-09-keycloak-tofu-admin-api-401.md`](../../docs/incidents/2026-11-09-keycloak-tofu-admin-api-401.md)),
+the client also needs a
+piece of standing configuration that the upgrade does not apply to
+custom clients:
+
+- **Assign the built-in `kc-admin-api` client scope as a *Default*
+  scope.** The Admin REST API rejects tokens without it (RFC 9700
+  audience check), so without it the provider fails its initial login
+  with a 401 on `GET /admin/serverinfo`. The upgrade assigns the scope
+  only to `admin-cli` and `security-admin-console`.
+
+To (re-)apply in the admin console (master realm → Clients → `tofu` →
+Client scopes → Add client scope → `kc-admin-api` → Default), or via the
+API from srv-prod-1:
+
+```bash
+KC=https://account.ritter.family
+# admin-cli carries the scope itself after the upgrade, so it can mint
+# a working token
+TOKEN=$(curl -s -d grant_type=password -d client_id=admin-cli \
+  --data-urlencode username="$KC_ADMIN_USER" --data-urlencode password="$KC_ADMIN_PASSWORD" \
+  "$KC/realms/master/protocol/openid-connect/token" | jq -r .access_token)
+CID=$(curl -s -H "Authorization: Bearer $TOKEN" \
+  "$KC/admin/realms/master/clients?clientId=tofu" | jq -r '.[0].id')
+SID=$(curl -s -H "Authorization: Bearer $TOKEN" \
+  "$KC/admin/realms/master/client-scopes" | jq -r '.[] | select(.name=="kc-admin-api") | .id')
+curl -fsS -X PUT -H "Authorization: Bearer $TOKEN" \
+  "$KC/admin/realms/master/clients/$CID/default-client-scopes/$SID"
+```
+
+Any *future* client whose service account talks to the Admin REST API
+(automation other than this tofu root) needs the same scope assigned
+right after creation.
+
 ## Realm and users
 
 The realm is created by tofu. If it is ever created manually first, import
