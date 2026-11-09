@@ -122,7 +122,10 @@ _: {
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
-                "[BODY].status == \"UP\""
+                # unquoted compare: gatus treats a quoted RHS as
+                # literal-with-quotes (Forgejo's check uses the same
+                # unquoted style).
+                "[BODY].status == UP"
               ];
               alerts = [
                 { type = "email"; }
