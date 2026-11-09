@@ -115,10 +115,14 @@ _: {
             }
             {
               name = "Stirling PDF";
-              url = "https://pdf.ritter.family";
+              # /api/v1/info/status is public and unauthenticated even
+              # with login on, so monitoring survives the Keycloak SSO
+              # rollout — see docs/plans/stirling-pdf-keycloak-sso.md.
+              url = "https://pdf.ritter.family/api/v1/info/status";
               interval = "5m";
               conditions = [
                 "[STATUS] == 200"
+                "[BODY].status == \"UP\""
               ];
               alerts = [
                 { type = "email"; }
