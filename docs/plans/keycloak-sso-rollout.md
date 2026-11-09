@@ -15,17 +15,23 @@ The service list below mirrors the directions homepage
 
 ## Approach
 
+- Make a small plan document per service to prepare onboarding.
 - **Native OIDC** apps get a `keycloak_openid_client.<name>` resource in
   `tofu/keycloak/` (one file per client, per the existing convention)
   and are configured in the app itself.
+- Discuss pros and cons of disabling username password login.
 - **Auth proxy** apps (no OIDC support) are gated by a reverse-proxy
   layer in front of the app (e.g. `oauth2-proxy` wired to Keycloak), with
   one Keycloak confidential client per protected vhost. The app's own
   local login remains as break-glass.
+- Think about how to enable Gatus service monitoring, e.g. is it possible
+  to exclude the health endpoint from sso login?
 - **Not possible** apps (UniFi admin UI, TrueNAS) stay on local auth;
   they are documented here only for completeness.
+- Identify pre-existing users and decide on how to map them.
 - Local admin accounts stay untouched everywhere as break-glass, same
   as `root@pam` for PVE.
+- Document required click-ops for setting up auth in `<root>/docs`.
 
 ## Service status
 
