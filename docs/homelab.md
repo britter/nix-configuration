@@ -67,6 +67,32 @@ Login works via the public FQDN only (`https://beszel.ritter.family`, the
 rejected redirect origin). Agents and the `/api/health` endpoint don't
 use the users collection — SSO and the password switch don't affect them.
 
+### Home Assistant
+
+Configured via click-ops on the HAOS device per
+[`docs/plans/homeassistant-keycloak-sso.md`](plans/homeassistant-keycloak-sso.md);
+it lives in UI storage (`.storage/`) and needs to be redone when rebuilding
+the device from scratch (the Keycloak-side client is tofu-managed, in
+`tofu/keycloak/client-homeassistant.tf` — a **public** client, no secret):
+
+1. HACS → install `christiaangoossens/hass-oidc-auth` ("OpenID Connect/SSO
+   Authentication"), restart HA.
+2. Settings → Devices & Services → Add Integration → OpenID
+   Connect/SSO Authentication → provider *OpenID Connect (SSO)*:
+   discovery URL
+   `https://account.ritter.family/realms/homelab/.well-known/openid-configuration`,
+   client id `homeassistant`, **no secret**. Enable automatic user
+   linking only for the initial migration login, then disable it again
+   (the SSO credential stays linked).
+3. Local password login stays enabled as break-glass (the companion
+   apps' refresh tokens are tied to the `homeassistant` auth provider —
+   do not remove that provider).
+
+SSO works via the public FQDN only
+(`https://homeassistant.ritter.family/auth/oidc/callback`); logging in at
+the raw LAN address `http://192.168.20.234:8123` uses the local password.
+Proxy-trust (`trusted_proxies` = directions' IP) is a UI-storage setting
+— see the 2026-11-02 incident before changing the proxy's address.
 
 ## Repository layout
 
