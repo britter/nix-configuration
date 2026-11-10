@@ -36,13 +36,15 @@ in October 2026, with full history preserved
 | `pve` | Proxmox VE hypervisor running the `srv-prod-*` VMs | not managed with Nix |
 | `srv-prod-1`–`srv-prod-6` | Proxmox VMs running the home-lab services; `srv-prod-6` also hosts the self-hosted CI runners | comin |
 | `truenas` | NAS providing the NFS backup share for `pve` | not managed with Nix |
+| `homeassistant` | [Home Assistant Green](https://www.home-assistant.io/green/) appliance running Home Assistant OS; smart-home hub on the Smart Home VLAN, published as `homeassistant.ritter.family` via the reverse proxy on `directions` | not managed with Nix |
 | `srv-offsite-1` | offsite server running Garage object storage | comin |
 | `minimal-server-iso` | minimal installer ISO | build artifact |
 
 Servers deploy themselves: [comin](https://github.com/nlewo/comin) pulls this
-repository and switches when `main` moves. `pve` and `truenas` are part of
-the homelab but configured by hand — they are not managed with Nix. See
-`docs/bootstrap.md` for how a new machine joins the fleet.
+repository and switches when `main` moves. `pve`, `truenas`, and
+`homeassistant` are part of the homelab but configured by hand — they are not
+managed with Nix. See `docs/bootstrap.md` for how a new machine joins the
+fleet.
 
 ## Home lab infrastructure (`tofu/`)
 
