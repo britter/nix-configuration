@@ -47,7 +47,7 @@ The service list below mirrors the directions homepage
 | Immich | `photos.ritter.family` | Native | ⏳ Pending | |
 | Calibre Web | `books.ritter.family` | No — auth proxy | ⏳ Pending | OPDS catalog at `/opds` is consumed by KOReader using basic-auth credentials embedded in the URL — the proxy must exempt `/opds` from SSO and keep basic auth working there (no browser redirect possible) |
 | Navidrome | `music.ritter.family` | No — auth proxy | ⏳ Pending | Subsonic clients don't follow browser SSO; proxy must allow API paths or stay read-only compromise |
-| Home Assistant | `homeassistant.ritter.family` | No core OIDC — HACS [`hass-oidc-auth`](https://github.com/christiaangoossens/hass-oidc-auth) | ⏳ Pending | Plan prepared: [`homeassistant-keycloak-sso.md`](homeassistant-keycloak-sso.md). The trusted-proxy setup is already in place (2026-11-02 incident); local password login stays as break-glass (companion-app provider dependency) |
+| Home Assistant | `homeassistant.ritter.family` | No core OIDC — HACS [`hass-oidc-auth`](https://github.com/christiaangoossens/hass-oidc-auth) | ✅ Done | See [archived plan (2026-11-10)](archive/2026-11-10-homeassistant-keycloak-sso.md). Public client (PKCE S256, no secret); local password login stays (break-glass + companion-app provider); automatic user linking on until the second household account links once |
 | IT Tools | `tools.ritter.family` | No auth at all — auth proxy | ⏳ Pending | Pure static app; proxy is the only gate |
 | Homepage (directions) | `home.ritter.family` | No auth at all — auth proxy | ⏳ Pending | |
 | Beszel | `beszel.ritter.family` | Native | ✅ Done | Password login disabled (`DISABLE_PASSWORD_AUTH`); see [archived plan (2026-11-09)](archive/2026-11-09-beszel-keycloak-sso.md) |

@@ -1,8 +1,13 @@
 # Home Assistant: Keycloak SSO (next native client)
 
-**Status:** planning — plan prepared (this document plus
-`tofu/keycloak/client-homeassistant.tf`, created alongside), PR + click-ops
-pending. Part of [`keycloak-sso-rollout.md`](keycloak-sso-rollout.md)
+**Status:** complete (2026-11-10), archived per AGENTS.md — the
+`OpenTofu Keycloak` pipeline applied the client (probe verified), the
+`OpenTofu Network` pipeline applied the firewall route, the device
+click-ops landed (HACS + `hass-oidc-auth` UI config), and the first SSO
+login landed in the existing admin account 2026-11-10. Local password
+login stays enabled (break-glass + companion-app provider). Follow-ups
+live in the Status section: second household realm user, then linking
+off. Part of [`../keycloak-sso-rollout.md`](../keycloak-sso-rollout.md)
 (step 3, "remaining native apps"). Client conventions follow the Forgejo,
 PVE, Beszel and Stirling PDF onboardings.
 
@@ -86,12 +91,20 @@ validates the discovery URL inline.
 **User linking is migration scaffolding.** `automatic_user_linking` matches
 the OIDC username claim (`preferred_username` → `bene`) against the local
 user's username, case-exact, and links the SSO credential onto that
-account. It stays on only until the first login has landed, then goes off
-— upstream is explicit that it is temporary and dangerous (any realm user
-whose username matches an HA user takes that account over; MFA is
-bypassed on the match). The realm is admin-provisioned with registration
-off, so today the userbase *is* the allow-list — but the flag comes off
-after migration anyway, same as Stirling's seeded initial-admin dance.
+account. Upstream recommends it only temporarily (any realm user whose
+username matches an HA account takes that account over; HA-side MFA is
+bypassed on the match — the realm is admin-provisioned with registration
+off, so today the userbase *is* the allow-list).
+
+**Decision 2026-11-10: linking stays on beyond the first login,
+deliberately.** The household has a second HA account (operator's wife)
+that has no realm identity yet (`tofu/keycloak/users.tf` holds only
+`bene`) — linking is what will land her first SSO login in her existing
+HA account when she is provisioned. Until then the flag affects only
+*first-time* realm identities (linked accounts authenticate by their IdP
+`sub` and are unaffected), and provisioning realm users is admin-only.
+End condition: disable automatic user linking once the second realm user
+has linked once (see Status → follow-ups).
 
 **Password login stays enabled.** The rollout plan asks for the pros/cons
 of disabling it:
@@ -120,10 +133,10 @@ Staging:
 | Stage | What | Where |
 | --- | --- | --- |
 | 0 | tofu client | PR 1 (`OpenTofu Keycloak` pipeline applies; file already in the tree) — ✅ applied 2026-11-10, probe verified |
-| 1 | Firewall route Smart Home → directions :443 | PR 2 (`OpenTofu Network` pipeline applies; file already in the tree) |
-| 2 | Device click-ops: HACS + integration + UI config | Part B, operator (~10 min) |
-| 3 | First SSO login lands in the existing admin; user linking off | Part C, operator |
-| 4 | Completion | docs/homelab.md, rollout table, archive |
+| 1 | Firewall route Smart Home → directions :443 | PR 2 (`OpenTofu Network` pipeline applies; file already in the tree) — ✅ applied, discovery URL answers `200` from the device |
+| 2 | Device click-ops: HACS + integration + UI config | Part B, operator (~10 min) — ✅ 2026-11-10 |
+| 3 | First SSO login lands in the existing admin | Part C, operator — ✅ 2026-11-10 |
+| 4 | Completion | docs/homelab.md, rollout table, archive — ✅ |
 
 There is no comin event and no NixOS change in this rollout: the only live
 events are the two pipeline applies (the `keycloak` and `network` tofu
@@ -265,14 +278,15 @@ throughout — the built-in `homeassistant` auth provider is never removed.
      continuing — a timeout here means the firewall rule hasn't landed;
      an IdP-side error means Part A's apply didn't land.
 6. On the **user-linking screen**: enable **automatic user linking**
-   (temporary migration scaffolding, disabled again in Part C). Leave
-   group/role options untouched (no groups are in play).
+   (see the decision above: it stays on until every household realm
+   user has linked once, then goes off). Leave group/role options
+   untouched (no groups are in play).
 
 All of this lives in UI storage on the device — it is click-ops by
 policy; the recovery path is re-doing these steps, recorded in
 `docs/homelab.md` (Part 1 of this plan adds that section).
 
-## Part C — first SSO login (the goal), then linking off
+## Part C — first SSO login (the goal) ✅ (2026-11-10)
 
 1. **Pre-check:** the local HA user's username must match the Keycloak
    `bene` username exactly (case-sensitive — upstream discussion #276 is
@@ -285,19 +299,22 @@ policy; the recovery path is re-doing these steps, recorded in
    devices, entities intact. (If a new empty user appeared instead:
    delete it in Settings → People, re-check the username match in step 1,
    and retry while linking is still on — existing links persist, so no
-   other step changes.)
+   other step changes.) ✅ Landed in the existing admin account
+   2026-11-10 (confirmed by operator).
 3. Companion app sanity check: open the app on the phone — the existing
    session (refresh token) connects as before; SSO never touches it. A
    *fresh* app login also works via the OIDC flow (v1.2.0 fixed the
    mobile login path; the "Login with alternative method" escape hatch
-   reaches the password form).
-4. **Disable automatic user linking:** Settings → Devices & Services →
-   OpenID Connect/SSO Authentication → Reconfigure → user-linking screen
-   → off. The SSO credential stays linked (it is keyed on the IdP `sub`
-   from here on); no *new* identity can link by username anymore.
+   reaches the password form). ✅ Confirmed 2026-11-10: the app kept its
+   session via the username/password flow (`homeassistant` provider
+   refresh tokens), no re-login needed.
+4. **Automatic user linking:** kept **on** by decision (2026-11-10,
+   recorded above) — the second household account still needs its realm
+   user. Disable it once that user has linked once.
 
-Stage gate: Parts B and C end when 2 and 3 have passed. Until then the
-password form works and nothing is locked out.
+Stage gate: Parts B and C end when 2 has passed (✅). Until then the
+password form works and nothing is locked out — that property is
+permanent here: password login stays enabled by design.
 
 ## Verification (final state)
 
@@ -457,11 +474,28 @@ Upstream sources consulted:
 - [x] Firewall route found missing during review (Smart Home → Servers
       is default-deny; no policy covered it) —
       `unifi_firewall_policy.homeassistant_to_directions` added to
-      `tofu/network/firewall_policies.tf`, PR 2 pending
-- [ ] Part B: firewall route applied (discovery URL answers 200 from the
-      device), HACS + integration installed, UI config flow completed
-      (discovery URL validated, linking on)
-- [ ] Part C: first SSO login lands in the existing admin; companion app
-      connects; linking disabled
-- [ ] Completion: `docs/homelab.md` section, rollout-table row ✅, archive
-      per AGENTS.md
+      `tofu/network/firewall_policies.tf`, applied by the
+      `OpenTofu Network` pipeline
+- [x] Part B (2026-11-10): HACS + integration installed, UI config flow
+      completed with linking on — the flow validated the discovery URL
+      and the first SSO login completed, which end-to-end proves the
+      device→directions→Keycloak route works
+- [x] Part C (2026-11-10): first SSO login landed in the existing admin
+      account; external checks green (`/` → 200, client probe → 302).
+      Linking kept on by decision (see Chosen approach)
+- [x] Completion: `docs/homelab.md` section, rollout-table row ✅,
+      archived per AGENTS.md
+
+## Follow-ups
+
+- **Provision the second household realm user** (tofu `keycloak_user` in
+  `users.tf`, password via console or forgot-password mail — the recipe
+  referenced in the users.tf header). Her first SSO login then lands in
+  her existing HA account via linking.
+- **Disable automatic user linking** once that account has linked once
+  (integration → Reconfigure → user-linking screen). Until then the
+  username-match footgun applies to *first-time* realm identities only;
+  the realm is admin-provisioned with registration off.
+- ✅ Companion app sanity check (2026-11-10): the app kept its session
+  via the username/password flow (`homeassistant` provider refresh
+  tokens), no re-login needed — see Part C step 3.
