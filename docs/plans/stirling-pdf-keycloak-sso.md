@@ -1,22 +1,53 @@
 # Stirling PDF: Keycloak SSO (next native client)
 
-**Status:** in progress — Part A ✅ (secrets seeded 2026-11-09), PR 1 +
-later parts pending. Part of
+**Status:** abandoned (2026-11-10) — see [Outcome](#outcome). Part of
 [`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) (step 2, the
 Office/Media batch). Client conventions follow the Forgejo, PVE and
 Beszel onboardings; app conventions follow Beszel's three-part staging
 (SSO beside password login → first SSO login → password login off).
 
+## Outcome
+
+The rollout was reverted on 2026-11-10 after Part C: login was never
+activated, and the **full `pkgs.stirling-pdf` build — the only one with
+login/SSO code — turned out to be `mit unfree`**, which nixpkgs does not
+serve from the public binary cache. With the pull-based comin rollout
+every host would rebuild the unfree jar from source on nixpkgs churn,
+which is the exact failure mode the rollout got a taste of once already
+(the 2026-11-09 catch-up rebuild). Standing up the distribution
+architecture first — a self-hosted binary cache and possibly a
+push-based rollout, possibly replacing comin — is captured as an idea in
+[`../ideas/self-hosted-binary-cache.md`](../ideas/self-hosted-binary-cache.md).
+Revisit Stirling (or go auth-proxy, Calibre-Web style) once that lands.
+
+What the revert keeps: nothing Keycloak-side (client destroyed via the
+tofu pipeline revert, sops entries removed by the operator, module wiring
+back to the pre-SSO state). What it keeps beyond that: the gatus check on
+Stirling PDF points at the public `/api/v1/info/status` endpoint —
+operationally better than the placeholder `/` shell check and
+SSO-independent, so it survives this rollback.
+
+The runbook below stays as the record: it is accurate as far as it went
+(Parts A–C including the settings-file and edition findings) and avoids
+re-discovering the same traps when this is retried.
+
 ## Background
 
-Stirling PDF (`pkgs.stirling-pdf-free`, v3.1.0 — verified via
-`curl https://pdf.ritter.family/api/v1/info/status` →
-`{"version":"3.1.0","status":"UP"}` on 2026-11-09) is a Spring Boot app
-on srv-prod-2 behind `https://pdf.ritter.family`. To date **login has
-never been enabled**: the analytics-free Free build serves the editor to
-anyone who reaches it. That makes this onboarding the mirror image of
-Beszel's — the pre-existing-user question is empty (there are no Stirling
-accounts to map), but security is being *added* where none existed.
+Stirling PDF on srv-prod-2 behind `https://pdf.ritter.family`. To date
+**login has never been enabled**: the analytics-free build serves the
+editor to anyone who reaches it. That makes this onboarding the mirror
+image of Beszel's — the pre-existing-user question is empty (there are
+no Stirling accounts to map), but security is being *added* where none
+existed.
+
+**Edition finding (2026-11-09):** the flake originally used
+`pkgs.stirling-pdf-free`, and jar inspection showed that build ships
+**no login/OAuth code at all** (zero `stirling.software.proprietary.*`
+classes — the `SECURITY_*` env vars are meaningless there). SSO needs
+the full `pkgs.stirling-pdf` (license `mit unfree`: core is MIT, the
+proprietary module is source-available under Stirling's terms and free
+to self-host), allowed via the flake's `allowUnfreePackages`
+mechanism. The free→full swap rides the same PR as the env change.
 
 Dependencies to know about:
 
@@ -92,8 +123,8 @@ Staging:
 | Stage | What | Where |
 | --- | --- | --- |
 | 0 | Generate + seed secrets | operator command (Part A) — ✅ 2026-11-09 |
-| 1 | tofu client | PR 1 (tofu pipeline applies) |
-| 2 | Stage-1 env: sign-in on, SSO beside password; gatus re-point | PR 2 (comin switches srv-prod-2) |
+| 1 | tofu client | PR 1 (tofu pipeline applies) — ✅ 2026-11-09 |
+| 2 | Stage-1 env: sign-in on, SSO beside password; gatus re-point | PR 2 (comin switches srv-prod-2) — ✅ 2026-11-09 |
 | 3 | Click-ops: first SSO login, promote to Admin | Part D, operator (~3 min) |
 | 4 | Part E: password login off | PR 3 |
 | 5 | Completion | docs/homelab.md, rollout table, archive |
@@ -135,7 +166,9 @@ diff <(sops -d --extract '["stirling_pdf_client_secret"]' tofu/keycloak/secrets.
      <(sops -d --extract '["stirling-pdf"]["client-secret"]' modules/hosts/srv-prod-2/secrets.yaml | sha256sum)
 ```
 
-## Part B — tofu client (PR 1)
+## Part B — tofu client (PR 1) ✅ (merged and applied 2026-11-09; the
+auth-page probe renders the realm sign-in page for `stirling-pdf`, no
+error page)
 
 Full diff of the new file (this is `tofu/keycloak/client-stirling-pdf.tf`
 as it lands in the PR — identical to the file created alongside this
@@ -195,7 +228,8 @@ this also proves the apply. Stage gate: the probe must answer `302`
 before PR 2 lands, otherwise the login page shows a dead SSO button for
 one comin cycle.
 
-## Part C — stage-1 code: sign-in on, SSO beside password (PR 2)
+## Part C — stage-1 code: sign-in on, SSO beside password (PR 2) ✅
+(rolled out 2026-11-09; with the gatus condition fixed post-merge)
 
 The SSO wiring goes into the **service aspect itself** — the same cut the
 two earlier native-OIDC onboardings chose: forgejo carries its
@@ -226,6 +260,12 @@ placeholders are not copyable, the template reads
        };
      in
      {
++      # Login and SSO live in Stirling's proprietary module: the free
++      # build ships no security code at all, so the full package is
++      # required and allowlisted (mit unfree — core MIT, proprietary
++      # module source-available; free to self-host).
++      flake.allowUnfreePackages = [ "stirling-pdf" ];
++
 +      # Keycloak SSO (docs/plans/stirling-pdf-keycloak-sso.md): the
 +      # client secret and the initial break-glass admin password come
 +      # from sops; everything else is plain app configuration.
@@ -240,7 +280,8 @@ placeholders are not copyable, the template reads
 +
        services.stirling-pdf = {
          enable = true;
-         package = pkgs.stirling-pdf-free;
+-         package = pkgs.stirling-pdf-free;
++         package = pkgs.stirling-pdf;
          environment = {
            INSTALL_BOOK_AND_ADVANCED_HTML_OPS = "true";
            SYSTEM_ENABLEANALYTICS = "false";
@@ -284,10 +325,42 @@ where login gating and a `200`-only check disagree):
                interval = "5m";
                conditions = [
                  "[STATUS] == 200"
-+                "[BODY].status == \"UP\""
++                # unquoted compare: gatus treats a quoted RHS as
++                # literal-with-quotes (Forgejo's check uses the same
++                # unquoted style).
++                "[BODY].status == UP"
                ];
              }
 ```
+
+Post-merge note (2026-11-09): the first pushed version compared
+`"[BODY].status == \"UP\""` and gatus reported
+`[BODY].status (UP) == "UP"` with `success: false` — a quoted gatus RHS
+is literal-with-quotes, so the resolution `(UP)` never matched. The
+unquoted form above is the fix. Handy detail: `status.ritter.family`
+stays unauthenticated until gatus's own SSO onboarding, so the condition
+results are publicly observable — they served as the verification here.
+
+### Post-merge addendum 2 (2026-11-09): the edition finding
+
+After PR 2 landed, `app-config` still reported `enableLogin: false`
+while `enableOAuth`/`enableAnalytics` showed env values. Follow-up jar
+inspection on `pkgs.stirling-pdf-free` proved the cause is upstream
+editioning, not precedence: the free build ships **no security code at
+all** (zero `stirling.software.proprietary.*` classes — no
+`SecurityConfiguration`, no OAuth2/OIDC, no user model; the `SECURITY_*`
+variables are meaningless there). `pkgs.stirling-pdf` (the same version,
+full build) contains the whole login stack including `OAuth2Configuration`.
+It is licensed `mit unfree` — core MIT; the proprietary module is
+source-available under Stirling's terms, free to self-host — so the fix
+rides a follow-up commit: swap `package = pkgs.stirling-pdf-free` →
+`pkgs.stirling-pdf` and allowlist it via `flake.allowUnfreePackages =
+[ "stirling-pdf" ]` (repo pattern: slack, obsidian, claude-code). The
+settings-file cycling from Part D step 0 is unrelated to this root
+cause. The regenerated settings file (`settings.yml.pre-sso` save) is
+kept — with the full jar the file-vs-env question is settled: the app
+reads both, and if a value gets pinned wrongly, resetting the file
+regenerates it from the current env (same recipe as Part D step 0).
 
 ### Places that need no change (checked, with reasons)
 
@@ -331,6 +404,19 @@ out.
 Ordered so password login stays available as the guardrail the whole
 time:
 
+0. **Stale settings.yml (2026-11-09 discovery).** PR 2 deployed and the
+   unit restart happened, but `app-config` still reported
+   `enableLogin: false` while `enableOAuth` / `enableAnalytics` came
+   through — the app's own **`/var/lib/stirling-pdf/configs/settings.yml`**
+   is persistent state written back on every boot and it **wins over env
+   for keys it contains**. The file was created during the login-off era
+   (old template default `enableLogin: false`) and kept pinning it, while
+   the `oauth2` section — absent from that era's file — was merged from
+   env. Fix: stop the unit, `cp settings.yml settings.yml.pre-sso`,
+   delete `settings.yml` (never the sibling
+   `stirling-pdf-DB-*` database files), restart: the file regenerates
+   from the v3.1.0 template (`enableLogin: true` default) merged with
+   env, and the empty user database pulls in the seeded initial admin.
 1. Confirm stage-1 rolled out (gatus green, login page shows Keycloak).
 2. `ssh root@srv-prod-2.ritter.family journalctl -u stirling-pdf -n 200`
    → confirm the app did **not** log "created default admin" but booted
@@ -394,18 +480,33 @@ curl -s "https://account.ritter.family/realms/homelab/protocol/openid-connect/au
 - **Auth dependency:** with Part E, logging into Stirling requires
   Keycloak (srv-prod-1) up. Break-glass = flip `SECURITY_LOGINMETHOD`
   back (env line), redeploy, sign in with the sops admin password.
+- **Self-pinning settings file:** as Part D step 0 showed, the app keeps
+  `/var/lib/stirling-pdf/configs/settings.yml` across restarts and it
+  wins over env for keys it contains. Consequences: (a) UI clicks in
+  Settings → Sign-in & security write straight into that file and will
+  drift against the declarative env — the flake stays authoritative, but
+  verify after UI sessions; (b) once the regenerated file pins
+  `loginMethod: oauth2` (Part E), merely reverting the env is not
+  guaranteed to restore password login — see Rollback.
 
 ## Rollback
 
 Per stage, each restores the previous state on its own:
 
-- Part E: remove the `SECURITY_LOGINMETHOD` line, redeploy — password
-  sign-in returns (the admin account still exists).
+- Part E: remove the `SECURITY_LOGINMETHOD` line, redeploy — that
+  deletes the env override; whatever the settings file holds (it pins
+  `loginMethod: oauth2` if Part E ran long enough to persist) wins, so
+  **also reset the file** if the login page still shows no password
+  form: stop the unit, delete
+  `/var/lib/stirling-pdf/configs/settings.yml`, start — it regenerates
+  with the reverted env. The admin account still exists either way.
 - Part D is not a deployment: nothing to roll back.
 - Part C: revert the env additions + sops template in
-  `modules/nixos/stirling-pdf.nix` and the gatus diff — that is the full
-  revert. Users created meanwhile stay in Stirling's state directory
-  (harmless leftovers).
+  `modules/nixos/stirling-pdf.nix` and the gatus diff, **and reset the
+  settings file** (same recipe) — with login currently living partly in
+  the settings file, a flake-only revert does not disable login again.
+  Delete the SSO users afterwards if desired; users created meanwhile
+  stay in Stirling's state directory (harmless leftovers).
 - Part B: `enabled = false` in `client-stirling-pdf.tf` + pipeline
   apply, or terraform-plan-style removal of the client. The sops
   entries stay (unused secret, no harm) or are removed with `sops
