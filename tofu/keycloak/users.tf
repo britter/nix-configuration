@@ -17,6 +17,17 @@ resource "keycloak_user" "bene" {
   last_name  = "Ritter"
   enabled    = true
 
-  email          = "beneritter@gmail.com"
+  email          = data.sops_file.secrets.data["user_bene_email"]
+  email_verified = true
+}
+
+resource "keycloak_user" "alina" {
+  realm_id   = keycloak_realm.homelab.id
+  username   = "alina"
+  first_name = "Alina"
+  last_name  = "Ritter"
+  enabled    = true
+
+  email          = data.sops_file.secrets.data["user_alina_email"]
   email_verified = true
 }
