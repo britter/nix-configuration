@@ -1,12 +1,35 @@
 # Stirling PDF: Keycloak SSO (next native client)
 
-**Status:** in progress — Part A ✅ + Part B ✅ (client applied) +
-Part C ✅ (PR 2 rolled out 2026-11-09, one post-merge fix: the gatus
-condition). Click-ops (Part D) next. Part of
+**Status:** abandoned (2026-11-10) — see [Outcome](#outcome). Part of
 [`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) (step 2, the
 Office/Media batch). Client conventions follow the Forgejo, PVE and
 Beszel onboardings; app conventions follow Beszel's three-part staging
 (SSO beside password login → first SSO login → password login off).
+
+## Outcome
+
+The rollout was reverted on 2026-11-10 after Part C: login was never
+activated, and the **full `pkgs.stirling-pdf` build — the only one with
+login/SSO code — turned out to be `mit unfree`**, which nixpkgs does not
+serve from the public binary cache. With the pull-based comin rollout
+every host would rebuild the unfree jar from source on nixpkgs churn,
+which is the exact failure mode the rollout got a taste of once already
+(the 2026-11-09 catch-up rebuild). Standing up the distribution
+architecture first — a self-hosted binary cache and possibly a
+push-based rollout, possibly replacing comin — is captured as an idea in
+[`../ideas/self-hosted-binary-cache.md`](../ideas/self-hosted-binary-cache.md).
+Revisit Stirling (or go auth-proxy, Calibre-Web style) once that lands.
+
+What the revert keeps: nothing Keycloak-side (client destroyed via the
+tofu pipeline revert, sops entries removed by the operator, module wiring
+back to the pre-SSO state). What it keeps beyond that: the gatus check on
+Stirling PDF points at the public `/api/v1/info/status` endpoint —
+operationally better than the placeholder `/` shell check and
+SSO-independent, so it survives this rollback.
+
+The runbook below stays as the record: it is accurate as far as it went
+(Parts A–C including the settings-file and edition findings) and avoids
+re-discovering the same traps when this is retried.
 
 ## Background
 

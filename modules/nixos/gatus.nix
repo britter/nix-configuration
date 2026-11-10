@@ -115,9 +115,9 @@ _: {
             }
             {
               name = "Stirling PDF";
-              # /api/v1/info/status is public and unauthenticated even
-              # with login on, so monitoring survives the Keycloak SSO
-              # rollout — see docs/plans/stirling-pdf-keycloak-sso.md.
+              # /api/v1/info/status is Stirling-PDF's public, unauthenticated
+              # health endpoint (See https://docs.stirlingpdf.com/Server/Operations/Usage-Monitoring)
+              # — better probe target than the SPA shell served at /.
               url = "https://pdf.ritter.family/api/v1/info/status";
               interval = "5m";
               conditions = [
