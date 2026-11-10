@@ -80,6 +80,34 @@ Users created by tofu (`keycloak_user`) get no password from tofu — a
 password in the tofu state would be a liability. Set passwords via the
 admin console or the forgot-password mail.
 
+## Passkey login
+
+Passkeys (WebAuthn passwordless) are enabled on top of passwords: the
+default browser flow offers a "Sign in with passkey" button and autofill
+on the username field, and skipped 2FA when a passkey was used. The
+policy lives in the `web_authn_passwordless_policy` block in `realm.tf`,
+the enrollment required action in `passkey.tf`. The whole feature needs
+Keycloak ≥ 26.7 and keycloak provider ≥ 5.8 — both kept current by the
+renovate bumps, so no click-ops are required for it.
+
+Enrollment is mandatory: every user is prompted to enroll a passkey at
+their next login (`default_action = true` in `passkey.tf`). Synced
+passkeys (iCloud Keychain, Google Password Manager) work — that is how
+family members use the same passkey across devices. The account console
+(`https://account.ritter.family/realms/homelab/account` → Account
+security) also allows enrolling additional passkeys any time, e.g. a
+second device.
+
+Two things to know:
+
+- Passkeys are bound to the RP ID `account.ritter.family` (pinned in
+  `realm.tf`). Changing the Keycloak hostname invalidates every enrolled
+  passkey; re-enrollment is then required.
+- Lost device: passwords remain the fallback (by design — we did *not*
+  go fully passwordless), and users can enroll a new passkey from any
+  device after logging in. The break-glass admin path is unaffected:
+  the `master` realm has no passkey flow.
+
 ## Restricting who can use a client (per-service gate)
 
 By default, every enabled realm user can authenticate against every
