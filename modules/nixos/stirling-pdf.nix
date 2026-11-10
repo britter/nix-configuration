@@ -1,4 +1,13 @@
 _: {
+  # Login and SSO live in Stirling's proprietary module: the free build
+  # (pkgs.stirling-pdf-free) ships no security code at all (jar
+  # inspection 2026-11-09 — zero auth/OAuth/User classes; the SECURITY_*
+  # env vars are silently meaningless there). The full build's
+  # proprietary jar is source-available under Stirling's own terms and
+  # free to self-host — nixpkgs marks it "mit unfree", so it needs this
+  # allowlist entry (same pattern as slack/obsidian/claude-code).
+  flake.allowUnfreePackages = [ "stirling-pdf" ];
+
   flake.modules.nixos.stirling-pdf =
     { config, pkgs, ... }:
     let
@@ -27,7 +36,7 @@ _: {
 
       services.stirling-pdf = {
         enable = true;
-        package = pkgs.stirling-pdf-free;
+        package = pkgs.stirling-pdf;
         environment = {
           INSTALL_BOOK_AND_ADVANCED_HTML_OPS = "true";
           SYSTEM_ENABLEANALYTICS = "false";
