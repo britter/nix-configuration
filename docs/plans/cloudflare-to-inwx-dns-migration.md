@@ -1,6 +1,8 @@
 # Plan: Migrate DNS from Cloudflare to INWX
 
-**Status:** 🚀 In progress — Phases 0–4 and 5 (INWX ACME flip, #348) done; srv-prod-5 validated 2026-11-06. **2026-11-06 evening: #349 (one wildcard cert per host — the deferred cert-consolidation design, since landed) broke DNS-01 issuance fleet-wide** — challenge names get captured by the zone's own wildcard records ([incident](../incidents/2026-11-06-untrusted-wildcard-certs.md)) — and #349 was **reverted the same evening**: per-vhost certificates are back, serving the still-valid on-disk LE certs (trusted). The wildcard design is parked on branch `acme-dns01-fixes` (PR #352: challenge-node CNAME delegation); the incident's follow-ups hold the re-landing sequence (rebase → merge so records land → then revert the reverts).
+**Status:** 🚀 In progress — Phases 0–3 and 5 (INWX ACME flip, #348) done; srv-prod-5 validated 2026-11-06. **2026-11-06 evening: #349 (one wildcard cert per host — the deferred cert-consolidation design, since landed) broke DNS-01 issuance fleet-wide** — challenge names get captured by the zone's own wildcard records ([incident](../incidents/2026-11-06-untrusted-wildcard-certs.md)) — and #349 was **reverted the same evening**: per-vhost certificates are back, serving the still-valid on-disk LE certs (trusted). The wildcard design is parked on branch `acme-dns01-fixes` (PR #352: challenge-node CNAME delegation); the incident's follow-ups hold the re-landing sequence (rebase → merge so records land → then revert the reverts).
+
+**Correction 2026-11-10:** Phase 4 was marked done but the delegation flip never took effect at the registry — a registrar transfer *preserves the losing registrar's delegation*, so all three domains still pointed at Cloudflare's nameservers after the transfers completed. Renewals through INWX therefore wrote challenge TXTs into the inert zone and failed deterministically (see the [incident addendum](../incidents/2026-11-06-untrusted-wildcard-certs.md#addendum--2026-11-10-renewals-still-failing-the-delegation-was-never-flipped)). `ritter.family`'s delegation was flipped at INWX on 2026-11-10; `britter.dev` and `benediktritter.de` still delegate to Cloudflare and their Phase 4 items below are reopened.
 **Created:** 2026-11-03
 
 ## Goal
@@ -323,6 +325,29 @@ the domain lives at INWX; moving it back would be a new transfer.
 
 ## Phase 4 — Nameserver delegation flip (the cutover moment)
 
+> **Correction 2026-11-10:** this phase was previously marked done in
+> error. The registrar transfers (Phase 3) preserve the losing registrar's
+> delegation, so the registry kept pointing at
+> `isabel`/`salvador.ns.cloudflare.com` — for `ritter.family` this made
+> every INWX-provider ACME order fail deterministically until 2026-11-10
+> (see the [incident addendum](../incidents/2026-11-06-untrusted-wildcard-certs.md#addendum--2026-11-10-renewals-still-failing-the-delegation-was-never-flipped)).
+> The INWX panel makes this easy to miss: the zone editor shows the INWX
+> nameservers of the hosted zone (tofu's `inwx_nameserver` MASTER zone),
+> which is **not** the delegation. The delegation lives under
+> **Domain → Domainliste → click the gear at the right-hand side of the
+> domain → Externe Nameserver → flip the switch from "Externe
+> Nameserver" to "INWX Nameserver"**. Verify at the registry, not in the
+> panel (delegation NS TTL is 3600):
+>
+> ```sh
+> dig ritter.family NS @v0n0.nic.family +norecurse
+> # expect: ns.inwx.de / ns2.inwx.de / ns3.inwx.eu
+> ```
+>
+> (Red herring: editing the zone's MASTER record prompts
+> "Master IP-Adresse erforderlich" — that field only applies to SLAVE
+> zones; leave the zone itself alone.)
+
 One domain at a time, lowest-stakes first. Suggested order:
 `benediktritter.de` → `britter.dev` → `ritter.family` (the homelab's
 primary domain, most traffic, goes last once the procedure is proven).
@@ -331,18 +356,33 @@ primary domain, most traffic, goes last once the procedure is proven).
       three now, or Hosting Europe's panel for the .de if its transfer is
       deliberately deferred:
       `ns.inwx.de`, `ns2.inwx.de`, `ns3.inwx.eu`.
+      -> `ritter.family` flipped 2026-11-10 via Domainliste → gear →
+      Externe Nameserver (after the ACME renewals had been failing on it
+      since the transfer). `britter.dev` and `benediktritter.de` still
+      delegate to Cloudflare — deliberately, so they keep serving while
+      the flip is verified on the homelab domain first.
 - [x] Propagation of a delegation is TTL-bound (typically hours, up to
       `NS`/`SOA` TTL). Resolvers will serve a mix of old and new NS
       answers during the window — both zones are identical (Phase 2), so
       this is transparent.
-- [x] Verify from the outside:
+- [ ] Verify from the outside (per domain, at the registry and via
+      public resolvers):
       ```sh
       dig +trace ritter.family NS
       dig @1.1.1.1 books.ritter.family   # resolves, via new NS
       dig @8.8.8.8 nextcloud.ritter.family
       ```
-- [x] Watch gatus monitors and mail logs for the propagation window.
-- [x] After flipping `britter.dev` or `benediktritter.de`, verify the
+      -> `ritter.family`: registry confirmed flipped 2026-11-10
+      (`dig ritter.family NS @v0n0.nic.family` shows the INWX NS). Note:
+      1.1.1.1 / 9.9.9.9 kept serving Cloudflare NS for a while because
+      they cached the old zone's apex NS RRset (TTL 86400), which
+      outranks the registry referral — self-limiting, ≤ 24 h, harmless
+      while both zones are in parity. Trigger one ACME renewal per host
+      after the caches drain — under Cloudflare delegation the orders
+      failed deterministically, so a green renewal is the functional
+      proof of the flip.
+- [ ] Watch gatus monitors and mail logs for the propagation window.
+- [ ] After flipping `britter.dev` or `benediktritter.de`, verify the
       Netlify site still serves and the apex redirect still works:
       ```sh
       curl -sI https://britter.dev | grep -i '^HTTP\|^server'
@@ -463,8 +503,9 @@ gatus monitors have been green across a full cert cycle:
 
 | When | What |
 |---|---|
-| Early Nov 2026 ✅ | Phases 0–4: account + credentials, secrets consolidation, tofu port, zone parity, transfers, NS flips — all done |
+| Early Nov 2026 ✅ | Phases 0–3: account + credentials, secrets consolidation, tofu port, zone parity, registrar transfers — done. ~~Phases 0–4~~: the "NS flips" were **not** actually applied — the transfer preserved Cloudflare's delegation and the panel's zone view masked it (correction 2026-11-10) |
 | 2026-11-06 | Phase 5 (#348): ACME provider flipped to INWX in one atomic deploy; `music.srv-prod-5.ritter.family` force-renewed same day as proof |
+| 2026-11-10 | Incident addendum: `ritter.family`'s renewal failures traced to the never-applied delegation flip; flipped at INWX (Domainliste → gear → Externe Nameserver → INWX Nameserver). `britter.dev` / `benediktritter.de` still delegate to Cloudflare |
 | Next | Phase 5 tail (amended 2026-11-06, two rounds): per-vhost certs are re-landed via the #349 revert — sweep the per-vhost certs for `notBefore` as they keep renewing naturally through INWX. The wildcard design (one cert per host + apex) is parked on branch `acme-dns01-fixes`/PR #352 behind the incident's re-landing sequence ([incident](../incidents/2026-11-06-untrusted-wildcard-certs.md)) |
 | After the Phase 5 tail | Phase 6: Cloudflare decommission — once the per-vhost sweep is green and gatus has been green across a full cert cycle; re-run the sweep over the 9 wildcard certs after the parked wildcard design is re-landed |
 
@@ -481,6 +522,7 @@ Phase 3 has no deadline pressure and can slip without consequence.
 | Apex CNAME rejected at INWX (no flattening) | Use INWX `ALIAS` records → `apex-loadbalancer.netlify.com`; verify `dig <domain> A` returns Netlify LB IPs before the NS flip |
 | ACME renewal fails mid-cycle on a backend | Old certs remain valid until natural expiry (~60+ days); restore-from-backup procedure in Phase 5 |
 | Wildcard-cert challenge names captured by the zone's own wildcard records (and the UniFi local zone) — broke issuance fleet-wide in practice on 2026-11-06 | Explicit `_acme-challenge.*` CNAME delegation into the reserved `acme.*.challenge` subtree (branch `acme-dns01-fixes`/PR #352, apply **before** re-landing the wildcard module config) + `dnsPropagationCheck = false`; see [incident 2026-11-06](../incidents/2026-11-06-untrusted-wildcard-certs.md) |
+| Registrar transfer silently preserves the old delegation — the INWX panel's zone editor shows INWX nameservers and masks that the registry still points at Cloudflare (bit us: ACME renewals failed 2026-11-06 → 2026-11-10) | Verify delegation at the registry TLD (`dig <domain> NS @v0n0.nic.family`), never in the panel; the delegation switch lives in Domainliste → gear → Externe Nameserver; consider managing it in tofu via the `inwx_domain` resource |
 | Edge cert re-issuance outage (directions) | Force renewals deliberately, one vhost pattern at a time, with the `.bak`-restore fallback — never delete certs ahead of a verified renewal |
 | INWX automation account lockout (2FA/credentials) | Dedicated sub-account, shared secret in sops, test a manual lego run from a shell before relying on it fleet-wide |
 | Registrar-side lockout from INWX | Enable 2FA on the main account; registry lock / transfer lock on all three domains once settled |
