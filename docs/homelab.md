@@ -88,6 +88,15 @@ the device from scratch (the Keycloak-side client is tofu-managed, in
    apps' refresh tokens are tied to the `homeassistant` auth provider —
    do not remove that provider).
 
+The device's OIDC calls (discovery at setup, token exchange at every
+login) need the cross-VLAN firewall rule
+`unifi_firewall_policy.homeassistant_to_directions` in
+`tofu/network/firewall_policies.tf` (Smart Home → directions :443;
+inter-VLAN traffic is default-deny). It references
+`unifi_client.directions.fixed_ip`, so it follows a directions IP change
+on the next apply — but HA's UI-stored `trusted_proxies` does not (see
+the 2026-11-02 incident).
+
 SSO works via the public FQDN only
 (`https://homeassistant.ritter.family/auth/oidc/callback`); logging in at
 the raw LAN address `http://192.168.20.234:8123` uses the local password.

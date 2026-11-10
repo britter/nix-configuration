@@ -219,6 +219,30 @@ resource "unifi_firewall_policy" "servers_to_home_assistant" {
   }
 }
 
+resource "unifi_firewall_policy" "homeassistant_to_directions" {
+  name                 = "Allow Home Assistant to Reach Keycloak"
+  action               = "ALLOW"
+  protocol             = "tcp"
+  ip_version           = "BOTH"
+  logging              = false
+  create_allow_respond = true
+  description          = "HA (Smart Home) fetches OIDC discovery/token endpoints at account.ritter.family, served by the reverse proxy on directions. Required for the Keycloak SSO onboarding (docs/plans/homeassistant-keycloak-sso.md)."
+
+  source = {
+    zone_id         = data.unifi_firewall_zone.internal.id
+    matching_target = "CLIENT"
+    client_macs     = [unifi_client.homeassistant.mac]
+  }
+
+  destination = {
+    zone_id            = data.unifi_firewall_zone.internal.id
+    matching_target    = "IP"
+    ips                = [unifi_client.directions.fixed_ip]
+    port               = "443"
+    port_matching_type = "SPECIFIC"
+  }
+}
+
 resource "unifi_firewall_policy" "trusted_to_management_pve" {
   name                 = "Allow PVE Management from Trusted"
   action               = "ALLOW"

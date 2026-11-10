@@ -119,14 +119,15 @@ Staging:
 
 | Stage | What | Where |
 | --- | --- | --- |
-| 0 | tofu client | PR 1 (pipeline applies; file already in the tree) |
-| 1 | Device click-ops: HACS + integration + UI config | Part B, operator (~10 min) |
-| 2 | First SSO login lands in the existing admin; user linking off | Part C, operator |
-| 3 | Completion | docs/homelab.md, rollout table, archive |
+| 0 | tofu client | PR 1 (`OpenTofu Keycloak` pipeline applies; file already in the tree) — ✅ applied 2026-11-10, probe verified |
+| 1 | Firewall route Smart Home → directions :443 | PR 2 (`OpenTofu Network` pipeline applies; file already in the tree) |
+| 2 | Device click-ops: HACS + integration + UI config | Part B, operator (~10 min) |
+| 3 | First SSO login lands in the existing admin; user linking off | Part C, operator |
+| 4 | Completion | docs/homelab.md, rollout table, archive |
 
 There is no comin event and no NixOS change in this rollout: the only live
-events are the pipeline apply and the device click-ops (PVE's shape, not
-Forgejo's).
+events are the two pipeline applies (the `keycloak` and `network` tofu
+roots) and the device click-ops (PVE's shape, not Forgejo's).
 
 ## Part A — tofu client (PR 1)
 
@@ -197,6 +198,14 @@ curl -sS -o /dev/null -D - \
   | sed -n '1p; /^[Ll]ocation:/p'
 # expected: 302 whose Location: is
 #   https://homeassistant.ritter.family/auth/oidc/callback?state=probe&error=invalid_request&error_description=Missing…code_challenge…
+#
+# ✅ verified 2026-11-10 (Part A applied):
+#   HTTP/2 302
+#   location: https://homeassistant.ritter.family/auth/oidc/callback?error=invalid_request&error_description=Missing+parameter%3A+code_challenge_method&state=probe&iss=https%3A%2F%2Faccount.ritter.family%2Frealms%2Fhomelab
+#
+# negative controls (same moment):
+#   unknown client_id (homeassistant-does-not-exist) → 400
+#   registered client_id + unregistered redirect_uri → 400 (no open redirect)
 ```
 
 That error is exactly what an *enforced* challenge should produce, and it
@@ -212,20 +221,40 @@ client — state-based, no manual Keycloak action. Nothing else exists yet.
 
 ## Part B — device click-ops: install and configure (operator, ~10 min)
 
-Ordered so the SSO button appears only after the Keycloak client is live.
-Local password login is unaffected throughout — the built-in
-`homeassistant` auth provider is never removed.
+Ordered so the SSO button appears only after the Keycloak client is live
+and the device can actually reach it. Local password login is unaffected
+throughout — the built-in `homeassistant` auth provider is never removed.
 
-1. Confirm the client is live: the `OpenTofu Keycloak` pipeline is green
+1. **Confirm the network route** (the gate for this part). The device
+   sits in the Smart Home VLAN; inter-VLAN traffic is default-deny
+   (every existing flow has an explicit ALLOW policy in
+   `tofu/network/firewall_policies.tf`), and before this rollout none
+   covered Smart Home → Servers. `unifi_firewall_policy.homeassistant_to_directions`
+   (PR 2, mirroring the `directions_to_pve` client-to-IP pattern) allows
+   the device's OIDC calls: `account.ritter.family` resolves via the UDM
+   wildcard record (`tofu/network/dns.tf`) to directions
+   (`192.168.30.6`), which proxies to Keycloak on srv-prod-1 — same-VLAN,
+   no further firewall hop. The discovery URL is fetched once at setup
+   and the token endpoint is hit at **every SSO login**, so without the
+   rule the config flow times out at "validate discovery URL" and no
+   login can complete. After the `OpenTofu Network` pipeline applies
+   PR 2, verify end-to-end from the device's terminal:
+
+   ```bash
+   curl -s -o /dev/null -w '%{http_code}\n' \
+     "https://account.ritter.family/realms/homelab/.well-known/openid-configuration"
+   # expected: '200'
+   ```
+2. Confirm the client is live: the `OpenTofu Keycloak` pipeline is green
    and the Part A probe answers the PKCE-error 302.
-2. **HACS check.** Settings → Devices & Services shows "HACS" (or
+3. **HACS check.** Settings → Devices & Services shows "HACS" (or
    `/config/custom_components/hacs` exists via the File editor). If HACS
    is not installed yet, install it first per hacs.xyz (download +
    restart) — that restart is a brief outage, gatus tolerates it.
-3. HACS → search **"OpenID Connect"** →
+4. HACS → search **"OpenID Connect"** →
    `christiaangoossens/hass-oidc-auth` → Download → restart HA when
    prompted. (Brief outage; gatus 5m check tolerates.)
-4. Settings → Devices & Services → Add Integration → **OpenID
+5. Settings → Devices & Services → Add Integration → **OpenID
    Connect/SSO Authentication** → provider **OpenID Connect (SSO)** (the
    generic one, not a preset):
    - Discovery URL:
@@ -233,8 +262,9 @@ Local password login is unaffected throughout — the built-in
    - Client ID: `homeassistant`
    - Client Secret: **leave empty** (public client)
    - The flow validates the discovery URL against the realm before
-     continuing — a failure here means Part A's apply didn't land.
-5. On the **user-linking screen**: enable **automatic user linking**
+     continuing — a timeout here means the firewall rule hasn't landed;
+     an IdP-side error means Part A's apply didn't land.
+6. On the **user-linking screen**: enable **automatic user linking**
    (temporary migration scaffolding, disabled again in Part C). Leave
    group/role options untouched (no groups are in play).
 
@@ -307,6 +337,14 @@ app still connects; gatus shows "Home Assistant" green.
   gatus 5m check. Core HA updates can in principle break the integration
   (it is a custom component); upstream minimizes core patching for
   exactly that reason, and the gatus check is the detection.
+- **SSO depends on the cross-VLAN firewall policy.** HA's OIDC calls
+  (discovery at setup, token exchange at every login) ride the
+  `unifi_firewall_policy.homeassistant_to_directions` rule (Smart Home
+  → directions :443). It is tofu-managed and references
+  `unifi_client.directions.fixed_ip`, so a directions IP change updates
+  it automatically on the next apply — unlike HA's UI-stored
+  `trusted_proxies`, which needs the manual fix documented in the
+  2026-11-02 incident.
 - **No secret exists to rotate.** The client is public; if it is ever
   switched to confidential, seed both stores like Beszel's client (sops
   `secrets.json` + device `secrets.yaml` via `!secret`) — and note that
@@ -345,6 +383,10 @@ Changed:
 
 - `tofu/keycloak/client-homeassistant.tf` — new: the `homeassistant` OIDC
   client (Part A, public + PKCE S256)
+- `tofu/network/firewall_policies.tf` — new:
+  `unifi_firewall_policy.homeassistant_to_directions` — the Smart Home →
+  directions :443 route for the discovery/token calls (inter-VLAN
+  default-deny; mirrors the `directions_to_pve` client-to-IP pattern)
 - `tofu/keycloak/secrets.json` — **deliberately unchanged**: public
   client, no secret to seed
 - `docs/plans/keycloak-sso-rollout.md` — Home Assistant row: correct the
@@ -368,8 +410,9 @@ Deliberately unchanged, with reasons:
 - **`modules/nixos/homepage.nix`** — tile and URL unchanged.
 - **DNS (`tofu/dns`)** — `homeassistant.ritter.family` exists via the
   global wildcard → directions; no new record.
-- **`.github/workflows`** — the `OpenTofu Keycloak` pipeline (keys on
-  `tofu/keycloak/**`) picks the client file up automatically.
+- **`.github/workflows`** — the `OpenTofu Keycloak` and `OpenTofu
+  Network` pipelines (keys on `tofu/keycloak/**` and `tofu/network/**`)
+  pick the client and firewall files up automatically.
 - **`.sops.yaml` / `tofu/.sops.yaml`** — no new secret stores; no sops
   change.
 - **Keycloak realm config** — no groups/roles (UI config has no roles;
@@ -408,9 +451,15 @@ Upstream sources consulted:
       linking) — recorded above
 - [x] `tofu/keycloak/client-homeassistant.tf` prepared:
       `tofu fmt -check` exit 0, `tofu validate` Success (2026-11-10)
-- [ ] Part A: PR merged, pipeline applied the client, probe answers the
-      PKCE-error 302
-- [ ] Part B: HACS + integration installed, UI config flow completed
+- [x] Part A: PR merged, pipeline applied the client — probe answers the
+      PKCE-error 302 (verified 2026-11-10, negative controls 400/400;
+      results recorded in Part A)
+- [x] Firewall route found missing during review (Smart Home → Servers
+      is default-deny; no policy covered it) —
+      `unifi_firewall_policy.homeassistant_to_directions` added to
+      `tofu/network/firewall_policies.tf`, PR 2 pending
+- [ ] Part B: firewall route applied (discovery URL answers 200 from the
+      device), HACS + integration installed, UI config flow completed
       (discovery URL validated, linking on)
 - [ ] Part C: first SSO login lands in the existing admin; companion app
       connects; linking disabled
