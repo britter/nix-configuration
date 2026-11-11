@@ -109,29 +109,51 @@ re-land it safely.
 Re-landing the wildcard-cert design, in exactly this order (each step
 removes the obstacle that blocked the previous attempt):
 
-- [ ] Rebase `acme-dns01-fixes` (PR #352) on `main` (which now contains
+> **Resolution 2026-11-10:** the sequence was executed, but the
+> challenge-delegation records turned out to be unnecessary. PR #352
+> was rebased, merged (acf3bc1) and applied — and then judged a red
+> herring and reverted the same day (#360), because the failures it
+> was designed to fix were caused by the never-applied delegation
+> flip (see the addendum), not by the wildcard capture itself. The
+> wildcard design was re-landed **without** the records and works:
+> all 9 wildcard certs were Let's Encrypt-signed by the evening of
+> 2026-11-10. The records remain parked on `acme-dns01-fixes` as a
+> determinism fix for the NODATA race (see standing notes); they can
+> return with a single revert if issuance ever gets flaky.
+
+- [x] Rebase `acme-dns01-fixes` (PR #352) on `main` (which now contains
       the #349 revert).
-- [ ] Confirm the tofu state backend is reachable again — post-revert,
+- [x] Confirm the tofu state backend is reachable again — post-revert,
       `garage.srv-prod-3.ritter.family` serves its per-vhost LE
       certificate, so `tofu init` (CI, plan, apply) works.
-- [ ] Merge PR #352: its OpenTofu run creates the challenge-delegation
-      records in the INWX zone plus the parity copy in the Cloudflare
-      zone (the latter disappears in Phase 6 of the
-      [DNS migration](../plans/cloudflare-to-inwx-dns-migration.md)).
-      The re-landed module change must **also re-apply
+      -> Confirmed: both tofu-dns CI applies (13:46 and 14:45 UTC) succeeded.
+- [x] ~~Merge PR #352~~ -> Merged (acf3bc1), challenge CNAMEs verified
+      live in both zones — then **reverted** (#360): with the delegation
+      actually flipped, per-vhost and wildcard orders validate fine
+      through the wildcard-captured chain, and the records' only benefit
+      (immunity to the NODATA race) doesn't outweigh the extra zone
+      machinery. The re-landed module change must **also re-apply
       `dnsPropagationCheck = false`** — that change lived in #350 and
       was reverted together with #349 (it is harmless under per-vhost
       certs and mandatory under wildcard certs).
-- [ ] Only once the delegation records exist in the zone: **revert the
-      reverts** — re-apply #349's module commit. Every wildcard order
-      then meets a sanctioned, explicit challenge chain from its first
-      attempt instead of an accidentally wildcard-owned one.
-- [ ] Verify the fleet per cert: `openssl s_client -connect <vhost>:443
+      -> Done in #360.
+- [x] ~~Only once the delegation records exist in the zone: **revert the
+      reverts**~~ -> Done in #360, deliberately *without* the delegation
+      records. Every wildcard order meets the wildcard-synthesized
+      CNAME, follows it to the host apex, and validates there — lego and
+      Let's Encrypt chase the same chain in the same (now genuinely
+      authoritative) zone.
+- [x] Verify the fleet per cert: `openssl s_client -connect <vhost>:443
       … | openssl x509 -noout -subject -issuer -startdate` must show
       subject `*.<host>.ritter.family` (or `*.ritter.family` on
       directions), issuer **Let's Encrypt**, `notBefore` ≥ the
       re-landing deploy. Only then is this incident fully closed; until
       then untrusted names are the fallback state for any failed order.
+      -> Done 2026-11-10: directions, srv-prod-2 … srv-prod-6 all green
+      externally. Caveat: a failed order still falls back to minica
+      (untrusted names) until its next successful retry — the daily
+      renewal timer plus the ~30-day renewal margin make that
+      self-healing.
 
 Standing notes from this incident (independent of the revert):
 
@@ -139,7 +161,33 @@ Standing notes from this incident (independent of the revert):
   stranded at the CNAME target, and NODATA negative caching (inwx SOA
   minimum TTL 3600 s) can mask a successfully placed TXT for up to an
   hour for any resolver that queried before it landed. Useful for
-  future DNS-01 debugging under split DNS.
+  future DNS-01 debugging under split DNS. This cuts both ways:
+  repeated failed validations poison resolvers with NODATA, and every
+  retry that lands inside the previous attempt's one-hour window fails
+  again even with the TXT correctly placed (observed on srv-prod-5,
+  2026-11-10: three failures ~1 h apart, then green on the first retry
+  after the window passed). Self-heals via the daily renewal timer
+  well within the ~30-day renewal margin.
+- Where lego places the TXT depends on whether the challenge node
+  exists: with no record at `_acme-challenge.<X>`, the zone's wildcard
+  synthesizes a CNAME and the TXT lands at the wildcard's target (the
+  host apex); once a stranded TXT makes the node exist, wildcard
+  synthesis no longer applies (NODATA on the CNAME query) and lego
+  writes the TXT directly at the challenge node. Both paths validate.
+  This explains the two distinct piles of stranded TXTs found in the
+  INWX zone on 2026-11-10 (30 records across host apexes and
+  `_acme-challenge.<vhost>` nodes) — all safe to delete, none
+  tofu-managed.
+- NixOS has **two** units per `security.acme` cert, and only one of
+  them talks to Let's Encrypt: `acme-<cert>.service`
+  ("Ensure certificate …") just regenerates the minica fallback and
+  exits 0 — a green journal there means nothing; the real order is
+  `acme-order-renew-<cert>.service` ("Order (and renew) ACME
+  certificate"), which reloads nginx itself on success. Forcing
+  re-issuance means stopping the order unit and moving
+  `/var/lib/acme/<cert>/` aside (lego's own state — accounts and the
+  issued cert — lives in `/var/lib/acme/.lego/<cert>/` and survives
+  the move).
 - The identical `minica root ca` fallbacks on every host (and the
   beszel-agent x509 warnings) are symptoms only; they self-heal once
   orders succeed.
@@ -229,20 +277,34 @@ order is the functional proof of the flip.
 
 ### Follow-ups added 2026-11-10
 
-- [ ] Confirm `dig ritter.family NS @v0n0.nic.family` shows the INWX NS
+- [x] Confirm `dig ritter.family NS @v0n0.nic.family` shows the INWX NS
       and a per-host renewal succeeds.
       -> Registry delegation confirmed flipped 2026-11-10 (registry
       showed INWX NS within the hour; 1.1.1.1 / 9.9.9.9 lagged on the
-      cached apex NS RRset, TTL 86400, see above). Renewal success
-      still to be confirmed once those caches drain.
-- [ ] Remove stranded challenge TXT records at the apexes: seven at
+      cached apex NS RRset, TTL 86400, see above). Renewals green the
+      same day: `books.srv-prod-2` / `garage.srv-prod-3` in the morning
+      (first green orders through the correctly delegated zone), the
+      rest with the wildcard re-land in the afternoon — all 9 wildcard
+      certs Let's Encrypt-signed by evening. Big resolvers confirmed
+      INWX-routed (apex TXT shows only the brevo-code record, no
+      Cloudflare-zone strays).
+- [x] Remove stranded challenge TXT records at the apexes: seven at
       `srv-prod-2.ritter.family` in the INWX zone
       (`dig @ns.inwx.de srv-prod-2.ritter.family TXT`), the
       `0IIcv-…` record at the apex in the Cloudflare zone. They are not
       tofu-managed — remove via the panel/API.
-- [ ] Flip `britter.dev` and `benediktritter.de` to the INWX nameservers
+      -> 2026-11-10: 30 stranded TXTs removed from the INWX zone (they
+      sat at host apexes *and* at `_acme-challenge.<vhost>` nodes — see
+      the standing notes for why two piles). The `0IIcv-…` record in the
+      Cloudflare zone is still there — remove it together with the zone
+      itself in Phase 6 of the migration plan.
+- [x] Flip `britter.dev` and `benediktritter.de` to the INWX nameservers
       too (same UI path; verify the Netlify checks from the migration
       plan's Phase 4 afterwards).
+      -> Done and registry-verified 2026-11-10 (`.dev`:
+      ns-tld1.charlestonroadregistry.com, `.de`: f.nic.de both show the
+      INWX NS). Netlify checks green (britter.dev 200 / Netlify,
+      benediktritter.de 301 → https://britter.dev/).
 - [ ] Consider managing the delegation in tofu via the `inwx_domain`
       resource (`nameservers` argument, import the existing domains) so
       panel state can't silently drift from the registry again.

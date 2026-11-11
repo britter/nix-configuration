@@ -14,10 +14,6 @@ terraform {
       source  = "tailscale/tailscale"
       version = "0.29.3"
     }
-    cloudflare = {
-      source  = "cloudflare/cloudflare"
-      version = "5.28.1"
-    }
     inwx = {
       source  = "inwx/inwx"
       version = "1.7.1"
@@ -39,11 +35,6 @@ data "sops_file" "secrets" {
 provider "tailscale" {
   api_key = data.sops_file.secrets.data["tailscale_api_token"]
   tailnet = local.tailnet
-}
-
-## Cloudflare ##
-provider "cloudflare" {
-  api_token = data.sops_file.secrets.data["cloudflare_api_token"]
 }
 
 ## INWX ##
