@@ -1,13 +1,13 @@
 # Plan: Migrate DNS from Cloudflare to INWX
 
-**Status:** ✅ Migration complete 2026-11-10 — all three domains registered, delegated and ACME-served via INWX; wildcard certificates re-landed (#360) and green fleet-wide. Remaining tail: Phase 6 (Cloudflare decommission) — see the Phase 6 checklist; the CF zone deletion should not happen before 2026-11-11 (24 h stale-cache window from the delegation flip).
+**Status:** ✅ Complete and archived 2026-11-11 — all three domains registered, delegated and ACME-served via INWX; wildcard certificates live fleet-wide; Cloudflare account fully decommissioned (zones deleted, token revoked, tofu module removed). Only optional follow-ups remain, noted in the text: `autoweird.fm` / `britter/domains` retirement and `inwx_domain`-managed delegation.
 
-**PR #352 verdict 2026-11-10:** the challenge-node CNAME delegation (`acme-dns01-fixes`) was merged (acf3bc1), found to be unnecessary, and reverted the same day (#360, together with the wildcard re-land). The wildcard design works without it; the records only paper over the NODATA negative-caching race (see the [incident](../incidents/2026-11-06-untrusted-wildcard-certs.md) standing notes). The branch stays parked; the records can return with a single revert if issuance ever becomes flaky again.
+**PR #352 verdict 2026-11-10:** the challenge-node CNAME delegation (`acme-dns01-fixes`) was merged (acf3bc1), found to be unnecessary, and reverted the same day (#360, together with the wildcard re-land). The wildcard design works without it; the records only paper over the NODATA negative-caching race (see the [incident](../../incidents/2026-11-06-untrusted-wildcard-certs.md) standing notes). The branch stays parked; the records can return with a single revert if issuance ever becomes flaky again.
 
-**History:** 2026-11-06 #349 (one wildcard cert per host — the deferred cert-consolidation design) broke DNS-01 issuance fleet-wide and was reverted the same evening ([incident](../incidents/2026-11-06-untrusted-wildcard-certs.md)). Root cause turned out to be the never-applied nameserver delegation (correction below), not the cert shape.
+**History:** 2026-11-06 #349 (one wildcard cert per host — the deferred cert-consolidation design) broke DNS-01 issuance fleet-wide and was reverted the same evening ([incident](../../incidents/2026-11-06-untrusted-wildcard-certs.md)). Root cause turned out to be the never-applied nameserver delegation (correction below), not the cert shape.
 
 
-**Correction 2026-11-10:** Phase 4 was marked done but the delegation flip never took effect at the registry — a registrar transfer *preserves the losing registrar's delegation*, so all three domains still pointed at Cloudflare's nameservers after the transfers completed. Renewals through INWX therefore wrote challenge TXTs into the inert zone and failed deterministically (see the [incident addendum](../incidents/2026-11-06-untrusted-wildcard-certs.md#addendum--2026-11-10-renewals-still-failing-the-delegation-was-never-flipped)). `ritter.family`'s delegation was flipped at INWX on 2026-11-10; `britter.dev` and `benediktritter.de` followed the same day — all three registries verified showing the INWX NS by the afternoon (see Phase 4).
+**Correction 2026-11-10:** Phase 4 was marked done but the delegation flip never took effect at the registry — a registrar transfer *preserves the losing registrar's delegation*, so all three domains still pointed at Cloudflare's nameservers after the transfers completed. Renewals through INWX therefore wrote challenge TXTs into the inert zone and failed deterministically (see the [incident addendum](../../incidents/2026-11-06-untrusted-wildcard-certs.md#addendum--2026-11-10-renewals-still-failing-the-delegation-was-never-flipped)). `ritter.family`'s delegation was flipped at INWX on 2026-11-10; `britter.dev` and `benediktritter.de` followed the same day — all three registries verified showing the INWX NS by the afternoon (see Phase 4).
 **Created:** 2026-11-03
 
 ## Goal
@@ -335,7 +335,7 @@ the domain lives at INWX; moving it back would be a new transfer.
 > delegation, so the registry kept pointing at
 > `isabel`/`salvador.ns.cloudflare.com` — for `ritter.family` this made
 > every INWX-provider ACME order fail deterministically until 2026-11-10
-> (see the [incident addendum](../incidents/2026-11-06-untrusted-wildcard-certs.md#addendum--2026-11-10-renewals-still-failing-the-delegation-was-never-flipped)).
+> (see the [incident addendum](../../incidents/2026-11-06-untrusted-wildcard-certs.md#addendum--2026-11-10-renewals-still-failing-the-delegation-was-never-flipped)).
 > The INWX panel makes this easy to miss: the zone editor shows the INWX
 > nameservers of the hosted zone (tofu's `inwx_nameserver` MASTER zone),
 > which is **not** the delegation. The delegation lives under
@@ -483,7 +483,7 @@ provider and the credential values.
       and the parked fix (explicit `_acme-challenge.*` CNAME delegation
       into `acme.*.challenge` on branch `acme-dns01-fixes` / PR #352,
       plus `dnsPropagationCheck = false`) are documented in
-      [docs/incidents/2026-11-06-untrusted-wildcard-certs.md](../incidents/2026-11-06-untrusted-wildcard-certs.md).
+      [docs/incidents/2026-11-06-untrusted-wildcard-certs.md](../../incidents/2026-11-06-untrusted-wildcard-certs.md).
       Once re-landed (records merged and applied, then the module
       change), the sweep target becomes the 9 wildcard certs; the
       per-vhost path above resumes meanwhile.
@@ -529,14 +529,11 @@ gatus monitors have been green across a full cert cycle:
       block was tried first but plan still refreshed the state-only
       resources through the provider — so the state entries were dropped
       directly with `tofu state rm 'module.cloudflare'` (pure state
-      operation, no API). Confirm in the panel that all three migrated
-      zones are gone (`britter.dev` / `benediktritter.de` were managed by
-      the `britter/domains` repo, not this tofu project) and that
-      `autoweird.fm` remains.
-- [ ] Revoke the Cloudflare API token in the dashboard — the very last
+      operation, no API). All three migrated zones confirmed deleted in
+      the panel; `autoweird.fm` remains.
+- [x] Revoke the Cloudflare API token in the dashboard — the very last
       step, once the CI apply has run and nothing references it.
-      Remaining: revoke the Cloudflare API token once the CI apply has
-      run and nothing references it. Then delete the zones, then revoke the API token.
+      -> Done 2026-11-11.
 - [x] Remove the `cloudflare/api-token` entry from the shared
       `modules/nixos/https-proxy/secrets.yaml` and remove the
       `credentialFiles` line from
@@ -544,18 +541,15 @@ gatus monitors have been green across a full cert cycle:
       -> 2026-11-10/11: token value already gone from `secrets.yaml`
       (empty `cloudflare: {}` map left since #342, tolerated by deploys);
       `default.nix` cleaned (sops declaration + `credentialFiles` line
-      removed). Remaining: delete the leftover `cloudflare: {}` line via
-      `sops edit modules/nixos/https-proxy/secrets.yaml` (hand-editing
-      would break the sops MAC).
+      removed); leftover `cloudflare: {}` line removed via
+      `sops edit` (hand-editing would have broken the sops MAC).
 - [x] Remove `tofu/dns/cloudflare/` (after confirming nothing else uses
       that provider/state) and the Cloudflare provider block.
       -> 2026-11-11: directory removed, `module "cloudflare"` and the
       provider block dropped from `tofu/dns/main.tf` / `providers.tf`.
-      Remaining in `tofu/dns/secrets.json`: drop `cloudflare_api_token`
-      and `cloudflare_zone_id` via `sops edit` (same commit is fine — the
-      provider no longer reads them). The next CI apply destroys the
-      managed Cloudflare records; the zone deletion in the panel follows
-      it.
+      `cloudflare_api_token` / `cloudflare_zone_id` dropped from
+      `secrets.json` via `sops edit`; the CI apply after the removal was
+      a no-op (state cleaned via `tofu state rm`, see above).
 - [x] Confirm INWX auto-renew is enabled for all three domains, payment
       method on file, and expiry dates transferred/imported correctly
       (INWX imports the remaining registration term on transfer).
@@ -569,7 +563,7 @@ gatus monitors have been green across a full cert cycle:
 | 2026-11-06 | Phase 5 (#348): ACME provider flipped to INWX in one atomic deploy; `music.srv-prod-5.ritter.family` force-renewed same day as proof |
 | 2026-11-10 | Incident addendum: `ritter.family`'s renewal failures traced to the never-applied delegation flip; flipped at INWX (Domainliste → gear → Externe Nameserver → INWX Nameserver). `britter.dev` / `benediktritter.de` still delegate to Cloudflare |
 | 2026-11-10 ✅ | Delegations verified at all three registries (INWX NS everywhere); first green renewals through INWX (`books.srv-prod-2`, `garage.srv-prod-3`). PR #352 (challenge-delegation CNAMEs) merged → judged a red herring → reverted; wildcard design re-landed **without** it (#360, incl. `dnsPropagationCheck = false`). By evening all 9 wildcard certs are Let's Encrypt-signed — Phase 5 tail closed. srv-prod-5 needed one retry (NODATA negative-cache window, self-healed) |
-| Next | Phase 6 tail: commit the tofu removal (already in the working tree) → CI apply destroys the managed CF records → delete the three zones from the CF panel (keep `autoweird.fm`; from 2026-11-11 the stale-cache window from the delegation flip has drained) → revoke the Cloudflare API token. Afterwards optionally manage the delegation in tofu (`inwx_domain`) and retire the `britter/domains` repo once `autoweird.fm` has a new home |
+| 2026-11-11 ✅ | Phase 6 complete: `tofu/dns/cloudflare/` removed (state via `tofu state rm` after the zone was deleted first — see the Phase 6 notes), `cloudflare/api-token` wiring dropped from the proxy module, all three zones deleted in the CF panel (`autoweird.fm` untouched), API token revoked. Migration done |
 
 The hard deadline is `britter.dev`'s 2026-12-21 expiry — everything after
 Phase 3 has no deadline pressure and can slip without consequence.
@@ -583,7 +577,7 @@ Phase 3 has no deadline pressure and can slip without consequence.
 | Missed Netlify record takes britter.dev / benediktritter.de offline | Records are IaC-managed in `britter/domains` — port the HCL 1:1 in Phase 2 and run the `curl` checks after the NS flip (Phase 4) |
 | Apex CNAME rejected at INWX (no flattening) | Use INWX `ALIAS` records → `apex-loadbalancer.netlify.com`; verify `dig <domain> A` returns Netlify LB IPs before the NS flip |
 | ACME renewal fails mid-cycle on a backend | Old certs remain valid until natural expiry (~60+ days); restore-from-backup procedure in Phase 5 |
-| Wildcard-cert challenge names captured by the zone's own wildcard records (and the UniFi local zone) — broke issuance fleet-wide in practice on 2026-11-06 | Explicit `_acme-challenge.*` CNAME delegation into the reserved `acme.*.challenge` subtree (branch `acme-dns01-fixes`/PR #352, apply **before** re-landing the wildcard module config) + `dnsPropagationCheck = false`; see [incident 2026-11-06](../incidents/2026-11-06-untrusted-wildcard-certs.md) |
+| Wildcard-cert challenge names captured by the zone's own wildcard records (and the UniFi local zone) — broke issuance fleet-wide in practice on 2026-11-06 | Explicit `_acme-challenge.*` CNAME delegation into the reserved `acme.*.challenge` subtree (branch `acme-dns01-fixes`/PR #352, apply **before** re-landing the wildcard module config) + `dnsPropagationCheck = false`; see [incident 2026-11-06](../../incidents/2026-11-06-untrusted-wildcard-certs.md) |
 | Registrar transfer silently preserves the old delegation — the INWX panel's zone editor shows INWX nameservers and masks that the registry still points at Cloudflare (bit us: ACME renewals failed 2026-11-06 → 2026-11-10) | Verify delegation at the registry TLD (`dig <domain> NS @v0n0.nic.family`), never in the panel; the delegation switch lives in Domainliste → gear → Externe Nameserver; consider managing it in tofu via the `inwx_domain` resource |
 | Edge cert re-issuance outage (directions) | Force renewals deliberately, one vhost pattern at a time, with the `.bak`-restore fallback — never delete certs ahead of a verified renewal |
 | INWX automation account lockout (2FA/credentials) | Dedicated sub-account, shared secret in sops, test a manual lego run from a shell before relying on it fleet-wide |

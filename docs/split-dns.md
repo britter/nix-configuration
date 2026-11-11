@@ -97,7 +97,7 @@ address changes, both must be updated.
 
 ## Interaction with the INWX migration
 
-`docs/plans/cloudflare-to-inwx-dns-migration.md` moves the public zone
+`docs/plans/archive/2026-11-11-cloudflare-to-inwx-dns-migration.md` moves the public zone
 (Cloudflare → INWX) and the registrations. This does not touch the split:
 
 - The local zone on the UniFi gateway is name-based and independent of the

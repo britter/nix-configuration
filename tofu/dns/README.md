@@ -4,7 +4,7 @@ External DNS records for all three domains are managed here with OpenTofu:
 
 - `inwx/` — the authoritative setup since 2026-11-10: all three domains
   are registered at INWX and delegate to INWX's nameservers
-  (the [Cloudflare-to-INWX migration](../../docs/plans/cloudflare-to-inwx-dns-migration.md)
+  (the [Cloudflare-to-INWX migration](../../docs/plans/archive/2026-11-11-cloudflare-to-inwx-dns-migration.md)
   is complete except for phase 6).
 - `cloudflare/` — removed 2026-11-11 (migration phase 6): the zones it
   managed were deleted from the Cloudflare account. The remaining Cloudflare

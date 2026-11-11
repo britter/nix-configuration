@@ -4,7 +4,7 @@ OpenTofu configuration for the INWX nameserver zones of all three domains
 (`ritter.family`, `britter.dev`, `benediktritter.de`).
 
 This module replaced `../cloudflare/` as part of the DNS migration
-([plan](../../../docs/plans/cloudflare-to-inwx-dns-migration.md)). Since
+([plan](../../../docs/plans/archive/2026-11-11-cloudflare-to-inwx-dns-migration.md)). Since
 2026-11-10 all three domains delegate to INWX's nameservers (verified at
 the registries), so the zones created here are the authoritative ones.
 `../cloudflare/` remains only as rollback until the migration's phase 6

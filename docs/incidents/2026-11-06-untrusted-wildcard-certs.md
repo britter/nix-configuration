@@ -205,7 +205,7 @@ deterministically (`books.srv-prod-2.ritter.family`, lego
 **registrar transfer to INWX (completed 2026-11-05 19:24) preserved the
 losing registrar's nameserver delegation** — the registry still pointed
 `ritter.family` at `isabel`/`salvador.ns.cloudflare.com`. Phase 4 of the
-[DNS migration](../plans/cloudflare-to-inwx-dns-migration.md) had been
+[DNS migration](../plans/archive/2026-11-11-cloudflare-to-inwx-dns-migration.md) had been
 marked done from the INWX panel's *zone editor*, which shows the INWX
 nameservers of the hosted zone — but that zone was inert, exactly as the
 tofu comment warns ("While the domains still delegate to Cloudflare these
