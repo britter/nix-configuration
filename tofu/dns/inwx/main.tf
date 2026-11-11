@@ -19,8 +19,9 @@ locals {
   ttl = 300
 }
 
-# One zone per domain on INWX's anycast nameservers. While the domains still
-# delegate to Cloudflare these zones are inert.
+# One zone per domain on INWX's anycast nameservers. These zones are the
+# authoritative ones since 2026-11-10, when all three domains' NS
+# delegations flipped to INWX (verified at the registries).
 resource "inwx_nameserver" "zone" {
   for_each    = local.zones
   domain      = each.value

@@ -136,9 +136,6 @@ _: {
           in
           lib.mkMerge (lib.map makeHost cfg.configurations);
 
-        sops.secrets."cloudflare/api-token" = {
-          sopsFile = ./secrets.yaml;
-        };
         sops.secrets."inwx/username" = {
           sopsFile = ./secrets.yaml;
         };
@@ -168,8 +165,6 @@ _: {
               "INWX_PASSWORD_FILE" = config.sops.secrets."inwx/password".path;
               # only if the automation account has 2FA enabled:
               # "INWX_SHARED_SECRET_FILE" = config.sops.secrets."inwx/shared-secret".path;
-              # keep until every cert has renewed once through INWX (rollback path):
-              "CLOUDFLARE_DNS_API_TOKEN_FILE" = config.sops.secrets."cloudflare/api-token".path;
             };
           };
         };

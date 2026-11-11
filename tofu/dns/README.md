@@ -2,16 +2,18 @@
 
 External DNS records for all three domains are managed here with OpenTofu:
 
-- `cloudflare/` — the current, authoritative setup (Cloudflare nameservers).
-- `inwx/` — the target setup (INWX nameservers), created for the
-  [Cloudflare-to-INWX migration](../../docs/plans/cloudflare-to-inwx-dns-migration.md).
-  While the domains still delegate to Cloudflare these zones are inert; the
-  two modules run in parallel until the nameserver delegation flips, after
-  which `cloudflare/` is decommissioned (migration phase 6).
+- `inwx/` — the authoritative setup since 2026-11-10: all three domains
+  are registered at INWX and delegate to INWX's nameservers
+  (the [Cloudflare-to-INWX migration](../../docs/plans/cloudflare-to-inwx-dns-migration.md)
+  is complete except for phase 6).
+- `cloudflare/` — removed 2026-11-11 (migration phase 6): the zones it
+  managed were deleted from the Cloudflare account. The remaining Cloudflare
+  resources (`autoweird.fm` in the `britter/domains` repo) live outside this
+  tofu project.
 
 DNS records point to [Tailscale](https://tailscale.com) IP addresses.
 Tailscale provider is used to retrieved IP addresses of known devices from the Tailscale API.
-Using that data DNS entries are automatically created via Cloudflare.
+Using that data DNS entries are automatically created via INWX.
 
 The interplay between these public records and the local DNS overrides
 (AdGuard Home) is described in [docs/split-dns.md](../../docs/split-dns.md).
