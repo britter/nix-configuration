@@ -83,9 +83,9 @@ the device from scratch (the Keycloak-side client is tofu-managed, in
    `https://account.ritter.family/realms/homelab/.well-known/openid-configuration`,
    client id `homeassistant`, **no secret**. Automatic user linking is
    kept on by decision until every household realm user has linked once
-   (the second household account has no realm identity yet) — disable it
-   in the integration's reconfigure screen once that account has linked;
-   the SSO credential stays linked either way.
+   (alina is provisioned in the realm, see `tofu/keycloak/users.tf`) —
+   disable it in the integration's reconfigure screen once that account
+   has linked; the SSO credential stays linked either way.
 3. Local password login stays enabled as break-glass (the companion
    apps' refresh tokens are tied to the `homeassistant` auth provider —
    do not remove that provider).

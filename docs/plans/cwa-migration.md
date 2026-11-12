@@ -61,6 +61,38 @@ way — so choosing it carries no lock-in. Decisive for this plan:
   packaging PR had to patch out dozens of hardcoded Docker paths instead.
 - The bridge and the KOSync architecture are fork-agnostic.
 
+### SSO capability: native OIDC in CWNG
+
+CWNG ships an environment-managed Generic OIDC provider
+(`docs/OAUTH-ENVIRONMENT-CONFIGURATION.md` upstream; checked against
+the README 2026-11-12 — re-verify against the pinned CWNG tag at
+implementation time, upstream reviews auth code more closely). Built
+for declarative deployments: OIDC discovery URL, client secret from a
+file (`GENERIC_OAUTH_CLIENT_SECRET_FILE`, sops-rendered — nothing
+lands in `app.db`), claim mappers (`preferred_username`, `email`),
+group-claim admin mapping (`GENERIC_OAUTH_ADMIN_GROUP`, requires the
+global "Manage admin role from OAuth group" switch), an in-app group
+allow-list, and a default role for auto-created users
+(`GENERIC_OAUTH_DEFAULT_ROLE`, e.g. `download,viewer` — `admin` is
+deliberately not a valid token).
+
+This supersedes the rollout plan's "No — auth proxy" marking: the web
+UI becomes a native Keycloak client once this migration lands — the
+SSO rollout for calibre-web is blocked by this migration. With the
+realm's `admins` group (see the role-mapping decision in
+`keycloak-sso-rollout.md`): `bene` is CWNG admin on login, every other
+user auto-creates as a normal reader.
+
+Device surfaces cannot follow a browser OIDC redirect and keep local
+credentials permanently: `/opds` (KOReader basic-auth credentials
+embedded in the URL), Kobo sync tokens, `/kosync` (bridge), and the
+KOSync vhost. Local user accounts with passwords therefore stay —
+every reader needs one for their devices — and the standard login form
+stays enabled (the OIDC doc describes no switch to disable it; OPDS
+shares the same credential store anyway). PKCE is undocumented: probe
+the authorization endpoint at onboarding and only enforce S256 on the
+Keycloak client if the probe shows the challenge arrives.
+
 ### Why a separate KOSync server (not CWNG's built-in sync)?
 
 Both CWA ≥ 4.0 and CWNG ship a built-in `/kosync` endpoint. Two reasons to
@@ -126,7 +158,7 @@ cannot take e-reader progress sync down with it.
 | `modules/nixos/gatus.nix` | keep Calibre-Web check; add KOSync `healthcheck` check |
 | `tofu/proxmox/srv-prod-5.tf` | bump memory (2 GB → 4 GB) and cores (2 → 4) for CWNG + calibre conversion load |
 | `docs/homelab.md` | service table row moves to srv-prod-5, gains KOSync |
-| `docs/plans/keycloak-sso-rollout.md` | Calibre Web row: app name becomes CWA; still auth-proxy pending; `/opds` note carries over |
+| `docs/plans/keycloak-sso-rollout.md` | Calibre Web row: app name becomes CWNG; SSO classification flips from auth-proxy to native OIDC (see "SSO capability" above) — the SSO rollout for this service is blocked until this migration lands; the `/opds` exemption note carries over, joined by the Kobo/`/kosync` surfaces |
 
 ### No changes (each with reason)
 
@@ -439,8 +471,8 @@ delete is the step that ends state-based rollback.
 2. Remove the now-unused `restic/calibre/*` keys from
    `modules/hosts/srv-prod-2/secrets.yaml`.
 3. Update `docs/homelab.md` (books → srv-prod-5, add kosync row) and the
-   Calibre Web row in `docs/plans/keycloak-sso-rollout.md` (now CWNG; OPDS
-   note stays).
+   Calibre Web row in `docs/plans/keycloak-sso-rollout.md` (now
+   CWNG with native OIDC; OPDS + device-API note stays).
 4. Gatus: confirm the existing Calibre-Web check is green; add a KOSync
    check on `https://kosync.ritter.family/healthcheck` in the same PR.
 
