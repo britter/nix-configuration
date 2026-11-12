@@ -24,6 +24,7 @@
           nextcloud-client
           nixpkgs-tools
           obsidian
+          paperless-upload
           slack
           syncthing
           tailscale
