@@ -37,6 +37,15 @@ _: {
         settings = {
           trusted_domains = [ "nextcloud.ritter.family" ];
           trusted_proxies = [ config.home-lab.hosts.directions.ip ];
+          # account.ritter.family resolves to srv-prod-1's LAN IP via the
+          # LAN resolver; Nextcloud's SSRF guard (DnsPinMiddleware) refuses
+          # every server-side request to a host that resolves into private
+          # ranges — the Keycloak OIDC flow (discovery, token exchange, JWKS
+          # fetches) dies with "violates local access rules"
+          # (LocalServerException, seen 2026-11-13, see
+          # docs/plans/nextcloud-keycloak-sso.md). Paperless on this host
+          # does the same fetch against the same host without the guard.
+          allow_local_remote_servers = true;
           mail_domain = "ritter.family";
           mail_from_address = "nextcloud";
           mail_smtpmode = "smtp";
