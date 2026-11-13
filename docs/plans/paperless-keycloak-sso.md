@@ -87,11 +87,13 @@ single JSON env var with the secret inside it, and the module renders
 module-sanctioned secrets path (same one its own docs use for
 `PAPERLESS_DBPASS`). Nothing secret lands in `settings`.
 
-**User mapping:** the local superuser is `admin` (module default; the
-password is sops `paperless/admin-password`). The realm `bene` links
-onto that existing account via the My-Profile connect flow (the Home
-Assistant pattern: SSO identity rides the local admin), keeping the
-document archive, superuser rights and API tokens intact. `alina`
+**User mapping:** paperless has two local accounts: the daily-driver
+`bene` and a separate superuser `admin` (module default; its password
+is sops `paperless/admin-password`). The realm `bene` links onto the
+dedicated `bene` account via the My-Profile connect flow — SSO then
+lands in bene's own document space, while the superuser `admin` stays
+a local-only login that never touches SSO (it remains the break-glass
+credential, see Part E). `alina`
 self-creates an unprivileged account (own document space) on her first
 SSO login — the rollout plan's auto-create end state. Keeping
 `SOCIALACCOUNT_AUTO_SIGNUP` at its default `false` in stage 1 is
@@ -114,7 +116,7 @@ Staging:
 | 0 | Generate + seed secrets | operator command (Part A) |
 | 1 | tofu client (S256 enforced) | PR 1 (pipeline applies) |
 | 2 | Stage-1 env: SSO button beside password; rate-limit proxy config | PR 2 (comin switches srv-prod-2) |
-| 3 | Click-ops: connect admin account, first SSO login | Part D, operator (~5 min) |
+| 3 | Click-ops: connect bene account, first SSO login | Part D, operator (~5 min) |
 | 4 | Part E: password login off | PR 3 |
 | 5 | Completion | docs/homelab.md, sso.md + rollout table, archive |
 
@@ -315,27 +317,28 @@ curl -s -o /dev/null -w '%{http_code}\n' https://documents.ritter.family/account
 Stage gate: do not proceed to Part D before the button is visible and
 the web unit is healthy.
 
-## Part D — click-ops: link the admin account (operator, ~5 min; the stage gate)
+## Part D — click-ops: link the bene account (operator, ~5 min; the stage gate)
 
 Ordered so the password door stays open the whole time:
 
-1. Sign in at `https://documents.ritter.family` with username `admin`
-   and the sops `paperless/admin-password`
-   (`sops -d --extract '["paperless"]["admin-password"]'
-   modules/hosts/srv-prod-2/secrets.yaml`).
+1. Sign in at `https://documents.ritter.family` as the local `bene`
+   user with bene's own password (not the sops admin password — if
+   it's forgotten, the superuser can set a new one in the Django admin
+   at `/admin/` → Users → bene).
 2. User dropdown → **My Profile** → connect the social account →
    **Keycloak** → complete the realm flow as `bene` → back on the
    profile page, the Keycloak identity shows as connected.
-   - Contingency: if allauth refuses the connect because the e-mail is
-     claimed by another local record, set the admin profile's e-mail to
-     the realm `bene` address first (there is no second local user).
+   - Contingency: if allauth refuses the connect because the realm
+     e-mail is claimed by another local record, fix that record's
+     e-mail in the Django admin first.
 3. Log out. Sign in again via **Sign in with Keycloak** → the session
-   lands in the `admin` account: full document archive, superuser
-   rights, API tokens intact.
+   lands in the `bene` account: bene's own document space. The
+   superuser `admin` keeps its separate local login throughout.
 4. Do **not** complete a "sign up" confirmation form along the way —
    linking goes through My Profile (step 2). If a stray auto-created
    account appears anyway, delete it in the Django admin at
-   `/admin/` (local credentials) before proceeding.
+   `/admin/` (admin's local credentials, sops
+   `paperless/admin-password`) before proceeding.
 
 Stage gate: do not proceed to Part E until 3 has passed — with password
 login off, the sole web door must already be the realm identity.
