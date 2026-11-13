@@ -38,6 +38,16 @@ _: {
         after = [ "nextcloud-setup.service" ];
         requires = [ "nextcloud-setup.service" ];
         wantedBy = [ "multi-user.target" ];
+        # switch-to-configuration only restarts units that are active,
+        # and starts new units only when their desired state is active —
+        # a plain oneshot ends "inactive (dead)" and is silently skipped
+        # on switches (the first deploy of this unit only ran after a
+        # manual start, 2026-11-13; same failure mode as
+        # home-manager#7166). RemainAfterExit makes "active (exited)"
+        # the desired state: the upsert runs on every switch where the
+        # unit changed — including the stage-3 flip (plan Part E) — and
+        # stays re-runnable via the secret's restartUnits.
+        serviceConfig.RemainAfterExit = true;
         serviceConfig.Type = "oneshot";
         script = ''
           ${occ} user_oidc:provider keycloak \

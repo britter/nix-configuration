@@ -241,7 +241,7 @@ whitelisted redirect-URI variants.
 Full content of the new part file (the `richdocuments.nix` cut: another
 unnamed part setting `flake.modules.nixos.nextcloud` — that registry
 wrapper is what makes the file part of the aspect that hosts import;
-`default.nix` and the srv-prod-2 instance file stay untouched).
+the srv-prod-2 instance file stays untouched).
 **Verified (2026-11-13):** applied and evaluated against the real
 srv-prod-2 config — the oneshot renders the occ script with the secret
 path `/run/secrets/nextcloud/keycloak-client-secret`, the unit is
@@ -251,7 +251,49 @@ Note: `git add` new files before any `nix eval`/`nix flake check` —
 the evaluator reads the git index, untracked files do not exist for it
 (a check passes vacuously while the new file is invisible).
 
+**Update (2026-11-13, after PR #367 deployed):** the switch silently
+skipped this oneshot — new `Type=oneshot` units without
+`RemainAfterExit` end in state "inactive (dead)" and
+`switch-to-configuration` neither starts them (desired state: not
+running) nor restarts them (never active); the provider only appeared
+after a manual `systemctl start`. Same failure mode as
+home-manager#7166. Fixed with `serviceConfig.RemainAfterExit = true`
+(in the diff above) — required before Part E, whose flip only applies
+if the oneshot re-runs on the switch. Separately observed during this
+deployment: clicking the SSO button errored with "Could not reach the
+OpenID Connect provider" — that is `obtainDiscovery`'s server-side GET
+from the `nextcloud` php-fpm user to the discovery URL throwing
+(`LoginController.php:196`); the exact exception lands in the journal
+(the nixpkgs module defaults `log_type = "syslog"`). Resolved the same
+day: the journal showed `LocalServerException — Host "192.168.30.6"
+(account.ritter.family:80) violates local access rules` — the LAN
+resolver returns srv-prod-1's private IP for `account.ritter.family`,
+and Nextcloud's SSRF guard (`DnsPinMiddleware`) refuses every
+server-side request into private ranges. Fix:
+`allow_local_remote_servers = true` in `services.nextcloud.settings`
+(second diff below) — the documented setting for an IdP on the local
+network; paperless on the same host makes the identical fetch without
+any guard.
+
+Second change — the SSRF guard exception lands in the generic aspect's
+`settings` block:
+
 ```diff
+@@ modules/nixos/nextcloud/default.nix @@
+         settings = {
+           trusted_domains = [ "nextcloud.ritter.family" ];
+           trusted_proxies = [ config.home-lab.hosts.directions.ip ];
++          # account.ritter.family resolves to srv-prod-1's LAN IP via the
++          # LAN resolver; Nextcloud's SSRF guard (DnsPinMiddleware) refuses
++          # every server-side request to a host that resolves into private
++          # ranges — the Keycloak OIDC flow (discovery, token exchange, JWKS
++          # fetches) dies with "violates local access rules"
++          # (LocalServerException, seen 2026-11-13, see
++          # docs/plans/nextcloud-keycloak-sso.md). Paperless on this host
++          # does the same fetch against the same host without the guard.
++          allow_local_remote_servers = true;
+           mail_domain = "ritter.family";
+``````diff
 @@ modules/nixos/nextcloud/sso.nix @@
 +_: {
 +  flake.modules.nixos.nextcloud =
@@ -293,6 +335,16 @@ the evaluator reads the git index, untracked files do not exist for it
 +        after = [ "nextcloud-setup.service" ];
 +        requires = [ "nextcloud-setup.service" ];
 +        wantedBy = [ "multi-user.target" ];
++        # switch-to-configuration only restarts units that are active,
++        # and starts new units only when their desired state is active —
++        # a plain oneshot ends "inactive (dead)" and is silently skipped
++        # on switches (the first deploy of this unit only ran after a
++        # manual start, 2026-11-13; same failure mode as
++        # home-manager#7166). RemainAfterExit makes "active (exited)"
++        # the desired state: the upsert runs on every switch where the
++        # unit changed — including the stage-3 flip (plan Part E) — and
++        # stays re-runnable via the secret's restartUnits.
++        serviceConfig.RemainAfterExit = true;
 +        serviceConfig.Type = "oneshot";
 +        script = ''
 +          ${occ} user_oidc:provider keycloak \
@@ -336,9 +388,11 @@ and enables the app. Verify:
 # the app is enabled and the provider registered (occ is idempotent to re-run)
 ssh root@srv-prod-2.ritter.family 'nextcloud-occ user_oidc:provider keycloak'
 
-# the login page now offers Keycloak beside the password form
-curl -s https://nextcloud.ritter.family/login | grep -o '/apps/user_oidc/login/keycloak' | head -n1
-# expected: '/apps/user_oidc/login/keycloak'
+# the login page now offers Keycloak beside the password form — the
+# button URL carries the numeric provider ID, not the identifier
+# (login.login with providerId => getId(), verified in the user_oidc source):
+curl -s https://nextcloud.ritter.family/login | grep -oE '/apps/user_oidc/login/[0-9]+' | head -n1
+# expected: '/apps/user_oidc/login/<id>'
 
 # gatus stays green throughout — status.php is public by design
 curl -s -o /dev/null -w '%{http_code}\n' https://nextcloud.ritter.family/status.php
@@ -452,6 +506,11 @@ curl -s "https://account.ritter.family/realms/homelab/protocol/openid-connect/au
   `nextcloud.srv-prod-2.ritter.family` send a redirect URI Keycloak
   rejects — the public FQDN is the one supported entry point (same
   caveat as every other service).
+- **Server-side fetches to the IdP ride the LAN:** with
+  `allow_local_remote_servers = true`, discovery/token/JWKS requests go
+  to `192.168.30.6` (srv-prod-1) instead of round-tripping the public
+  internet — the resolver decides. The SSRF guard stays lifted for the
+  whole instance; the realm is the allow-list.
 - **Restart windows:** PR 2 bounces the Nextcloud services for a few
   seconds (normal comin activation); the oneshot runs once per
   activation, and a secret rotation re-runs it (occ upsert, seconds).
@@ -496,7 +555,10 @@ Per part, each restores the previous state on its own:
 - **`modules/nixos/nextcloud/default.nix`** — the SSO wiring lands in a
   new unnamed part (`sso.nix`) so the service core diff is zero; the
   module system merges parts that set the same registry key (the
-  `richdocuments.nix` pattern).
+  `richdocuments.nix` pattern). *Amended 2026-11-13:* one line was
+  still needed in its `settings` block —
+  `allow_local_remote_servers = true` (Part C, second diff) for the
+  IdP's LAN IP to pass the SSRF guard.
 - **`modules/hosts/srv-prod-2/services/nextcloud.nix`** — NFS mount,
   tmpfiles and restic backups are auth-independent. The provider row and
   the OIDC backend tables live in the Nextcloud PostgreSQL database,
