@@ -41,6 +41,12 @@ _: {
           # environmentFile. With regular login still on, this only adds
           # a "Sign in with Keycloak" button beside the password form.
           PAPERLESS_APPS = "allauth.socialaccount.providers.openid_connect";
+          # Stage 3: SSO is the only door on the web UI. Break-glass: the
+          # Django admin at /admin/ still accepts the local admin
+          # credentials (upstream guarantee), and removing this line
+          # restores the password form on the next switch. See the plan's
+          # Rollback section.
+          PAPERLESS_DISABLE_REGULAR_LOGIN = true;
           # v3 allauth derives the rate-limited client IP from
           # X-Forwarded-For and trusts zero proxies by default —
           # trust exactly the one nginx hop on localhost, or all logins
