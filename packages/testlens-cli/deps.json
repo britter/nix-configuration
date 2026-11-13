@@ -3,7 +3,7 @@
  "!version": 1,
  "https:/": {
   "api.testlens": {
-   "app/v1/openapi": "sha256-DoKMpiDCMOMbRRAjVuM8JQWYDX9pHKM2Z66dhzVtKvA="
+   "app/v1/openapi": "sha256-s7RP8ujLF7w9bSqWq5AruKJcv7mbuFnuRkyuNLUQdjE="
   },
   "plugins.gradle.org/m2/com/atkinsondev/gradle#object-store-cache-plugin/3.1.0": {
    "jar": "sha256-YBCRZh8AH8NahPA4V4g/B/AVTuxh6vtQrFagYBcdgjc=",
