@@ -8,11 +8,11 @@
 }:
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "kotlin-lsp";
-  version = "263.7084.0";
+  version = "271.2085.0";
 
   src = fetchzip {
     url = "https://download.jetbrains.com/language-server/kotlin-server/${finalAttrs.version}/kotlin-server-${finalAttrs.version}.tar.gz";
-    sha256 = "sha256-Ld04XYQh62ahCzpAzZzwhFtI0apmhZIhQMVRm6ak+eQ=";
+    sha256 = "sha256-lB+KkyW8h0j4Xpi//+IVxJvdSu2XFRS2QOwGHfrRG58=";
   };
 
   nativeBuildInputs = [
