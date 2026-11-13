@@ -1,6 +1,7 @@
 # Nextcloud: Keycloak SSO (next native client)
 
-**Status:** planning (2026-11-13) — part of
+**Status:** in progress (2026-11-13) — stage 1 is merged (PR #366, the
+client probe answers `302`), app-side staging (PR 2) is next. Part of
 [`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) (step 2, the
 Office/Media batch, "one client file at a time"). Client conventions
 follow the Forgejo, PVE, Beszel and Paperless onboardings; app-side
@@ -132,7 +133,7 @@ Staging:
 | Stage | What | Where |
 | --- | --- | --- |
 | 0 | Generate + seed secrets | operator command (Part A) |
-| 1 | tofu client (S256 enforced) | PR 1 (pipeline applies) |
+| 1 | tofu client (S256 enforced) | ✅ merged as #366 (probe `302`, verified 2026-11-13) |
 | 2 | Stage-1 code: user_oidc app + provider oneshot, SSO button beside password | PR 2 (comin switches srv-prod-2) |
 | 3 | Click-ops: first SSO logins, app-password check, device-client check | Part D, operator (~10 min) |
 | 4 | Part E: password login off | PR 3 |
@@ -231,65 +232,84 @@ curl -s "https://account.ritter.family/realms/homelab/protocol/openid-connect/au
 # before the client exists, so the probe also proves the apply.
 ```
 
-Stage gate: the probe must answer `302` before PR 2 lands.
+Stage gate: the probe must answer `302` before PR 2 lands. Verified
+(2026-11-13, after the merge): the probe answers `302` for both
+whitelisted redirect-URI variants.
 
 ## Part C — stage-1 code: SSO beside password (PR 2)
 
 Full content of the new part file (the `richdocuments.nix` cut: another
-unnamed part merging into the `nextcloud` aspect; `default.nix` and the
-srv-prod-2 instance file stay untouched):
+unnamed part setting `flake.modules.nixos.nextcloud` — that registry
+wrapper is what makes the file part of the aspect that hosts import;
+`default.nix` and the srv-prod-2 instance file stay untouched).
+**Verified (2026-11-13):** applied and evaluated against the real
+srv-prod-2 config — the oneshot renders the occ script with the secret
+path `/run/secrets/nextcloud/keycloak-client-secret`, the unit is
+wanted by `multi-user.target`, the sops owner is `nextcloud`, and
+`extraApps.user_oidc` resolves to `nextcloud-app-user_oidc-8.11.0`.
+Note: `git add` new files before any `nix eval`/`nix flake check` —
+the evaluator reads the git index, untracked files do not exist for it
+(a check passes vacuously while the new file is invisible).
 
 ```diff
 @@ modules/nixos/nextcloud/sso.nix @@
-+{ config, lib, ... }:
-+let
-+  occ = lib.getExe config.services.nextcloud.occ;
-+in
-+lib.mkIf config.services.nextcloud.enable {
-+  # user_oidc is packaged in nixpkgs for Nextcloud 35 (8.11.0, pinned in
-+  # packages/35.json) — extraApps keeps it in lockstep with the Nextcloud
-+  # package on upgrades, no app-store drift.
-+  services.nextcloud.extraApps = {
-+    inherit (config.services.nextcloud.package.packages.apps) user_oidc;
-+  };
++_: {
++  flake.modules.nixos.nextcloud =
++    { config, lib, ... }:
++    let
++      occ = lib.getExe config.services.nextcloud.occ;
++    in
++    lib.mkIf config.services.nextcloud.enable {
++      # user_oidc is packaged in nixpkgs for Nextcloud 35 (8.11.0, pinned
++      # in pkgs/servers/nextcloud/packages/35.json) — extraApps keeps it
++      # in lockstep with the Nextcloud package on upgrades, no app-store
++      # drift.
++      services.nextcloud.extraApps = {
++        inherit (config.services.nextcloud.package.packages.apps) user_oidc;
++      };
 +
-+  # Read by the oneshot below via occ's --clientsecret-file (the secret
-+  # must not land in argv or the world-readable unit file). Rotation
-+  # re-runs the oneshot, which re-encrypts the value into the database.
-+  sops.secrets."nextcloud/keycloak-client-secret" = {
-+    owner = "nextcloud";
-+    restartUnits = [ "nextcloud-useroidc-config.service" ];
-+  };
++      # Read by the oneshot below via occ's --clientsecret-file (the
++      # secret must not land in argv or the world-readable unit file).
++      # Rotation re-runs the oneshot, which re-encrypts the value into
++      # the database.
++      sops.secrets."nextcloud/keycloak-client-secret" = {
++        owner = "nextcloud";
++        restartUnits = [ "nextcloud-useroidc-config.service" ];
++      };
 +
-+  # Keycloak SSO (docs/plans/nextcloud-keycloak-sso.md): user_oidc
-+  # stores providers (secret included, encrypted) in the Nextcloud
-+  # database, so this oneshot keeps the DB row in sync with the
-+  # declaration — same pattern as nextcloud-richdocuments-config.
-+  # Idempotent: user_oidc:provider is an upsert by identifier; re-running
-+  # also clears the provider's JWKS cache (harmless). --mapping-uid +
-+  # --unique-uid 0 override the defaults (sub claim, provider-hashed
-+  # IDs) so the user ID is the realm preferred_username and soft auto
-+  # provisioning links onto the existing local accounts instead of
-+  # creating hashed-ID duplicates.
-+  systemd.services.nextcloud-useroidc-config = {
-+    after = [ "nextcloud-setup.service" ];
-+    requires = [ "nextcloud-setup.service" ];
-+    wantedBy = [ "multi-user.target" ];
-+    serviceConfig.Type = "oneshot";
-+    script = ''
-+      ${occ} user_oidc:provider keycloak \
-+        --clientid nextcloud \
-+        --clientsecret-file ${config.sops.secrets."nextcloud/keycloak-client-secret".path} \
-+        --discoveryuri https://account.ritter.family/realms/homelab/.well-known/openid-configuration \
-+        --mapping-uid preferred_username \
-+        --unique-uid 0
++      # Keycloak SSO (docs/plans/nextcloud-keycloak-sso.md): user_oidc
++      # stores providers (secret included, encrypted) in the Nextcloud
++      # database, so this oneshot keeps the DB row in sync with the
++      # declaration — same pattern as nextcloud-richdocuments-config.
++      # Idempotent: user_oidc:provider is an upsert by identifier;
++      # re-running also clears the provider's JWKS cache (harmless).
++      # --mapping-uid + --unique-uid 0 override the defaults (sub claim,
++      # provider-hashed IDs) so the user ID is the realm
++      # preferred_username and soft auto provisioning links onto the
++      # existing local accounts instead of creating hashed-ID
++      # duplicates. The tofu side of this client is
++      # tofu/keycloak/client-nextcloud.tf (merged as PR #366).
++      systemd.services.nextcloud-useroidc-config = {
++        after = [ "nextcloud-setup.service" ];
++        requires = [ "nextcloud-setup.service" ];
++        wantedBy = [ "multi-user.target" ];
++        serviceConfig.Type = "oneshot";
++        script = ''
++          ${occ} user_oidc:provider keycloak \
++            --clientid nextcloud \
++            --clientsecret-file ${config.sops.secrets."nextcloud/keycloak-client-secret".path} \
++            --discoveryuri https://account.ritter.family/realms/homelab/.well-known/openid-configuration \
++            --mapping-uid preferred_username \
++            --unique-uid 0
 +
-+      # Stage 1: both doors open. Stage 3 (Part E) flips this to 0 —
-+      # the login page then redirects to Keycloak and the password form
-+      # is only reachable with /login?direct=1.
-+      ${occ} config:app:set user_oidc allow_multiple_user_backends --type=string --value=1
-+    '';
-+  };
++          # Stage 1 (docs/plans/nextcloud-keycloak-sso.md): both doors
++          # open. Stage 3 (Part E) flips this to 0 — the login page then
++          # redirects to Keycloak and the password form is only reachable
++          # with /login?direct=1.
++          ${occ} config:app:set user_oidc allow_multiple_user_backends --type=string --value=1
++        '';
++      };
++    };
 +}
 ```
 
