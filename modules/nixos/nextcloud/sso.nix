@@ -57,11 +57,13 @@ _: {
             --mapping-uid preferred_username \
             --unique-uid 0
 
-          # Stage 1 (docs/plans/nextcloud-keycloak-sso.md): both doors
-          # open. Stage 3 (Part E) flips this to 0 — the login page then
-          # redirects to Keycloak and the password form is only reachable
-          # with /login?direct=1.
-          ${occ} config:app:set user_oidc allow_multiple_user_backends --type=string --value=1
+          # Stage 3 (docs/plans/nextcloud-keycloak-sso.md Part E): SSO is
+          # the only web door — the login page redirects to Keycloak.
+          # Break-glass without any redeploy:
+          # https://nextcloud.ritter.family/login?direct=1 renders the
+          # regular login form (upstream guarantee). Flip back to 1 to
+          # restore the password form on the next switch.
+          ${occ} config:app:set user_oidc allow_multiple_user_backends --type=string --value=0
         '';
       };
     };
