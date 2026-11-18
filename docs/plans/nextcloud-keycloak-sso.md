@@ -1,7 +1,8 @@
 # Nextcloud: Keycloak SSO (next native client)
 
-**Status:** in progress (2026-11-13) — stage 1 is merged (PR #366, the
-client probe answers `302`), app-side staging (PR 2) is next. Part of
+**Status:** in progress (2026-11-13) — stages 1–2 deployed (#366,
+#367) and working after the #368 fixes; first Keycloak login verified.
+Part D checks pending, Part E (password login off) staged. Part of
 [`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) (step 2, the
 Office/Media batch, "one client file at a time"). Client conventions
 follow the Forgejo, PVE, Beszel and Paperless onboardings; app-side
@@ -134,7 +135,7 @@ Staging:
 | --- | --- | --- |
 | 0 | Generate + seed secrets | operator command (Part A) |
 | 1 | tofu client (S256 enforced) | ✅ merged as #366 (probe `302`, verified 2026-11-13) |
-| 2 | Stage-1 code: user_oidc app + provider oneshot, SSO button beside password | PR 2 (comin switches srv-prod-2) |
+| 2 | Stage-1 code: user_oidc app + provider oneshot, SSO button beside password | ✅ merged as #367; needed the #368 fixes (oneshot switch skip, SSRF guard); first SSO login verified |
 | 3 | Click-ops: first SSO logins, app-password check, device-client check | Part D, operator (~10 min) |
 | 4 | Part E: password login off | PR 3 |
 | 5 | Completion | docs/homelab.md, sso.md + rollout table, archive |
@@ -273,7 +274,8 @@ server-side request into private ranges. Fix:
 `allow_local_remote_servers = true` in `services.nextcloud.settings`
 (second diff below) — the documented setting for an IdP on the local
 network; paperless on the same host makes the identical fetch without
-any guard.
+any guard. With both fixes merged (#368), the Keycloak login works:
+first SSO login verified the same day.
 
 Second change — the SSRF guard exception lands in the generic aspect's
 `settings` block:
@@ -439,15 +441,18 @@ realm identity and DAV clients must already hold app passwords.
 
 ```diff
 @@ modules/nixos/nextcloud/sso.nix @@
-       # Stage 1: both doors open. Stage 3 (Part E) flips this to 0 —
-       # the login page then redirects to Keycloak and the password form
--      # is only reachable with /login?direct=1.
--      ${occ} config:app:set user_oidc allow_multiple_user_backends --type=string --value=1
-+      # is only reachable with /login?direct=1. Break-glass without any
-+      # redeploy: https://nextcloud.ritter.family/login?direct=1 shows
-+      # the regular login form (upstream guarantee). See the plan's
-+      # Rollback section.
-+      ${occ} config:app:set user_oidc allow_multiple_user_backends --type=string --value=0
+-          # Stage 1 (docs/plans/nextcloud-keycloak-sso.md): both doors
+-          # open. Stage 3 (Part E) flips this to 0 — the login page then
+-          # redirects to Keycloak and the password form is only reachable
+-          # with /login?direct=1.
+-          ${occ} config:app:set user_oidc allow_multiple_user_backends --type=string --value=1
++          # Stage 3 (docs/plans/nextcloud-keycloak-sso.md Part E): SSO is
++          # the only web door — the login page redirects to Keycloak.
++          # Break-glass without any redeploy:
++          # https://nextcloud.ritter.family/login?direct=1 renders the
++          # regular login form (upstream guarantee). Flip back to 1 to
++          # restore the password form on the next switch.
++          ${occ} config:app:set user_oidc allow_multiple_user_backends --type=string --value=0
 ```
 
 Merge; comin switches srv-prod-2; the oneshot re-runs on the switch (its
