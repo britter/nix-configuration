@@ -118,6 +118,26 @@
           evolves.
       '';
       plansPath = "${config.xdg.configHome}/agents/plans.md";
+      sandboxContext = pkgs.writeText "sandbox.md" ''
+        # Sandbox and key material
+
+        You always run inside the nono sandbox. It gives you no access to key
+        material: SSH keys, GPG keys, and other private keys are not readable,
+        and anything that needs them fails with a permission error.
+
+        Consequences — never attempt these, ask the user to do them instead:
+
+        - Writing git commits: the user's git signs every commit with a GPG
+          key you cannot access, so `git commit` fails. Do everything up to
+          the commit (edits, staging, a suggested commit message) and ask the
+          user to commit.
+        - SSH: no `ssh`, `scp`, `rsync` over ssh, or any remote login or
+          remote execution. Prepare the exact command for the user to run.
+
+        Anything else that needs key material (signing, encryption,
+        decryption) goes to the user the same way.
+      '';
+      sandboxPath = "${config.xdg.configHome}/agents/sandbox.md";
     in
     {
       # Which harness is actually enabled is decided per user/host; this module
@@ -282,6 +302,7 @@
             toolsPath
             preferencesPath
             plansPath
+            sandboxPath
           ];
 
           # A primary agent (cycle to it with Tab) that asks before mutations,
@@ -348,6 +369,7 @@
       xdg.configFile."agents/tools.md".source = toolsContext;
       xdg.configFile."agents/preferences.md".source = preferences;
       xdg.configFile."agents/plans.md".source = plansContext;
+      xdg.configFile."agents/sandbox.md".source = sandboxContext;
 
       programs.claude-code = {
         enable = true;
@@ -377,6 +399,7 @@
           @${toolsPath}
           @${preferencesPath}
           @${plansPath}
+          @${sandboxPath}
         '';
       };
     };
