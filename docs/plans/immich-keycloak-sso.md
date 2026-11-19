@@ -1,6 +1,9 @@
 # Immich: Keycloak SSO (next native client)
 
-**Status:** planning (2026-11-18) — part of
+**Status:** in progress (2026-11-18) — stages 1–3 done (#373, #374):
+SSO sits beside the password form and the first Keycloak logins (web +
+mobile) are verified by the operator. Part E (password login off)
+staged. Part of
 [`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) (step 2, the
 Office/Media batch, "one client file at a time"). Client conventions
 follow the Forgejo, PVE, Beszel, Paperless and Nextcloud onboardings;
@@ -147,9 +150,9 @@ Staging:
 | Stage | What | Where |
 | --- | --- | --- |
 | 0 | Generate + seed secrets | operator command (Part A) |
-| 1 | tofu client (S256 enforced) | PR 1 (pipeline applies) |
-| 2 | Stage-1 config: SSO button beside password | PR 2 (comin switches srv-prod-4) |
-| 3 | Click-ops: e-mail check, first SSO logins, mobile check | Part D, operator (~10 min) |
+| 1 | tofu client (S256 enforced) | ✅ merged as #373 (probe `302`, verified post-merge) |
+| 2 | Stage-1 config: SSO button beside password | ✅ merged as #374; comin switched srv-prod-4 |
+| 3 | Click-ops: e-mail check, first SSO logins, mobile check | ✅ 2026-11-19 (operator) |
 | 4 | Part E: password login off | PR 3 |
 | 5 | Completion | docs/homelab.md, sso.md + rollout table, archive |
 
