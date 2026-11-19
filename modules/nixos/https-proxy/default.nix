@@ -152,14 +152,21 @@ _: {
           defaults = {
             email = config.systemConstants.adminEmail;
             dnsProvider = "inwx";
-            # Disabled on purpose: DNS-01 challenge names for wildcard certs
-            # (e.g. _acme-challenge.srv-prod-2.ritter.family) collide with the
+            # The recursive propagation check is disabled on purpose (it was
+            # `dnsPropagationCheck = false` before nixpkgs split the option):
+            # it queries the locally configured resolvers, and DNS-01
+            # challenge names for wildcard certs (e.g.
+            # _acme-challenge.srv-prod-2.ritter.family) collide with the
             # local-zone wildcards (*.srv-prod-2.ritter.family) served by the
             # UniFi gateway (docs/split-dns.md), so the gateway shadows the
-            # TXT records instead of forwarding to INWX and lego's check
-            # always times out. Let's Encrypt validates the TXT through INWX
-            # itself; the local check adds nothing but this failure mode.
-            dnsPropagationCheck = false;
+            # TXT records instead of forwarding to INWX and the check always
+            # times out. Let's Encrypt validates the TXT through INWX
+            # itself; the recursive check adds nothing but this failure mode.
+            #
+            # The authoritative check is left enabled (nixpkgs default): it
+            # queries INWX's authoritative nameservers directly, so the
+            # gateway cannot shadow it.
+            dnsRecursivePropagationCheck = false;
             credentialFiles = {
               "INWX_USERNAME_FILE" = config.sops.secrets."inwx/username".path;
               "INWX_PASSWORD_FILE" = config.sops.secrets."inwx/password".path;
