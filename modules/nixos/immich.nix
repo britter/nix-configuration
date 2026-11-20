@@ -49,6 +49,14 @@ _: {
             # placeholder or the store path.
             clientSecret._secret = config.sops.secrets."immich/keycloak-client-secret".path;
           };
+          # Stage 3 (docs/plans/immich-keycloak-sso.md Part E): SSO is
+          # the only door for new logins, web and mobile alike. Break-
+          # glass: remove this line and redeploy (comin) to restore the
+          # password form; API keys keep authenticating regardless.
+          # The admin UI cannot flip this (system settings are frozen
+          # while the config file is in use) — the declaration is the
+          # truth. See the plan's Rollback section.
+          passwordLogin.enabled = false;
           notifications.smtp = {
             # Brevo relay, same one vaultwarden, forgejo and the Keycloak
             # realm use (own SMTP key, credentials via sops). Needed for

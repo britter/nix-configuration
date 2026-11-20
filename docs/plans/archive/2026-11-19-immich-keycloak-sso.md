@@ -1,7 +1,9 @@
 # Immich: Keycloak SSO (next native client)
 
-**Status:** planning (2026-11-18) — part of
-[`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) (step 2, the
+**Status:** complete (2026-11-19), archived per AGENTS.md — stages 1–4
+done (#373, #374, password login off 2026-11-19); the follow-up
+checklist below stays open. Part of
+[`../keycloak-sso-rollout.md`](../keycloak-sso-rollout.md) (step 2, the
 Office/Media batch, "one client file at a time"). Client conventions
 follow the Forgejo, PVE, Beszel, Paperless and Nextcloud onboardings;
 app-side staging follows Beszel's three-part pattern (SSO beside password
@@ -147,11 +149,11 @@ Staging:
 | Stage | What | Where |
 | --- | --- | --- |
 | 0 | Generate + seed secrets | operator command (Part A) |
-| 1 | tofu client (S256 enforced) | PR 1 (pipeline applies) |
-| 2 | Stage-1 config: SSO button beside password | PR 2 (comin switches srv-prod-4) |
-| 3 | Click-ops: e-mail check, first SSO logins, mobile check | Part D, operator (~10 min) |
-| 4 | Part E: password login off | PR 3 |
-| 5 | Completion | docs/homelab.md, sso.md + rollout table, archive |
+| 1 | tofu client (S256 enforced) | ✅ merged as #373 (probe `302`, verified post-merge) |
+| 2 | Stage-1 config: SSO button beside password | ✅ merged as #374; comin switched srv-prod-4 |
+| 3 | Click-ops: e-mail check, first SSO logins, mobile check | ✅ 2026-11-19 (operator) |
+| 4 | Part E: password login off | ✅ merged 2026-11-19 |
+| 5 | Completion | ✅ rollout table + sso.md + archive 2026-11-19; docs/homelab.md recital still open |
 
 Order constraint: **PR 1 must land before PR 2** — Keycloak enforces
 S256 from the moment the client exists, and the client probe below
@@ -542,8 +544,8 @@ Per part, each restores the previous state on its own:
 
 ## Cleanup / follow-ups
 
-- [ ] Update the Immich row in
-      [`keycloak-sso-rollout.md`](keycloak-sso-rollout.md) to ✅, add the
+- [x] Update the Immich row in
+      [`../keycloak-sso-rollout.md`](../keycloak-sso-rollout.md) to ✅, add the
       Immich row to `docs/sso.md`'s "Services with SSO enabled" table,
       and archive this plan with `git mv` to
       `docs/plans/archive/YYYY-MM-DD-immich-keycloak-sso.md` per
