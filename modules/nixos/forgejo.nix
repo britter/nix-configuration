@@ -57,7 +57,22 @@ _: {
             HTTP_PORT = 3000;
             DISABLE_SSH = true;
           };
-          service.DISABLE_REGISTRATION = true;
+          service = {
+            DISABLE_REGISTRATION = true;
+            # Forced SSO (keycloak-sso-rollout plan, password-login end
+            # state): Keycloak is the only web door. ENABLE_INTERNAL_SIGNIN
+            # removes the password sign-in form (the sign-in endpoint
+            # answers 403), so the login page shows only the Keycloak
+            # button; ENABLE_BASIC_AUTHENTICATION additionally rejects
+            # account passwords on HTTP basic auth. git-over-HTTPS and the
+            # API never route through SSO and keep working with access
+            # tokens (basic auth with a token is unaffected). Break-glass:
+            # flip a line back to true and restart — `britter`'s
+            # sops-stored local password works again; the CLI `admin user`
+            # commands are unaffected either way.
+            ENABLE_INTERNAL_SIGNIN = false;
+            ENABLE_BASIC_AUTHENTICATION = false;
+          };
         };
         # SMTP credentials are injected as runtime credentials
         # (environment-to-ini) so they never appear in the generated
