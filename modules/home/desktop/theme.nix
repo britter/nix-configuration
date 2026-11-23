@@ -53,5 +53,10 @@ in
     # two packages stylix patches through an overlay are patched by the NixOS
     # half there anyway.
     stylix.overlays.enable = false;
+
+    # wayprompt was removed from nixpkgs, but has not yet been removed from stylix
+    # causing evaluation to fail. Remove this line one https://github.com/nix-community/stylix/issues/2556
+    # has been merged.
+    stylix.targets.wayprompt.enable = false;
   };
 }
