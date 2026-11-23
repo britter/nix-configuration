@@ -7,5 +7,7 @@
       https-proxy
       restic-restore
     ];
+
+    security.lockKernelModules = true;
   };
 }
