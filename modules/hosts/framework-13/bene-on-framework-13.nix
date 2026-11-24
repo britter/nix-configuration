@@ -28,6 +28,7 @@
           slack
           syncthing
           tailscale
+          yubikey
           java
           zoom
         ];

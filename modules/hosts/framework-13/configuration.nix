@@ -10,6 +10,7 @@
       scanning
       podman
       tailscale
+      yubikey
       testlens-support
       seeq-support
     ];
