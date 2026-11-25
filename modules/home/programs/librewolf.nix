@@ -59,24 +59,33 @@ _: {
                     url = "https://calendar.google.com";
                   }
                   {
-                    name = "Goole Drive";
-                    url = "https://drive.google.com";
-                  }
-                  {
                     name = "GitHub";
                     url = "https://github.com/notifications";
+                  }
+                  {
+                    name = "Codeberg";
+                    url = "https://codeberg.org";
                   }
                   {
                     name = "Mastodon";
                     url = "https://chaos.social";
                   }
                   {
-                    name = "Komoot";
-                    url = "https://www.komoot.de";
+                    name = "Matrix";
+                    url = "https://matrix.yatrix.org";
                   }
                   {
-                    name = "Tmux Cheat Sheet";
-                    url = "https://tmuxcheatsheet.com";
+                    name = "WoW";
+                    bookmarks = [
+                      {
+                        name = "Mage Guide";
+                        url = "https://www.wowhead.com/forever/guide/classes/mage/frost/overview-pve-dps";
+                      }
+                      {
+                        name = "Pala Guide";
+                        url = "https://www.wowhead.com/forever/guide/classes/paladin/retribution/overview-pve-dps";
+                      }
+                    ];
                   }
                 ];
               }
