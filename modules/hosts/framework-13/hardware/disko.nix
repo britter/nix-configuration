@@ -27,6 +27,7 @@
                 name = "swap-crypted";
                 extraOpenArgs = [ "--allow-discards" ];
                 askPassword = true;
+                enrollFido2 = true;
                 content = {
                   type = "swap";
                   resumeDevice = true;
@@ -40,6 +41,7 @@
                 name = "crypted";
                 extraOpenArgs = [ "--allow-discards" ];
                 askPassword = true;
+                enrollFido2 = true;
                 content = {
                   type = "btrfs";
                   extraArgs = [ "-f" ];
