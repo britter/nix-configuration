@@ -1,5 +1,6 @@
 keys:
   - &framework-13 age14dnfyq56r7exkjx58gs4s8xlhn6sd05l3aufr540r374ca7mcf6qdv0yhw
+  - &yubikey-primary age1yubikey1qtq6sr8q03vtlju83tfckt49yc3f8anw055alhwc23x8qd96wm35k27m5ee
   - &emergency-key age1l8z6vs0fkrg0n5sh3pq3f86x3vftcn68trxw93j3twra74jx43ush0775r
   - &srv-prod-1 age1ch7v7lwn3sq0u60a80z4y69fcdw49l64sedw8gh72afc0wcujqmscftpdn
   - &srv-prod-2 age1auwa57jefln7sfelfx8l3sfacpwt3t2fxqch8643jyht7mtjwqzq8yxjzq
@@ -14,59 +15,69 @@ creation_rules:
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
   - path_regex: modules/hosts/srv-prod-1/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
           - *srv-prod-1
   - path_regex: modules/hosts/srv-prod-2/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
           - *srv-prod-2
   - path_regex: modules/hosts/srv-prod-3/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
           - *srv-prod-3
   - path_regex: modules/hosts/srv-prod-4/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
           - *srv-prod-4
   - path_regex: modules/hosts/srv-prod-5/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
           - *srv-prod-5
   - path_regex: modules/hosts/srv-prod-6/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
           - *srv-prod-6
   - path_regex: modules/hosts/srv-offsite-1/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
           - *srv-offsite-1
   - path_regex: modules/hosts/directions/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
           - *directions
   - path_regex: modules/nixos/https-proxy/secrets\.yaml$
     key_groups:
       - age:
           - *framework-13
+          - *yubikey-primary
           - *emergency-key
           - *directions
           - *srv-prod-1
