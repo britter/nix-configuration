@@ -5,7 +5,12 @@ _: {
       programs.ssh = {
         settings =
           let
-            privateKey = "${config.home.homeDirectory}/.ssh/id_ed25519";
+            # this is yubikey-primary from system-constants private key half
+            # this file does not contain the primary key itself, it just carries
+            # metadata that identifies the right key slot on the yubikey.
+            # the file can be regenerated via `ssh-keygen -K` while the yubikey
+            # is plugged in.
+            privateKey = "${config.home.homeDirectory}/.ssh/id_ed25519_sk_primary_login";
             mkHost = _k: v: {
               "${v.dns}" = {
                 IdentityFile = privateKey;

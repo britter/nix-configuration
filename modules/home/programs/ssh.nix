@@ -12,7 +12,7 @@ _: {
         enableDefaultConfig = false;
         settings = {
           "github.com" = {
-            IdentityFile = "${config.home.homeDirectory}/.ssh/id_ed25519";
+            IdentityFile = "${config.home.homeDirectory}/.ssh/id_ed25519_sk_primary_login";
             IdentitiesOnly = true;
           };
         };
