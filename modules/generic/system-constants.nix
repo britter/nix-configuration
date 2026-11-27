@@ -16,6 +16,7 @@ _: {
         adminKeys = {
           framework-13 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGsQc3GN4b8scuDR7PghdB+Eu4zUgSwgrgqplpNDR3Lq";
           starlite = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2+ifShP1n5ZV8Q/VKXvpdKAJycgQ0kgkiz7YOPmKec";
+          yubikey-primary = "sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIMia4/q9Uo/dnfa4FpJGBQhY/4JOc0ESg1tQbI7IprVeAAAABHNzaDo= login-primary";
         };
         configRepo = "https://github.com/britter/nix-configuration.git";
       };
